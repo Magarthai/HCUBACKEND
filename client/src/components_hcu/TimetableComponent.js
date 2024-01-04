@@ -1,11 +1,15 @@
-import {useEffect,useState} from "react";
+import { useEffect, useState, useRef } from "react";
 import NavbarComponent from "../components_hcu/NavbarComponent";
 import "../css/AdminTimeTableComponent.css";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
-
+import { useUserAuth } from "../context/UserAuthContext";
+import { db, getDocs ,collection} from "../firebase/config"; // Import the necessary Firestore functions and initialization file
 const TimetableComponent=(props)=>{
-
+    const [showTime, setShowTime] = useState(getShowTime);
+    const [userData, setUserData] = useState(null); // State to store user data
+    const animationFrameRef = useRef();
+    const { user } = useUserAuth();
     const[timetable, setTimetable] = useState([])
 
     const [state,setState] = useState({
@@ -66,33 +70,73 @@ const TimetableComponent=(props)=>{
     }
     
 
-    useEffect(()=>{
+    useEffect(() => {
         document.title = 'Health Care Unit';
-        // fetchData()
-        const timer = setInterval(() => {
-            setDate(new Date());
-        }, 1000);
+        console.log(user);
+        const fetchUserData = async () => {
+            try {
+                if (user) {
+                    const usersCollection = collection(db, 'users');
+                    const usersSnapshot = await getDocs(usersCollection);
+        
+                    const usersData = usersSnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+        
+                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
+        
+                if (currentUserData) {
+                    setUserData(currentUserData);
+                    console.log(currentUserData);
+                } else {
+                    console.log("User not found");
+                }}
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUserData();
+        const updateShowTime = () => {
+          const newTime = getShowTime();
+          if (newTime !== showTime) {
+            setShowTime(newTime);
+          }
+          animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        };
+      
+        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+      
+        // Fetch user data when the component mounts
+        
+      
         return () => {
-            clearInterval(timer); 
-        }
-    },[])
-
-    const [today, setDate] = useState(new Date()); 
-    const locale = 'en'
-
+          cancelAnimationFrame(animationFrameRef.current);
+        };
+        
+      }, [user]); 
     
-    function formatNumber(num) {
+      
+    
+    
+      function getShowTime() {
+        const today = new Date();
+        const hours = today.getHours();
+        const minutes = today.getMinutes();
+        const seconds = today.getSeconds();
+        return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
+      }
+    
+      function formatNumber(num) {
         return num < 10 ? "0" + num : num.toString();
-    }
-
-    const month = formatNumber(today.getMonth()+1);
-    const year = formatNumber(today.getFullYear());
-    const date = formatNumber(today.getDate());
-    const day = today.toLocaleDateString(locale, { weekday: 'long' });
-
-    const hour = formatNumber(today.getHours());
-    const minute = formatNumber(today.getMinutes());
-    const seconds = formatNumber(today.getSeconds());
+      }
+      const locale = 'en'
+      const today = new Date();
+      const month = today.getMonth() + 1;
+      const year = today.getFullYear();
+      const date = today.getDate();
+      const day = today.toLocaleDateString(locale, { weekday: 'long' });
+      const currentDate = `${day} ${month}/${date}/${year}`;
 
     
     const [isChecked, setIsChecked] = useState(true);
@@ -123,8 +167,10 @@ const TimetableComponent=(props)=>{
                     <h1 className="colorPrimary-800 center">ช่วงเเวลาเข้าทำการแพทย์</h1>
                 </div>
                 <div className="dateTime">
-                    <p className="colorPrimary-800">Date: {day} {date}/{month}/{year}</p>
-                    <p className="colorPrimary-800">Time: {hour}:{minute}:{seconds}</p>
+                {userData && <p className="colorPrimary-800">Welcome, {userData.firstName} {userData.lastName}</p>}
+                
+                <p>Date : {currentDate}</p>
+                <p>Time : {showTime}</p>
                 </div>
             </div>
             <div className="clinic">
@@ -204,6 +250,7 @@ const TimetableComponent=(props)=>{
                 </div>
         
                 <div className="system-item border-L">
+
                     <div id="Addtimeable">
                     <form onSubmit={submitForm}>
                         <div className="system-top">
