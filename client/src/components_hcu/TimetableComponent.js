@@ -129,7 +129,8 @@ const TimetableComponent = (props) => {
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
                 clinic: "general",
-                timeablelist: timeablelist
+                timeablelist: timeablelist,
+                status: "Enabled",
             };
 
             await addDoc(collection(db, 'timeTable'), additionalTImeTable);
