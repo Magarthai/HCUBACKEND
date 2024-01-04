@@ -204,7 +204,7 @@ const TimetableComponent=(props)=>{
                 </div>
         
                 <div className="system-item border-L">
-                    <p>Hi</p>
+                    <p>Hi ssssssssss</p>
                     <p>XD</p>
                     <div id="Addtimeable">
                     <form onSubmit={submitForm}>
