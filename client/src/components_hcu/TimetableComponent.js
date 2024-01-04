@@ -4,7 +4,7 @@ import "../css/AdminTimeTableComponent.css";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection } from "../firebase/config"; // Import the necessary Firestore functions and initialization file
+import { db, getDocs, collection } from "../firebase/config";
 
 import Swal from "sweetalert2";
 import { auth } from '../firebase/config';
@@ -13,7 +13,7 @@ import { addDoc } from 'firebase/firestore';
 
 const TimetableComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null); // State to store user data
+    const [userData, setUserData] = useState(null); 
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
     const [timetable, setTimetable] = useState([])
@@ -35,7 +35,6 @@ const TimetableComponent = (props) => {
             "wednesday": "Wednesday",
             "thursday": "Thursday",
             "friday": "Friday",
-            // Add more days if needed
         };
 
         return dayMapping[abbreviation] || "";
@@ -48,7 +47,6 @@ const TimetableComponent = (props) => {
 
 
     const inputValue = (name) => (event) => {
-        // Convert the selected day to full format before updating state
         if (name === "addDay") {
             const fullDayName = getFullDayName(event.target.value.toLowerCase());
             setState({ ...state, [name]: fullDayName });
@@ -63,37 +61,56 @@ const TimetableComponent = (props) => {
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
     };
+    const fetchTimeTableData = async () => {
+        try {
+            if (user) {
+                const timeTableCollection = collection(db, 'timeTable');
+                const timeTableSnapshot = await getDocs(timeTableCollection);
 
+                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                
+
+                if (timeTableData) {
+                    setTimetable(timeTableData);
+                    console.log(timeTableData);
+                } else {
+                    console.log("time table not found");
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
     const submitForm = async (e) => {
         e.preventDefault();
 
         const start = new Date(`2000-01-01T${timeAppointmentStart}`);
         const end = new Date(`2000-01-01T${timeAppointmentEnd}`);
-        const duration = (end - start) / 60000; // Duration in minutes
+        const duration = (end - start) / 60000;
 
         if (duration <= 0) {
-            // Handle invalid duration, show an error or return early
             return;
         }
 
         const timeablelist = [];
 
-        // Calculate the time interval for each appointment
         const interval = Math.floor(duration / numberAppointment);
 
-        // Generate time slots
         for (let i = 0; i < numberAppointment; i++) {
             const slotStart = new Date(start.getTime() + i * interval * 60000);
             const slotEnd = new Date(slotStart.getTime() + interval * 60000);
 
-            // Check if the slot end time exceeds the appointment end time
+
             if (slotEnd.getTime() > end.getTime()) {
-                // If it exceeds, use the appointment end time
                 timeablelist.push({
                     start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 });
-                break; // Exit the loop
+                break;
             }
 
             timeablelist.push({
@@ -102,7 +119,6 @@ const TimetableComponent = (props) => {
             });
         }
 
-        console.log(timeablelist);
 
         try {
             const additionalTImeTable = {
@@ -122,10 +138,14 @@ const TimetableComponent = (props) => {
                 icon: "success",
                 title: "Alert",
                 text: "Added Time!",
-            });
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  fetchTimeTableData();
+                }
+              });
+
         } catch (firebaseError) {
             console.error('Firebase signup error:', firebaseError);
-            // Handle errors here
         }
     };
 
@@ -133,20 +153,14 @@ const TimetableComponent = (props) => {
 
 
 
-    const fetchData = () => {
-        // เปลี่ยนตาม rounter ฝั่ง backend
-        // สมมติไว้คือ /getTimeable/:clinnic
-        // axois.get(`${process.env.REACT_APP_API}/getTimeable/general`)
-        // .then(response=>{
-        //     setTimetable(response.data)
-        // })
-        // .catch(err=>alert(err));
-    }
+    
 
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
+        
+        fetchTimeTableData();
         const fetchUserData = async () => {
             try {
                 if (user) {
@@ -261,7 +275,7 @@ const TimetableComponent = (props) => {
                     </div>
                     <div className="system-detail">
                         <p>วันจันทร์</p>
-                        {timetable.filter((timetable) => timetable.day === "monday").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "Monday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
@@ -281,44 +295,90 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
-                        <div className="row" >
-                            <div className="card">
-                                <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
-                                    <p>{timetable.timeStart} - {timetable.timeEnd}  09:00 - 12:00</p>
-                                    <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                    <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                </a>
-                                <div className="card-funtion">
-                                    <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                        <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                        <div className="slider"></div>
-                                    </label>
-                                    <img src={edit} className="icon" />
-                                    <img src={icon_delete} className="icon" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row" >
-                            <div className="card">
-                                <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
-                                    <p>{timetable.timeStart} - {timetable.timeEnd}  09:00 - 12:00</p>
-                                    <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                    <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                </a>
-                                <div className="card-funtion">
-                                    <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                        <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                        <div className="slider"></div>
-                                    </label>
-                                    <img src={edit} className="icon" />
-                                    <img src={icon_delete} className="icon" />
-                                </div>
-                            </div>
-                        </div>
                         <p>วันอังคาร</p>
+                        {timetable.filter((timetable) => timetable.addDay === "Tuesday").map((timetable, index) => (
+                            <div className="row" >
+                                <div className="card">
+                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
+                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                    </a>
+                                    <div className="card-funtion">
+                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
+                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
+                                            <div className="slider"></div>
+                                        </label>
+                                        <img src={edit} className="icon" />
+                                        <img src={icon_delete} className="icon" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        ))}
                         <p>วันพุธ</p>
+                        {timetable.filter((timetable) => timetable.addDay === "Wednesday").map((timetable, index) => (
+                            <div className="row" >
+                                <div className="card">
+                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
+                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                    </a>
+                                    <div className="card-funtion">
+                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
+                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
+                                            <div className="slider"></div>
+                                        </label>
+                                        <img src={edit} className="icon" />
+                                        <img src={icon_delete} className="icon" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        ))}
                         <p>วันพฤหัสบดี</p>
+                        {timetable.filter((timetable) => timetable.addDay === "Thursday").map((timetable, index) => (
+                            <div className="row" >
+                                <div className="card">
+                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
+                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                    </a>
+                                    <div className="card-funtion">
+                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
+                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
+                                            <div className="slider"></div>
+                                        </label>
+                                        <img src={edit} className="icon" />
+                                        <img src={icon_delete} className="icon" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        ))}
                         <p>วันศุกร์</p>
+                        {timetable.filter((timetable) => timetable.addDay === "Friday").map((timetable, index) => (
+                            <div className="row" >
+                                <div className="card">
+                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
+                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                    </a>
+                                    <div className="card-funtion">
+                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
+                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
+                                            <div className="slider"></div>
+                                        </label>
+                                        <img src={edit} className="icon" />
+                                        <img src={icon_delete} className="icon" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        ))}
                     </div>
                 </div>
 
