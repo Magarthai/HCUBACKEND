@@ -5,6 +5,7 @@ import LoginComponent from "./components_all/LoginComponent"
 import SignupComponent from "./components_all/SignupComponent";
 import AdminHomeComponent from "./components_hcu/HomeComponent"
 import ProtectAdminRoute from './auth/protectAdminRoute.jsx';
+import AdminTimetableComponent from "./components_hcu/TimetableComponent.js"
 
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/homeAdmin",
     element: <ProtectAdminRoute><AdminHomeComponent /></ProtectAdminRoute>
+  },
+  {
+    path: "/timeTableAdmin",
+    element: <ProtectAdminRoute><AdminTimetableComponent/></ProtectAdminRoute>
   },
 ])
 

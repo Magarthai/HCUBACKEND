@@ -53,7 +53,7 @@ const NavbarComponent=(props)=>{
             } */}
           
             <ul className="nav justify-content-end" id="nav">
-                    <li className="nav-item pr-3 pb-3"><Link to="/admin/home" className="nav-link" target="_parent">หน้าแรก</Link></li>
+                    <li className="nav-item pr-3 pb-3"><Link to="/homeAdmin" className="nav-link" target="_parent">หน้าแรก</Link></li>
                     <li className="nav-item pr-3 pb-3"><Link onClick={()=>openManager()} className="nav-link">ระบบจัดการ</Link></li>
                     <li className="nav-item pr-3 pb-3"><Link onClick={()=>openInformation()} className="nav-link">ข้อมูลทั่วไป</Link></li>
                     <li className="nav-item pr-3 pb-3"><Link to="#" className="nav-link" target="_parent">Dashboard</Link></li>
@@ -63,7 +63,7 @@ const NavbarComponent=(props)=>{
             <ul className="nav flex-column font1" id="navManager">
                     <li className="nav-item pr-3 pb-3"><Link to="#" className="nav-link" target="_parent">ระบบจัดการคิว</Link></li>
                     <li className="nav-item pr-3 pb-3"><Link to="#" className="nav-link" target="_parent">ระบบนัดหมาย</Link></li>
-                    <li className="nav-item pr-3 pb-3"><Link to="#" className="nav-link" target="_parent">เวลาเข้าทำการ</Link></li>
+                    <li className="nav-item pr-3 pb-3"><Link to="/timeTableAdmin" className="nav-link" target="_parent">เวลาเข้าทำการ</Link></li>
                     <li className="nav-item pr-3 pb-3"><Link to="#" className="nav-link" target="_parent">กิจกรรม</Link></li>
                   
             </ul>

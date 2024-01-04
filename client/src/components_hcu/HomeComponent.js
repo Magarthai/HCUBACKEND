@@ -77,12 +77,14 @@ const HomeComponent = (props) => {
   function formatNumber(num) {
     return num < 10 ? "0" + num : num.toString();
   }
-
+  const locale = 'en'
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
   const date = today.getDate();
-  const currentDate = `${month}/${date}/${year}`;
+  const day = today.toLocaleDateString(locale, { weekday: 'long' });
+  const currentDate = `${day} ${month}/${date}/${year}`;
+
   return (
     <div>
       <NavbarComponent />
@@ -93,25 +95,25 @@ const HomeComponent = (props) => {
           <p className="textBody-medium colorPrimary-800">กลุ่มงานบริการสุขภาพและอนามัย</p>
         </div>
         <div className="top-item date">
+          {userData && <p className="colorPrimary-800">Welcome, {userData.firstName} {userData.lastName}</p>}
           <p>Date : {currentDate}</p>
           <p>Time : {showTime}</p>
         </div>
-        {user && <p>Hi, {user.email}</p>}
       </div>
       <div className="flexbox-function">
-                <a href="#" target="_parent" className="function"><img className="function" src={function1} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function2} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function3} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function4} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function5} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function6} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function7} alt="Queue management system"  href="/login"/></a>
-                <a href="#" target="_parent" className="function"><img className="function" src={function8} alt="Queue management system"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function1} alt="Queue management system"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function2} alt="Appointment management system"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function3} alt="Activity management system"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function4} alt="Dashboard"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function5} alt="General information management system"  href="/login"/></a>
+          <a href="/timeTableAdmin" target="_parent" className="function"><img className="function" src={function6} alt="Medical hours management system"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function7} alt="Feedback"  href="/login"/></a>
+          <a href="#" target="_parent" className="function"><img className="function" src={function8} alt="User manual"  href="/login"/></a>
 
-            </div>
+      </div>
         
        
-        </div>
+    </div>
         
     );
 }
