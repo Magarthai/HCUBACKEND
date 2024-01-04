@@ -296,6 +296,9 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
+                        {timetable.filter((timetable) => timetable.addDay === "Monday").length === 0 && (
+                            <p>ไม่มีช่วงเวลาทําการ</p>
+                        )}
                         <p>วันอังคาร</p>
                         {timetable.filter((timetable) => timetable.addDay === "Tuesday").map((timetable, index) => (
                             <div className="row" >
@@ -317,6 +320,9 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
+                        {timetable.filter((timetable) => timetable.addDay === "Tuesday").length === 0 && (
+                            <p>ไม่มีช่วงเวลาทําการ</p>
+                        )}
                         <p>วันพุธ</p>
                         {timetable.filter((timetable) => timetable.addDay === "Wednesday").map((timetable, index) => (
                             <div className="row" >
@@ -338,6 +344,9 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
+                        {timetable.filter((timetable) => timetable.addDay === "Wednesday").length === 0 && (
+                            <p>ไม่มีช่วงเวลาทําการ</p>
+                        )}
                         <p>วันพฤหัสบดี</p>
                         {timetable.filter((timetable) => timetable.addDay === "Thursday").map((timetable, index) => (
                             <div className="row" >
@@ -359,6 +368,9 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
+                        {timetable.filter((timetable) => timetable.addDay === "Thursday").length === 0 && (
+                            <p>ไม่มีช่วงเวลาทําการ</p>
+                        )}
                         <p>วันศุกร์</p>
                         {timetable.filter((timetable) => timetable.addDay === "Friday").map((timetable, index) => (
                             <div className="row" >
@@ -380,6 +392,9 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
+                        {timetable.filter((timetable) => timetable.addDay === "Friday").length === 0 && (
+                            <p>ไม่มีช่วงเวลาทําการ</p>
+                        )}
                     </div>
                 </div>
 
