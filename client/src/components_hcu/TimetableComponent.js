@@ -204,7 +204,7 @@ const TimetableComponent=(props)=>{
                 </div>
         
                 <div className="system-item border-L">
-                    <p>Hi</p>
+                    <p>Hi ssssssssss</p>
                     <p>XD</p>
                     <p>FWQWFQWFqwfQFW</p>
                     <div id="Addtimeable">
