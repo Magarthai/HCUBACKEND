@@ -98,17 +98,16 @@ const HomeComponent = (props) => {
           <p className="textBody-medium colorPrimary-800">กลุ่มงานบริการสุขภาพและอนามัย</p>
         </div>
         <div className="top-item date">
-        {userData && <p className="colorPrimary-800">Welcome, {userData.firstName} {userData.lastName}</p>}
-                
-                <p>Date : {currentDate}</p>
-                <p>Time : {showTime}</p>
+          {userData && <p className="colorPrimary-800">Welcome, {userData.firstName} {userData.lastName}</p>}
+          <p>Date : {currentDate}</p>
+          <p>Time : {showTime}</p>
         </div>
       </div>
       <div className="flexbox-function">
         <Link to="#" className="function">
           <img className="function" src={function1} alt="Queue management system" />
         </Link>
-        <Link to="#" className="function">
+        <Link to="/appointmentAdmin" className="function">
           <img className="function" src={function2} alt="Appointment management system" />
         </Link>
         <Link to="#" className="function">

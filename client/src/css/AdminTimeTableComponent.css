@@ -199,6 +199,12 @@ body{
         margin: 4px 1% 0% 1%;
         
     }
+    .nameClinic p{
+        margin: 0px;
+    }
+    .nameClinic {
+        margin-bottom: 7px;
+    }
 
 
 

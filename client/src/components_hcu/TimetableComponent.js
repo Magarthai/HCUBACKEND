@@ -242,8 +242,6 @@ const TimetableComponent = (props) => {
                     <h1 className="colorPrimary-800 center">ช่วงเเวลาเข้าทำการแพทย์</h1>
                 </div>
                 <div className="dateTime">
-                    {userData && <p className="colorPrimary-800">Welcome, {userData.firstName} {userData.lastName}</p>}
-
                     <p>Date : {currentDate}</p>
                     <p>Time : {showTime}</p>
                 </div>
@@ -331,7 +329,11 @@ const TimetableComponent = (props) => {
                             <div className="system-top">
                                 <button onClick={() => openAddtimeable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
                             </div>
-                            <p>คลินิก <p className="textBody-big">คลินิกทั่วไป</p></p>
+                            <div className="nameClinic">
+                                <p>คลินิก </p>
+                                <p className="textBody-big">คลินิกทั่วไป</p>
+                            </div>
+                            
                             <div>
                                 <label className="textBody-big2 colorPrimary-800">วัน</label>
                                 <select name="Day" value={addDay} onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }} className={selectedCount >= 2 ? 'selected' : ''}>

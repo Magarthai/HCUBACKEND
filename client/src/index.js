@@ -5,7 +5,8 @@ import LoginComponent from "./components_all/LoginComponent"
 import SignupComponent from "./components_all/SignupComponent";
 import AdminHomeComponent from "./components_hcu/HomeComponent"
 import ProtectAdminRoute from './auth/protectAdminRoute.jsx';
-import AdminTimetableComponent from "./components_hcu/TimetableComponent.js"
+import AdminTimetableComponent from "./components_hcu/TimetableComponent"
+import AdminAppointmentComponent from "./components_hcu/AppointmentComponent"
 
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/timeTableAdmin",
     element: <ProtectAdminRoute><AdminTimetableComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/appointmentAdmin",
+    element: <ProtectAdminRoute><AdminAppointmentComponent/></ProtectAdminRoute>
   },
 ])
 
