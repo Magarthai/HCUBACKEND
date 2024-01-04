@@ -66,7 +66,6 @@ const HomeComponent = (props) => {
     };
     
   }, [user]); 
-
   
 
   function getShowTime() {
