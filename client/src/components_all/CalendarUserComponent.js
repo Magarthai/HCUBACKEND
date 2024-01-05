@@ -1,8 +1,8 @@
 import React from "react";
 import { useEffect,useState} from "react";
-import "../css/CalendarUserComponent.css";
+import "../css/CalendarComponent.css";
 
-const CalendarComponent = (props) => {
+const CalendarUserComponent = (props) => {
   
   useEffect(() => {
     let currentDate = new Date();
@@ -68,7 +68,7 @@ const CalendarComponent = (props) => {
       
     
     return (
-      <div className="wrapper">
+      <div className="wrapper" id="userCalendar">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <header>
           <div className="icons">
@@ -96,4 +96,4 @@ const CalendarComponent = (props) => {
     );
   };
 
-export default CalendarComponent;
+export default CalendarUserComponent;

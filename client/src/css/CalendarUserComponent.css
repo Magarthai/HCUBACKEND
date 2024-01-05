@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
 body{
     font-family: 'Mitr', sans-serif;
     background-color: #ffffff;
@@ -50,7 +50,6 @@ body{
         line-height: 38px;
         cursor: pointer;
         text-align: center;
-        /* margin: 0px 40px; */
         font-size: 1.9rem;
         padding-top: -5px;
  
@@ -59,11 +58,6 @@ body{
         display: flex;
         align-items: center;
     }
-    /* header .icons span:hover{
-        background-color: #ffffff;
-        border-radius: 50%;
-        
-    } */
     header .icons span:last-child{
         margin-right: -10px;
         
@@ -108,7 +102,6 @@ body{
     .calendar ul li{
         position: relative;
         width: calc(100% /7);
-        /* background-color: aquamarine; */
         
     }
     .calendar .days li::before{
@@ -129,7 +122,6 @@ body{
         color: #ffffff;
     }
     .days li.active::before{
-        /* background-color: #54B2B0; */
         border: 1.5px solid #54B2B0;
 
     }
@@ -151,4 +143,4 @@ body{
 @media(min-width:1200px){
     
 }
-
+ */

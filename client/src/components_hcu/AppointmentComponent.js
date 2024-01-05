@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import NavbarComponent from "../components_hcu/NavbarComponent";
-import CalendarComponent from "../components_hcu/CalendarAdminComponent";
+import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
+import CalendarUserComponent from "../components_all/CalendarUserComponent";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/AdminHomeComponent.css";
@@ -95,7 +96,8 @@ const AppointmentComponent = (props) => {
                 <a href="/" target="_parent" >คลินิกกายภาพ</a>
                 <a href="/" target="_parent" >คลินิกฝั่งเข็ม</a>
     </div>
-      <CalendarComponent/>
+      <CalendarAdminComponent/>
+
 
     </div>
   );
