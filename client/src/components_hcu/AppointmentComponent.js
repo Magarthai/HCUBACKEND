@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import NavbarComponent from "../components_hcu/NavbarComponent";
-import CalendarComponent from "../components_hcu/CalendarComponent";
+import CalendarComponent from "../components_hcu/CalendarAdminComponent";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/AdminHomeComponent.css";

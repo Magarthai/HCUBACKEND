@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect,useState} from "react";
-import "../css/CalendarComponent.css";
+import "../css/CalendarAdminComponent.css";
 
 const CalendarComponent = (props) => {
   
