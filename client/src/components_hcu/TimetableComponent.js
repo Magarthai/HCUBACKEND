@@ -8,7 +8,8 @@ import { db, getDocs, collection } from "../firebase/config";
 
 import Swal from "sweetalert2";
 import { auth } from '../firebase/config';
-import { addDoc } from 'firebase/firestore';
+import { doc, updateDoc,addDoc } from 'firebase/firestore';
+
 
 
 const TimetableComponent = (props) => {
@@ -28,17 +29,7 @@ const TimetableComponent = (props) => {
         clinic: ""
 
     })
-    const getFullDayName = (abbreviation) => {
-        const dayMapping = {
-            "monday": "Monday",
-            "tuesday": "Tuesday",
-            "wednesday": "Wednesday",
-            "thursday": "Thursday",
-            "friday": "Friday",
-        };
 
-        return dayMapping[abbreviation] || "";
-    };
 
     const { addDay, timeStart, timeEnd, timeAppointmentStart, timeAppointmentEnd, numberAppointment, clinic } = state
 
@@ -46,14 +37,14 @@ const TimetableComponent = (props) => {
         !addDay || !timeStart || !timeEnd || !timeAppointmentStart || !timeAppointmentEnd || !numberAppointment;
 
 
+    const [isChecked, setIsChecked] = useState({});
     const inputValue = (name) => (event) => {
         if (name === "addDay") {
-            const fullDayName = getFullDayName(event.target.value.toLowerCase());
-            setState({ ...state, [name]: fullDayName });
+          setState({ ...state, [name]: event.target.value });
         } else {
-            setState({ ...state, [name]: event.target.value });
+          setState({ ...state, [name]: event.target.value });
         }
-    };
+      };
 
 
     const [selectedCount, setSelectedCount] = useState(1);
@@ -73,11 +64,19 @@ const TimetableComponent = (props) => {
                     id: doc.id,
                     ...doc.data(),
                 }));
+    
 
 
 
                 if (timeTableData) {
                     setTimetable(timeTableData);
+                    const initialIsChecked = timeTableData.reduce((acc, timetableItem) => {
+                        acc[timetableItem.id] = timetableItem.status === "Enabled";
+                        return acc;
+                    }, {});
+    
+                    setIsChecked(initialIsChecked);
+    
                     console.log(timeTableData);
                 } else {
                     console.log("time table not found");
@@ -199,8 +198,6 @@ const TimetableComponent = (props) => {
 
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
-        // Fetch user data when the component mounts
-
 
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
@@ -231,11 +228,21 @@ const TimetableComponent = (props) => {
     const currentDate = `${day} ${month}/${date}/${year}`;
 
 
-    const [isChecked, setIsChecked] = useState(true);
 
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
+    const handleToggle = async (id) => {
+        setIsChecked(prevState => {
+            const updatedStatus = !prevState[id];
+            
+            // อัพเดต status จาก toggle
+            const docRef = doc(db, 'timeTable', id);
+            updateDoc(docRef, { status: updatedStatus ? "Enabled" : "Disabled" }).catch(error => {
+                console.error('Error updating timetable status:', error);
+            });
+    
+            return { ...prevState, [id]: updatedStatus };
+        });
     };
+    
 
     const openAddtimeable = () => {
         let x = document.getElementById("Addtimeable");
@@ -278,7 +285,7 @@ const TimetableComponent = (props) => {
                     </div>
                     <div className="system-detail">
                         <p>วันจันทร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "Monday").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "monday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
@@ -287,10 +294,15 @@ const TimetableComponent = (props) => {
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                            <div className="slider"></div>
-                                        </label>
+                                    <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
+                                    <input
+                                        type="checkbox"
+                                        checked={isChecked[timetable.id]}
+                                        onChange={() => handleToggle(timetable.id)}
+                                    />
+                                    <div className="slider"></div>
+                                </label>
+
                                         <img src={edit} className="icon" />
                                         <img src={icon_delete} className="icon" />
                                     </div>
@@ -298,11 +310,11 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "Monday").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "monday").length === 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         <p>วันอังคาร</p>
-                        {timetable.filter((timetable) => timetable.addDay === "Tuesday").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
@@ -311,10 +323,10 @@ const TimetableComponent = (props) => {
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                            <div className="slider"></div>
-                                        </label>
+                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
+                                    <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
+                                    <div className="slider"></div>
+                                </label>
                                         <img src={edit} className="icon" />
                                         <img src={icon_delete} className="icon" />
                                     </div>
@@ -322,11 +334,11 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "Tuesday").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday").length === 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         <p>วันพุธ</p>
-                        {timetable.filter((timetable) => timetable.addDay === "Wednesday").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
@@ -335,10 +347,10 @@ const TimetableComponent = (props) => {
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                            <div className="slider"></div>
-                                        </label>
+                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
+                                    <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
+                                    <div className="slider"></div>
+                                </label>
                                         <img src={edit} className="icon" />
                                         <img src={icon_delete} className="icon" />
                                     </div>
@@ -346,11 +358,11 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "Wednesday").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday").length === 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         <p>วันพฤหัสบดี</p>
-                        {timetable.filter((timetable) => timetable.addDay === "Thursday").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
@@ -359,10 +371,10 @@ const TimetableComponent = (props) => {
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                            <div className="slider"></div>
-                                        </label>
+                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
+                                    <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
+                                    <div className="slider"></div>
+                                </label>
                                         <img src={edit} className="icon" />
                                         <img src={icon_delete} className="icon" />
                                     </div>
@@ -370,11 +382,11 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "Thursday").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday").length === 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         <p>วันศุกร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "Friday").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "friday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
@@ -383,10 +395,10 @@ const TimetableComponent = (props) => {
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked} onChange={handleToggle} />
-                                            <div className="slider"></div>
-                                        </label>
+                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
+                                    <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
+                                    <div className="slider"></div>
+                                </label>
                                         <img src={edit} className="icon" />
                                         <img src={icon_delete} className="icon" />
                                     </div>
@@ -394,7 +406,7 @@ const TimetableComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "Friday").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "friday").length === 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                     </div>
@@ -411,17 +423,17 @@ const TimetableComponent = (props) => {
                             <div>
                                 <label className="textBody-big2 colorPrimary-800">วัน</label>
                                 <select
-                                    name="Day"
-
-                                    onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
-                                    className={selectedCount >= 2 ? 'selected' : ''}
+                                name="Day"
+                                value={addDay}
+                                onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
+                                className={selectedCount >= 2 ? 'selected' : ''}
                                 >
-                                    <option value="" disabled > กรุณาเลือกวัน </option>
-                                    <option value="monday">วันจันทร์</option>
-                                    <option value="tuesday">วันอังคาร</option>
-                                    <option value="wednesday">วันพุธ</option>
-                                    <option value="thursday">วันพฤหัสบดี</option>
-                                    <option value="friday">วันศุกร์</option>
+                                <option value="" disabled> กรุณาเลือกวัน </option>
+                                <option value="monday">วันจันทร์</option>
+                                <option value="tuesday">วันอังคาร</option>
+                                <option value="wednesday">วันพุธ</option>
+                                <option value="thursday">วันพฤหัสบดี</option>
+                                <option value="friday">วันศุกร์</option>
                                 </select>
                             </div>
                             <div>
