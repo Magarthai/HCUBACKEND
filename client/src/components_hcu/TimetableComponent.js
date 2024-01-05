@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import NavbarComponent from "../components_hcu/NavbarComponent";
 import "../css/AdminTimeTableComponent.css";
 import edit from "../picture/icon_edit.jpg";
@@ -13,7 +13,7 @@ import { addDoc } from 'firebase/firestore';
 
 const TimetableComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null); 
+    const [userData, setUserData] = useState(null);
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
     const [timetable, setTimetable] = useState([])
@@ -60,7 +60,9 @@ const TimetableComponent = (props) => {
 
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
+        console.log(selectedCount)
     };
+
     const fetchTimeTableData = async () => {
         try {
             if (user) {
@@ -72,7 +74,7 @@ const TimetableComponent = (props) => {
                     ...doc.data(),
                 }));
 
-                
+
 
                 if (timeTableData) {
                     setTimetable(timeTableData);
@@ -141,9 +143,9 @@ const TimetableComponent = (props) => {
                 text: "Added Time!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                  fetchTimeTableData();
+                    fetchTimeTableData();
                 }
-              });
+            });
 
         } catch (firebaseError) {
             console.error('Firebase signup error:', firebaseError);
@@ -154,13 +156,13 @@ const TimetableComponent = (props) => {
 
 
 
-    
+
 
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        
+
         fetchTimeTableData();
         const fetchUserData = async () => {
             try {
@@ -405,14 +407,15 @@ const TimetableComponent = (props) => {
                             <div className="system-top">
                                 <button onClick={() => openAddtimeable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
                             </div>
-                            <div className="nameClinic">
-                                <p>คลินิก </p>
-                                <p className="textBody-big">คลินิกทั่วไป</p>
-                            </div>
-                            
+                            <p>คลินิก <p className="textBody-big">คลินิกทั่วไป</p></p>
                             <div>
                                 <label className="textBody-big2 colorPrimary-800">วัน</label>
-                                <select name="Day" value={addDay} onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }} className={selectedCount >= 2 ? 'selected' : ''}>
+                                <select
+                                    name="Day"
+
+                                    onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
+                                    className={selectedCount >= 2 ? 'selected' : ''}
+                                >
                                     <option value="" disabled > กรุณาเลือกวัน </option>
                                     <option value="monday">วันจันทร์</option>
                                     <option value="tuesday">วันอังคาร</option>
@@ -421,7 +424,6 @@ const TimetableComponent = (props) => {
                                     <option value="friday">วันศุกร์</option>
                                 </select>
                             </div>
-
                             <div>
                                 <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
                                 <input
