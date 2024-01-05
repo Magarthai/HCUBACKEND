@@ -35,9 +35,11 @@ body{
         align-items: stretch;
         box-sizing: border-box;
         background-color: #EEF2F7;
-        height: 680px;
+        height: 70vh;
+        /* height: 600px; */
         border: 1px solid rgba(10, 15, 21, 0.482);
         border-radius: 10px;
+        margin-bottom: 10px;
     }
     .system-item{
         box-sizing: border-box;
@@ -46,7 +48,8 @@ body{
     }
     .system-detail{
         overflow-y: scroll;
-        height: 580px;
+        /* height: 580px; */
+        height: 58vh;
         
     }
 
@@ -133,6 +136,9 @@ body{
         margin-left: 10px;
         margin-top: -15px;
     }
+    .icon:hover{
+        cursor: pointer;
+    }
     .toggle-switch {
         position: relative;
         display: inline-block;
@@ -183,9 +189,6 @@ body{
         color: #263A50;
         
     }
-    #Addtimeable{
-        display: none;
-    }
     #backTopic{
         width: 100%;
         background-color: #ffffff00;
@@ -207,6 +210,31 @@ body{
     .nameClinic {
         margin-bottom: 7px;
     }
+    #Addtimetable{
+        display: none;
+    }
+    #Edittimetable{
+        display: none;
+    }
+    .confirm{
+        width: 72px !important;
+        background-color: #DC2626 !important;
+        color: #ffffff !important;
+    }
+    .custom-confirm-button,.custom-cancel-button{
+        width: 143px; 
+    
+    }
+    #Detailtimetable{
+        display: none;
+    }
+    #Detailtimetable p{
+        margin: 5px 0px;
+    }
+    #Detail p{
+        padding: 0px 30px;
+    }
+   
 
 
 

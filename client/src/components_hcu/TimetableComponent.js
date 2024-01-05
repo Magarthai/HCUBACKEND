@@ -244,14 +244,132 @@ const TimetableComponent = (props) => {
     };
     
 
-    const openAddtimeable = () => {
-        let x = document.getElementById("Addtimeable");
+    const openAddtimetable = () => {
+        let x = document.getElementById("Addtimetable");
+        let y = document.getElementById("Edittimetable");
+        let z = document.getElementById("Detailtimetable");
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
         } else {
             x.style.display = "none";
+            
             setState({ ...state, addDay: "", timeStart: "", timeEnd: "", timeAppointmentStart: "", timeAppointmentEnd: "", numberAppointment: "", clinic: "" })
         }
+    }
+
+    const openEdittimetable = (element,timetable) => {
+        let x = document.getElementById("Edittimetable");
+        let y = document.getElementById("Addtimetable");
+        let z = document.getElementById("Detailtimetable");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+        } else {
+            x.style.display = "none";
+            
+        }
+    }
+   
+    const openDetailtimetable = (element,timetable) => {
+        let x = document.getElementById("Detailtimetable");
+        let y = document.getElementById("Edittimetable");
+        let z = document.getElementById("Addtimetable");
+  
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+            let detailDay = timetable.addDay;
+            let listtimetable = ""
+            if(detailDay === "monday"){
+                document.getElementById("Detailday").innerHTML = `วัน : วันจันทร์`
+            }else if(detailDay === "tuesday"){
+                document.getElementById("Detailday").innerHTML = `วัน : วันอังคาร`
+            }else if(detailDay === "wednesday"){
+                document.getElementById("Detailday").innerHTML = `วัน : วันพุธ`
+            }else if(detailDay === "thursday"){
+                document.getElementById("Detailday").innerHTML = `วัน : วันพฤหัสบดี`
+            }else if(detailDay === "friday"){
+                document.getElementById("Detailday").innerHTML = `วัน : วันศุกร์`
+            }
+            document.getElementById("Detailtimeall").innerHTML = `ช่วงเวลาเปิดให้บริการ : ${timetable.timeStart} - ${timetable.timeEnd} `
+            document.getElementById("Detailtime").innerHTML = `ช่วงเวลาเปิดให้นัดหมาย : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
+            document.getElementById("Detailqueue").innerHTML = `จำนวนคิวนัดหมาย : ${timetable.numberAppointment} `
+            console.log(timetable.timeablelist.length)
+            for(let i = 0 ; i < timetable.timeablelist.length;i++){
+                listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i+1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
+                console.log(timetable.timeablelist[i])
+            }
+            document.getElementById("Detail").innerHTML = `ช่วงเวลาคิวนัดหมาย : ${listtimetable}`
+        
+        } else {
+            x.style.display = "none";
+        }
+            
+    }
+
+    const Deletetimetable = (element,timetable) =>{
+        let detailDay = timetable.addDay;
+        if(detailDay === "monday"){
+            detailDay = 'วันจันทร์'
+        }else if(detailDay === "tuesday"){
+            detailDay = 'วันอังคาร'
+        }else if(detailDay === "wednesday"){
+            detailDay = 'วันพุธ'
+        }else if(detailDay === "thursday"){
+            detailDay = 'วันพฤหัสบดี'
+        }else if(detailDay === "friday"){
+            detailDay = 'วันศุกร์'
+        }
+        Swal.fire({
+            title: 'ลบช่วงเวลา',
+            text: `${detailDay} เวลา ${timetable.timeStart} - ${timetable.timeEnd}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#DC2626',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'custom-confirm-button',
+                cancelButton: 'custom-cancel-button',
+              }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire(
+                {
+                    title: 'Deleted!',
+                    text: `ลบนัดหมายสำเร็จ`,
+                    icon: 'success',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
+                }
+              )
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              Swal.fire(
+                {
+                    title: 'Deleted!',
+                    text: `ลบนัดหมายไม่สำเร็จ`,
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
+                }
+              )
+            }
+          })
+
     }
 
 
@@ -281,14 +399,14 @@ const TimetableComponent = (props) => {
                 <div className="system-item">
                     <div className="system-top">
                         <p className="colorPrimary-800 system-top-item">ช่วงเวลาเข้าทำการแพทย์</p>
-                        <button className="system-top-item" onClick={() => openAddtimeable()}>เพิ่มเวลา +</button>
+                        <button className="system-top-item" onClick={() => openAddtimetable()}>เพิ่มเวลา +</button>
                     </div>
                     <div className="system-detail">
                         <p>วันจันทร์</p>
                         {timetable.filter((timetable) => timetable.addDay === "monday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
-                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                    <a className="card-detail colorPrimary-800" onClick={()=>openDetailtimetable(this,timetable)}>
                                         <p>{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
@@ -303,21 +421,25 @@ const TimetableComponent = (props) => {
                                     <div className="slider"></div>
                                 </label>
 
-                                        <img src={edit} className="icon" />
-                                        <img src={icon_delete} className="icon" />
+                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this,timetable)}/>
+                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this,timetable)}/>
                                     </div>
                                 </div>
                             </div>
 
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "monday").length === 0 && (
-                            <p>ไม่มีช่วงเวลาทําการ</p>
+                            <div className="row" >
+                                <div className="card">
+                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                </div>
+                            </div>
                         )}
                         <p>วันอังคาร</p>
                         {timetable.filter((timetable) => timetable.addDay === "tuesday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
-                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                    <a className="card-detail colorPrimary-800"  onClick={()=>openDetailtimetable(this,timetable)}>
                                         <p>{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
@@ -327,21 +449,25 @@ const TimetableComponent = (props) => {
                                     <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                     <div className="slider"></div>
                                 </label>
-                                        <img src={edit} className="icon" />
-                                        <img src={icon_delete} className="icon" />
+                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this,timetable)}/>
+                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this,timetable)} />
                                     </div>
                                 </div>
                             </div>
 
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "tuesday").length === 0 && (
-                            <p>ไม่มีช่วงเวลาทําการ</p>
+                            <div className="row" >
+                                <div className="card">
+                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                </div>
+                            </div>
                         )}
                         <p>วันพุธ</p>
                         {timetable.filter((timetable) => timetable.addDay === "wednesday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
-                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                    <a className="card-detail colorPrimary-800"  onClick={()=>openDetailtimetable(this,timetable)}>
                                         <p>{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
@@ -351,21 +477,25 @@ const TimetableComponent = (props) => {
                                     <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                     <div className="slider"></div>
                                 </label>
-                                        <img src={edit} className="icon" />
-                                        <img src={icon_delete} className="icon" />
+                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this,timetable)}/>
+                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this,timetable)}/>
                                     </div>
                                 </div>
                             </div>
 
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "wednesday").length === 0 && (
-                            <p>ไม่มีช่วงเวลาทําการ</p>
+                            <div className="row" >
+                                <div className="card">
+                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                </div>
+                            </div>
                         )}
                         <p>วันพฤหัสบดี</p>
                         {timetable.filter((timetable) => timetable.addDay === "thursday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
-                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                    <a className="card-detail colorPrimary-800"  onClick={()=>openDetailtimetable(this,timetable)}>
                                         <p>{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
@@ -375,21 +505,25 @@ const TimetableComponent = (props) => {
                                     <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                     <div className="slider"></div>
                                 </label>
-                                        <img src={edit} className="icon" />
-                                        <img src={icon_delete} className="icon" />
+                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this,timetable)}/>
+                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this,timetable)}/>
                                     </div>
                                 </div>
                             </div>
 
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "thursday").length === 0 && (
-                            <p>ไม่มีช่วงเวลาทําการ</p>
+                            <div className="row" >
+                                <div className="card">
+                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                </div>
+                             </div>
                         )}
                         <p>วันศุกร์</p>
                         {timetable.filter((timetable) => timetable.addDay === "friday").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
-                                    <a href={`/timetable/${timetable._id}`} className="card-detail colorPrimary-800">
+                                    <a className="card-detail colorPrimary-800"  onClick={()=>openDetailtimetable(this,timetable)}>
                                         <p>{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
@@ -399,25 +533,29 @@ const TimetableComponent = (props) => {
                                     <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                     <div className="slider"></div>
                                 </label>
-                                        <img src={edit} className="icon" />
-                                        <img src={icon_delete} className="icon" />
+                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this,timetable)}/>
+                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this,timetable)}/>
                                     </div>
                                 </div>
                             </div>
 
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "friday").length === 0 && (
-                            <p>ไม่มีช่วงเวลาทําการ</p>
+                            <div className="row" >
+                                <div className="card">
+                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>
 
                 <div className="system-item border-L">
 
-                    <div id="Addtimeable">
+                    <div id="Addtimetable">
                         <form onSubmit={submitForm}>
                             <div className="system-top">
-                                <button onClick={() => openAddtimeable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
+                                <button onClick={() => openAddtimetable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
                             </div>
                             <p>คลินิก <p className="textBody-big">คลินิกทั่วไป</p></p>
                             <div>
@@ -479,13 +617,96 @@ const TimetableComponent = (props) => {
                                 <span> คิว</span>
 
                             </div>
-                            <button onClick={() => openAddtimeable()} className="btn-secondary" id="btn-systrm" disabled={isSubmitEnabled}>กลับ</button>
-                            <input type="submit" value="เพิ่มช่วงเวลา" className="btn-primary" id="btn-systrm" target="_parent" />
+                            <button onClick={() =>openAddtimetable()} className="btn-secondary" id="btn-systrm">กลับ</button>
+                            <input type="submit" value="เพิ่มช่วงเวลา" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled} />
                         </form>
                     </div>
+                    <div id="Edittimetable">
+                        <form onSubmit={submitForm}>
+                            <div className="system-top">
+                                <button onClick={() => openEdittimetable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ แก้ไขเวลาเข้าทำการแพทย์</button>
+                            </div>
+                            <p>คลินิก <p className="textBody-big">คลินิกทั่วไป</p></p>
+                            <div>
+                                <label className="textBody-big2 colorPrimary-800">วัน</label>
+                                <select
+                                name="Day"
+                                value={addDay}
+                                onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
+                                className={selectedCount >= 2 ? 'selected' : ''}
+                                >
+                                <option value="" disabled> กรุณาเลือกวัน </option>
+                                <option value="monday">วันจันทร์</option>
+                                <option value="tuesday">วันอังคาร</option>
+                                <option value="wednesday">วันพุธ</option>
+                                <option value="thursday">วันพฤหัสบดี</option>
+                                <option value="friday">วันศุกร์</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
+                                <input
+                                    type="text"
+                                    className="form-control timeable"
+                                    value={timeStart}
+                                    onChange={inputValue("timeStart")}
+                                    placeholder="00:00"
+                                />
+                                <span> ถึง </span>
+                                <input
+                                    type="text"
+                                    className="form-control timeable"
+                                    value={timeEnd}
+                                    onChange={inputValue("timeEnd")}
+                                    placeholder="00:00"
+                                />
+                            </div>
 
+                            <div>
+                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
+                                <input
+                                    type="text"
+                                    className="form-control timeable"
+                                    value={timeAppointmentStart}
+                                    onChange={inputValue("timeAppointmentStart")}
+                                    placeholder="00:00"
+                                />
+                                <span> ถึง </span>
+                                <input
+                                    type="text"
+                                    className="form-control timeable"
+                                    value={timeAppointmentEnd}
+                                    onChange={inputValue("timeAppointmentEnd")}
+                                    placeholder="00:00"
+                                />
+                            </div>
+                            <div>
+                                <label className="textBody-big2 colorPrimary-800">จำนวคิว</label><br></br>
+                                <input type="text" className="form-control timeable" value={numberAppointment} onChange={inputValue("numberAppointment")} placeholder="5" />
+                                <span> คิว</span>
+
+                            </div>
+                            <button onClick={() => openEdittimetable()} className="btn-secondary" id="btn-systrm" >กลับ</button>
+                            <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent"/>
+                        </form>
+                    </div>
+                    <div id="Detailtimetable" className="colorPrimary-800">
+                        <h3 className="center">รายละเอียด</h3>
+                        <p id="Detailclinic">คลินิก : คลินิกทั่วไป</p>
+                        <p id="Detailday">วัน :</p>
+                        <p id="Detailtimeall">ช่วงเวลาเปิดให้บริการ :</p>
+                        <p id="Detailtime">ช่วงเวลาเปิดให้นัดหมาย :</p>
+                        <p id="Detailqueue">จำนวนคิวนัดหมาย :</p>
+                        <p id="Detail">ช่วงเวลาคิวนัดหมาย :</p>
+
+
+                    </div>
 
                 </div>
+
+                
+
+
             </div>
 
 
