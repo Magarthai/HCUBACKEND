@@ -5,9 +5,11 @@ import LoginComponent from "./components_all/LoginComponent"
 import SignupComponent from "./components_all/SignupComponent";
 import AdminHomeComponent from "./components_hcu/HomeComponent"
 import ProtectAdminRoute from './auth/protectAdminRoute.jsx';
-import AdminTimetableComponent from "./components_hcu/TimetableComponent"
 import AdminAppointmentComponent from "./components_hcu/AppointmentComponent"
-
+import GeneralTimetableComponent from "./components_hcu/TimetableGeneralComponent.js"
+import SpecialTimetableComponent from "./components_hcu/TimetableSpecialComponent"
+import PhysicalTimetableComponent from "./components_hcu/TimetablePhysicalComponent"
+import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -38,8 +40,20 @@ const router = createBrowserRouter([
     element: <ProtectAdminRoute><AdminHomeComponent /></ProtectAdminRoute>
   },
   {
-    path: "/timeTableAdmin",
-    element: <ProtectAdminRoute><AdminTimetableComponent/></ProtectAdminRoute>
+    path: "/timeTableGeneralAdmin",
+    element: <ProtectAdminRoute><GeneralTimetableComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/timeTableSpecialAdmin",
+    element: <ProtectAdminRoute><SpecialTimetableComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/timeTablePhysicalAdmin",
+    element: <ProtectAdminRoute><PhysicalTimetableComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/timeTableNeedleAdmin",
+    element: <ProtectAdminRoute><NeedleTimetableComponent/></ProtectAdminRoute>
   },
   {
     path: "/appointmentAdmin",

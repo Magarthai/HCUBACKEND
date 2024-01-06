@@ -119,7 +119,7 @@ const HomeComponent = (props) => {
         <Link to="#" className="function">
           <img className="function" src={function5} alt="General information management system" />
         </Link>
-        <Link to="/timeTableAdmin" className="function">
+        <Link to="/timeTableGeneralAdmin" className="function">
           <img className="function" src={function6} alt="Medical hours management system" />
         </Link>
         <Link to="#" className="function">

@@ -82,7 +82,7 @@ const NavbarComponent = (props) => {
           </Link>
         </li>
         <li className="nav-item pr-3 pb-3">
-          <Link to="/timeTableAdmin" className="nav-link" target="_parent">
+          <Link to="/timeTableGeneralAdmin" className="nav-link" target="_parent">
             เวลาเข้าทำการ
           </Link>
         </li>
