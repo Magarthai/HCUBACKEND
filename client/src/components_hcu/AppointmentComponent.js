@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Link } from "react-router-dom";
 import NavbarComponent from "../components_hcu/NavbarComponent";
 import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
 import CalendarUserComponent from "../components_user/CalendarUserComponent";
@@ -7,12 +7,11 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/AdminAppointmentComponent.css";
 import { addDoc } from 'firebase/firestore';
-import TimetableGeneralComponent from "./TimetableGeneralComponent";
 
 const AppointmentComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
     const [userData, setUserData] = useState(null);
-    const [zoomLevel, setZoomLevel] = useState(1); // Initialize with the default zoom level
+    const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
 
@@ -60,7 +59,6 @@ const AppointmentComponent = (props) => {
             setZoomLevel(newZoomLevel);
         };
 
-        fetchUserData();
         updateShowTime();
         responsivescreen();
 
@@ -70,7 +68,7 @@ const AppointmentComponent = (props) => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    }, [showTime, user]);
+    }, [user]);
 
     const containerStyle = {
         zoom: zoomLevel,
