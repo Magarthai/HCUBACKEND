@@ -100,7 +100,7 @@
     position: absolute;
     display: block;
     width: 100%;
-    height: auto; /* Set a fixed height for the ul */
+    height: auto;
     padding: 0;
     margin: 0;
     z-index: 6;
@@ -260,7 +260,7 @@
       position: absolute;
       display: block;
       width: 100%;
-      height: auto; /* Set a fixed height for the ul */
+      height: auto; 
       padding: 0;
       margin: 0;
       z-index: 6;

@@ -122,10 +122,10 @@ const AppointmentComponent = (props) => {
                 <div className="box">
                     <div >
                         <div className="box-header-container">
-                            <div className="box-header colorPrimary-800 system-top-item">นัดหมายคลินิกทั่วไป</div>
+                            <div className="box-header colorPrimary-800 system-top-item"><h3>นัดหมายคลินิกทั่วไป</h3></div>
                             <div className="box-date colorPrimary-800 system-top-item textBody-large">13/12/2023</div>
                         </div>
-                        <div className="box-list">
+                        <div className="box-list colorPrimary-800">
                             <div className="box-userapointment">
                                 <div className="time-apppoint textBody-medium">13:01-13:06</div>
                                 <div className="appoint-info">

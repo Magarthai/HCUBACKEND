@@ -514,8 +514,8 @@ const TimetableGeneralComponent = (props) => {
                         <button className="system-top-item" onClick={openAddtimetable}>เพิ่มเวลา +</button>
                     </div>
                     <div className="system-detail">
-                        <p>วันจันทร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").map((timetable, index) => (
+                        <h4>วันจันทร์</h4>
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -547,7 +547,7 @@ const TimetableGeneralComponent = (props) => {
                                 </div>
                             </div>
                         )}
-                        <p>วันอังคาร</p>
+                        <h4>วันอังคาร</h4>
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
@@ -575,8 +575,8 @@ const TimetableGeneralComponent = (props) => {
                                 </div>
                             </div>
                         )}
-                        <p>วันพุธ</p>
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").map((timetable, index) => (
+                        <h4>วันพุธ</h4>
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -603,8 +603,8 @@ const TimetableGeneralComponent = (props) => {
                                 </div>
                             </div>
                         )}
-                        <p>วันพฤหัสบดี</p>
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").map((timetable, index) => (
+                        <h4>วันพฤหัสบดี</h4>
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -631,8 +631,8 @@ const TimetableGeneralComponent = (props) => {
                                 </div>
                             </div>
                         )}
-                        <p>วันศุกร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").map((timetable, index) => (
+                        <h4>วันศุกร์</h4>
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -800,7 +800,7 @@ const TimetableGeneralComponent = (props) => {
                                 <span> คิว</span>
 
                             </div>
-                            <button onClick={() => openEdittimetable()} className="btn-secondary" id="btn-systrm" >กลับ</button>
+                            <button type="button" onClick={() => openEdittimetable()} className="btn-secondary" id="btn-systrm" >กลับ</button>
                             <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
                         </form>
                     </div>
