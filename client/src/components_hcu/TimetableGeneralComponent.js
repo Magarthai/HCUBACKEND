@@ -218,7 +218,7 @@ const TimetableGeneralComponent = (props) => {
 
     useEffect(() => {
         document.title = 'Health Care Unit';
-
+        fetchTimeTableData();
         const fetchUserData = async () => {
             try {
                 if (user) {
