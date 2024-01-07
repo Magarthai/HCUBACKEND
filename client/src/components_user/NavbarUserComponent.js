@@ -80,7 +80,7 @@ const NavbarUserComponent = (props) => {
 
   return (
     <div className="navbaruser">
-      <div className="navbar">
+      <div className="navbars">
         <input
           className="menu-icons"
           type="checkbox"
@@ -111,14 +111,14 @@ const NavbarUserComponent = (props) => {
                 </div>
               </Link>
             </li>
-            <li><div className="textss"><Link to="/">นัดหมาย</Link></div></li>
-            <li><div className="textss"><Link to="/">กิจกรรม</Link></div></li>
-            <li><div className="textss"><Link to="/">สถานะคิว</Link></div></li>
-            <li><div className="textss"><Link to="/">ช่วงเวลาเข้าทําการแพทย์</Link></div></li>
-            <li><div className="textss"><Link to="/">ตำแหน่งที่ตั้ง</Link></div></li>
-            <li><div className="textss"><Link to="/">ข้อมูลทั่วไป</Link></div></li>
-            <li><div className="textss"><Link to="/">ประเมินความพึงพอใจ</Link></div></li>
-            <li><div className="textss"><Link to="/">คู่มือการใช้งาน</Link></div></li>
+            <li><a><div className="textss"><Link to="/">นัดหมาย</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">กิจกรรม</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">สถานะคิว</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">ช่วงเวลาเข้าทําการแพทย์</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">ตำแหน่งที่ตั้ง</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">ข้อมูลทั่วไป</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">ประเมินความพึงพอใจ</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">คู่มือการใช้งาน</Link></div></a></li>
             <li><button className="navbtn" onClick={handleLogout}>LOG OUT</button></li>
           </ul>
         </div>

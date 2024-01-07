@@ -15,7 +15,8 @@
     height: 30px;
     cursor: pointer;
     z-index: 10;
-    transform: translate(1350%, 0%);
+    left: 400px;
+    top: -60px;
   }
   .menu-icons:checked + label:before,
   .menu-icons:not(:checked) + label:before {
@@ -70,7 +71,9 @@
   .navbaruser{
     height: 20px;
   }
+  .navbars{
 
+  }
   .navs {
     position: fixed;
     display: flex;
@@ -102,11 +105,15 @@
     z-index: 6;
     text-align: center;
     list-style: none;
-    top: 10%;
+    top: 10.8%;
     transform: translate(-50%, -50%);
+    border: none;
 }
 
   .navs ul li {
+    width: 100%;
+    display: flex;
+    align-items: center;
     background-color: #ffffff;
     position: relative;
     top: 630px;
@@ -115,12 +122,12 @@
     align-items: left;
     text-align: left;
     left: 50%;
-    height: 70px;
+    height: 80px;
+    border: none;
     list-style: none;
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
-    width: 100%;
   }
   .profiles{
     height: 120px !important;
@@ -208,14 +215,19 @@
   }
 
   @media (max-width: 505px) {
-  .navs {
-    width: 100% !important;
-    display: none;
+    .navs {
+      width: 100% !important;
+    }
+    .menu-icons:checked + label,
+  .menu-icons:not(:checked) + label {
+    position: relative;
+    top: -75px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 10;
+    left: 75vw;
+    top: -60px;
   }
-  .UserChooseClinic{
-    width: 100% !important;
-    padding: 0;
-    padding-left: 0;}
-
-
   }

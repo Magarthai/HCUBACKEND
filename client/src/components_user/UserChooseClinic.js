@@ -22,9 +22,9 @@ const UserChooseClinic = () => {
 
             <NavbarUserComponent/>
         </header>
-
+        <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>คลินิก</h2>
         <div className="clinic-function">
-            <h2>คลินิก</h2>
+           
             <div id='xd'>
                 <Link to="/XD" className="clinic-card" style={{marginTop:10}}>
                     <p>
