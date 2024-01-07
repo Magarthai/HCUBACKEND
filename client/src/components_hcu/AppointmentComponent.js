@@ -132,7 +132,7 @@ const AppointmentComponent = (props) => {
                                 <div className="appointment-status success">เสร็จสิ้น</div>
                             </div>
                         </div>
-                        <div className="box-userapointment">
+                        {/* <div className="box-userapointment">
                             <div className="time-apppoint ">13:01-13:06</div>
                             <div className="appoint-info">
                                 <div className="user-appointment-info flex-column">
@@ -182,7 +182,7 @@ const AppointmentComponent = (props) => {
                                 </div>
                                 <div className="appointment-status success">เสร็จสิ้น</div>
                             </div>
-                        </div>
+                        </div> */}
                         </div>
                         
                     </div>
