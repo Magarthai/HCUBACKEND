@@ -31,7 +31,7 @@ body{
         align-items: center;
         justify-content: center;
         scale: 1.13;
-        margin-top: 5vw;
+        margin-top: 100px;
         overflow: auto;
     }
     .box{
@@ -105,7 +105,7 @@ body{
     }
     .box-list {
         overflow-y: scroll;
-        height: 40vh;
+        height: 380px;
         width: 100%;
     }
     
