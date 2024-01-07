@@ -480,7 +480,7 @@ const TimetablePhysicalComponent = (props) => {
             <div className="topicBox">
                 <div></div>
                 <div>
-                    <h1 className="colorPrimary-800 center">ช่วงเเวลาเข้าทำการแพทย์</h1>
+                    <h1 className="colorPrimary-800 center">ช่วงเวลาเข้าทำการแพทย์</h1>
                 </div>
                 <div className="dateTime">
                     <p>Date : {currentDate}</p>
