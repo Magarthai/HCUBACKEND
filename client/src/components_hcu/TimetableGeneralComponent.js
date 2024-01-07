@@ -129,7 +129,7 @@ const TimetableGeneralComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "general",
+                clinic: "คลินิกทั่วไป",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -195,7 +195,7 @@ const TimetableGeneralComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "general",
+                clinic: "คลินิกทั่วไป",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -356,7 +356,7 @@ const TimetableGeneralComponent = (props) => {
             timeAppointmentStart: timetable.timeAppointmentStart,
             timeAppointmentEnd: timetable.timeAppointmentEnd,
             numberAppointment: timetable.numberAppointment,
-            clinic: "general",
+            clinic: "คลิ",
             timeablelist: timetable.timeablelist,
             status: "Enabled",
             timetableId: timetable.id,  // Update the id in the state
@@ -514,7 +514,7 @@ const TimetableGeneralComponent = (props) => {
                         <button className="system-top-item" onClick={openAddtimetable}>เพิ่มเวลา +</button>
                     </div>
                     <div className="system-detail">
-                        <h4 className="colorPrimary-800">วันจันทร์</h4>
+                        <p>วันจันทร์</p>
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
@@ -540,14 +540,14 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <h4 className="colorPrimary-800">วันอังคาร</h4>
+                        <p>วันอังคาร</p>
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
@@ -568,14 +568,14 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <h4 className="colorPrimary-800">วันพุธ</h4>
+                        <p>วันพุธ</p>
                         {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
@@ -596,14 +596,14 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <h4 className="colorPrimary-800">วันพฤหัสบดี</h4>
+                        <p>วันพฤหัสบดี</p>
                         {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
@@ -624,14 +624,14 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <h4 className="colorPrimary-800">วันศุกร์</h4>
+                        <p>วันศุกร์</p>
                         {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
@@ -652,7 +652,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>

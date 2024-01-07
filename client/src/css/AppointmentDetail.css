@@ -1,0 +1,146 @@
+@import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
+/* body{
+    position: relative;
+    font-family: 'Mitr', sans-serif;
+    background-color: #ffffff;
+    width: 390px;
+    height: 844px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
+} */
+
+h1{
+    font-size: 28px;
+    font-weight: 500;
+}
+h2{
+    font-size: 20px;
+    font-weight: medium;
+}
+h3{
+    font-size: 18px;
+    font-weight: medium;
+}
+h4{
+    font-size: 18px;
+    font-weight: 400;
+}
+.textBody-big{
+    font-size: 16px;
+    font-weight: light;
+}
+.textBody-large{
+    font-size: 14px;
+    font-weight: 200;
+}
+.textBody-medium{
+    font-size: 14px;
+    font-weight: 300;
+}
+.textBody-small{
+    font-size: 12px;
+    font-weight: 300;
+}
+.textBody-huge{
+    font-size: 18px;
+    font-weight: 400;
+}
+.textButton-Normal{
+    font-size: 18px;
+    font-weight: 500;
+}
+.logo{
+    width: 130px;
+    height: 75px;
+    margin-bottom: 10px;
+}
+.colorPrimary-50{
+    color: #eef2f7;
+}
+.colorPrimary-100{
+    color: #dce5ef;
+}
+.colorPrimary-200{
+    color: #eef2f7;
+}
+.colorPrimary-800{
+    color: #263A50;
+} 
+.bgColorPrimary-800{
+    background-color: #263A50;
+} 
+.colorNeutralBlue-50{
+    color: #FBFFFF;
+}
+.bgColorNeutralBlue-50{
+    background-color: #FBFFFF;
+}
+.bgColorNeutralBlue-800{
+    background-color: #008080;
+}
+/* .Header{
+    width: 390px;
+    height: 112px;
+    justify-content: space-between;
+    flex-direction: row;
+    display: flex;
+    padding: 16px 36px;
+    border-radius: 0px 0px 20px 20px;
+}
+button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 326px;
+    height: 58px;
+    border-radius: 8px;
+    bottom: 10px;
+    position: absolute;
+    bottom: 0;
+} */
+.wrapper-details{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+    margin-top: 20px;
+}
+.Card{
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    width: 326px;
+    height: 336px;
+    border-radius: 20px;
+    filter: drop-shadow(0px 4px 15px rgb(0, 0, 0, .25));
+}
+p, h3 div{
+    margin-bottom: 4px;
+}
+.Card-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 0 !important;
+    margin: 0;
+}
+.gap{
+    margin-bottom: 32px;
+}
+@media (max-width: 505px) {
+    .wrapper-details{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+}
+@media (max-width: 355px) {
+    .Card{
+        scale: 0.8;
+    }
+}

@@ -21,34 +21,35 @@ const HomeComponent = (props) => {
   const [loading, setLoading] = useState(true); // Added loading state
   const animationFrameRef = useRef();
   const { user } = useUserAuth();
-
+  const fetchUserData = async () => {
+    try {
+      if (user && !userData) {  // Check if user exists and userData is not available
+        const usersCollection = collection(db, 'users');
+        const usersSnapshot = await getDocs(usersCollection);
+  
+        const usersData = usersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+  
+        const currentUserData = usersData.find((userData) => userData.uid === user.uid);
+  
+        if (currentUserData) {
+          setUserData(currentUserData);
+          console.log(currentUserData);
+        } else {
+          console.log("User not found");
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+  
   useEffect(() => {
     document.title = 'Health Care Unit';
     console.log(user);
-    const fetchUserData = async () => {
-        try {
-            if (user) {
-                const usersCollection = collection(db, 'users');
-                const usersSnapshot = await getDocs(usersCollection);
     
-                const usersData = usersSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-    
-                const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-    
-            if (currentUserData) {
-                setUserData(currentUserData);
-                console.log(currentUserData);
-            } else {
-                console.log("User not found");
-            }}
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-    fetchUserData();
     const responsivescreen = () => {
       const innerWidth = window.innerWidth;
       const baseWidth = 1920;
@@ -70,7 +71,7 @@ const HomeComponent = (props) => {
   
     // Fetch user data when the component mounts
     
-  
+    fetchUserData();
     return () => {
       cancelAnimationFrame(animationFrameRef.current);
       window.removeEventListener("resize", responsivescreen);

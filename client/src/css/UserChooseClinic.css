@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
+.UserChooseClinicComponent {
+    position: relative;
+    font-family: 'Mitr', sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    padding: 0px 32px;
+    flex-direction: column;
+    align-items: center;
+    gap: 62px;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 100%;
+}
+
+
+
+    h1, h2{
+        margin: 0;
+        margin-top: 10px;
+    }
+    b{
+        font-weight: 500;
+        font-size: 25px;
+    }
+    .clinic-function{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        align-self: stretch;
+        width: 100% !important;
+    }
+    .clinic-function h2 {
+        padding-top: 20px;
+        padding-left: 40px;
+    }
+    .clinic-card p {
+        font-size: 20px;
+        font-style: normal;
+        color: #FFF;
+    }
+    .clinic-card txt {
+        font-size: 14px;
+        font-style: normal;
+        line-height: 1px;
+        color: #FBFFFF;
+    }
+    .clinic-card {
+        text-decoration: none;
+        display: flex;
+        width: 425px;
+        height: 125px;
+        padding: 25px;
+        margin: 40px;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        border-radius: var(--Radius-Card, 20px);
+        background-color: #263A50;
+        box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.20);
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    #id{
+        width: 100%;
+    }
+    .clinic-card img{
+        width: 16%;
+        position: absolute;
+        left: 300px;
+        bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    .clinic-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    .UserChooseClinic-header{
+        width: 100%;
+    }
+    .UserChooseClinic{
+        border-left: 1px solid #141E2910;
+        border-right: 1px solid #141E2910;
+      }
+        .UserChooseClinic-header {
+          background: linear-gradient(to right, #008080, #008080) no-repeat,      linear-gradient(to left, #ffffff 50%, transparent 50%) right,      linear-gradient(to right, #ffffff 50%, transparent 50%) left;
+          background-size: 100% 100%, 5px 100%, 5px 100%;
+          border-radius: 0px 0px var(--Radius-Card, 20px) var(--Radius-Card, 20px);
+          padding: 8px;
+          padding-left: 40px;
+          color: #FFF;
+      }
+      .userrheader{
+        color: #263A50;
+        font-weight: 500;
+        font-size: 25px;
+      }
+    @media (max-width: 505px) {
+        .UserChooseClinicComponent{
+            width: 100% !important;
+            padding: 0 !important;
+            padding-left: 0;
+            margin: 0;
+          }
+      .UserChooseClinic{
+
+
+      }
+      .UserChooseClinic-header{
+        width: 100%;
+      }
+      
+      #id{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100% !important;
+      }
+      .clinic-function{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw !important;
+
+      }
+      .clinic-card{
+        width: 90vw !important;
+        margin: 0;
+        display: flex;
+
+      }.clinic-card img{
+        left: 68vw;
+      }
+      }

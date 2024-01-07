@@ -48,7 +48,7 @@ const LoginComponent = () => {
                 text: "Login Success!",
               }).then((result) => {
                 if (result.isConfirmed) {
-                    navigate('/homeUser');
+                    navigate('/chooseClinicUser');
                 }
               });
             
