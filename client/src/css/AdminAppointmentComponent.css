@@ -30,8 +30,6 @@ body{
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 5vw;
-        /* height: 65vh; */
         overflow: auto;
     }
     .box{
