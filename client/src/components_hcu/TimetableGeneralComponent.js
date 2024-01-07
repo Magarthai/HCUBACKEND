@@ -16,6 +16,7 @@ const TimetableGeneralComponent = (props) => {
     const [userData, setUserData] = useState(null);
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
+    const [zoomLevel, setZoomLevel] = useState(1); 
     const [timetable, setTimetable] = useState([])
     const { id } = useParams();
     const [state, setState] = useState({
@@ -214,18 +215,10 @@ const TimetableGeneralComponent = (props) => {
             console.error('Firebase update error:', firebaseError);
         }
     };
-    
-
-
-
-
-
 
     useEffect(() => {
         document.title = 'Health Care Unit';
-        console.log(user);
 
-        fetchTimeTableData();
         const fetchUserData = async () => {
             try {
                 if (user) {
@@ -251,6 +244,7 @@ const TimetableGeneralComponent = (props) => {
             }
         };
         fetchUserData();
+
         const updateShowTime = () => {
             const newTime = getShowTime();
             if (newTime !== showTime) {
@@ -259,14 +253,29 @@ const TimetableGeneralComponent = (props) => {
             animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
 
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        const responsivescreen = () => {
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
+        };
 
+        updateShowTime();
+        responsivescreen();
+
+        window.addEventListener("resize", responsivescreen);
 
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
+            window.removeEventListener("resize", responsivescreen);
         };
-
     }, [user]);
+
+    const containerStyle = {
+        zoom: zoomLevel,
+    };
+
+
 
 
 
@@ -475,7 +484,7 @@ const TimetableGeneralComponent = (props) => {
 
 
     return (
-        <div>
+        <div className="appointment-" style={containerStyle}>
             <NavbarComponent />
             <div className="topicBox">
                 <div></div>
