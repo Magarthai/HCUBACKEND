@@ -18,7 +18,7 @@ const AppointmentDetail = (props) => {
         <header className="UserChooseClinic-header">
             <div>
             <h1>การนัดหมาย</h1>
-            <h2>เลือกคลินิก</h2>
+            <h2>รายละเอียดนัดหมาย</h2>
             </div>
 
             <NavbarUserComponent/>
