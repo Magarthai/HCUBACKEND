@@ -103,18 +103,18 @@ const HomeComponent = (props) => {
   const currentDate = `${day} ${month}/${date}/${year}`;
 
   return (
-    <div className="appointment-" style={containerStyle}>
+    <div style={containerStyle}>
       <NavbarComponent />
       <div className="top">
-        <div className="top-item">
+        <div className="top-item colorPrimary-800">
           <img className="logo" src={logo} alt="logo health care unit" />
-          <h3 className="colorPrimary-800">Health Care Unit</h3>
-          <p className="textBody-medium colorPrimary-800">กลุ่มงานบริการสุขภาพและอนามัย</p>
+          <h3>Health Care Unit</h3>
+          <p className="textBody-large">กลุ่มงานบริการสุขภาพและอนามัย</p>
         </div>
-        <div className="top-item date">
-          {userData && <p className="colorPrimary-800">Welcome, {userData.firstName} {userData.lastName}</p>}
-          <p>Date : {currentDate}</p>
-          <p>Time : {showTime}</p>
+        <div className="top-item date colorPrimary-800">
+          {userData && <p className="textBody-large">Welcome, {userData.firstName} {userData.lastName}</p>}
+          <p className="textBody-large">Date : {currentDate}</p>
+          <p className="textBody-large">Time : {showTime}</p>
         </div>
       </div>
       <div className="flexbox-function">

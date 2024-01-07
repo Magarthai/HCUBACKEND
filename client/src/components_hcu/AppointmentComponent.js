@@ -93,9 +93,12 @@ const AppointmentComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
+    const openDetailAppointment = (element, timetable) => {
+        
+    }
 
     return (
-        <div className="appointment-" style={containerStyle}>
+        <div className="appointment" style={containerStyle}>
             <NavbarComponent />
             <div className="topicBox">
                 <div></div>
@@ -103,94 +106,56 @@ const AppointmentComponent = (props) => {
                     <h1 className="colorPrimary-800 center">ระบบการจัดการนัดหมาย</h1>
                 </div>
                 <div className="dateTime">
-                    <p>Date : {currentDate}</p>
-                    <p>Time : {showTime}</p>
+                    <p className="textBody-large">Date : {currentDate}</p>
+                    <p className="textBody-large">Time : {showTime}</p>
                 </div>
             </div>
             <div className="clinic">
-                <a href="/timeTableGeneralAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
-                <a href="/timeTableSpecialAdmin" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/timeTablePhysicalAdmin" target="_parent" >คลินิกกายภาพ</a>
-                <a href="/timeTableNeedleAdmin" target="_parent" >คลินิกฝั่งเข็ม</a>
+                <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
+                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
+                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
+                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>
             <div className="flex">
                 <CalendarAdminComponent />
                 <div className="box">
-                    <div className="box-container">
+                    <div >
                         <div className="box-header-container">
-                            <div className="box-header colorPrimary-800 system-top-item">นัดหมาย</div>
-                            <div className="box-date colorPrimary-800 system-top-item">13/12/2023</div>
+                            <div className="box-header colorPrimary-800 system-top-item">นัดหมายคลินิกทั่วไป</div>
+                            <div className="box-date colorPrimary-800 system-top-item textBody-large">13/12/2023</div>
                         </div>
                         <div className="box-list">
-                        <div className="box-userapointment">
-                            <div className="time-apppoint ">13:01-13:06</div>
-                            <div className="appoint-info">
-                                <div className="user-appointment-info flex-column">
-                                    <p id="student-id">64090500440</p>
-                                    <p id="student-name">uvuvwevwevwe onyetenyevwe</p>
+                            <div className="box-userapointment">
+                                <div className="time-apppoint textBody-medium">13:01-13:06</div>
+                                <div className="appoint-info">
+                                    <div className="user-appointment-info flex-column">
+                                        <p id="student-id" className="textBody-huge">64090500440</p>
+                                        <p id="student-name" className="textBody-medium">uvuvwevwevwe onyetenyevwe</p>
+                                    </div>
+                                    <div className="appointment-status success textBody-medium">เสร็จสิ้น</div>
                                 </div>
-                                <div className="appointment-status success">เสร็จสิ้น</div>
                             </div>
+                            
                         </div>
-                        {/* <div className="box-userapointment">
-                            <div className="time-apppoint ">13:01-13:06</div>
-                            <div className="appoint-info">
-                                <div className="user-appointment-info flex-column">
-                                    <p id="student-id">64090500440</p>
-                                    <p id="student-name">uvuvwevwevwe onyetenyevwe</p>
-                                </div>
-                                <div className="appointment-status success">เสร็จสิ้น</div>
-                            </div>
-                        </div>
-                        <div className="box-userapointment">
-                            <div className="time-apppoint ">13:01-13:06</div>
-                            <div className="appoint-info">
-                                <div className="user-appointment-info flex-column">
-                                    <p id="student-id">64090500440</p>
-                                    <p id="student-name">uvuvwevwevwe onyetenyevwe</p>
-                                </div>
-                                <div className="appointment-status success">เสร็จสิ้น</div>
-                            </div>
-                        </div>
-                        <div className="box-userapointment">
-                            <div className="time-apppoint ">13:01-13:06</div>
-                            <div className="appoint-info">
-                                <div className="user-appointment-info flex-column">
-                                    <p id="student-id">64090500440</p>
-                                    <p id="student-name">uvuvwevwevwe onyetenyevwe</p>
-                                </div>
-                                <div className="appointment-status success">เสร็จสิ้น</div>
-                            </div>
-                        </div>
-                        
-                        <div className="box-userapointment">
-                            <div className="time-apppoint ">13:01-13:06</div>
-                            <div className="appoint-info">
-                                <div className="user-appointment-info flex-column">
-                                    <p id="student-id">64090500440</p>
-                                    <p id="student-name">uvuvwevwevwe onyetenyevwe</p>
-                                </div>
-                                <div className="appointment-status success">เสร็จสิ้น</div>
-                            </div>
-                        </div>
-                        <div className="box-userapointment">
-                            <div className="time-apppoint ">13:01-13:06</div>
-                            <div className="appoint-info">
-                                <div className="user-appointment-info flex-column">
-                                    <p id="student-id">64090500440</p>
-                                    <p id="student-name">uvuvwevwevwe onyetenyevwe</p>
-                                </div>
-                                <div className="appointment-status success">เสร็จสิ้น</div>
-                            </div>
-                        </div> */}
-                        </div>
-                        
                     </div>
 
                 </div>
                 <div className="box">
+                    <div id="detail-appointment-current-date" className="colorPrimary-800">
+                        <h3 className="center">รายละเอียนัดหมาย</h3>
+                        <p id="detail-appointment-date" className="textBody-big"><b>วันที่</b> : 13/12/2023</p>
+                        <p id="detail-appointment-time" className="textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
+                        <p id="detail-appointment-id" className="textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
+                        <p id="detail-appointment-name" className="textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
+                        <p id="detail-appointment-casue" className="textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                        <p id="detail-appointment-symptom" className="textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
+                        <p id="detail-appointment-notation" className="textBody-big"><b>หมายเหตุ</b>: -</p>
 
+
+                    </div>
                 </div>
+               
             </div>
 
 

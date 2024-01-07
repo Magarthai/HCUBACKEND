@@ -10,8 +10,9 @@ import GeneralTimetableComponent from "./components_hcu/TimetableGeneralComponen
 import SpecialTimetableComponent from "./components_hcu/TimetableSpecialComponent"
 import PhysicalTimetableComponent from "./components_hcu/TimetablePhysicalComponent"
 import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
-import AppointmentManagerComponent from "./components_hcu/TimetableNeedleComponent"
-import './index.css'
+import AppointmentManagerComponent from "./components_hcu/AppointmentManagerComponent.js"
+import ProfileComponent from './components_hcu/ProfileComponent';
+
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
   createBrowserRouter,
@@ -64,6 +65,11 @@ const router = createBrowserRouter([
     path: "/AppointmentManagerComponent",
     element: <ProtectAdminRoute><AppointmentManagerComponent/></ProtectAdminRoute>
   },
+  {
+    path: "/profile",
+    element: <ProtectAdminRoute><ProfileComponent/></ProtectAdminRoute>
+  },
+
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

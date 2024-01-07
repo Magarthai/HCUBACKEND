@@ -1,42 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
 import NavbarComponent from "./NavbarComponent";
-import "../css/AdminTimeTableComponent.css";
+import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
+import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
-import { auth } from '../firebase/config';
-import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 
 const AppointmentManagerComponent = (props) => {
-    const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
-    const animationFrameRef = useRef();
-    const { user } = useUserAuth();
-    const [timetable, setTimetable] = useState([])
-    const { id } = useParams();
+
+    const [selectedDate, setSelectedDate] = useState(null);
     const [state, setState] = useState({
-        addDay: "",
-        timeStart: "",
-        timeEnd: "",
-        timeAppointmentStart: "",
-        timeAppointmentEnd: "",
-        numberAppointment: "",
-        clinic: "",
-        timetableId: id || "", 
+        appointmentDate: "",
+        appointmentTime: "",
+        appointmentId: "",
+        appointmentCasue: "",
+        appointmentSymptom: "",
+        appointmentNotation: "",
+        clinic: ""
     })
 
 
-    const { addDay, timeStart, timeEnd, timeAppointmentStart, timeAppointmentEnd, numberAppointment, clinic ,timetableId} = state
-
-    const isSubmitEnabled =
-        !addDay || !timeStart || !timeEnd || !timeAppointmentStart || !timeAppointmentEnd || !numberAppointment;
-
-
-    const [isChecked, setIsChecked] = useState({});
+    const {appointmentDate,appointmentTime,appointmentId,appointmentCasue,appointmentSymptom,appointmentNotation,clinic} = state
     const inputValue = (name) => (event) => {
         if (name === "addDay") {
             setState({ ...state, [name]: event.target.value });
@@ -45,230 +32,71 @@ const AppointmentManagerComponent = (props) => {
         }
     };
 
-
-    const [selectedCount, setSelectedCount] = useState(1);
-
-    const handleSelectChange = () => {
-        setSelectedCount(selectedCount + 1);
-        console.log(selectedCount)
-    };
-
-    const fetchTimeTableData = async () => {
-        try {
-            if (user) {
-                const timeTableCollection = collection(db, 'timeTable');
-                const timeTableSnapshot = await getDocs(timeTableCollection);
-
-                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-
-
-
-                if (timeTableData) {
-                    setTimetable(timeTableData);
-                    const initialIsChecked = timeTableData.reduce((acc, timetableItem) => {
-                        acc[timetableItem.id] = timetableItem.status === "Enabled";
-                        return acc;
-                    }, {});
-
-                    setIsChecked(initialIsChecked);
-
-                    console.log(timeTableData);
-                } else {
-                    console.log("time table not found");
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-    const submitForm = async (e) => {
-        e.preventDefault();
-        console.log(timetableId)
-        const start = new Date(`2000-01-01T${timeAppointmentStart}`);
-        const end = new Date(`2000-01-01T${timeAppointmentEnd}`);
-        const duration = (end - start) / 60000;
-
-        if (duration <= 0) {
-            return;
-        }
-
-        const timeablelist = [];
-
-        const interval = Math.floor(duration / numberAppointment);
-
-        for (let i = 0; i < numberAppointment; i++) {
-            const slotStart = new Date(start.getTime() + i * interval * 60000);
-            const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-
-
-            if (slotEnd.getTime() > end.getTime()) {
-                timeablelist.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-                break;
-            }
-
-            timeablelist.push({
-                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-        }
-
-
-        try {
-            const additionalTImeTable = {
-                addDay: addDay,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
-                timeAppointmentStart: timeAppointmentStart,
-                timeAppointmentEnd: timeAppointmentEnd,
-                numberAppointment: numberAppointment,
-                clinic: "special",
-                timeablelist: timeablelist,
-                status: "Enabled",
-            };
-
-            await addDoc(collection(db, 'timeTable'), additionalTImeTable);
-
-            Swal.fire({
-                icon: "success",
-                title: "Alert",
-                text: "Added Time!",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetchTimeTableData();
-                }
-            });
-
-        } catch (firebaseError) {
-            console.error('Firebase signup error:', firebaseError);
-        }
-    };
-
-    const editForm = async (e) => {
-        e.preventDefault();
-        console.log(timetableId);
-        const start = new Date(`2000-01-01T${timeAppointmentStart}`);
-        const end = new Date(`2000-01-01T${timeAppointmentEnd}`);
-        const duration = (end - start) / 60000;
-    
-        if (duration <= 0) {
-            return;
-        }
-    
-        const timeablelist = [];
-    
-        const interval = Math.floor(duration / numberAppointment);
-    
-        for (let i = 0; i < numberAppointment; i++) {
-            const slotStart = new Date(start.getTime() + i * interval * 60000);
-            const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-    
-            if (slotEnd.getTime() > end.getTime()) {
-                timeablelist.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-                break;
-            }
-    
-            timeablelist.push({
-                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-        }
-    
-        try {
-            const timetableRef = doc(db, 'timeTable', timetableId);
-            console.log(timetableId);  // Corrected from console.log(timetable.id)
-    
-            const updatedTimetable = {
-                addDay: addDay,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
-                timeAppointmentStart: timeAppointmentStart,
-                timeAppointmentEnd: timeAppointmentEnd,
-                numberAppointment: numberAppointment,
-                clinic: "special",
-                timeablelist: timeablelist,
-                status: "Enabled",
-            };
-    
-            await updateDoc(timetableRef, updatedTimetable);
-    
-            Swal.fire({
-                icon: "success",
-                title: "Alert",
-                text: "Time Updated!",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetchTimeTableData();
-                }
-            });
-        } catch (firebaseError) {
-            console.error('Firebase update error:', firebaseError);
-        }
-    };
-    
-
-
-
-
-
+    const [showTime, setShowTime] = useState(getShowTime);
+    const [userData, setUserData] = useState(null);
+    const [zoomLevel, setZoomLevel] = useState(1); 
+    const [loading, setLoading] = useState(true); // Added loading state
+    const animationFrameRef = useRef();
+    const { user } = useUserAuth();
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-
-        fetchTimeTableData();
         const fetchUserData = async () => {
             try {
                 if (user) {
                     const usersCollection = collection(db, 'users');
                     const usersSnapshot = await getDocs(usersCollection);
-
+    
                     const usersData = usersSnapshot.docs.map((doc) => ({
                         id: doc.id,
-                        ...doc.data(),
+                    ...doc.data(),
                     }));
-
+    
                     const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-                    if (currentUserData) {
-                        setUserData(currentUserData);
-                        console.log(currentUserData);
-                    } else {
-                        console.log("User not found");
-                    }
-                }
+    
+                if (currentUserData) {
+                    setUserData(currentUserData);
+                    console.log(currentUserData);
+                } else {
+                    console.log("User not found");
+                }}
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
         };
         fetchUserData();
+        const responsivescreen = () => {
+        const innerWidth = window.innerWidth;
+        const baseWidth = 1920;
+        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+        setZoomLevel(newZoomLevel);
+        };
+
+        responsivescreen();
+        window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {
-            const newTime = getShowTime();
-            if (newTime !== showTime) {
-                setShowTime(newTime);
-            }
-            animationFrameRef.current = requestAnimationFrame(updateShowTime);
-        };
-
+        const newTime = getShowTime();
+        if (newTime !== showTime) {
+            setShowTime(newTime);
+        }
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
-
-
-        return () => {
-            cancelAnimationFrame(animationFrameRef.current);
         };
-
-    }, [user]);
-
-
+  
+        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+  
+    // Fetch user data when the component mounts
+    
+  
+        return () => {
+        cancelAnimationFrame(animationFrameRef.current);
+        window.removeEventListener("resize", responsivescreen);
+        };
+    
+    }, [user]); 
+    const containerStyle = {
+    zoom: zoomLevel,
+    };
 
 
     function getShowTime() {
@@ -282,7 +110,8 @@ const AppointmentManagerComponent = (props) => {
     function formatNumber(num) {
         return num < 10 ? "0" + num : num.toString();
     }
-    const locale = 'en'
+
+    const locale = 'en';
     const today = new Date();
     const month = today.getMonth() + 1;
     const year = today.getFullYear();
@@ -290,132 +119,74 @@ const AppointmentManagerComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
+    const [selectedCount, setSelectedCount] = useState(1);
 
-
-    const handleToggle = async (id) => {
-        setIsChecked(prevState => {
-            const updatedStatus = !prevState[id];
-
-            // อัพเดต status จาก toggle
-            const docRef = doc(db, 'timeTable', id);
-            updateDoc(docRef, { status: updatedStatus ? "Enabled" : "Disabled" }).catch(error => {
-                console.error('Error updating timetable status:', error);
-            });
-
-            return { ...prevState, [id]: updatedStatus };
-        });
+    const handleSelectChange = () => {
+        setSelectedCount(selectedCount + 1);
+        console.log(selectedCount)
     };
 
+    const submitForm = async (e) => {
+  
+    };
+    const submitEditForm = async (e) => {
+  
+    };
 
-    const openAddtimetable = () => {
-        let x = document.getElementById("Addtimetable");
-        let y = document.getElementById("Edittimetable");
-        let z = document.getElementById("Detailtimetable");
+    const openDetailAppointment = (element) => {
+        let x = document.getElementById("detail-appointment");
+        let y = document.getElementById("add-appointment");
+        let z = document.getElementById("edit-appointment");
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+
         } else {
             x.style.display = "none";
 
 
         }
     }
-
-    const navigate = useNavigate();
-
-
-    const openEdittimetable = (element, timetable) => {
-        let x = document.getElementById("Edittimetable");
-        let y = document.getElementById("Addtimetable");
-        let z = document.getElementById("Detailtimetable");
-        console.log(timetable)
-        if (window.getComputedStyle(x).display === "none") {
-          x.style.display = "block";
-          y.style.display = "none";
-          z.style.display = "none";
-      
-          setState((prevState) => ({
-            ...prevState,
-            addDay: timetable.addDay,
-            timeStart: timetable.timeStart,
-            timeEnd: timetable.timeEnd,
-            timeAppointmentStart: timetable.timeAppointmentStart,
-            timeAppointmentEnd: timetable.timeAppointmentEnd,
-            numberAppointment: timetable.numberAppointment,
-            clinic: "special",
-            timeablelist: timetable.timeablelist,
-            status: "Enabled",
-            timetableId: timetable.id,  // Update the id in the state
-          }));
-
-          console.log(timetable.id)
-      
-          window.history.replaceState({}, null, `/timeTableSpecialAdmin/${timetable.id}`);
-        } else {
-          x.style.display = "none";
-        }
-      };
-
-
-
-
-
-    const openDetailtimetable = (element, timetable) => {
-        let x = document.getElementById("Detailtimetable");
-        let y = document.getElementById("Edittimetable");
-        let z = document.getElementById("Addtimetable");
-
+    const openAddAppointment = () => {
+        let x = document.getElementById("add-appointment");
+        let y = document.getElementById("detail-appointment");
+        let z = document.getElementById("edit-appointment");
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
-            let detailDay = timetable.addDay;
-            let listtimetable = ""
-            if (detailDay === "monday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันจันทร์`
-            } else if (detailDay === "tuesday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันอังคาร`
-            } else if (detailDay === "wednesday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันพุธ`
-            } else if (detailDay === "thursday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันพฤหัสบดี`
-            } else if (detailDay === "friday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันศุกร์`
-            }
-            document.getElementById("Detailtimeall").innerHTML = `ช่วงเวลาเปิดให้บริการ : ${timetable.timeStart} - ${timetable.timeEnd} `
-            document.getElementById("Detailtime").innerHTML = `ช่วงเวลาเปิดให้นัดหมาย : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
-            document.getElementById("Detailqueue").innerHTML = `จำนวนคิวนัดหมาย : ${timetable.numberAppointment} `
-            console.log(timetable.timeablelist.length)
-            for (let i = 0; i < timetable.timeablelist.length; i++) {
-                listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
-                console.log(timetable.timeablelist[i])
-            }
-            document.getElementById("Detail").innerHTML = `ช่วงเวลาคิวนัดหมาย : ${listtimetable}`
-            window.history.replaceState({}, null, `/timeTableSpecialAdmin/${timetable.id}`);
+
         } else {
             x.style.display = "none";
-        }
 
+
+        }
+        
     }
 
-    const Deletetimetable = async(element, timetable)  => {
-        let detailDay = timetable.addDay;
-        if (detailDay === "monday") {
-            detailDay = 'วันจันทร์'
-        } else if (detailDay === "tuesday") {
-            detailDay = 'วันอังคาร'
-        } else if (detailDay === "wednesday") {
-            detailDay = 'วันพุธ'
-        } else if (detailDay === "thursday") {
-            detailDay = 'วันพฤหัสบดี'
-        } else if (detailDay === "friday") {
-            detailDay = 'วันศุกร์'
+    const openEditAppointment = () => {
+        let x = document.getElementById("edit-appointment");
+        let y = document.getElementById("add-appointment");
+        let z = document.getElementById("detail-appointment");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+
+        } else {
+            x.style.display = "none";
+
+
         }
-        const timetableRef = doc(db, 'timeTable', `${timetable.id}`);
+        
+    }
+
+    const DeleteAppointment = ()  => {
+    
         Swal.fire({
-            title: 'ลบช่วงเวลา',
-            text: `${detailDay} เวลา ${timetable.timeStart} - ${timetable.timeEnd}`,
+            title: 'ลบนัดหมาย',
+            text: `วันที่ 15/12/2023 เวลา 13:01 - 13:10`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'ลบ',
@@ -429,8 +200,6 @@ const AppointmentManagerComponent = (props) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 try{
-                    deleteDoc(timetableRef,`${timetable.id}`)
-                    console.log(`${timetable.id}`);
                     Swal.fire(
                         {
                             title: 'Deleted!',
@@ -441,12 +210,12 @@ const AppointmentManagerComponent = (props) => {
                             customClass: {
                                 confirmButton: 'custom-confirm-button',
                             }
-                        }
-                        ).then((result) => {
-                            if (result.isConfirmed) {
-                                fetchTimeTableData();
-                            }
-                        });
+                        })
+                        // .then((result) => {
+                        //     if (result.isConfirmed) {
+                                
+                        //     }
+                        // });
                 } catch {
 
                 }
@@ -471,347 +240,178 @@ const AppointmentManagerComponent = (props) => {
 
     }
 
-
-
+    
 
     return (
-        <div>
+        <div className="appointment" style={containerStyle}>
             <NavbarComponent />
             <div className="topicBox">
                 <div></div>
                 <div>
-                    <h1 className="colorPrimary-800 center">ช่วงเเวลาเข้าทำการแพทย์</h1>
+                    <h1 className="colorPrimary-800 center">ระบบการจัดการนัดหมาย</h1>
                 </div>
                 <div className="dateTime">
-                    <p>Date : {currentDate}</p>
-                    <p>Time : {showTime}</p>
+                    <p className="textBody-large">Date : {currentDate}</p>
+                    <p className="textBody-large">Time : {showTime}</p>
                 </div>
             </div>
             <div className="clinic">
-                <a href="/timeTableGeneralAdmin" target="_parent">คลินิกทั่วไป</a>
-                <a href="/timeTableSpecialAdmin" target="_parent" id="select">คลินิกเฉพาะทาง</a>
-                <a href="/timeTablePhysicalAdmin" target="_parent" >คลินิกกายภาพ</a>
-                <a href="/timeTableNeedleAdmin" target="_parent" >คลินิกฝั่งเข็ม</a>
+                <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
+                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
+                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
+                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>
-
-            <div className="system">
-                <div className="system-item">
-                    <div className="system-top">
-                        <p className="colorPrimary-800 system-top-item">ช่วงเวลาเข้าทำการแพทย์</p>
-                        <button className="system-top-item" onClick={openAddtimetable}>เพิ่มเวลา +</button>
+            <div className="flex">
+                <CalendarAdminComponent />
+                <div className="box">
+                    <div >
+                        <div className="appointment-hearder">
+                            <div className="colorPrimary-800 appointment-hearder-item">
+                                <h3>นัดหมายคลินิกทั่วไป</h3>
+                                <p className="textBody-large">13/12/2023</p>
+                            </div>
+                            <button className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
+                        </div>
+                        <div className="box-list">
+                            <div className="box-userapointment" >
+                                <div className="time-apppoint textBody-medium" onClick={openDetailAppointment}>13:01-13:06</div>
+                                <div className="appoint-info">
+                                    <div className="user-appointment-info flex-column"  onClick={openDetailAppointment}>
+                                        <p id="student-id" className="textBody-huge">64090500440</p>
+                                        <p id="student-name" className="textBody-medium">uvuvwevwevwe onyetenyevwe</p>
+                                    </div>
+                                    <div className="appointment-function">
+                                        <img src={edit} className="icon"  onClick={openEditAppointment}/>
+                                        <img src={icon_delete} className="icon" onClick={DeleteAppointment}/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
-                    <div className="system-detail">
-                        <p>วันจันทร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "special").map((timetable, index) => (
-                            <div className="row" >
-                                <div className="card">
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
-                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                    </a>
-                                    <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={isChecked[timetable.id]}
-                                                onChange={() => handleToggle(timetable.id)}
-                                            />
-                                            <div className="slider"></div>
-                                        </label>
 
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
-                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
-                                    </div>
-                                </div>
-                            </div>
-
-                        ))}
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "special").length === 0 && (
-                            <div className="row" >
-                                <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
-                                </div>
-                            </div>
-                        )}
-                        <p>วันอังคาร</p>
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "special").map((timetable, index) => (
-                            <div className="row" >
-                                <div className="card">
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
-                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                    </a>
-                                    <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
-                                            <div className="slider"></div>
-                                        </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
-                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
-                                    </div>
-                                </div>
-                            </div>
-
-                        ))}
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "special").length === 0 && (
-                            <div className="row" >
-                                <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
-                                </div>
-                            </div>
-                        )}
-                        <p>วันพุธ</p>
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "special").map((timetable, index) => (
-                            <div className="row" >
-                                <div className="card">
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
-                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                    </a>
-                                    <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
-                                            <div className="slider"></div>
-                                        </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
-                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
-                                    </div>
-                                </div>
-                            </div>
-
-                        ))}
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "special").length === 0 && (
-                            <div className="row" >
-                                <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
-                                </div>
-                            </div>
-                        )}
-                        <p>วันพฤหัสบดี</p>
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "special").map((timetable, index) => (
-                            <div className="row" >
-                                <div className="card">
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
-                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                    </a>
-                                    <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
-                                            <div className="slider"></div>
-                                        </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
-                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
-                                    </div>
-                                </div>
-                            </div>
-
-                        ))}
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "special").length === 0 && (
-                            <div className="row" >
-                                <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
-                                </div>
-                            </div>
-                        )}
-                        <p>วันศุกร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "special").map((timetable, index) => (
-                            <div className="row" >
-                                <div className="card">
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
-                                        <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
-                                    </a>
-                                    <div className="card-funtion">
-                                        <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
-                                            <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
-                                            <div className="slider"></div>
-                                        </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
-                                        <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
-                                    </div>
-                                </div>
-                            </div>
-
-                        ))}
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "special").length === 0 && (
-                            <div className="row" >
-                                <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
                 </div>
+                <div className="box">
+                    <div id="detail-appointment" className="colorPrimary-800">
+                        <h3 className="center">รายละเอียนัดหมาย</h3>
+                        <p id="detail-appointment-date" className="textBody-big"><b>วันที่</b> : 13/12/2023</p>
+                        <p id="detail-appointment-time" className="textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
+                        <p id="detail-appointment-id" className="textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
+                        <p id="detail-appointment-name" className="textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
+                        <p id="detail-appointment-casue" className="textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                        <p id="detail-appointment-symptom" className="textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
+                        <p id="detail-appointment-notation" className="textBody-big"><b>หมายเหตุ</b>: -</p>
 
-                <div className="system-item border-L">
 
-                    <div id="Addtimetable">
+                    </div>
+                    <div id="add-appointment" className="colorPrimary-800">
+                        <form onSubmit={submitEditForm}>
+                            <h3 className="center">เพิ่มนัดหมาย</h3>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">วันที่</label>
+                                <p className="textBody-big">15/12/2024</p>
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">วัน</label>
+                                <select
+                                    name="time"
+                                    value={appointmentTime}
+                                    onChange={(e) => { inputValue("appointmentTime")(e); handleSelectChange(); }}
+                                    className={selectedCount >= 2 ? 'selected' : ''}
+                            >
+                            <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                        </div>
+                            <button type="button" onClick={openAddAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
+                            <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                        </form>
+                    </div>
+                    <div id="edit-appointment" className="colorPrimary-800">
                         <form onSubmit={submitForm}>
-                            <div className="system-top">
-                                <button type="button" onClick={openAddtimetable} className="colorPrimary-800 system-top-item" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
+                            <h3 className="center">แก้ไขนัดหมาย</h3>
+                            <div className="center-container">
+                                <label className="textBody-large colorPrimary-800">วันที่</label>
+                                <br></br>
+                                <div className="datepicker">
+                               <DatePicker
+                                    className='select-date-appointment'
+                                    selected={selectedDate}
+                                    onChange={(date) => setSelectedDate(date)}
+                                    dateFormat="yyyy-MM-dd" // Customize the date format
+                                    placeholderText="Select date"
+                                    popperPlacement="bottom-end"
+                                    popperModifiers={{
+                                        flip: {
+                                          behavior: ['bottom'], // Ensure the calendar flips to the bottom
+                                        },
+                                        preventOverflow: {
+                                          enabled: true, // Ensure the calendar stays within the viewport
+                                          padding: 10, // Adjust padding as needed
+                                        },
+                                      }}
+            
+                                    
+                                />
+                                </div>
                             </div>
-                            <p>คลินิก <p className="textBody-big">คลินิกเฉพาะทาง</p></p>
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">วัน</label>
+                            <div> 
+                                <label className="textBody-large colorPrimary-800">วัน</label>
                                 <select
-                                    name="Day"
-                                    value={addDay}
-                                    onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
+                                    name="time"
+                                    value={appointmentTime}
+                                    onChange={(e) => { inputValue("appointmentTime")(e); handleSelectChange(); }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
-                                >
-                                    <option value="" disabled> กรุณาเลือกวัน </option>
-                                    <option value="monday">วันจันทร์</option>
-                                    <option value="tuesday">วันอังคาร</option>
-                                    <option value="wednesday">วันพุธ</option>
-                                    <option value="thursday">วันพฤหัสบดี</option>
-                                    <option value="friday">วันศุกร์</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeStart}
-                                    onChange={inputValue("timeStart")}
-                                    placeholder="00:00"
-                                />
-                                <span> ถึง </span>
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeEnd}
-                                    onChange={inputValue("timeEnd")}
-                                    placeholder="00:00"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeAppointmentStart}
-                                    onChange={inputValue("timeAppointmentStart")}
-                                    placeholder="00:00"
-                                />
-                                <span> ถึง </span>
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeAppointmentEnd}
-                                    onChange={inputValue("timeAppointmentEnd")}
-                                    placeholder="00:00"
-                                />
-                            </div>
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">จำนวคิว</label><br></br>
-                                <input type="text" className="form-control timeable" value={numberAppointment} onChange={inputValue("numberAppointment")} placeholder="5" />
-                                <span> คิว</span>
-
-                            </div>
-                            <button type="button" onClick={openAddtimetable} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="เพิ่มช่วงเวลา" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled} />
-                        </form>
-                    </div>
-                    <div id="Edittimetable">
-                        <form onSubmit={editForm}>
-                            <div className="system-top">
-                                <button type="button" onClick={() => openEdittimetable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ แก้ไขเวลาเข้าทำการแพทย์</button>
-                            </div>
-                            <p>คลินิก <p className="textBody-big">คลินิกเฉพาะทาง</p></p>
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">วัน</label>
-                                <select
-                                    name="Day"
-                                    value={addDay}
-                                    onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
-                                    className={selectedCount >= 2 ? 'selected' : ''}
-                                >
-                                    <option value="" disabled> กรุณาเลือกวัน </option>
-                                    <option value="monday">วันจันทร์</option>
-                                    <option value="tuesday">วันอังคาร</option>
-                                    <option value="wednesday">วันพุธ</option>
-                                    <option value="thursday">วันพฤหัสบดี</option>
-                                    <option value="friday">วันศุกร์</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeStart}
-                                    onChange={inputValue("timeStart")}
-                                    placeholder="00:00"
-                                />
-                                <span> ถึง </span>
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeEnd}
-                                    onChange={inputValue("timeEnd")}
-                                    placeholder="00:00"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeAppointmentStart}
-                                    onChange={inputValue("timeAppointmentStart")}
-                                    placeholder="00:00"
-                                />
-                                <span> ถึง </span>
-                                <input
-                                    type="text"
-                                    className="form-control timeable"
-                                    value={timeAppointmentEnd}
-                                    onChange={inputValue("timeAppointmentEnd")}
-                                    placeholder="00:00"
-                                />
-                            </div>
-                            <div>
-                                <label className="textBody-big2 colorPrimary-800">จำนวคิว</label><br></br>
-                                <input type="text" className="form-control timeable" value={numberAppointment} disabled onChange={inputValue("numberAppointment")} placeholder="5" />
-                                <span> คิว</span>
-
-                            </div>
-                            <button onClick={() => openEdittimetable()} className="btn-secondary" id="btn-systrm" >กลับ</button>
+                            >
+                            <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                        </div>
+                        <div>
+                            <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                            <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                        </div>
+                            <button type="button" onClick={openEditAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
                             <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                        
                         </form>
                     </div>
-                    <div id="Detailtimetable" className="colorPrimary-800">
-                        <h3 className="center">รายละเอียด</h3>
-                        <p id="Detailclinic">คลินิก : คลินิกเฉพาะทาง</p>
-                        <p id="Detailday">วัน :</p>
-                        <p id="Detailtimeall">ช่วงเวลาเปิดให้บริการ :</p>
-                        <p id="Detailtime">ช่วงเวลาเปิดให้นัดหมาย :</p>
-                        <p id="Detailqueue">จำนวนคิวนัดหมาย :</p>
-                        <p id="Detail">ช่วงเวลาคิวนัดหมาย :</p>
-
-
-                    </div>
-
                 </div>
-
-
-
-
+               
             </div>
+
+
 
 
 
         </div>
-
     );
 }
 

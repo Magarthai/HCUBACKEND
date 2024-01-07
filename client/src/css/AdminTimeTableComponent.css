@@ -9,13 +9,14 @@ body{
         padding:0%;
     }
     .topicBox{
-        margin-top: 20px;
+        margin-top: 30px;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
+    margin-bottom: 50px;
     }
     .topicBox div{
         box-sizing: border-box;
@@ -43,7 +44,7 @@ body{
         background-color: #EEF2F7;
         height: 680px;
         border: 1px solid rgba(10, 15, 21, 0.482);
-        border-radius: 10px;
+        /* border-radius: 10px; */
         margin-bottom: 10px;
     }
     .system-item{
@@ -54,6 +55,7 @@ body{
     .system-detail{
         overflow-y: scroll;
         height: 560px;
+        margin-top: 10px;
         
     }
     .system-detail::-webkit-scrollbar {
@@ -78,16 +80,17 @@ body{
         margin: 0% 4% 1% 4%;
     }
     .clinic a{
-        padding: 5px 15px;
-        background-color: #DCE5EF;
-        color: #456A91;
-        text-decoration: none;
-        margin-right: 10px;
-        border-radius: 20px;
-    }
-    #select{
+        padding: 10px 20px;
         background-color: #263A50;
         color: #FBFFFF;
+        text-decoration: none;
+        margin-right: 10px;
+        border-radius: 50px;
+        font-size: 18px;
+    }
+    #select{
+        background-color: #DCE5EF;
+        color: #456A91;
     }
     .system-top{
         display: flex;
@@ -96,6 +99,7 @@ body{
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
+        margin: 0px;
     
     }
     .system-top-item{
@@ -106,13 +110,14 @@ body{
     }
     button.system-top-item{
         width: auto;
-        height: 30px;
+        height: 40px;
         background-color: #263A50;
         color: #FBFFFF;
-        padding: 0px 15px;
+        padding: 0px 25px;
         border-radius: 20px;
         border: 0px solid #12121200;
-        margin-left: 30%;
+        margin-left: 33%;
+        font-size: 18px;
         
     
     }
@@ -140,17 +145,17 @@ body{
     }
     .card-detail{
         box-sizing: border-box;
-	    width: 74%;
+	    width: 82%;
         text-decoration: none;
     }
     .card-funtion{
         box-sizing: border-box;
-	    width: 26%;
+	    width: 18%;
         padding-top: 5px;
     }
     .icon{
-        width: 26px;
-        height: 26px;
+        width: 30px;
+        height: 30px;
         margin-left: 10px;
         margin-top: -15px;
     }
@@ -213,17 +218,22 @@ body{
         font-size: 20px;
         font-weight: 500;
         color: #263A50;
-        margin-left: -30%;
+        margin-left: -1%;
         margin-bottom: 10px;
+        text-align: start;
+        border: 0px;
     }
     #btn-systrm{
         width: 48%;
         display: inline;
-        margin: 4px 1% 0% 1%;
+        margin: 30px 1% 0% 1%;
+        
+   
+      
         
     }
     .nameClinic p{
-        margin: 0px;
+        margin: 2px;
     }
     .nameClinic {
         margin-bottom: 7px;

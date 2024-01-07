@@ -386,25 +386,25 @@ const TimetableGeneralComponent = (props) => {
             let detailDay = timetable.addDay;
             let listtimetable = ""
             if (detailDay === "monday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันจันทร์`
+                document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันจันทร์`
             } else if (detailDay === "tuesday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันอังคาร`
+                document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันอังคาร`
             } else if (detailDay === "wednesday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันพุธ`
+                document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันพุธ`
             } else if (detailDay === "thursday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันพฤหัสบดี`
+                document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันพฤหัสบดี`
             } else if (detailDay === "friday") {
-                document.getElementById("Detailday").innerHTML = `วัน : วันศุกร์`
+                document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันศุกร์`
             }
-            document.getElementById("Detailtimeall").innerHTML = `ช่วงเวลาเปิดให้บริการ : ${timetable.timeStart} - ${timetable.timeEnd} `
-            document.getElementById("Detailtime").innerHTML = `ช่วงเวลาเปิดให้นัดหมาย : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
-            document.getElementById("Detailqueue").innerHTML = `จำนวนคิวนัดหมาย : ${timetable.numberAppointment} `
+            document.getElementById("Detailtimeall").innerHTML = `<b>ช่วงเวลาเปิดให้บริการ</b> : ${timetable.timeStart} - ${timetable.timeEnd} `
+            document.getElementById("Detailtime").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมาย</b> : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
+            document.getElementById("Detailqueue").innerHTML = `<b>จำนวนคิวนัดหมาย</b> : ${timetable.numberAppointment} `
             console.log(timetable.timeablelist.length)
             for (let i = 0; i < timetable.timeablelist.length; i++) {
                 listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
                 console.log(timetable.timeablelist[i])
             }
-            document.getElementById("Detail").innerHTML = `ช่วงเวลาคิวนัดหมาย : ${listtimetable}`
+            document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
             window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
         } else {
             x.style.display = "none";
@@ -470,7 +470,7 @@ const TimetableGeneralComponent = (props) => {
                 Swal.fire(
                     {
                         title: 'Deleted!',
-                        text: `ลบนัดหมายไม่สำเร็จ`,
+                        text: `ลบช่วงเวลาไม่สำเร็จ`,
                         icon: 'error',
                         confirmButtonText: 'ตกลง',
                         confirmButtonColor: '#263A50',
@@ -493,11 +493,11 @@ const TimetableGeneralComponent = (props) => {
             <div className="topicBox">
                 <div></div>
                 <div>
-                    <h1 className="colorPrimary-800 center">ช่วงเเวลาเข้าทำการแพทย์</h1>
+                    <h1 className="colorPrimary-800 center">ช่วงเวลาเข้าทำการแพทย์</h1>
                 </div>
                 <div className="dateTime">
-                    <p>Date : {currentDate}</p>
-                    <p>Time : {showTime}</p>
+                    <p className="textBody-large">Date : {currentDate}</p>
+                    <p className="textBody-large">Time : {showTime}</p>
                 </div>
             </div>
             <div className="clinic">
@@ -510,16 +510,16 @@ const TimetableGeneralComponent = (props) => {
             <div className="system">
                 <div className="system-item">
                     <div className="system-top">
-                        <p className="colorPrimary-800 system-top-item">ช่วงเวลาเข้าทำการแพทย์</p>
+                        <h3 className="colorPrimary-800 system-top-item">ช่วงเวลาเข้าทำการแพทย์</h3>
                         <button className="system-top-item" onClick={openAddtimetable}>เพิ่มเวลา +</button>
                     </div>
                     <div className="system-detail">
-                        <p>วันจันทร์</p>
+                        <h4 className="colorPrimary-800">วันจันทร์</h4>
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
@@ -543,16 +543,16 @@ const TimetableGeneralComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").length === 0 && (
                             <div className="row" >
                                 <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                    <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <p>วันอังคาร</p>
+                        <h4 className="colorPrimary-800">วันอังคาร</h4>
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
@@ -571,16 +571,16 @@ const TimetableGeneralComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").length === 0 && (
                             <div className="row" >
                                 <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                    <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <p>วันพุธ</p>
+                        <h4 className="colorPrimary-800">วันพุธ</h4>
                         {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
@@ -599,16 +599,16 @@ const TimetableGeneralComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").length === 0 && (
                             <div className="row" >
                                 <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                    <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <p>วันพฤหัสบดี</p>
+                        <h4 className="colorPrimary-800">วันพฤหัสบดี</h4>
                         {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
@@ -627,16 +627,16 @@ const TimetableGeneralComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").length === 0 && (
                             <div className="row" >
                                 <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                    <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
-                        <p>วันศุกร์</p>
+                        <h4 className="colorPrimary-800">วันศุกร์</h4>
                         {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
-                                        <p>{timetable.timeStart} - {timetable.timeEnd}</p>
+                                        <p className="textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
                                     </a>
@@ -655,7 +655,7 @@ const TimetableGeneralComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").length === 0 && (
                             <div className="row" >
                                 <div className="card">
-                                    <p>ไม่มีช่วงเวลาทําการ</p>
+                                    <p className="textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
                         )}
@@ -666,12 +666,13 @@ const TimetableGeneralComponent = (props) => {
 
                     <div id="Addtimetable">
                         <form onSubmit={submitForm}>
-                            <div className="system-top">
-                                <button type="button" onClick={openAddtimetable} className="colorPrimary-800 system-top-item" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
-                            </div>
-                            <p>คลินิก <p className="textBody-big">คลินิกทั่วไป</p></p>
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">วัน</label>
+                                <button type="button" onClick={openAddtimetable} className="colorPrimary-800 " id="backTopic"><h3>❮  ช่วงเวลาเข้าทำการแพทย์</h3></button>
+                            </div>
+                            <h4>คลินิก</h4>
+                            <p className="textBody-big">คลินิกทั่วไป</p>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="Day"
                                     value={addDay}
@@ -687,7 +688,7 @@ const TimetableGeneralComponent = (props) => {
                                 </select>
                             </div>
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
+                                <label className="textBody-large colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
                                 <input
                                     type="text"
                                     className="form-control timeable"
@@ -706,7 +707,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
+                                <label className="textBody-large colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
                                 <input
                                     type="text"
                                     className="form-control timeable"
@@ -724,7 +725,7 @@ const TimetableGeneralComponent = (props) => {
                                 />
                             </div>
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">จำนวคิว</label><br></br>
+                                <label className="textBody-large colorPrimary-800">จำนวนคิว</label><br></br>
                                 <input type="text" className="form-control timeable" value={numberAppointment} onChange={inputValue("numberAppointment")} placeholder="5" />
                                 <span> คิว</span>
 
@@ -735,10 +736,11 @@ const TimetableGeneralComponent = (props) => {
                     </div>
                     <div id="Edittimetable">
                         <form onSubmit={editForm}>
-                            <div className="system-top">
-                                <button type="button" onClick={() => openEdittimetable()} className="colorPrimary-800 system-top-item" id="backTopic">❮ แก้ไขเวลาเข้าทำการแพทย์</button>
+                            <div>
+                                <button type="button" onClick={() => openEdittimetable()} className="colorPrimary-800" id="backTopic"><h3>❮ แก้ไขเวลาเข้าทำการแพทย์</h3></button>
                             </div>
-                            <p>คลินิก <p className="textBody-big">คลินิกทั่วไป</p></p>
+                            <h4>คลินิก</h4>
+                            <p className="textBody-big">คลินิกทั่วไป</p>
                             <div>
                                 <label className="textBody-big2 colorPrimary-800">วัน</label>
                                 <select
@@ -756,7 +758,7 @@ const TimetableGeneralComponent = (props) => {
                                 </select>
                             </div>
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
+                                <label className="textBody-large colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
                                 <input
                                     type="text"
                                     className="form-control timeable"
@@ -775,7 +777,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
+                                <label className="ttextBody-large colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
                                 <input
                                     type="text"
                                     className="form-control timeable"
@@ -793,7 +795,7 @@ const TimetableGeneralComponent = (props) => {
                                 />
                             </div>
                             <div>
-                                <label className="textBody-big2 colorPrimary-800">จำนวคิว</label><br></br>
+                                <label className="textBody-large colorPrimary-800">จำนวคิว</label><br></br>
                                 <input type="text" className="form-control timeable" value={numberAppointment} disabled onChange={inputValue("numberAppointment")} placeholder="5" />
                                 <span> คิว</span>
 
@@ -804,12 +806,12 @@ const TimetableGeneralComponent = (props) => {
                     </div>
                     <div id="Detailtimetable" className="colorPrimary-800">
                         <h3 className="center">รายละเอียด</h3>
-                        <p id="Detailclinic">คลินิก : คลินิกทั่วไป</p>
-                        <p id="Detailday">วัน :</p>
-                        <p id="Detailtimeall">ช่วงเวลาเปิดให้บริการ :</p>
-                        <p id="Detailtime">ช่วงเวลาเปิดให้นัดหมาย :</p>
-                        <p id="Detailqueue">จำนวนคิวนัดหมาย :</p>
-                        <p id="Detail">ช่วงเวลาคิวนัดหมาย :</p>
+                        <p id="Detailclinic" className="textBody-big"><b>คลินิก</b> : คลินิกทั่วไป</p>
+                        <p id="Detailday" className="textBody-big"></p>
+                        <p id="Detailtimeall" className="textBody-big"></p>
+                        <p id="Detailtime" className="textBody-big"></p>
+                        <p id="Detailqueue" className="textBody-big"></p>
+                        <p id="Detail" className="textBody-big"></p>
 
 
                     </div>

@@ -10,35 +10,35 @@ body{
         
     }
     h1{
-        font-size: 28px;
+        font-size:40px;
         font-weight: bold;
     }
     h2{
-        font-size: 20px;
+        font-size: 30px;
         font-weight: 500;
     }
     h3{
-        font-size: 18px;
+        font-size: 28px;
         font-weight: 500;
     }
     h4{
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 400;
     }
     .textBody-big{
-        font-size: 16px;
+        font-size: 20px;
         font-weight: 300;
     }
     .textBody-large{
-        font-size: 14px;
-        font-weight: 200;
+        font-size: 20px;
+        font-weight: 400;
     }
     .textBody-medium{
-        font-size: 14px;
-        font-weight: 300;
+        font-size: 16px;
+        font-weight: 400;
     }
     .textBody-small{
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 300;
     }
     .textBody-huge{
@@ -67,6 +67,9 @@ body{
         color: #263A50;
     } 
     .colorNeutralBlue-50{
+        color: #FBFFFF;
+    }
+    .colorNeutralBlack-50{
         color: #F2F2F2;
     }
     .form-control::placeholder {
@@ -187,6 +190,15 @@ body{
         height: 65px;
         margin-bottom: 10px;
     }
+    .profile{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 10px;
+    }
 }
 @media(min-width:600px){
     .hcu{
@@ -251,6 +263,6 @@ body{
        
     }
     .login {
-        margin-bottom: 15;
+        margin-bottom: 15%;
     }
 }

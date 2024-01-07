@@ -80,7 +80,7 @@ const LoginComponent = () => {
                     </header>
 
                     <form onSubmit={submitForm}>
-                        <h1 className="colorPrimary-800">Login</h1>
+                        <h3 className="colorPrimary-800">Login</h3>
 
 
                         <div>
@@ -121,7 +121,7 @@ const LoginComponent = () => {
 
                     <div className="center">
                         <a href="/signup" role="button" className="colorPrimary-800" >ยังไม่มีบัญชี? Sign up</a>
-                        <p className="textBody-large kmutt">King Mongkut's University of Technology Thonburi</p>
+                        <p className="textBody-small kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 
                 </div>
