@@ -75,7 +75,11 @@ const router = createBrowserRouter([
   {
     path: "/AllAppointmentUser",
     element: <ProtectRoute><UserAllAppointment/></ProtectRoute>
-  }
+  },
+  {
+    path: "/chooseClinicUser",
+    element: <ProtectRoute><UserChooseClinic/></ProtectRoute>
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
