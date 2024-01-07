@@ -21,19 +21,20 @@ body{
         box-sizing: border-box;
 	    width: 33.3%;
     }
-    .colorPrimary-800{
-        color: #263A50;
-    }
 
     .dateTime{
         text-align: right;
         padding-right: 4%;
     }
-    .box-header-container{
-        margin-top: 10px;
+    .flex{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scale: 1.13;
+        margin-top: 5vw;
+        overflow: auto;
     }
-    .system{
-        margin: 0% 4%;
+    .box{
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -41,11 +42,13 @@ body{
         align-items: stretch;
         box-sizing: border-box;
         background-color: #EEF2F7;
-        height: 70vh;
-        /* height: 600px; */
+        width: 30%;
+        height: 600px;
         border: 1px solid rgba(10, 15, 21, 0.482);
-        border-radius: 10px;
-        margin-bottom: 10px;
+
+        height: 456px;
+        z-index: -1;
+
     }
     .system-item{
         box-sizing: border-box;
@@ -56,20 +59,6 @@ body{
         overflow-y: scroll;
         height: 58vh;
         
-    }
-    .system-detail::-webkit-scrollbar {
-        width: 5px; 
-        margin: 5px;
-    }
-    
-    .system-detail::-webkit-scrollbar-thumb {
-        background-color: #263A50;
-        border-radius: 5px;
-    }
-    
-    .system-detail::-webkit-scrollbar-track {
-        background-color: #D1D1D1;
-        border-radius: 5px;
     }
 
     .border-L{
@@ -102,8 +91,92 @@ body{
     .system-top-item{
         box-sizing: border-box;
 	    width: 50%;
+        font-weight: 500;
+        font-size: 20px;
+    
+    }
+    .flex-column{
+        display: flex;
+        flex-direction: column;
+    }
+    .box{
+        display: flex;
+        justify-content: center;
+    }
+    .box-list {
+        overflow-y: scroll;
+        height: 40vh;
+        width: 100%;
+    }
+    
+    .box-userapointment {
+        margin-bottom: 10px; 
+    }
+    
+    .box-list::-webkit-scrollbar {
+        width: 5px; 
+        margin: 5px;
+    }
+
+    
+    .box-list::-webkit-scrollbar-thumb {
+        background-color: #263A50;
+        border-radius: 5px;
+    }
+    
+    .box-list::-webkit-scrollbar-track {
+        background-color: #D1D1D1;
+        border-radius: 5px;
+    }
+    
+    .box-userapointment{
+        background-color: #FBFFFF;
+        height: 65px;
+        color: #456A91;
+        align-items: center;
+        width:98%;
+        display: flex;
+        margin-top: 10px;
+        border-radius: 8px;
+    }
+    .time-apppoint{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 150px;
+        border-right: #D1D1D1 2px solid;
+        height:100%;
+    }
+    #student-name{
+        font-weight: 300;
+        font-size: 15px;
+        margin: 0;
+        align-items: left;
+        text-align: left;
+    }
+    .user-appointment-info{
+        display: flex;
+        text-align: left;
+        justify-content: left;
+        align-items: left;
+        margin-left: 10px;
+        width: 100%;
+    }
+    .appoint-info{
         
-       
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .space-bettween{
+        display: flex;
+        justify-content: space-between;
+    }
+    #student-id{
+        font-weight: 400;
+        font-size: 15px;
+        margin: 0;
     }
     button.system-top-item{
         width: auto;
@@ -116,6 +189,21 @@ body{
         margin-left: 30%;
         
     
+    }
+    .appointment-status{
+        font-weight: 300;
+        width: 100px;
+        text-align: left;
+        margin-right: 10px;
+    }
+    .success{
+        color: #098B66;
+    }
+    .warning{
+        color: #F59E0B;
+    }
+    .error{
+        color: #DC2626;
     }
  
     .row{

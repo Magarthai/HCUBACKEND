@@ -18,12 +18,12 @@ body{
     .wrapper{
         width: 400px;
         background: #F2F2F2;
-        
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center; 
         background-color: #ABD9D8;
-        margin: 5%;
+        
         
     }
     .wrapper header{
@@ -92,7 +92,7 @@ body{
 
     }
     .calendar .days{
-       padding-bottom: 40px;
+       padding-bottom: 100px;
        text-align: center;
        background-color: #F2F2F2;
        margin-bottom: 0px;
