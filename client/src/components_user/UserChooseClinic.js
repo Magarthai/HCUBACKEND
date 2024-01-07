@@ -48,7 +48,7 @@ const UserChooseClinic = () => {
                     <img className="clinic" src={logo3} alt="คลินิกกายภาพ" />
                 </Link>
 
-                <Link to="#" className="clinic-card userrheader">
+                <Link to="#" className="clinic-card">
                     <p>
                     <b>คลินิกฝังเข็ม</b>
                     </p>
