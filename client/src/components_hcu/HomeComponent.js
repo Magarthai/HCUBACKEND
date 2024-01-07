@@ -17,6 +17,7 @@ import { db, getDocs, collection } from "../firebase/config";
 const HomeComponent = (props) => {
   const [showTime, setShowTime] = useState(getShowTime);
   const [userData, setUserData] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1); 
   const [loading, setLoading] = useState(true); // Added loading state
   const animationFrameRef = useRef();
   const { user } = useUserAuth();
@@ -48,6 +49,15 @@ const HomeComponent = (props) => {
         }
     };
     fetchUserData();
+    const responsivescreen = () => {
+      const innerWidth = window.innerWidth;
+      const baseWidth = 1920;
+      const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+      setZoomLevel(newZoomLevel);
+    };
+
+    responsivescreen();
+    window.addEventListener("resize", responsivescreen);
     const updateShowTime = () => {
       const newTime = getShowTime();
       if (newTime !== showTime) {
@@ -63,10 +73,14 @@ const HomeComponent = (props) => {
   
     return () => {
       cancelAnimationFrame(animationFrameRef.current);
+      window.removeEventListener("resize", responsivescreen);
     };
     
   }, [user]); 
-  
+  const containerStyle = {
+    zoom: zoomLevel,
+  };
+
 
   function getShowTime() {
     const today = new Date();
@@ -89,7 +103,7 @@ const HomeComponent = (props) => {
   const currentDate = `${day} ${month}/${date}/${year}`;
 
   return (
-    <div>
+    <div className="appointment-" style={containerStyle}>
       <NavbarComponent />
       <div className="top">
         <div className="top-item">

@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 const TimetableNeedleComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
     const [userData, setUserData] = useState(null);
+    const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
     const [timetable, setTimetable] = useState([])
@@ -223,8 +224,6 @@ const TimetableNeedleComponent = (props) => {
 
     useEffect(() => {
         document.title = 'Health Care Unit';
-        console.log(user);
-
         fetchTimeTableData();
         const fetchUserData = async () => {
             try {
@@ -251,6 +250,7 @@ const TimetableNeedleComponent = (props) => {
             }
         };
         fetchUserData();
+
         const updateShowTime = () => {
             const newTime = getShowTime();
             if (newTime !== showTime) {
@@ -259,14 +259,27 @@ const TimetableNeedleComponent = (props) => {
             animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
 
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        const responsivescreen = () => {
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
+        };
 
+        updateShowTime();
+        responsivescreen();
+
+        window.addEventListener("resize", responsivescreen);
 
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
+            window.removeEventListener("resize", responsivescreen);
         };
-
     }, [user]);
+
+    const containerStyle = {
+        zoom: zoomLevel,
+    };
 
 
 
@@ -475,7 +488,7 @@ const TimetableNeedleComponent = (props) => {
 
 
     return (
-        <div>
+        <div className="appointment-" style={containerStyle}>
             <NavbarComponent />
             <div className="topicBox">
                 <div></div>
