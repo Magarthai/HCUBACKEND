@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Link } from "react-router-dom";
 import NavbarComponent from "../components_hcu/NavbarComponent";
 import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
 import CalendarUserComponent from "../components_user/CalendarUserComponent";
@@ -7,16 +7,17 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/AdminAppointmentComponent.css";
 import { addDoc } from 'firebase/firestore';
-import TimetableGeneralComponent from "./TimetableGeneralComponent";
 
 const AppointmentComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null)
+    const [userData, setUserData] = useState(null);
+    const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
 
     useEffect(() => {
         document.title = 'Health Care Unit';
+
         const fetchUserData = async () => {
             try {
                 if (user) {
@@ -42,6 +43,7 @@ const AppointmentComponent = (props) => {
             }
         };
         fetchUserData();
+
         const updateShowTime = () => {
             const newTime = getShowTime();
             if (newTime !== showTime) {
@@ -50,13 +52,27 @@ const AppointmentComponent = (props) => {
             animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
 
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        const responsivescreen = () => {
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
+        };
+
+        updateShowTime();
+        responsivescreen();
+
+        window.addEventListener("resize", responsivescreen);
 
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
+            window.removeEventListener("resize", responsivescreen);
         };
     }, [user]);
 
+    const containerStyle = {
+        zoom: zoomLevel,
+    };
     function getShowTime() {
         const today = new Date();
         const hours = today.getHours();
@@ -79,7 +95,7 @@ const AppointmentComponent = (props) => {
 
 
     return (
-        <div>
+        <div className="appointment-" style={containerStyle}>
             <NavbarComponent />
             <div className="topicBox">
                 <div></div>

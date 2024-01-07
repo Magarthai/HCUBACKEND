@@ -92,7 +92,7 @@ body{
     }
     .box-list {
         overflow-y: scroll;
-        height: 40vh;
+        height: 380px;
         width: 100%;
     }
     
