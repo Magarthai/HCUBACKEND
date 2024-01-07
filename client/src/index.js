@@ -67,7 +67,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/ChooseClinicUser",
-    element: <ProtectAdminRoute><UserChooseClinic/></ProtectAdminRoute>
+    element: <ProtectRoute><UserChooseClinic/></ProtectRoute>
   },
 ])
 

@@ -34,14 +34,14 @@ function ProtectAdminRoute({ children }) {
                                 icon: "error",
                                 title: "Alret",
                                 text: "You are not ADMIN!",
-                              }).then((result) => {
+                            }).then((result) => {
                                 if (result.isConfirmed) {
                                     navigate('/login');
                                 }
-                              });
-            
+                            });
+
                         }
-                        
+
                         console.log(currentUserData)
                     } else {
                         console.log('User not found');

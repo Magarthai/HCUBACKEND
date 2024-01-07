@@ -25,10 +25,12 @@ function ProtectRoute({ children }) {
         
                     if (currentUserData) {
                         setUserData(currentUserData);
-        
-                        // Set the destination based on user role
-                        const destination = currentUserData.role === 'admin' ? '/homeAdmin' : '/homeUser';
-                        navigate(destination);
+                        if (currentUserData.role === 'admin') {
+                            console.log('User is not an admin');
+                            navigate('/homeAdmin');
+                        };
+   
+
         
                         console.log(currentUserData);
                     } else {

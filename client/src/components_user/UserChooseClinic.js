@@ -10,6 +10,8 @@ import logo4 from '../picture/logo-clinic4.png';
 const UserChooseClinic = () => {
 
   return (
+
+    <div id='xd'>
     <div className="UserChooseClinicComponent">
         <div className="UserChooseClinic">
         <header className="UserChooseClinic-header">
@@ -23,8 +25,8 @@ const UserChooseClinic = () => {
 
         <div className="clinic-function">
             <h2>คลินิก</h2>
-            <div>
-                <Link to="#" className="clinic-card">
+            <div id='xd'>
+                <Link to="/XD" className="clinic-card" style={{marginTop:10}}>
                     <p>
                     <b>คลินิกทั่วไป</b>
                     </p>
@@ -56,7 +58,7 @@ const UserChooseClinic = () => {
         </div>
     </div>
     </div>
-    
+    </div>
   );
 };
 
