@@ -30,6 +30,8 @@ body{
         display: flex;
         align-items: center;
         justify-content: center;
+        scale: 1.13;
+        margin-top: 100px;
         overflow: auto;
     }
     .box{
