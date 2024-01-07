@@ -111,7 +111,7 @@ const NavbarUserComponent = (props) => {
                 </div>
               </Link>
             </li>
-            <li><a><div className="textss"><Link to="/">นัดหมาย</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/">การนัดหมาย</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">กิจกรรม</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">สถานะคิว</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">ช่วงเวลาเข้าทําการแพทย์</Link></div></a></li>

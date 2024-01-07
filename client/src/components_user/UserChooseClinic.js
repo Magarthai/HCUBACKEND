@@ -25,7 +25,7 @@ const UserChooseClinic = () => {
         <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>คลินิก</h2>
         <div className="clinic-function">
            
-            <div id='xd'>
+
                 <Link to="/XD" className="clinic-card" style={{marginTop:10}}>
                     <p>
                     <b>คลินิกทั่วไป</b>
@@ -48,14 +48,14 @@ const UserChooseClinic = () => {
                     <img className="clinic" src={logo3} alt="คลินิกกายภาพ" />
                 </Link>
 
-                <Link to="#" className="clinic-card">
+                <Link to="#" className="clinic-card userrheader">
                     <p>
                     <b>คลินิกฝังเข็ม</b>
                     </p>
                     <img className="clinic" src={logo4} alt="คลินิกฝังเข็ม" />
                 </Link>
             </div>
-        </div>
+
     </div>
     </div>
     </div>

@@ -108,11 +108,15 @@
 
 
       }
+      .UserChooseClinic-header{
+        width: 100%;
+      }
       
       #id{
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 100% !important;
       }
       .clinic-function{
         display: flex;
@@ -123,7 +127,7 @@
       }
       .clinic-card{
         width: 90vw !important;
-
+        margin: 0;
         display: flex;
 
       }.clinic-card img{

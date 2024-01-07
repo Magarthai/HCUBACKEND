@@ -100,15 +100,16 @@
     position: absolute;
     display: block;
     width: 100%;
+    height: auto; /* Set a fixed height for the ul */
     padding: 0;
     margin: 0;
     z-index: 6;
     text-align: center;
     list-style: none;
-    top: 7.5%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 55%);
     border: none;
-}
+  }
+  
 
   .navs ul li {
     width: 100%;
@@ -116,7 +117,6 @@
     align-items: center;
     background-color: #ffffff;
     position: relative;
-    top: 630px;
     display: flex;
     justify-content: left;
     align-items: left;
@@ -128,6 +128,7 @@
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
+
   }
   .profiles{
     height: 120px !important;
@@ -230,4 +231,21 @@
     left: 75vw;
     top: -60px;
   }
+  .navs ul li {
+    height:  7vh;
+  }
+  }
+  @media (max-width: 305px) {
+    .menu-icons:checked + label,
+    .menu-icons:not(:checked) + label {
+      position: relative;
+      top: -75px;
+      display: block;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 10;
+      left: 70vw;
+      top: -60px;
+    }
   }
