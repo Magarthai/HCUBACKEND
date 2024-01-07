@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
+.UserChooseClinicComponent{
+    font-family: 'Mitr', sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    height: 684px;
+    padding: 0px 32px;
+    flex-direction: column;
+    align-items: center;
+    gap: 62px;
+    flex-shrink: 0;
+    align-self: stretch;
+}
+
+
+@media(min-width:300px){
+    h1, h2{
+        margin-top: 10px;
+    }
+    .clinic-function{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        align-self: stretch;
+    }
+    .clinic-function h2 {
+        padding-top: 20px;
+        padding-left: 40px;
+    }
+    .clinic-card p {
+        font-size: 20px;
+        font-style: normal;
+        color: #FFF;
+    }
+    .clinic-card txt {
+        font-size: 14px;
+        font-style: normal;
+        line-height: 1px;
+        color: #FBFFFF;
+    }
+    .clinic-card {
+        text-decoration: none;
+        display: flex;
+        width: 425px;
+        height: 125px;
+        padding: 25px;
+        margin: 40px;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        border-radius: var(--Radius-Card, 20px);
+        background-color: #263A50;
+        box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.20);
+        transition: all 0.3s ease;
+    }
+    .clinic-card img{
+        width: 16%;
+        position: absolute;
+        left: 300px;
+        bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    .clinic-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+}

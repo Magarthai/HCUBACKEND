@@ -11,6 +11,7 @@ import SpecialTimetableComponent from "./components_hcu/TimetableSpecialComponen
 import PhysicalTimetableComponent from "./components_hcu/TimetablePhysicalComponent"
 import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
 import AppointmentManagerComponent from "./components_hcu/TimetableNeedleComponent"
+import UserChooseClinic from './components_user/UserChooseClinic.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: "/AppointmentManagerComponent",
     element: <ProtectAdminRoute><AppointmentManagerComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/ChooseClinicUser",
+    element: <ProtectAdminRoute><UserChooseClinic/></ProtectAdminRoute>
   },
 ])
 

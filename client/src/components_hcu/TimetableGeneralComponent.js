@@ -129,7 +129,7 @@ const TimetableGeneralComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "general",
+                clinic: "คลินิกทั่วไป",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -195,7 +195,7 @@ const TimetableGeneralComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "general",
+                clinic: "คลินิกทั่วไป",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -356,7 +356,7 @@ const TimetableGeneralComponent = (props) => {
             timeAppointmentStart: timetable.timeAppointmentStart,
             timeAppointmentEnd: timetable.timeAppointmentEnd,
             numberAppointment: timetable.numberAppointment,
-            clinic: "general",
+            clinic: "คลิ",
             timeablelist: timetable.timeablelist,
             status: "Enabled",
             timetableId: timetable.id,  // Update the id in the state
@@ -515,7 +515,7 @@ const TimetableGeneralComponent = (props) => {
                     </div>
                     <div className="system-detail">
                         <p>วันจันทร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -540,7 +540,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p>ไม่มีช่วงเวลาทําการ</p>
@@ -548,7 +548,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
                         )}
                         <p>วันอังคาร</p>
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -568,7 +568,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p>ไม่มีช่วงเวลาทําการ</p>
@@ -576,7 +576,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
                         )}
                         <p>วันพุธ</p>
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -596,7 +596,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p>ไม่มีช่วงเวลาทําการ</p>
@@ -604,7 +604,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
                         )}
                         <p>วันพฤหัสบดี</p>
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -624,7 +624,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p>ไม่มีช่วงเวลาทําการ</p>
@@ -632,7 +632,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
                         )}
                         <p>วันศุกร์</p>
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -652,7 +652,7 @@ const TimetableGeneralComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "general").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกทั่วไป").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p>ไม่มีช่วงเวลาทําการ</p>
