@@ -232,8 +232,9 @@
     top: -60px;
   }
   .navs ul li {
-    height:  7vh;
+    height:  6.5vh;
   }
+
   }
   @media (max-width: 305px) {
     .menu-icons:checked + label,
@@ -248,4 +249,25 @@
       left: 70vw;
       top: -60px;
     }
+  }
+  @media (max-height: 667px) {
+    
+    .navs ul li {
+      height:  5.4vh;
+      
+    }
+    .navs ul {
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: auto; /* Set a fixed height for the ul */
+      padding: 0;
+      margin: 0;
+      z-index: 6;
+      text-align: center;
+      list-style: none;
+      transform: translate(-50%, 65%);
+      border: none;
+    }
+    
   }
