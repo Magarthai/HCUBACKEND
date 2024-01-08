@@ -43,11 +43,49 @@ const AppointmentManagerComponent = (props) => {
     const [loading, setLoading] = useState(true); // Added loading state
     const animationFrameRef = useRef();
     const { user, userData } = useUserAuth();
+    const [timetable, setTimetable] = useState([])
+    const [isChecked, setIsChecked] = useState({});
+    const fetchTimeTableData = async () => {
+        try {
+            if (user && selectedDate) {
+                const timeTableCollection = collection(db, 'timeTable');
+                const timeTableSnapshot = await getDocs(timeTableCollection);
+    
+                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+    
+                if (timeTableData) {
+                    // Find the timetable for the selected day
+                    const selectedDayTimetable = timeTableData.find(item => item.addDay.toLowerCase() === selectedDate.dayName.toLowerCase());
+    
+                    if (selectedDayTimetable) {
+                        setTimetable(selectedDayTimetable.timeablelist);
+    
+                        const initialIsChecked = selectedDayTimetable.timeablelist.reduce((acc, timetableItem) => {
+                            acc[timetableItem.id] = timetableItem.status === "Enabled";
+                            return acc;
+                        }, {});
+    
+                        setIsChecked(initialIsChecked);
+                        console.log(selectedDayTimetable.timeablelist);
+                    } else {
+                        console.log("Timetable not found for the selected day");
+                    }
+                } else {
+                    console.log("Time table not found");
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-
 
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
@@ -70,7 +108,7 @@ const AppointmentManagerComponent = (props) => {
 
         // Fetch user data when the component mounts
 
-
+        fetchTimeTableData();
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);

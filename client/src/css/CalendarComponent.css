@@ -105,10 +105,6 @@ header .icons span:last-child{
     border-radius: 50%;
     transform:translate(-50%,-50%);
 }
-.days li::selection::before{
-    background-color: #54B2B0;
-    color: #ffffff;
-}
 .days li:hover::before{
     background-color: #54B2B0;
     color: #ffffff;
