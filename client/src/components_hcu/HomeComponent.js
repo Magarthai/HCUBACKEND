@@ -14,42 +14,17 @@ import logo from "../picture/LogoHCU.png";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 
-const HomeComponent = (props) => {
+const HomeComponent = () => {
+  const { user, userData } = useUserAuth();
   const [showTime, setShowTime] = useState(getShowTime);
-  const [userData, setUserData] = useState(null);
-  const [zoomLevel, setZoomLevel] = useState(1); 
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [zoomLevel, setZoomLevel] = useState(1);
   const animationFrameRef = useRef();
-  const { user } = useUserAuth();
-  const fetchUserData = async () => {
-    try {
-      if (user && !userData) {  // Check if user exists and userData is not available
-        const usersCollection = collection(db, 'users');
-        const usersSnapshot = await getDocs(usersCollection);
   
-        const usersData = usersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-  
-        const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-  
-        if (currentUserData) {
-          setUserData(currentUserData);
-          console.log(currentUserData);
-        } else {
-          console.log("User not found");
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
   
   useEffect(() => {
     document.title = 'Health Care Unit';
     console.log(user);
-    
+    console.log(userData)
     const responsivescreen = () => {
       const innerWidth = window.innerWidth;
       const baseWidth = 1920;
@@ -71,11 +46,12 @@ const HomeComponent = (props) => {
   
     // Fetch user data when the component mounts
     
-    fetchUserData();
+   
     return () => {
       cancelAnimationFrame(animationFrameRef.current);
       window.removeEventListener("resize", responsivescreen);
     };
+    
     
   }, [user]); 
   const containerStyle = {

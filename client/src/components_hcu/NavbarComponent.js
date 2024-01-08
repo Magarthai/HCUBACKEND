@@ -4,7 +4,7 @@ import "../css/AdminNavbarComponent.css";
 import { useUserAuth } from "../context/UserAuthContext";
 
 const NavbarComponent = (props) => {
-  const { logOut, user } = useUserAuth();
+  const { logOut } = useUserAuth();
   const navigate = useNavigate();
 
   
@@ -41,7 +41,7 @@ const NavbarComponent = (props) => {
   };
 
   return (
-    <nav >
+    <nav>
       <ul className="nav justify-content-end" id="nav">
         <li className="nav-item pr-3 pb-3">
           <Link to="/homeAdmin" className="nav-link" target="_parent">
