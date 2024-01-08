@@ -12,6 +12,12 @@ import Swal from "sweetalert2";
 const AppointmentManagerComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateSelect = (selectedDate) => {
+    console.log("Selected Date in AppointmentManager:", selectedDate);
+    setSelectedDate(selectedDate); // Update the selected date state
+    // You can perform any additional actions based on the selected date
+  };
     const [state, setState] = useState({
         appointmentDate: "",
         appointmentTime: "",
@@ -42,6 +48,7 @@ const AppointmentManagerComponent = (props) => {
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
+        
         const fetchUserData = async () => {
             try {
                 if (user) {
@@ -72,7 +79,7 @@ const AppointmentManagerComponent = (props) => {
         const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
         setZoomLevel(newZoomLevel);
         };
-
+        console.log(selectedDate)
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {
@@ -93,7 +100,7 @@ const AppointmentManagerComponent = (props) => {
         window.removeEventListener("resize", responsivescreen);
         };
     
-    }, [user]); 
+    }, [user,selectedDate]); 
     const containerStyle = {
     zoom: zoomLevel,
     };
@@ -263,15 +270,24 @@ const AppointmentManagerComponent = (props) => {
                 <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>
             <div className="flex">
-                <CalendarAdminComponent />
+            <CalendarAdminComponent
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        onDateSelect={handleDateSelect}
+      />
                 <div className="box">
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
                                 <h3>นัดหมายคลินิกทั่วไป</h3>
-                                <p className="textBody-large">13/12/2023</p>
+                                <p className="textBody-large">
+                  {selectedDate
+                    ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
+                    : "Select a date"}
+                </p>
+
                             </div>
-                            <button className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
+                            <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
                         </div>
                         <div className="box-list">
                             <div className="box-userapointment" >
@@ -310,7 +326,9 @@ const AppointmentManagerComponent = (props) => {
                             <h3 className="center">เพิ่มนัดหมาย</h3>
                             <div>
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
-                                <p className="textBody-big">15/12/2024</p>
+                                <p className="textBody-big">{selectedDate
+                    ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
+                    : "Select a date"}</p>
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
@@ -344,32 +362,30 @@ const AppointmentManagerComponent = (props) => {
                         </form>
                     </div>
                     <div id="edit-appointment" className="colorPrimary-800">
-                        <form onSubmit={submitForm}>
+                    <form onSubmit={submitForm}>
                             <h3 className="center">แก้ไขนัดหมาย</h3>
                             <div className="center-container">
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
                                 <br></br>
                                 <div className="datepicker">
-                               <DatePicker
-                                    className='select-date-appointment'
-                                    selected={selectedDate}
-                                    onChange={(date) => setSelectedDate(date)}
-                                    dateFormat="yyyy-MM-dd" // Customize the date format
-                                    placeholderText="Select date"
-                                    popperPlacement="bottom-end"
-                                    popperModifiers={{
-                                        flip: {
-                                          behavior: ['bottom'], // Ensure the calendar flips to the bottom
-                                        },
-                                        preventOverflow: {
-                                          enabled: true, // Ensure the calendar stays within the viewport
-                                          padding: 10, // Adjust padding as needed
-                                        },
-                                      }}
-            
-                                    
-                                />
-                                </div>
+                                <DatePicker
+                className="select-date-appointment"
+                selected={selectedDate instanceof Date ? selectedDate : null}
+                onChange={(date) => setSelectedDate(date)}
+                dateFormat="yyyy-MM-dd"
+                placeholderText="Select date"
+                popperPlacement="bottom-end"
+                popperModifiers={{
+                  flip: {
+                    behavior: ['bottom'],
+                  },
+                  preventOverflow: {
+                    enabled: true,
+                    padding: 10,
+                  },
+                }}
+              />
+            </div>
                             </div>
                             <div> 
                                 <label className="textBody-large colorPrimary-800">วัน</label>
