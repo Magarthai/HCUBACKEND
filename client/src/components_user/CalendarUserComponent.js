@@ -24,7 +24,6 @@ const CalendarUserComponent = (props) => {
     };
 
     setSelectedDate(formattedSelectedDate);
-    props.onDateSelect(formattedSelectedDate);
   };
 
   const renderCalendar = () => {
@@ -90,22 +89,37 @@ const CalendarUserComponent = (props) => {
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       <header>
         <div className="icons">
-          <span id="prev" className="material-symbols-outlined">chevron_left</span>
-          <p className="current-date"></p>
-          <span id="next" className="material-symbols-outlined">chevron_right</span>
+          <span
+            id="prev"
+            className="material-symbols-outlined"
+            onClick={() => {
+              setCurrentMonth((prevMonth) => (prevMonth === 1 ? 12 : prevMonth - 1));
+              setCurrentYear((prevYear) => (currentMonth === 1 ? prevYear - 1 : prevYear));
+            }}
+          >
+            chevron_left
+          </span>
+          <p className="current-date">{months[currentMonth - 1]} {currentYear}</p>
+          <span
+            id="next"
+            className="material-symbols-outlined"
+            onClick={() => {
+              setCurrentMonth((prevMonth) => (prevMonth === 12 ? 1 : prevMonth + 1));
+              setCurrentYear((prevYear) => (currentMonth === 12 ? prevYear + 1 : prevYear));
+            }}
+          >
+            chevron_right
+          </span>
         </div>
       </header>
       <div className="calendar">
         <ul className="weeks">
-          <li>Sun</li>
-          <li>Mon</li>
-          <li>Tue</li>
-          <li>Wed</li>
-          <li>Thu</li>
-          <li>Fri</li>
-          <li>Sat</li>
+          {weeks.map((day, index) => (
+            <li key={index}>{day}</li>
+          ))}
         </ul>
         <ul className="days">
+          {daysArray}
         </ul>
       </div>
     </div>
