@@ -17,16 +17,12 @@ body{
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
-    margin-bottom: 50px;
+        margin-bottom: 50px;
     }
     .topicBox div{
         box-sizing: border-box;
 	    width: 33.3%;
     }
-    .colorPrimary-800{
-        color: #263A50;
-    }
-
     .dateTime{
         text-align: right;
         padding-right: 4%;

@@ -13,6 +13,7 @@ import function8 from "../picture/function8.jpg";
 import logo from "../picture/LogoHCU.png";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
+import "../css/Component.css";
 
 const HomeComponent = () => {
   const { user, userData } = useUserAuth();
@@ -85,13 +86,13 @@ const HomeComponent = () => {
       <div className="top">
         <div className="top-item colorPrimary-800">
           <img className="logo" src={logo} alt="logo health care unit" />
-          <h3>Health Care Unit</h3>
-          <p className="textBody-large">กลุ่มงานบริการสุขภาพและอนามัย</p>
+          <h2>Health Care Unit</h2>
+          <p className="admin-textBody-large">กลุ่มงานบริการสุขภาพและอนามัย</p>
         </div>
         <div className="top-item date colorPrimary-800">
-          {userData && <p className="textBody-large">Welcome, {userData.firstName} {userData.lastName}</p>}
-          <p className="textBody-large">Date : {currentDate}</p>
-          <p className="textBody-large">Time : {showTime}</p>
+          {userData && <p className="admin-textBody-large">Welcome, {userData.firstName} {userData.lastName}</p>}
+          <p className="admin-textBody-large">Date : {currentDate}</p>
+          <p className="admin-textBody-large">Time : {showTime}</p>
         </div>
       </div>
       <div className="flexbox-function">

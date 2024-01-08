@@ -10,6 +10,7 @@ import { auth } from '../firebase/config';
 import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import "../css/Component.css";
 
 const TimetableGeneralComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);

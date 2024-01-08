@@ -7,6 +7,7 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { getFirestore, addDoc, collection } from 'firebase/firestore';
 import HCU from "../picture/HCU.jpg";
 import { getDocs, query, where } from 'firebase/firestore';
+import "../css/Component.css";
 
 
 
@@ -146,9 +147,9 @@ const SignupComponent = (props) => {
  
     return(
         <div>
-            <div className="flexbox">
-                <div className="item">
-                    <header className="signup">
+            <div className="login-flexbox">
+                <div className="login-flexbox-item">
+                    <header className="signup-hearder">
                         <img className="logo" src={logo} alt="logo health care unit" />
                         <h3 className="colorPrimary-800">Health Care Unit</h3>
                         <p className="textBody-medium colorPrimary-800">กลุ่มงานบริการสุขภาพและอนามัย</p>
@@ -157,9 +158,9 @@ const SignupComponent = (props) => {
                     </header>
             
         <form onSubmit={submitForm}>
-        <h3 className="colorPrimary-800">SIGNUP</h3>
+        <h2 className="colorPrimary-800">SIGNUP</h2>
         <div>
-          <label className="textBody-medium colorPrimary-800">ชื่อ</label>
+          <label className="textBody-big colorPrimary-800">ชื่อ</label>
           <input
             type="text"
             className="form-control"
@@ -170,7 +171,7 @@ const SignupComponent = (props) => {
         </div>
 
         <div>
-          <label className="textBody-medium colorPrimary-800">นามสกุล</label>
+          <label className="textBody-big colorPrimary-800">นามสกุล</label>
           <input
             type="text"
             className="form-control"
@@ -181,7 +182,7 @@ const SignupComponent = (props) => {
         </div>
 
         <div>
-          <label className="textBody-medium colorPrimary-800">E-mail</label>
+          <label className="textBody-big colorPrimary-800">E-mail</label>
           <input
             type="email"
             className="form-control"
@@ -192,7 +193,7 @@ const SignupComponent = (props) => {
         </div>
 
         <div>
-          <label className="textBody-medium colorPrimary-800">
+          <label className="textBody-big colorPrimary-800">
             Student ID/Personnel ID
           </label>
           <input
@@ -205,7 +206,7 @@ const SignupComponent = (props) => {
         </div>
 
         <div>
-          <label className="textBody-medium colorPrimary-800">เบอร์โทร</label>
+          <label className="textBody-big colorPrimary-800">เบอร์โทร</label>
           <input
             type="tel"
             className="form-control"
@@ -216,7 +217,7 @@ const SignupComponent = (props) => {
         </div>
 
         <div>
-          <label className="textBody-medium colorPrimary-800">เพศ</label>
+          <label className="textBody-big colorPrimary-800">เพศ</label>
           <select
             name="gender"
             value={gender}
@@ -237,7 +238,7 @@ const SignupComponent = (props) => {
         </div>
 
         <div>
-          <label className="textBody-medium colorPrimary-800">Password</label>
+          <label className="textBody-big colorPrimary-800">Password</label>
           <input
             type="password"
             className="form-control"
@@ -263,13 +264,13 @@ const SignupComponent = (props) => {
         <a href="/login" role="button" className="colorPrimary-800 " target="_parent">
           มีบัญชีแล้ว Log in
         </a>
-        <p className="textBody-small kmuttSignup">
+        <p className="textBody-small singup-kmutt">
           King Mongkut's University of Technology Thonburi
         </p>
         {error && <p className="text-red-500 text-center mt-2">{error.message}</p>}
       </div>
                 </div>
-                <img className="hcu" src={HCU} alt="health care unit" />
+                <img className="login-hcu-image" src={HCU} alt="health care unit" />
             </div>
                 
        

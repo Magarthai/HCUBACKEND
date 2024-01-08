@@ -4,7 +4,7 @@ body{
     background-color: #ffffff;
 }
 @media(min-width:300px){
-    body{
+    /* body{
         width: 100%;
         padding:0%;
         
@@ -48,13 +48,8 @@ body{
     .textButton-Normal{
         font-size: 18px;
         font-weight: 500;
-    }
-    .logo{
-        width: 130px;
-        height: 75px;
-        margin-bottom: 10px;
-    }
-    .colorPrimary-50{
+    } */
+    /* .colorPrimary-50{
         color: #eef2f7;
     }
     .colorPrimary-100{
@@ -71,8 +66,8 @@ body{
     }
     .colorNeutralBlack-50{
         color: #F2F2F2;
-    }
-    .form-control::placeholder {
+    } */
+    /* .form-control::placeholder {
         font-size: 16px;
         font-weight: 300;
         color: #BABABA; 
@@ -82,8 +77,8 @@ body{
         height: 40px;
         margin-bottom: 10px;
         color: #263A50;
-    }
-    .btn-primary{
+    } */
+    /* .btn-primary{
         height: 58px;
         width: 100%;
         border-radius: 8px;
@@ -93,8 +88,8 @@ body{
         font-size: 18px;
         font-weight: 500;
         margin-bottom: 15px;
-    }
-    .btn-secondary{
+    } */
+    /* .btn-secondary{
         height: 43px;
         width: 100%;
         border-radius: 8px;
@@ -112,17 +107,8 @@ body{
     hr{
         border: 3px solid #1b1b1b;
         border-radius: 5px;
-    }
-    .flexbox{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: stretch;
-        box-sizing: border-box;
-        height: 100vh;
-        
-    }
+    } */
+     /* 
     select{
         height: 40px;
         width: 100%;
@@ -140,56 +126,57 @@ body{
         font-weight: 400;
         color: #263A50; 
     }
-    .signup{
-        margin-bottom:10%;
-    }
-    input[disabled]{
-        background-color: #BABABA;
-    }
-    .kmuttSignup{
-        margin-top: 5%;
-        padding: 0px 15%;
-    }
     option{
         color: #263A50;
     }
     select.selected option:checked{
         background-color: #ABD9D8;
         color: #263A50;
+    } */
+    .login-flexbox{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        height: 100vh;
+        
     }
-    .hcu{
+    .login-hcu-image{
         display: none;
         
     }
-    .item{
+    .login-flexbox-item{
         box-sizing: border-box;
 	    width: 100%;
 	    padding: 7%;
         height: auto;
     }
-    .btn-primary{
-        height: 43px;
-        width: 100%;
-        border-radius: 8px;
-        border: 0px solid #ffffff;
-        color: #F2F2F2;
-        background-color: #263A50;
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 15px;
+    .signup-hearder{
+        margin-bottom:10%;
     }
-    .kmutt{
+    .singup-kmutt{
+        margin-top: 5%;
+        padding: 0px 15%;
+    }
+    .login-kmutt{
         margin-top: 14%;
         padding: 0px 15%;
     }
-    .login {
+    .login-hearder{
         margin-bottom: 14%;
     }
-    .logo{
+    /* .logo{
+        width: 130px;
+        height: 75px;
+        margin-bottom: 10px;
+    } */
+    /* .logo{
         width: 100px;
         height: 65px;
         margin-bottom: 10px;
-    }
+    } */
     .profile{
         display: flex;
         flex-direction: row;
@@ -201,7 +188,7 @@ body{
     }
 }
 @media(min-width:600px){
-    .hcu{
+    .login-hcu-image{
         display: block;
         box-sizing: border-box;
         width: 50%;
@@ -211,23 +198,23 @@ body{
         
         
     }
-    .item{
+    .login-flexbox-item{
         box-sizing: border-box;
 	    width: 50%;
 	    padding: 2%;
         height: auto;
     }
-    .login {
+    .login-hearder{
         margin-bottom: 24%;
     }
-    .kmutt{
+    .login-kmutt{
         margin-top: 17%;
        
     }
     
 }
 @media(min-width:900px){
-    .hcu{
+    .login-hcu-image{
         display: block;
         box-sizing: border-box;
         width: 65%;
@@ -237,32 +224,32 @@ body{
         
         
     }
-    .item{
+    .login-flexbox-item{
         box-sizing: border-box;
 	    width: 35%;
 	    padding: 2%;
         height: auto;
     }
-    .login {
+    .login-hearder{
         margin-bottom: 26%;
     }
-    .kmutt{
+    .login-kmutt{
         margin-top: 19%;
        
     }
 }
 @media(min-width:1200px){
-    .item{
+    .login-flexbox-item{
         width: 30%;
     }
-    .hcu{
+    .login-hcu-image{
         width: 70%;
     }
-    .kmutt{
-        margin-top: 15%;
+    .login-kmutt{
+        margin-top: 20%;
        
     }
-    .login {
-        margin-bottom: 15%;
+    .login-hearder{
+        margin-bottom: 20%;
     }
 }

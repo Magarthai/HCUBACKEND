@@ -7,6 +7,7 @@ import logo from "../picture/LogoHCU.png";
 import { auth } from '../firebase/config';
 import HCU from "../picture/HCU.jpg";
 import "../css/Login&SignupComponent.css";
+import "../css/Component.css";
 import { useUserAuth } from "../context/UserAuthContext";
 
 const LoginComponent = () => {
@@ -70,9 +71,9 @@ const LoginComponent = () => {
 
     return (
         <div>
-            <div className="flexbox">
-                <div className="item">
-                    <header className="login ">
+            <div className="login-flexbox">
+                <div className="login-flexbox-item">
+                    <header className="login-hearder">
                         <img className="logo" src={logo} alt="logo health care unit" />
                         <h3 className="colorPrimary-800">Health Care Unit</h3>
                         <p className="textBody-medium colorPrimary-800">กลุ่มงานบริการสุขภาพและอนามัย</p>
@@ -80,11 +81,11 @@ const LoginComponent = () => {
                     </header>
 
                     <form onSubmit={submitForm}>
-                        <h3 className="colorPrimary-800">Login</h3>
+                        <h2 className="colorPrimary-800">Login</h2>
 
 
                         <div>
-                            <label className="textBody-huge colorPrimary-800">E-mail</label>
+                            <label className="textBody-big colorPrimary-800">E-mail</label>
                             <input
                                 type="email"
                                 className="form-control"
@@ -97,7 +98,7 @@ const LoginComponent = () => {
 
 
                         <div>
-                            <label className="textBody-huge colorPrimary-800">Password</label>
+                            <label className="textBody-big colorPrimary-800">Password</label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -121,12 +122,12 @@ const LoginComponent = () => {
 
                     <div className="center">
                         <a href="/signup" role="button" className="colorPrimary-800" >ยังไม่มีบัญชี? Sign up</a>
-                        <p className="textBody-small kmutt">King Mongkut's University of Technology Thonburi</p>
+                        <p className="textBody-small login-kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 
                 </div>
 
-                <img className="hcu" src={HCU} alt="health care unit" />
+                <img className="login-hcu-image" src={HCU} alt="health care unit" />
             </div>
 
 
