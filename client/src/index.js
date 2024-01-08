@@ -71,7 +71,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/AppointmentDetail",
-    element: <ProtectAdminRoute><AppointmentDetail/></ProtectAdminRoute>
+    element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
   },
   {
     path: "/AllAppointmentUser",
