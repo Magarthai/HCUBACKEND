@@ -3,7 +3,7 @@ import "../css/CalendarComponent.css";
 
 const CalendarAdminComponent = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // Adjusted to start from 1
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [daysArray, setDaysArray] = useState([]);
   const months = [
@@ -13,7 +13,7 @@ const CalendarAdminComponent = (props) => {
   const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const handleDateClick = (day) => {
-    const selectedDate = new Date(currentYear, currentMonth, day);
+    const selectedDate = new Date(currentYear, currentMonth - 1, day);
     const dayName = selectedDate.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
 
     const formattedSelectedDate = {
@@ -26,11 +26,12 @@ const CalendarAdminComponent = (props) => {
     setSelectedDate(formattedSelectedDate);
     props.onDateSelect(formattedSelectedDate);
   };
+
   const renderCalendar = () => {
-    let firstDayofMonth = new Date(currentYear, currentMonth, 1).getDay();
-    let lastDateofMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    let lastDayofMonth = new Date(currentYear, currentMonth, lastDateofMonth).getDay();
-    let lastDateofLastMonth = new Date(currentYear, currentMonth, 0).getDate();
+    let firstDayofMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
+    let lastDateofMonth = new Date(currentYear, currentMonth, 0).getDate();
+    let lastDayofMonth = new Date(currentYear, currentMonth - 1, lastDateofMonth).getDay();
+    let lastDateofLastMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
     let days = [];
 
     for (let i = firstDayofMonth; i > 0; i--) {
@@ -40,8 +41,8 @@ const CalendarAdminComponent = (props) => {
     for (let i = 1; i <= lastDateofMonth; i++) {
       const isToday =
         i === new Date().getDate() &&
-          currentMonth === new Date().getMonth() &&
-          currentYear === new Date().getFullYear()
+        currentMonth === new Date().getMonth() + 1 &&
+        currentYear === new Date().getFullYear()
           ? "active"
           : "";
 
@@ -49,9 +50,9 @@ const CalendarAdminComponent = (props) => {
 
       if (
         (i >= new Date().getDate() &&
-          currentMonth === new Date().getMonth() &&
+          currentMonth === new Date().getMonth() + 1 &&
           currentYear === new Date().getFullYear()) ||
-        (currentMonth > new Date().getMonth() &&
+        (currentMonth > new Date().getMonth() + 1 &&
           currentYear === new Date().getFullYear()) ||
         (currentYear > new Date().getFullYear())
       ) {
@@ -77,6 +78,13 @@ const CalendarAdminComponent = (props) => {
     console.log("Selected Date:", selectedDate);
   }, [currentMonth, currentYear, selectedDate]);
 
+  useEffect(() => {
+    // Set selectedDate to the current date if it's initially null
+    if (!selectedDate) {
+      const currentDate = new Date();
+      handleDateClick(currentDate.getDate());
+    }
+  }, [selectedDate]);
   return (
     <div className="wrapper">
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -86,19 +94,19 @@ const CalendarAdminComponent = (props) => {
             id="prev"
             className="material-symbols-outlined"
             onClick={() => {
-              setCurrentMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1));
-              setCurrentYear((prevYear) => (currentMonth === 0 ? prevYear - 1 : prevYear));
+              setCurrentMonth((prevMonth) => (prevMonth === 1 ? 12 : prevMonth - 1));
+              setCurrentYear((prevYear) => (currentMonth === 1 ? prevYear - 1 : prevYear));
             }}
           >
             chevron_left
           </span>
-          <p className="current-date">{months[currentMonth]} {currentYear}</p>
+          <p className="current-date">{months[currentMonth - 1]} {currentYear}</p>
           <span
             id="next"
             className="material-symbols-outlined"
             onClick={() => {
-              setCurrentMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1));
-              setCurrentYear((prevYear) => (currentMonth === 11 ? prevYear + 1 : prevYear));
+              setCurrentMonth((prevMonth) => (prevMonth === 12 ? 1 : prevMonth + 1));
+              setCurrentYear((prevYear) => (currentMonth === 12 ? prevYear + 1 : prevYear));
             }}
           >
             chevron_right

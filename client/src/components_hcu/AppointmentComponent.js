@@ -9,12 +9,17 @@ import "../css/AdminAppointmentComponent.css";
 import { addDoc } from 'firebase/firestore';
 
 const AppointmentComponent = (props) => {
+    const [selectedDate, setSelectedDate] = useState(null);
     const [showTime, setShowTime] = useState(getShowTime);
     const [userData, setUserData] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
     const { user } = useUserAuth();
-
+    const handleDateSelect = (selectedDate) => {
+        console.log("Selected Date in AppointmentManager:", selectedDate);
+        setSelectedDate(selectedDate); // Update the selected date state
+        // You can perform any additional actions based on the selected date
+    };
     useEffect(() => {
         document.title = 'Health Care Unit';
 
@@ -118,12 +123,18 @@ const AppointmentComponent = (props) => {
                 <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>
             <div className="flex">
-                <CalendarAdminComponent />
+            <CalendarAdminComponent
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                    onDateSelect={handleDateSelect}
+                />
                 <div className="box">
                     <div >
                         <div className="box-header-container">
                             <div className="box-header colorPrimary-800 system-top-item"><h3>นัดหมายคลินิกทั่วไป</h3></div>
-                            <div className="box-date colorPrimary-800 system-top-item textBody-large">13/12/2023</div>
+                            <div className="box-date colorPrimary-800 system-top-item textBody-large">{selectedDate
+                                        ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
+                                        : `${date}/${month}/${year}`}</div>
                         </div>
                         <div className="box-list colorPrimary-800">
                             <div className="box-userapointment">

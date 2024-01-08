@@ -13,11 +13,11 @@ const AppointmentManagerComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateSelect = (selectedDate) => {
-    console.log("Selected Date in AppointmentManager:", selectedDate);
-    setSelectedDate(selectedDate); // Update the selected date state
-    // You can perform any additional actions based on the selected date
-  };
+    const handleDateSelect = (selectedDate) => {
+        console.log("Selected Date in AppointmentManager:", selectedDate);
+        setSelectedDate(selectedDate); // Update the selected date state
+        // You can perform any additional actions based on the selected date
+    };
     const [state, setState] = useState({
         appointmentDate: "",
         appointmentTime: "",
@@ -29,7 +29,7 @@ const AppointmentManagerComponent = (props) => {
     })
 
 
-    const {appointmentDate,appointmentTime,appointmentId,appointmentCasue,appointmentSymptom,appointmentNotation,clinic} = state
+    const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic } = state
     const inputValue = (name) => (event) => {
         if (name === "addDay") {
             setState({ ...state, [name]: event.target.value });
@@ -39,70 +39,46 @@ const AppointmentManagerComponent = (props) => {
     };
 
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
-    const [zoomLevel, setZoomLevel] = useState(1); 
+    const [zoomLevel, setZoomLevel] = useState(1);
     const [loading, setLoading] = useState(true); // Added loading state
     const animationFrameRef = useRef();
-    const { user } = useUserAuth();
+    const { user, userData } = useUserAuth();
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const usersCollection = collection(db, 'users');
-                    const usersSnapshot = await getDocs(usersCollection);
-    
-                    const usersData = usersSnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                    ...doc.data(),
-                    }));
-    
-                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-    
-                if (currentUserData) {
-                    setUserData(currentUserData);
-                    console.log(currentUserData);
-                } else {
-                    console.log("User not found");
-                }}
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-        fetchUserData();
+
+
         const responsivescreen = () => {
-        const innerWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-        setZoomLevel(newZoomLevel);
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
         console.log(selectedDate)
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {
-        const newTime = getShowTime();
-        if (newTime !== showTime) {
-            setShowTime(newTime);
-        }
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
-  
+
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
-  
-    // Fetch user data when the component mounts
-    
-  
+
+        // Fetch user data when the component mounts
+
+
         return () => {
-        cancelAnimationFrame(animationFrameRef.current);
-        window.removeEventListener("resize", responsivescreen);
+            cancelAnimationFrame(animationFrameRef.current);
+            window.removeEventListener("resize", responsivescreen);
         };
-    
-    }, [user,selectedDate]); 
+
+    }, [user, selectedDate]);
     const containerStyle = {
-    zoom: zoomLevel,
+        zoom: zoomLevel,
     };
 
 
@@ -134,10 +110,10 @@ const AppointmentManagerComponent = (props) => {
     };
 
     const submitForm = async (e) => {
-  
+
     };
     const submitEditForm = async (e) => {
-  
+
     };
 
     const openDetailAppointment = (element) => {
@@ -169,7 +145,7 @@ const AppointmentManagerComponent = (props) => {
 
 
         }
-        
+
     }
 
     const openEditAppointment = () => {
@@ -186,11 +162,11 @@ const AppointmentManagerComponent = (props) => {
 
 
         }
-        
+
     }
 
-    const DeleteAppointment = ()  => {
-    
+    const DeleteAppointment = () => {
+
         Swal.fire({
             title: 'ลบนัดหมาย',
             text: `วันที่ 15/12/2023 เวลา 13:01 - 13:10`,
@@ -206,7 +182,7 @@ const AppointmentManagerComponent = (props) => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                try{
+                try {
                     Swal.fire(
                         {
                             title: 'Deleted!',
@@ -218,15 +194,15 @@ const AppointmentManagerComponent = (props) => {
                                 confirmButton: 'custom-confirm-button',
                             }
                         })
-                        // .then((result) => {
-                        //     if (result.isConfirmed) {
-                                
-                        //     }
-                        // });
+                    // .then((result) => {
+                    //     if (result.isConfirmed) {
+
+                    //     }
+                    // });
                 } catch {
 
                 }
-                
+
             } else if (
                 result.dismiss === Swal.DismissReason.cancel
             ) {
@@ -247,7 +223,7 @@ const AppointmentManagerComponent = (props) => {
 
     }
 
-    
+
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -270,21 +246,21 @@ const AppointmentManagerComponent = (props) => {
                 <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>
             <div className="flex">
-            <CalendarAdminComponent
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        onDateSelect={handleDateSelect}
-      />
+                <CalendarAdminComponent
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                    onDateSelect={handleDateSelect}
+                />
                 <div className="box">
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
                                 <h3>นัดหมายคลินิกทั่วไป</h3>
                                 <p className="textBody-large">
-                  {selectedDate
-                    ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
-                    : "Select a date"}
-                </p>
+                                    {selectedDate
+                                        ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
+                                        : `${date}/${month}/${year}`}
+                                </p>
 
                             </div>
                             <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
@@ -293,17 +269,17 @@ const AppointmentManagerComponent = (props) => {
                             <div className="box-userapointment" >
                                 <div className="time-apppoint textBody-medium" onClick={openDetailAppointment}>13:01-13:06</div>
                                 <div className="appoint-info">
-                                    <div className="user-appointment-info flex-column"  onClick={openDetailAppointment}>
+                                    <div className="user-appointment-info flex-column" onClick={openDetailAppointment}>
                                         <p id="student-id" className="textBody-huge">64090500440</p>
                                         <p id="student-name" className="textBody-medium">uvuvwevwevwe onyetenyevwe</p>
                                     </div>
                                     <div className="appointment-function">
-                                        <img src={edit} className="icon"  onClick={openEditAppointment}/>
-                                        <img src={icon_delete} className="icon" onClick={DeleteAppointment}/>
+                                        <img src={edit} className="icon" onClick={openEditAppointment} />
+                                        <img src={icon_delete} className="icon" onClick={DeleteAppointment} />
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -327,8 +303,8 @@ const AppointmentManagerComponent = (props) => {
                             <div>
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
                                 <p className="textBody-big">{selectedDate
-                    ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
-                    : "Select a date"}</p>
+                                    ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
+                                    : "Select a date"}</p>
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
@@ -337,90 +313,90 @@ const AppointmentManagerComponent = (props) => {
                                     value={appointmentTime}
                                     onChange={(e) => { inputValue("appointmentTime")(e); handleSelectChange(); }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
-                            >
-                            <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
-                        </div>
+                                >
+                                    <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                            </div>
                             <button type="button" onClick={openAddAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
                             <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
                         </form>
                     </div>
                     <div id="edit-appointment" className="colorPrimary-800">
-                    <form onSubmit={submitForm}>
+                        <form onSubmit={submitForm}>
                             <h3 className="center">แก้ไขนัดหมาย</h3>
                             <div className="center-container">
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
                                 <br></br>
                                 <div className="datepicker">
-                                <DatePicker
-                className="select-date-appointment"
-                selected={selectedDate instanceof Date ? selectedDate : null}
-                onChange={(date) => setSelectedDate(date)}
-                dateFormat="yyyy-MM-dd"
-                placeholderText="Select date"
-                popperPlacement="bottom-end"
-                popperModifiers={{
-                  flip: {
-                    behavior: ['bottom'],
-                  },
-                  preventOverflow: {
-                    enabled: true,
-                    padding: 10,
-                  },
-                }}
-              />
-            </div>
+                                    <DatePicker
+                                        className="select-date-appointment"
+                                        selected={selectedDate instanceof Date ? selectedDate : null}
+                                        onChange={(date) => setSelectedDate(date)}
+                                        dateFormat="yyyy-MM-dd"
+                                        placeholderText="Select date"
+                                        popperPlacement="bottom-end"
+                                        popperModifiers={{
+                                            flip: {
+                                                behavior: ['bottom'],
+                                            },
+                                            preventOverflow: {
+                                                enabled: true,
+                                                padding: 10,
+                                            },
+                                        }}
+                                    />
+                                </div>
                             </div>
-                            <div> 
+                            <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="time"
                                     value={appointmentTime}
                                     onChange={(e) => { inputValue("appointmentTime")(e); handleSelectChange(); }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
-                            >
-                            <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
-                        </div>
-                        <div>
-                            <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                            <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
-                        </div>
+                                >
+                                    <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                            </div>
                             <button type="button" onClick={openEditAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
                             <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
-                        
+
                         </form>
                     </div>
                 </div>
-               
+
             </div>
 
 
