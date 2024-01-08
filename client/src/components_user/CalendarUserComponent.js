@@ -2,87 +2,89 @@ import React, { useEffect, useState } from "react";
 import "../css/CalendarComponent.css";
 
 const CalendarUserComponent = (props) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
-
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // Adjusted to start from 1
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [daysArray, setDaysArray] = useState([]);
   const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
-  const dateElements = document.querySelectorAll(".calendar .days li");
-  dateElements.forEach((dateElement) => {
-    dateElement.addEventListener("click", handleDateClick);
-  });
+  const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const currentDateElement = document.querySelector(".current-date");
-  const dayTag = document.querySelector(".days");
-  const prevNextIcon = document.querySelectorAll(".icons span");
+  const handleDateClick = (day) => {
+    const selectedDate = new Date(currentYear, currentMonth - 1, day);
+    const dayName = selectedDate.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+
+    const formattedSelectedDate = {
+      day: day,
+      month: currentMonth,
+      year: currentYear,
+      dayName: dayName,
+    };
+
+    setSelectedDate(formattedSelectedDate);
+    props.onDateSelect(formattedSelectedDate);
+  };
 
   const renderCalendar = () => {
-    let firstDayofMonth = new Date(currentYear, currentMonth, 1).getDay();
-    let lastDateofMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    let lastDayofMonth = new Date(currentYear, currentMonth, lastDateofMonth).getDay();
-    let lastDateofLastMonth = new Date(currentYear, currentMonth, 0).getDate();
-    let liTag = "";
+    let firstDayofMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
+    let lastDateofMonth = new Date(currentYear, currentMonth, 0).getDate();
+    let lastDayofMonth = new Date(currentYear, currentMonth - 1, lastDateofMonth).getDay();
+    let lastDateofLastMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
+    let days = [];
 
     for (let i = firstDayofMonth; i > 0; i--) {
-      liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+      days.push(<li key={`inactive-prev-${lastDateofLastMonth - i + 1}`} className="inactive">{lastDateofLastMonth - i + 1}</li>);
     }
 
     for (let i = 1; i <= lastDateofMonth; i++) {
-      let isToday =
-        i === currentDate.getDate() &&
-        currentMonth === currentDate.getMonth() &&
-        currentYear === currentDate.getFullYear()
+      const isToday =
+        i === new Date().getDate() &&
+        currentMonth === new Date().getMonth() + 1 &&
+        currentYear === new Date().getFullYear()
           ? "active"
           : "";
 
-      liTag += `<li class="${isToday}" data-day="${i}">${i}</li>`;
+      const handleClick = () => handleDateClick(i);
+
+      if (
+        (i >= new Date().getDate() &&
+          currentMonth === new Date().getMonth() + 1 &&
+          currentYear === new Date().getFullYear()) ||
+        (currentMonth > new Date().getMonth() + 1 &&
+          currentYear === new Date().getFullYear()) ||
+        (currentYear > new Date().getFullYear())
+      ) {
+        days.push(
+          <li key={`active-${i}`} className={isToday} onClick={handleClick}>
+            {i}
+          </li>
+        );
+      } else {
+        days.push(<li key={`inactive-current-${i}`} className="inactive">{i}</li>);
+      }
     }
 
     for (let i = lastDayofMonth; i < 6; i++) {
-      liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`;
+      days.push(<li key={`inactive-next-${i - lastDayofMonth + 1}`} className="inactive">{i - lastDayofMonth + 1}</li>);
     }
 
-
-    currentDateElement.innerHTML = `${months[currentMonth]} ${currentYear}`;
-    dayTag.innerHTML = liTag;
-
-    const dateElements = document.querySelectorAll(".days li");
-    dateElements.forEach((dateElement) => {
-      dateElement.removeEventListener("click", handleDateClick);
-      dateElement.addEventListener("click", handleDateClick);
-    });
-  };
-
-  const handleDateClick = (event) => {
-    const selectedDate = event.currentTarget.dataset.day;
-    setCurrentDate(new Date(currentYear, currentMonth, selectedDate));
-
-    // Remove the 'selected' class from all date elements
-    const dateElements = document.querySelectorAll(".days li");
-    dateElements.forEach((dateElement) => {
-      dateElement.classList.remove("selected");
-    });
-
-    // Add the 'selected' class to the clicked date
-    event.currentTarget.classList.add("selected");
+    setDaysArray(days);
   };
 
   useEffect(() => {
     renderCalendar();
-  }, [currentMonth, currentYear]);
+    console.log("Selected Date:", selectedDate);
+  }, [currentMonth, currentYear, selectedDate]);
 
   useEffect(() => {
-    prevNextIcon.forEach((icon) => {
-      icon.addEventListener("click", () => {
-        setCurrentMonth((prevMonth) => (icon.id === "prev" ? (prevMonth === 0 ? 11 : prevMonth - 1) : (prevMonth === 11 ? 0 : prevMonth + 1)));
-        setCurrentYear((prevYear) => (icon.id === "prev" ? (currentMonth === 0 ? prevYear - 1 : prevYear) : (currentMonth === 11 ? prevYear + 1 : prevYear)));
-      });
-    });
-  }, []);
-
+    // Set selectedDate to the current date if it's initially null
+    if (!selectedDate) {
+      const currentDate = new Date();
+      handleDateClick(currentDate.getDate());
+    }
+  }, [selectedDate]);
   return (
     <div className="wrapper" id="userCalendar">
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />

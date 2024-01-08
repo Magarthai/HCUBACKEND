@@ -47,7 +47,7 @@ const AppointmentManagerComponent = (props) => {
     const [isChecked, setIsChecked] = useState({});
     const fetchTimeTableData = async () => {
         try {
-            if (user && selectedDate) {
+            if (user) {
                 const timeTableCollection = collection(db, 'timeTable');
                 const timeTableSnapshot = await getDocs(timeTableCollection);
     
@@ -56,22 +56,32 @@ const AppointmentManagerComponent = (props) => {
                     ...doc.data(),
                 }));
     
-                if (timeTableData) {
-                    // Find the timetable for the selected day
-                    const selectedDayTimetable = timeTableData.find(item => item.addDay.toLowerCase() === selectedDate.dayName.toLowerCase());
+                if (timeTableData.length > 0) {
+                    // Filter timeTableData based on addDay and timeTableclinic properties
+                    const filteredTimeTableData = timeTableData.filter(
+                        (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
+                    );
     
-                    if (selectedDayTimetable) {
-                        setTimetable(selectedDayTimetable.timeablelist);
+                    if (filteredTimeTableData.length > 0) {
+                        // Combine all timeablelists into a single array
+                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                                acc.push(...item.timeablelist);
+                            }
+                            return acc;
+                        }, []);
     
-                        const initialIsChecked = selectedDayTimetable.timeablelist.reduce((acc, timetableItem) => {
+                        setTimetable(allTimeableLists);
+    
+                        const initialIsChecked = allTimeableLists.reduce((acc, timetableItem) => {
                             acc[timetableItem.id] = timetableItem.status === "Enabled";
                             return acc;
                         }, {});
     
                         setIsChecked(initialIsChecked);
-                        console.log(selectedDayTimetable.timeablelist);
+                        console.log(allTimeableLists);
                     } else {
-                        console.log("Timetable not found for the selected day");
+                        console.log("Time table not found for selected day and clinic");
                     }
                 } else {
                     console.log("Time table not found");
@@ -82,11 +92,14 @@ const AppointmentManagerComponent = (props) => {
         }
     };
     
+    
+    
+    
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-
+        console.log(selectedDate.dayName)
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
             const baseWidth = 1920;
