@@ -39,40 +39,16 @@ const AppointmentManagerComponent = (props) => {
     };
 
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1); 
     const [loading, setLoading] = useState(true); // Added loading state
     const animationFrameRef = useRef();
-    const { user } = useUserAuth();
+    const { user, userData } = useUserAuth();
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
         
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const usersCollection = collection(db, 'users');
-                    const usersSnapshot = await getDocs(usersCollection);
-    
-                    const usersData = usersSnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                    ...doc.data(),
-                    }));
-    
-                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-    
-                if (currentUserData) {
-                    setUserData(currentUserData);
-                    console.log(currentUserData);
-                } else {
-                    console.log("User not found");
-                }}
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-        fetchUserData();
+       
         const responsivescreen = () => {
         const innerWidth = window.innerWidth;
         const baseWidth = 1920;
@@ -283,7 +259,7 @@ const AppointmentManagerComponent = (props) => {
                                 <p className="textBody-large">
                   {selectedDate
                     ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
-                    : "Select a date"}
+                    : `${date}/${month}/${year}`}
                 </p>
 
                             </div>
