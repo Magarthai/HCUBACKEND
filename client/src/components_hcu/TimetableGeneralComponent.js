@@ -463,9 +463,9 @@ const TimetableGeneralComponent = (props) => {
 
 
     return (
-        <div className="appointment-" style={containerStyle}>
+        <div style={containerStyle}>
             <NavbarComponent />
-            <div className="topicBox colorPrimary-800">
+            <div className="admin-timetable-topicBox colorPrimary-800">
                 <div></div>
                 <div>
                     <h1 className="center">ช่วงเวลาเข้าทำการแพทย์</h1>
@@ -482,13 +482,13 @@ const TimetableGeneralComponent = (props) => {
                 <a href="/timeTableNeedleAdmin" target="_parent" >คลินิกฝั่งเข็ม</a>
             </div>
 
-            <div className="system">
-                <div className="system-item">
-                    <div className="system-top">
-                        <h2 className="colorPrimary-800 system-top-item">ช่วงเวลาเข้าทำการแพทย์</h2>
-                        <button className="system-top-item" onClick={openAddtimetable}>เพิ่มเวลา +</button>
+            <div className="admin-timetable-system">
+                <div className="admin-timetable-system-item">
+                    <div className="admin-timetable-system-top">
+                        <h2 className="colorPrimary-800 admin-timetable-system-top-item">ช่วงเวลาเข้าทำการแพทย์</h2>
+                        <button className="admin-timetable-system-top-item" onClick={openAddtimetable}>เพิ่มเวลา +</button>
                     </div>
-                    <div className="system-detail">
+                    <div className="admin-timetable-system-detail">
                         <h3 className="colorPrimary-800">วันจันทร์</h3>
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
@@ -637,15 +637,15 @@ const TimetableGeneralComponent = (props) => {
                     </div>
                 </div>
 
-                <div className="system-item border-L">
+                <div className="admin-timetable-system-item border-L">
 
                     <div id="Addtimetable">
                         <form onSubmit={submitForm}>
                             <div>
-                                <button type="button" onClick={openAddtimetable} className="colorPrimary-800 " id="backTopic"><h3>❮  ช่วงเวลาเข้าทำการแพทย์</h3></button>
+                                <button type="button" onClick={openAddtimetable} className="colorPrimary-800" id="backTopic">❮  เพิ่มช่วงเวลาเข้าทำการแพทย์</button>
                             </div>
-                            <h2 className="colorPrimary-800">คลินิก</h2>
-                            <p className="admin-textBody-big">คลินิกทั่วไป</p>
+                            <h2 className=" colorPrimary-800">คลินิกทั่วไป</h2>
+                            {/* <p className="admin-textBody-big"> : คลินิกทั่วไป</p> */}
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">วัน</label>
                                 <select
@@ -705,24 +705,26 @@ const TimetableGeneralComponent = (props) => {
                                 <span className="admin-textBody-large"> คิว</span>
 
                             </div>
-                            <button type="button" onClick={openAddtimetable} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="เพิ่มช่วงเวลา" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled} />
+                            <div className="admin-timetable-btn">
+                                <button type="button" onClick={openAddtimetable} className="btn-secondary btn-systrm">กลับ</button>
+                                <input type="submit" value="เพิ่มช่วงเวลา" className="btn-primary btn-systrm" target="_parent" disabled={isSubmitEnabled} />
+                            </div>
                         </form>
                     </div>
                     <div id="Edittimetable">
                         <form onSubmit={editForm}>
                             <div>
-                                <button type="button" onClick={() => openEdittimetable()} className="colorPrimary-800" id="backTopic"><h3>❮ แก้ไขเวลาเข้าทำการแพทย์</h3></button>
+                                <button type="button" onClick={() => openEdittimetable()} className="colorPrimary-800" id="backTopic">❮ แก้ไขเวลาเข้าทำการแพทย์</button>
                             </div>
-                            <h2 className="colorPrimary-800">คลินิก</h2>
-                            <p className="admin-textBody-big">คลินิกทั่วไป</p>
+                            <h2 className=" colorPrimary-800">คลินิกทั่วไป</h2>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="Day"
                                     value={addDay}
                                     onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
-                                    className={selectedCount >= 2 ? 'selected' : ''}
+                                    className={ selectedCount >= 2 ? 'selected' : ''}
+                                   
                                 >
                                     <option value="" disabled> กรุณาเลือกวัน </option>
                                     <option value="monday">วันจันทร์</option>
@@ -775,8 +777,10 @@ const TimetableGeneralComponent = (props) => {
                                 <span> คิว</span>
 
                             </div>
-                            <button type="button" onClick={() => openEdittimetable()} className="btn-secondary" id="btn-systrm" >กลับ</button>
-                            <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                            <div className="admin-timetable-btn">
+                                <button type="button" onClick={() => openEdittimetable()} className="btn-secondary btn-systrm" >กลับ</button>
+                                <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary btn-systrm" target="_parent" />
+                            </div>
                         </form>
                     </div>
                     <div id="Detailtimetable" className="colorPrimary-800">

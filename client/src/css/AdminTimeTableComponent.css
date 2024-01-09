@@ -4,12 +4,7 @@ body{
     background-color: #ffffff;
 }
 @media(min-width:300px){
-    body{
-        width: 100%;
-        padding:0%;
-        height:100%;
-    }
-    .topicBox{
+    .admin-timetable-topicBox{
         margin-top: 30px;
         display: flex;
         flex-direction: row;
@@ -19,7 +14,7 @@ body{
         box-sizing: border-box;
         margin-bottom: 50px;
     }
-    .topicBox div{
+    .admin-timetable-topicBox div{
         box-sizing: border-box;
 	    width: 33.3%;
     }
@@ -27,10 +22,10 @@ body{
         text-align: right;
         padding-right: 4%;
     }
-    .box-header-container{
+    /* .box-header-container{
         margin-top: 10px;
-    }
-    .system{
+    } */
+    .admin-timetable-system{
         margin: 0% 4%;
         display: flex;
         flex-direction: row;
@@ -44,32 +39,28 @@ body{
         /* border-radius: 10px; */
         margin-bottom: 10px;
     }
-    .system-item{
+    .admin-timetable-system-item{
         box-sizing: border-box;
 	    width: 50%;
         padding: 2% 2% 0% 2%;
     }
-    .system-detail{
+    .admin-timetable-system-detail{
         overflow-y: scroll;
         height: 520px;
-        margin-top: 10px;
-        
+        margin-top: 10px; 
     }
-    .system-detail::-webkit-scrollbar {
+    .admin-timetable-system-detail::-webkit-scrollbar {
         width: 5px; 
         margin: 5px;
     }
-    
-    .system-detail::-webkit-scrollbar-thumb {
+    .admin-timetable-system-detail::-webkit-scrollbar-thumb {
         background-color: #263A50;
         border-radius: 5px;
     }
-    
-    .system-detail::-webkit-scrollbar-track {
+    .admin-timetable-system-detail::-webkit-scrollbar-track {
         background-color: #D1D1D1;
         border-radius: 5px;
     }
-
     .border-L{
         border-left: 1px solid #121212;
     }
@@ -89,7 +80,7 @@ body{
         background-color: #DCE5EF;
         color: #456A91;
     }
-    .system-top{
+    .admin-timetable-system-top{
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -97,15 +88,12 @@ body{
         align-items: stretch;
         box-sizing: border-box;
         margin: 0px;
-    
     }
-    .system-top-item{
+    .admin-timetable-system-top-item{
         box-sizing: border-box;
 	    width: 50%;
-        
-       
     }
-    button.system-top-item{
+    button.admin-timetable-system-top-item{
         width: auto;
         height: 40px;
         background-color: #263A50;
@@ -115,10 +103,7 @@ body{
         border: 0px solid #12121200;
         margin-left: 33%;
         font-size: 18px;
-        
-    
     }
- 
     .row{
         margin: 0px 4% 2% 4%;
     }
@@ -135,7 +120,6 @@ body{
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
-
     }
     .card p{
         margin: 0px;
@@ -150,22 +134,12 @@ body{
 	    width: 18%;
         padding-top: 5px;
     }
-    .icon{
-        width: 30px;
-        height: 30px;
-        margin-left: 10px;
-        margin-top: -15px;
-    }
-    .icon:hover{
-        cursor: pointer;
-    }
     .toggle-switch {
         position: relative;
         display: inline-block;
         width: 42px;
         height: 24px;
-      }
-      
+    }
     .toggle-switch input {
         display: none;
     }
@@ -180,7 +154,6 @@ body{
         transition: 0.4s;
         border-radius: 24px;
     }
-      
     .slider:before {
         position: absolute;
         content: '';
@@ -192,11 +165,9 @@ body{
         transition: 0.4s;
         border-radius: 50%;
     }
-      
     .toggle-switch.checked .slider {
         background-color: #00BA34;
     }
-      
     .toggle-switch.checked input:checked + .slider:before {
         transform: translateX(19px);
     }
@@ -207,12 +178,29 @@ body{
         width: 140px;
         margin-bottom: 10px;
         color: #263A50;
-        
+    }
+
+    .admin-timetable-btn{
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        gap: 2%;
+
+    }
+    .admin-timetable-btn .btn-systrm{
+        width: 49%;
+        box-sizing: border-box;
+    
+    
     }
     #backTopic{
         width: 100%;
         background-color: #ffffff00;
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 500;
         color: #263A50;
         margin-left: -1%;
@@ -220,26 +208,28 @@ body{
         text-align: start;
         border: 0px;
     }
-    #btn-systrm{
-        width: 48%;
-        display: inline;
-        margin: 30px 1% 0% 1%;
-        
-   
-      
-        
-    }
-    .nameClinic p{
+    /* .nameClinic p{
         margin: 2px;
     }
-    .nameClinic {
+    .nameClinic{
         margin-bottom: 7px;
-    }
+    } */
     #Addtimetable{
         display: none;
     }
     #Edittimetable{
         display: none;
+    }
+    #Detailtimetable{
+        display: none;
+    }
+    #Detailtimetable p{
+        margin: 5px 0px;
+    }
+
+
+    #Detail p{
+        padding: 0px 30px;
     }
     .confirm{
         width: 72px !important;
@@ -250,16 +240,16 @@ body{
         width: 143px; 
     
     }
-    #Detailtimetable{
-        display: none;
+    .icon{
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+        margin-top: -15px;
     }
-    #Detailtimetable p{
-        margin: 5px 0px;
+    .icon:hover{
+        cursor: pointer;
     }
-    #Detail p{
-        padding: 0px 30px;
-    }
-   
+
 
 
 

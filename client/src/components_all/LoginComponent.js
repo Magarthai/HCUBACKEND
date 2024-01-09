@@ -81,7 +81,7 @@ const LoginComponent = () => {
                     </header>
 
                     <form onSubmit={submitForm}>
-                        <h2 className="colorPrimary-800">Login</h2>
+                        <h2 className="colorPrimary-800">Log in</h2>
 
 
                         <div>

@@ -158,7 +158,7 @@ const SignupComponent = (props) => {
                     </header>
             
         <form onSubmit={submitForm}>
-        <h2 className="colorPrimary-800">SIGNUP</h2>
+        <h2 className="colorPrimary-800">Sign up</h2>
         <div>
           <label className="textBody-big colorPrimary-800">ชื่อ</label>
           <input
