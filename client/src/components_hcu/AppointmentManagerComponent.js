@@ -43,12 +43,63 @@ const AppointmentManagerComponent = (props) => {
     const [loading, setLoading] = useState(true); // Added loading state
     const animationFrameRef = useRef();
     const { user, userData } = useUserAuth();
+    const [timetable, setTimetable] = useState([])
+    const [isChecked, setIsChecked] = useState({});
+    const fetchTimeTableData = async () => {
+        try {
+            if (user) {
+                const timeTableCollection = collection(db, 'timeTable');
+                const timeTableSnapshot = await getDocs(timeTableCollection);
+    
+                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+    
+                if (timeTableData.length > 0) {
+                    // Filter timeTableData based on addDay and timeTableclinic properties
+                    const filteredTimeTableData = timeTableData.filter(
+                        (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
+                    );
+    
+                    if (filteredTimeTableData.length > 0) {
+                        // Combine all timeablelists into a single array
+                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                                acc.push(...item.timeablelist);
+                            }
+                            return acc;
+                        }, []);
+    
+                        setTimetable(allTimeableLists);
+    
+                        const initialIsChecked = allTimeableLists.reduce((acc, timetableItem) => {
+                            acc[timetableItem.id] = timetableItem.status === "Enabled";
+                            return acc;
+                        }, {});
+    
+                        setIsChecked(initialIsChecked);
+                        console.log(allTimeableLists);
+                    } else {
+                        console.log("Time table not found for selected day and clinic");
+                    }
+                } else {
+                    console.log("Time table not found");
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    
+    
+    
+    
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-
-
+        console.log(selectedDate.dayName)
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
             const baseWidth = 1920;
@@ -70,7 +121,7 @@ const AppointmentManagerComponent = (props) => {
 
         // Fetch user data when the component mounts
 
-
+        fetchTimeTableData();
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);

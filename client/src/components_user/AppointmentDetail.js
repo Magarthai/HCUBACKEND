@@ -10,6 +10,7 @@ import logo1 from '../picture/logo-clinic1.png';
 import logo2 from '../picture/logo-clinic2.png';
 import logo3 from '../picture/logo-clinic3.png';
 import logo4 from '../picture/logo-clinic4.png';
+import CalendarUserComponent from "./CalendarUserComponent";
 const AppointmentDetail = (props) => {
     return (
         <div id='xd'>
@@ -43,7 +44,7 @@ const AppointmentDetail = (props) => {
 
 
             </div>
-
+        <CalendarUserComponent/>
     </div>
     </div>
     </div>

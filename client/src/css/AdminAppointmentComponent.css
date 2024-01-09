@@ -16,7 +16,6 @@ body{
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
-
     }
     .topicBox div{
         box-sizing: border-box;
@@ -28,24 +27,46 @@ body{
         padding-right: 4%;
     }
     .flex{
-        margin: 0% 3.8%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scale: 1.13;
+        margin-top: 100px;
+        overflow: auto;
+    }
+    .box{
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
+        /* background-color: #EEF2F7;
+        width: 30%;
+        height: 600px; */
         height: 640px;
         margin-bottom: 10px;
     }
     .box{
         border: 1px solid rgba(10, 15, 21, 0.482);
-        box-sizing: border-box;
-	    width: 600px;
-        padding: 0% 2% 0% 2%;
-        background-color: #EEF2F7;
-    
 
+        height: 456px;
+        z-index: -1;
+
+    }
+    .system-item{
+        box-sizing: border-box;
+	    width: 50%;
+        padding: 2% 2% 0% 2%;
+    }
+    .system-detail{
+        overflow-y: scroll;
+        height: 58vh;
+        
+    }
+
+    .border-L{
+        border-left: 1px solid #121212;
     }
     .clinic{
         margin: 0% 4% 1% 4%;
@@ -62,20 +83,46 @@ body{
         background-color: #263A50;
         color: #FBFFFF;
     }
+    .system-top{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+    
+    }
+    .system-top-item{
+        box-sizing: border-box;
+	    width: 50%;
+        font-weight: 500;
+        font-size: 20px;
+    
+    }
     .flex-column{
         display: flex;
         flex-direction: column;
     }
+    .box{
+        display: flex;
+        justify-content: center;
+    }
     .box-list {
         overflow-y: scroll;
-        height: 510px;
+        height: 380px;
         width: 100%;
-        padding-top: 10px;
     }
+    
+    .box-userapointment {
+        margin-bottom: 10px; 
+    }
+    
     .box-list::-webkit-scrollbar {
         width: 5px; 
         margin: 5px;
     }
+
+    
     .box-list::-webkit-scrollbar-thumb {
         background-color: #263A50;
         border-radius: 5px;
@@ -87,12 +134,13 @@ body{
     }
     
     .box-userapointment{
-        margin-bottom: 10px; 
         background-color: #FBFFFF;
-        height: 80px;
+        height: 65px;
+        color: #456A91;
         align-items: center;
         width:98%;
         display: flex;
+        margin-top: 10px;
         border-radius: 8px;
     }
     .time-apppoint{
@@ -104,6 +152,8 @@ body{
         height:100%;
     }
     #student-name{
+        font-weight: 300;
+        font-size: 15px;
         margin: 0;
         align-items: left;
         text-align: left;
@@ -114,7 +164,7 @@ body{
         justify-content: left;
         align-items: left;
         margin-left: 10px;
-        width: 75%;
+        width: 100%;
     }
     .appoint-info{
         
@@ -128,6 +178,8 @@ body{
         justify-content: space-between;
     }
     #student-id{
+        font-weight: 400;
+        font-size: 15px;
         margin: 0;
     }
     button.system-top-item{
@@ -281,7 +333,7 @@ body{
         color: #ffffff !important;
     }
     .custom-confirm-button,.custom-cancel-button{
-        width: 143px; 
+        width: 143px !important; 
     
     }
     #Detailtimetable{
@@ -293,96 +345,7 @@ body{
     #Detail p{
         padding: 0px 30px;
     }
-    .box-header{
-        font-size: 28px;
-        font-weight: 500;
-        margin-top: 20px;
-    }
    
-    #appointment-request-list{
-        margin-left: 950px;
-    }
-    .appointment-hearder{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: stretch;
-        box-sizing: border-box;
-        margin-top: 30px;
-    }
-    .appointment-hearder-item{
-        box-sizing: border-box;
-	    width: 50%;
-    }
-    button.appointment-hearder-item{
-        width: auto;
-        height: 40px;
-        background-color: #263A50;
-        color: #FBFFFF;
-        padding: 0px 20px;
-        border-radius: 20px;
-        border: 0px solid #12121200;
-        margin-left: 110px;
-        font-size: 18px;
-        
-    }
-    .appointment-function{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: stretch;
-        box-sizing: border-box;
-        width: 25%;
-        padding-top: 10px;
-    }
-    #detail-appointment-current-date{
-        display: block;
-        margin-top: 20px;
-    }
-    #detail-appointment-current-date p{
-        margin: 5px 0px;
-    }
-    #detail-appointment p{
-        margin: 5px 0px;
-    }
-    #detail-appointment{
-        display: none;
-        margin-top: 20px;
-    }
-    #add-appointment{
-        display: none;
-        margin-top: 20px;
-    }
-    #edit-appointment{
-        display: none;
-        margin-top: 20px;
-    }
-    .form-control.appointment-input{
-        display: inline;
-        border: 1px solid #0a0f157a;
-        height: 38px;
-        width: 100%;
-        margin-bottom: 10px;
-        color: #263A50;
-        position: relative;
-
-        
-    }
-    .select-date-appointment{
-        position: relative;
-        width: 100%;
-        border-radius: 5px;
-        width: 530px;
-        height: 38px;
-        padding-left: 10px;
-        z-index: 4; 
-
-    }
-
-
-
 
 
 
