@@ -39,7 +39,7 @@ body{
         align-items: stretch;
         box-sizing: border-box;
         background-color: #EEF2F7;
-        height: 680px;
+        height: 640px;
         border: 1px solid rgba(10, 15, 21, 0.482);
         /* border-radius: 10px; */
         margin-bottom: 10px;
@@ -51,7 +51,7 @@ body{
     }
     .system-detail{
         overflow-y: scroll;
-        height: 560px;
+        height: 520px;
         margin-top: 10px;
         
     }

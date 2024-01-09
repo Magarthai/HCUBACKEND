@@ -35,7 +35,6 @@ body{
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
-        
         height: 640px;
         margin-bottom: 10px;
     }
