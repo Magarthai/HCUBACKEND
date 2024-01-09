@@ -4,8 +4,8 @@ import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection } from "../firebase/config";
-import { addDoc } from 'firebase/firestore';
+import { db, getDocs, collection ,doc} from "../firebase/config";
+import { addDoc ,query, where,updateDoc,arrayUnion} from 'firebase/firestore';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
@@ -16,13 +16,12 @@ const AppointmentManagerComponent = (props) => {
 
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
-        setSelectedDate(selectedDate); // Update the selected date state
+        setSelectedDate(selectedDate);
         setState({
             ...state,
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
-            appointmentTime: "", // Reset appointmentTime when the date changes
+            appointmentTime: "",
         });
-        // You can perform any additional actions based on the selected date
     };
     
     const [state, setState] = useState({
@@ -43,16 +42,39 @@ const AppointmentManagerComponent = (props) => {
 
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
-    const [loading, setLoading] = useState(true); // Added loading state
+    const [loading, setLoading] = useState(true);
     const animationFrameRef = useRef();
     const { user, userData } = useUserAuth();
     const [timetable, setTimetable] = useState([])
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
+    const [alluserdata, setAllUserData] = useState([]);
+    const [userDataFetched, setUserDataFetched] = useState(false);
+    const fetchAllUserData = async () => {
+        try {
+            if (user && !userDataFetched) {
+                const allUserCollection = collection(db, 'users');
+                const allUserSnapshot = await getDocs(allUserCollection);
+
+                const timeTableData = allUserSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                if (timeTableData.length > 0) {
+                    setAllUserData(timeTableData);
+                    setUserDataFetched(true);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
 
     const fetchTimeTableData = async () => {
         try {
-            if (user && selectedDate && selectedDate.dayName) { // Check if selectedDate and its properties are available
+            if (user && selectedDate && selectedDate.dayName) {
                 const timeTableCollection = collection(db, 'timeTable');
                 const timeTableSnapshot = await getDocs(timeTableCollection);
 
@@ -62,13 +84,11 @@ const AppointmentManagerComponent = (props) => {
                 }));
 
                 if (timeTableData.length > 0) {
-                    // Filter timeTableData based on addDay and timeTableclinic properties
                     const filteredTimeTableData = timeTableData.filter(
                         (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
                     );
 
                     if (filteredTimeTableData.length > 0) {
-                        // Combine all timeablelists into a single array
                         const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
                             if (item.timeablelist && Array.isArray(item.timeablelist)) {
                                 acc.push(
@@ -77,9 +97,6 @@ const AppointmentManagerComponent = (props) => {
                             }
                             return acc;
                         }, []);
-
-
-
                         setTimetable(allTimeableLists);
 
                         const initialIsChecked = allTimeableLists.reduce((acc, timetableItem) => {
@@ -95,7 +112,6 @@ const AppointmentManagerComponent = (props) => {
                             value: [timeSlot.timeTableId, timeSlot.timeSlotIndex],
                         }));
                         const sortedTimeOptions = timeOptionsFromTimetable.sort((a, b) => {
-                            // Assuming timeSlot.start is in the format "hh:mm AM/PM"
                             const timeA = new Date(`01/01/2000 ${a.value.start}`);
                             const timeB = new Date(`01/01/2000 ${b.value.start}`);
                             return timeA - timeB;
@@ -143,12 +159,17 @@ const AppointmentManagerComponent = (props) => {
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
 
+
+        if (!userDataFetched) {
+            fetchAllUserData();
+        }
+        console.log("All user Data",alluserdata)
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
 
-    }, [user, selectedDate]);
+    }, [user, selectedDate, alluserdata, userDataFetched]);
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -185,17 +206,13 @@ const AppointmentManagerComponent = (props) => {
         e.preventDefault();
     
         try {
-            let appointmentId;
-    
-            // Your code to get or generate the appointmentId value goes here
-            // For example, you might get it from the user data or generate a unique ID
     
             const appointmentInfo = {
                 appointmentDate: selectedDate
                     ? new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day)
                     : null,
                 appointmentTime,
-                appointmentId: appointmentId || null, // Use the valid value or set it to null
+                appointmentId: appointmentId || null,
                 appointmentCasue,
                 appointmentSymptom,
                 appointmentNotation,
@@ -203,12 +220,47 @@ const AppointmentManagerComponent = (props) => {
             };
     
             const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+
+            console.log(appointmentId)
+            console.log(appointmentRef.id)
+            console.log("Newly created appointment ID:", appointmentRef.id);
+            const foundUser = alluserdata.find(user => user.id === appointmentId);
+            const usersCollection = collection(db, 'users');
+
+
+            const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
+
+            if (!userQuerySnapshot.empty) {
+
+                const userId = userQuerySnapshot.docs[0].id;
+
+
+                console.log("User's collection ID:", userId);
+            } else {
+                console.log("No user found with the specified appointmentId");
+            }
+            if (foundUser) {
+                console.log("Found user:", foundUser);
+
+            } else {
+                console.log("User not found in alluserdata");
+            }
+            if (foundUser) {
+                console.log("Found user:", foundUser);
+                const userId = userQuerySnapshot.docs[0].id;
+
+                const userDocRef = doc(db, 'users', userId);
     
-            // Get the id of the added appointment
-            appointmentId = appointmentRef.id;
-            console.log("Newly created appointment ID:", appointmentId);
+                await updateDoc(userDocRef, {
+                    appointments: arrayUnion(appointmentRef.id),
+                });
     
-            // Now you can use the appointmentId to update the user document or perform any other actions
+                console.log("User document updated with new appointment.");
+    
+            } else {
+                console.log("User not found in alluserdata");
+            }
+            
     
             Swal.fire({
                 icon: "success",
@@ -432,7 +484,6 @@ const AppointmentManagerComponent = (props) => {
                                         handleSelectChange();
                                         const selectedValue = JSON.parse(e.target.value);
 
-                                        // Check if selectedValue is defined and is an array
                                         if (selectedValue && Array.isArray(selectedValue)) {
                                             const [timetableId, timeSlotIndex] = selectedValue;
                                             console.log("timetableId:", timetableId);
@@ -446,7 +497,6 @@ const AppointmentManagerComponent = (props) => {
 
                                             handleSelectChange();
                                         } else if (e.target.value === "") {
-                                            // Handle the case when the default option is selected
                                             inputValue("appointmentTime")({
                                                 target: {
                                                     value: [],

@@ -73,7 +73,7 @@ export function UserAuthContextProvider({ children }) {
   }, [user]);
 
   useEffect(() => {
-    console.log(userData); // Log userData whenever it changes
+    console.log(userData);
   }, [userData]);
 
   return (
