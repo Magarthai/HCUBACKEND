@@ -24,8 +24,10 @@ export function UserAuthContextProvider({ children }) {
   }
 
   function logOut() {
+    setUserData(null); // Set userData to null on logout
     return signOut(auth);
   }
+  
 
   const fetchUserData = async () => {
     try {
@@ -68,8 +70,11 @@ export function UserAuthContextProvider({ children }) {
     console.log(user);
 
     fetchUserData();
-    console.log(userData)
   }, [user]);
+
+  useEffect(() => {
+    console.log(userData); // Log userData whenever it changes
+  }, [userData]);
 
   return (
     <userAuthContext.Provider value={{ user, userData, logIn, signUp, logOut }}>

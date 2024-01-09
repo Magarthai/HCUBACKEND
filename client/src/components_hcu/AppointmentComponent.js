@@ -7,48 +7,104 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/AdminAppointmentComponent.css";
 import { addDoc } from 'firebase/firestore';
+import Swal from "sweetalert2";
 
 const AppointmentComponent = (props) => {
     const [selectedDate, setSelectedDate] = useState(null);
-    const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
-    const [zoomLevel, setZoomLevel] = useState(1); 
-    const animationFrameRef = useRef();
-    const { user } = useUserAuth();
+
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
         setSelectedDate(selectedDate); // Update the selected date state
         // You can perform any additional actions based on the selected date
     };
+    const [state, setState] = useState({
+        appointmentDate: "",
+        appointmentTime: "",
+        appointmentId: "",
+        appointmentCasue: "",
+        appointmentSymptom: "",
+        appointmentNotation: "",
+        clinic: ""
+    })
+
+
+    const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic } = state
+    const inputValue = (name) => (event) => {
+        if (name === "addDay") {
+            setState({ ...state, [name]: event.target.value });
+        } else {
+            setState({ ...state, [name]: event.target.value });
+        }
+    };
+
+    const [showTime, setShowTime] = useState(getShowTime);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [loading, setLoading] = useState(true); // Added loading state
+    const animationFrameRef = useRef();
+    const { user, userData } = useUserAuth();
+    const [timetable, setTimetable] = useState([])
+    const [isChecked, setIsChecked] = useState({});
+    const fetchTimeTableData = async () => {
+        try {
+            if (user) {
+                const timeTableCollection = collection(db, 'timeTable');
+                const timeTableSnapshot = await getDocs(timeTableCollection);
+    
+                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+    
+                if (timeTableData.length > 0) {
+                    // Filter timeTableData based on addDay and timeTableclinic properties
+                    const filteredTimeTableData = timeTableData.filter(
+                        (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
+                    );
+    
+                    if (filteredTimeTableData.length > 0) {
+                        // Combine all timeablelists into a single array
+                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                                acc.push(...item.timeablelist);
+                            }
+                            return acc;
+                        }, []);
+    
+                        setTimetable(allTimeableLists);
+    
+                        const initialIsChecked = allTimeableLists.reduce((acc, timetableItem) => {
+                            acc[timetableItem.id] = timetableItem.status === "Enabled";
+                            return acc;
+                        }, {});
+    
+                        setIsChecked(initialIsChecked);
+                        console.log(allTimeableLists);
+                    } else {
+                        console.log("Time table not found for selected day and clinic");
+                    }
+                } else {
+                    console.log("Time table not found");
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    
+
     useEffect(() => {
         document.title = 'Health Care Unit';
+        console.log(user);
 
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const usersCollection = collection(db, 'users');
-                    const usersSnapshot = await getDocs(usersCollection);
-
-                    const usersData = usersSnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-
-                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-                    if (currentUserData) {
-                        setUserData(currentUserData);
-                        console.log(currentUserData);
-                    } else {
-                        console.log("User not found");
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
+        const responsivescreen = () => {
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
-        fetchUserData();
-
+        console.log(selectedDate)
+        responsivescreen();
+        window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {
             const newTime = getShowTime();
             if (newTime !== showTime) {
@@ -57,27 +113,22 @@ const AppointmentComponent = (props) => {
             animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
 
-        const responsivescreen = () => {
-            const innerWidth = window.innerWidth;
-            const baseWidth = 1920;
-            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-            setZoomLevel(newZoomLevel);
-        };
+        animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
-        updateShowTime();
-        responsivescreen();
+        // Fetch user data when the component mounts
 
-        window.addEventListener("resize", responsivescreen);
-
+        fetchTimeTableData();
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    }, [user]);
 
+    }, [user, selectedDate]);
     const containerStyle = {
         zoom: zoomLevel,
     };
+
+
     function getShowTime() {
         const today = new Date();
         const hours = today.getHours();
@@ -90,7 +141,7 @@ const AppointmentComponent = (props) => {
         return num < 10 ? "0" + num : num.toString();
     }
 
-    const locale = 'en'
+    const locale = 'en';
     const today = new Date();
     const month = today.getMonth() + 1;
     const year = today.getFullYear();
@@ -98,8 +149,125 @@ const AppointmentComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
-    const openDetailAppointment = (element, timetable) => {
-        
+    const [selectedCount, setSelectedCount] = useState(1);
+
+    const handleSelectChange = () => {
+        setSelectedCount(selectedCount + 1);
+        console.log(selectedCount)
+    };
+
+    const submitForm = async (e) => {
+
+    };
+    const submitEditForm = async (e) => {
+
+    };
+
+    const openDetailAppointment = (element) => {
+        let x = document.getElementById("detail-appointment");
+        let y = document.getElementById("add-appointment");
+        let z = document.getElementById("edit-appointment");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+
+        } else {
+            x.style.display = "none";
+
+
+        }
+    }
+    const openAddAppointment = () => {
+        let x = document.getElementById("add-appointment");
+        let y = document.getElementById("detail-appointment");
+        let z = document.getElementById("edit-appointment");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+
+        } else {
+            x.style.display = "none";
+
+
+        }
+
+    }
+
+    const openEditAppointment = () => {
+        let x = document.getElementById("edit-appointment");
+        let y = document.getElementById("add-appointment");
+        let z = document.getElementById("detail-appointment");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+
+        } else {
+            x.style.display = "none";
+
+
+        }
+
+    }
+
+    const DeleteAppointment = () => {
+
+        Swal.fire({
+            title: 'ลบนัดหมาย',
+            text: `วันที่ 15/12/2023 เวลา 13:01 - 13:10`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#DC2626',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'custom-confirm-button',
+                cancelButton: 'custom-cancel-button',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    Swal.fire(
+                        {
+                            title: 'Deleted!',
+                            text: `ลบนัดหมายสำเร็จ`,
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        })
+                    // .then((result) => {
+                    //     if (result.isConfirmed) {
+
+                    //     }
+                    // });
+                } catch {
+
+                }
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                Swal.fire(
+                    {
+                        title: 'Deleted!',
+                        text: `ลบนัดหมายไม่สำเร็จ`,
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    }
+                )
+            }
+        })
+
     }
 
     return (

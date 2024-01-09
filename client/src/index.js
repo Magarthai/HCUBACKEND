@@ -16,6 +16,7 @@ import UserChooseClinic from './components_user/UserChooseClinic.js';
 import ProfileComponent from './components_hcu/ProfileComponent';
 import UserAllAppointment from './components_user/UserAllAppointment.js';
 import SelectDateAppointmentUser from './components_user/SelectDateAppointmentUser.js';
+import ListAppointmentUser from './components_user/ListAppointmentUser.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
   {
     path: "/SelectDateAppointmentUser",
     element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
+  },
+  {
+    path: "/ListAppointmentUser",
+    element: <ProtectRoute><ListAppointmentUser/></ProtectRoute>
   },
 ])
 

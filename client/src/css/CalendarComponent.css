@@ -116,7 +116,6 @@ header .icons span:last-child{
     pointer-events: none;
     color: #A1A1A1;
 }
-
 .days li.active{
     color: #54B2B0;
 }
