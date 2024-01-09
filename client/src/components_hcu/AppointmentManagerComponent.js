@@ -17,8 +17,14 @@ const AppointmentManagerComponent = (props) => {
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
         setSelectedDate(selectedDate); // Update the selected date state
+        setState({
+            ...state,
+            appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+            appointmentTime: "", // Reset appointmentTime when the date changes
+        });
         // You can perform any additional actions based on the selected date
     };
+    
     const [state, setState] = useState({
         appointmentDate: "",
         appointmentTime: "",
@@ -177,43 +183,52 @@ const AppointmentManagerComponent = (props) => {
 
     const submitForm = async (e) => {
         e.preventDefault();
-
-
+    
         try {
-
-            // Check if student ID is already in use
+            let appointmentId;
+    
+            // Your code to get or generate the appointmentId value goes here
+            // For example, you might get it from the user data or generate a unique ID
+    
             const appointmentInfo = {
-                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentDate: selectedDate
+                    ? new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day)
+                    : null,
                 appointmentTime,
-                appointmentId,
+                appointmentId: appointmentId || null, // Use the valid value or set it to null
                 appointmentCasue,
                 appointmentSymptom,
                 appointmentNotation,
                 clinic: "คลินิกทั่วไป",
             };
-
-            await addDoc(collection(db, 'appointment'), appointmentInfo);
-            console.log(appointmentInfo)
+    
+            const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+    
+            // Get the id of the added appointment
+            appointmentId = appointmentRef.id;
+            console.log("Newly created appointment ID:", appointmentId);
+    
+            // Now you can use the appointmentId to update the user document or perform any other actions
+    
             Swal.fire({
                 icon: "success",
                 title: "Appointment Successful!",
                 text: "Your appointment has been successfully created!",
-            })
-
+            });
+    
         } catch (firebaseError) {
             console.error('Firebase signup error:', firebaseError);
-
-
+    
             console.error('Firebase error response:', firebaseError);
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: "Failed to create user account. Please try again later.",
             });
-
         }
-
     };
+    
+    
     const submitEditForm = async (e) => {
 
     };
@@ -411,48 +426,48 @@ const AppointmentManagerComponent = (props) => {
                             <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
                                 <select
-    name="time"
-    value={JSON.stringify(appointmentTime)}
-    onChange={(e) => {
-        handleSelectChange();
-        const selectedValue = JSON.parse(e.target.value);
+                                    name="time"
+                                    value={JSON.stringify(appointmentTime)}
+                                    onChange={(e) => {
+                                        handleSelectChange();
+                                        const selectedValue = JSON.parse(e.target.value);
 
-        // Check if selectedValue is defined and is an array
-        if (selectedValue && Array.isArray(selectedValue)) {
-            const [timetableId, timeSlotIndex] = selectedValue;
-            console.log("timetableId:", timetableId);
-            console.log("timeSlotIndex:", timeSlotIndex);
+                                        // Check if selectedValue is defined and is an array
+                                        if (selectedValue && Array.isArray(selectedValue)) {
+                                            const [timetableId, timeSlotIndex] = selectedValue;
+                                            console.log("timetableId:", timetableId);
+                                            console.log("timeSlotIndex:", timeSlotIndex);
 
-            inputValue("appointmentTime")({
-                target: {
-                    value: [timetableId, timeSlotIndex],
-                },
-            });
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: [timetableId, timeSlotIndex],
+                                                },
+                                            });
 
-            handleSelectChange();
-        } else if (e.target.value === "") {
-            // Handle the case when the default option is selected
-            inputValue("appointmentTime")({
-                target: {
-                    value: [],
-                },
-            });
-        
-            handleSelectChange();
-        }
-        else {
-            console.error("Invalid selected value:", selectedValue);
-        }
-    }}
-    className={selectedCount >= 2 ? 'selected' : ''}
->
-    <option value="" disabled>กรุณาเลือกช่วงเวลา</option>
-    {timeOptions.map((timeOption, index) => (
-        <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
-            {timeOption.label}
-        </option>
-    ))}
-</select>
+                                            handleSelectChange();
+                                        } else if (e.target.value === "") {
+                                            // Handle the case when the default option is selected
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: [],
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        }
+                                        else {
+                                            console.error("Invalid selected value:", selectedValue);
+                                        }
+                                    }}
+                                    className={selectedCount >= 2 ? 'selected' : ''}
+                                >
+                                    <option value="" disabled>กรุณาเลือกช่วงเวลา</option>
+                                    {timeOptions.map((timeOption, index) => (
+                                        <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
+                                            {timeOption.label}
+                                        </option>
+                                    ))}
+                                </select>
 
                             </div>
                             <div>
