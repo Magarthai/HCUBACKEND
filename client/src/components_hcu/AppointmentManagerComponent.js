@@ -5,6 +5,7 @@ import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
+import { addDoc } from 'firebase/firestore';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
@@ -31,11 +32,7 @@ const AppointmentManagerComponent = (props) => {
 
     const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic } = state
     const inputValue = (name) => (event) => {
-        if (name === "addDay") {
-            setState({ ...state, [name]: event.target.value });
-        } else {
-            setState({ ...state, [name]: event.target.value });
-        }
+        setState({ ...state, [name]: event.target.value });
     };
 
     const [showTime, setShowTime] = useState(getShowTime);
@@ -45,40 +42,63 @@ const AppointmentManagerComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [timetable, setTimetable] = useState([])
     const [isChecked, setIsChecked] = useState({});
+    const [timeOptions, setTimeOptions] = useState([]);
+
     const fetchTimeTableData = async () => {
         try {
-            if (user) {
+            if (user && selectedDate && selectedDate.dayName) { // Check if selectedDate and its properties are available
                 const timeTableCollection = collection(db, 'timeTable');
                 const timeTableSnapshot = await getDocs(timeTableCollection);
-    
+
                 const timeTableData = timeTableSnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-    
+
                 if (timeTableData.length > 0) {
                     // Filter timeTableData based on addDay and timeTableclinic properties
                     const filteredTimeTableData = timeTableData.filter(
                         (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
                     );
-    
+
                     if (filteredTimeTableData.length > 0) {
                         // Combine all timeablelists into a single array
                         const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
                             if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                acc.push(...item.timeablelist);
+                                acc.push(
+                                    ...item.timeablelist.map((timeSlot, index) => ({ ...timeSlot, timeTableId: item.id, timeSlotIndex: index }))
+                                );
                             }
                             return acc;
                         }, []);
-    
+
+
+
                         setTimetable(allTimeableLists);
-    
+
                         const initialIsChecked = allTimeableLists.reduce((acc, timetableItem) => {
                             acc[timetableItem.id] = timetableItem.status === "Enabled";
                             return acc;
                         }, {});
-    
+
                         setIsChecked(initialIsChecked);
+
+
+                        const timeOptionsFromTimetable = allTimeableLists.map((timeSlot) => ({
+                            label: `${timeSlot.start} - ${timeSlot.end}`,
+                            value: [timeSlot.timeTableId, timeSlot.timeSlotIndex],
+                        }));
+                        const sortedTimeOptions = timeOptionsFromTimetable.sort((a, b) => {
+                            // Assuming timeSlot.start is in the format "hh:mm AM/PM"
+                            const timeA = new Date(`01/01/2000 ${a.value.start}`);
+                            const timeB = new Date(`01/01/2000 ${b.value.start}`);
+                            return timeA - timeB;
+                        });
+
+                        console.log("Before setTimeOptions", timeOptionsFromTimetable);
+                        setTimeOptions(sortedTimeOptions);
+                        console.log("After setTimeOptions", timeOptionsFromTimetable);
+
                         console.log(allTimeableLists);
                     } else {
                         console.log("Time table not found for selected day and clinic");
@@ -91,15 +111,12 @@ const AppointmentManagerComponent = (props) => {
             console.error('Error fetching user data:', error);
         }
     };
-    
-    
-    
-    
+
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        console.log(selectedDate.dayName)
+        fetchTimeTableData();
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
             const baseWidth = 1920;
@@ -119,9 +136,7 @@ const AppointmentManagerComponent = (props) => {
 
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
-        // Fetch user data when the component mounts
 
-        fetchTimeTableData();
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
@@ -161,6 +176,42 @@ const AppointmentManagerComponent = (props) => {
     };
 
     const submitForm = async (e) => {
+        e.preventDefault();
+
+
+        try {
+
+            // Check if student ID is already in use
+            const appointmentInfo = {
+                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentTime,
+                appointmentId,
+                appointmentCasue,
+                appointmentSymptom,
+                appointmentNotation,
+                clinic: "คลินิกทั่วไป",
+            };
+
+            await addDoc(collection(db, 'appointment'), appointmentInfo);
+            console.log(appointmentInfo)
+            Swal.fire({
+                icon: "success",
+                title: "Appointment Successful!",
+                text: "Your appointment has been successfully created!",
+            })
+
+        } catch (firebaseError) {
+            console.error('Firebase signup error:', firebaseError);
+
+
+            console.error('Firebase error response:', firebaseError);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to create user account. Please try again later.",
+            });
+
+        }
 
     };
     const submitEditForm = async (e) => {
@@ -349,7 +400,7 @@ const AppointmentManagerComponent = (props) => {
 
                     </div>
                     <div id="add-appointment" className="colorPrimary-800">
-                        <form onSubmit={submitEditForm}>
+                        <form onSubmit={submitForm}>
                             <h3 className="center">เพิ่มนัดหมาย</h3>
                             <div>
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
@@ -360,13 +411,49 @@ const AppointmentManagerComponent = (props) => {
                             <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
                                 <select
-                                    name="time"
-                                    value={appointmentTime}
-                                    onChange={(e) => { inputValue("appointmentTime")(e); handleSelectChange(); }}
-                                    className={selectedCount >= 2 ? 'selected' : ''}
-                                >
-                                    <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
-                                </select>
+    name="time"
+    value={JSON.stringify(appointmentTime)}
+    onChange={(e) => {
+        handleSelectChange();
+        const selectedValue = JSON.parse(e.target.value);
+
+        // Check if selectedValue is defined and is an array
+        if (selectedValue && Array.isArray(selectedValue)) {
+            const [timetableId, timeSlotIndex] = selectedValue;
+            console.log("timetableId:", timetableId);
+            console.log("timeSlotIndex:", timeSlotIndex);
+
+            inputValue("appointmentTime")({
+                target: {
+                    value: [timetableId, timeSlotIndex],
+                },
+            });
+
+            handleSelectChange();
+        } else if (e.target.value === "") {
+            // Handle the case when the default option is selected
+            inputValue("appointmentTime")({
+                target: {
+                    value: [],
+                },
+            });
+        
+            handleSelectChange();
+        }
+        else {
+            console.error("Invalid selected value:", selectedValue);
+        }
+    }}
+    className={selectedCount >= 2 ? 'selected' : ''}
+>
+    <option value="" disabled>กรุณาเลือกช่วงเวลา</option>
+    {timeOptions.map((timeOption, index) => (
+        <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
+            {timeOption.label}
+        </option>
+    ))}
+</select>
+
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
@@ -389,7 +476,7 @@ const AppointmentManagerComponent = (props) => {
                         </form>
                     </div>
                     <div id="edit-appointment" className="colorPrimary-800">
-                        <form onSubmit={submitForm}>
+                        <form onSubmit={submitEditForm}>
                             <h3 className="center">แก้ไขนัดหมาย</h3>
                             <div className="center-container">
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
