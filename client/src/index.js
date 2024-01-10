@@ -13,7 +13,7 @@ import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
 import AppointmentManagerComponent from './components_hcu/AppointmentManagerComponent.js';
 import AppointmentDetail from './components_user/AppointmentDetail.js';
 import UserChooseClinic from './components_user/UserChooseClinic.js';
-import ExampleComponent from './components_hcu/ExampleComponent.js';
+import ExampleComponent from './components_user/ExampleComponent.js';
 import UserAllAppointment from './components_user/UserAllAppointment.js';
 import SelectDateAppointmentUser from './components_user/SelectDateAppointmentUser.js';
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
