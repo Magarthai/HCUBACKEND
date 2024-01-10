@@ -70,13 +70,11 @@ const SignupComponent = (props) => {
       
         try {
       
-          // Check if student ID is already in use
           const isIdAlreadyUsed = await isStudentIdAlreadyUsed(id);
           if (isIdAlreadyUsed) {
             throw new Error("Student ID already in use");
           }
       
-          // Continue with user registration if no issues
       
           const userCredential = await createUserWithEmailAndPassword(email, password);
           if (!userCredential || !userCredential.user) {
@@ -114,7 +112,7 @@ const SignupComponent = (props) => {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Email already in use",
+              text: "Invalid Email or Email already in use",
             });
           } else if (firebaseError.message === "Student ID already in use") {
             Swal.fire({
@@ -201,6 +199,7 @@ const SignupComponent = (props) => {
             className="form-control"
             value={id}
             onChange={inputValue("id")}
+            pattern="[0-9]*"
             placeholder="64000000000"
           />
         </div>
@@ -213,6 +212,7 @@ const SignupComponent = (props) => {
             value={tel}
             onChange={inputValue("tel")}
             placeholder="0900000000"
+            pattern="[0-9]*"
           />
         </div>
 
