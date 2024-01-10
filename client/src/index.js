@@ -13,10 +13,12 @@ import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
 import AppointmentManagerComponent from './components_hcu/AppointmentManagerComponent.js';
 import AppointmentDetail from './components_user/AppointmentDetail.js';
 import UserChooseClinic from './components_user/UserChooseClinic.js';
-import ProfileComponent from './components_hcu/ProfileComponent';
+import ExampleComponent from './components_hcu/ExampleComponent.js';
 import UserAllAppointment from './components_user/UserAllAppointment.js';
 import SelectDateAppointmentUser from './components_user/SelectDateAppointmentUser.js';
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
+import AdminAppointmentManagerPhysicalComponent from './components_hcu/AppointmentManagerPhysicalComponent.js';
+import UserDateateAppointment from './components_user/DateAppointment.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -71,6 +73,10 @@ const router = createBrowserRouter([
     element: <ProtectAdminRoute><AppointmentManagerComponent/></ProtectAdminRoute>
   },
   {
+    path: "/adminAppointmentManagerPhysicalComponent",
+    element: <ProtectAdminRoute><AdminAppointmentManagerPhysicalComponent/></ProtectAdminRoute>
+  },
+  {
     path: "/AppointmentDetail",
     element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
   },
@@ -90,6 +96,15 @@ const router = createBrowserRouter([
     path: "/ListAppointmentUser",
     element: <ProtectRoute><ListAppointmentUser/></ProtectRoute>
   },
+  {
+    path: "/dateAppointment",
+    element: <ProtectRoute><UserDateateAppointment/></ProtectRoute>
+  },
+  {
+    path: "/exampleAppointment",
+    element: <ProtectRoute><ExampleComponent/></ProtectRoute>
+  },
+
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

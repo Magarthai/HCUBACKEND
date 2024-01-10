@@ -273,20 +273,20 @@ const AppointmentComponent = (props) => {
     return (
         <div className="appointment" style={containerStyle}>
             <NavbarComponent />
-            <div className="topicBox">
+            <div className="admin-topicBox colorPrimary-800">
                 <div></div>
                 <div>
-                    <h1 className="colorPrimary-800 center">ระบบการจัดการนัดหมาย</h1>
+                    <h1 className="center">ระบบการจัดการนัดหมาย</h1>
                 </div>
                 <div className="dateTime">
-                    <p className="textBody-large">Date : {currentDate}</p>
-                    <p className="textBody-large">Time : {showTime}</p>
+                    <p className="admin-textBody-large">Date : {currentDate}</p>
+                    <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
             <div className="clinic">
                 <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
                 <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
+                <a href="/adminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
                 <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
                 <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>

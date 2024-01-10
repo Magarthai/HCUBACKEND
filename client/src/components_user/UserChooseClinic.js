@@ -11,21 +11,20 @@ const UserChooseClinic = () => {
 
   return (
 
-    <div id='xd'>
+    
     <div className="UserChooseClinicComponent">
         <div className="UserChooseClinic">
-        <header className="UserChooseClinic-header">
-            <div>
-            <h1>การนัดหมาย</h1>
-            <h2>เลือกคลินิก</h2>
-            </div>
+            <header className="UserChooseClinic-header">
+                <div>
+                    <h1>การนัดหมาย</h1>
+                    <h2>เลือกคลินิก</h2>
+                </div>
 
-            <NavbarUserComponent/>
-        </header>
-        <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>คลินิก</h2>
-        <div className="clinic-function">
-           
-
+                <NavbarUserComponent/>
+            </header>
+            <div className='user-chooseClinic-body'>
+            <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>คลินิก</h2>
+            <div className="clinic-function">
                 <Link to="/XD" className="clinic-card" style={{marginTop:10}}>
                     <p>
                     <b>คลินิกทั่วไป</b>
@@ -55,10 +54,11 @@ const UserChooseClinic = () => {
                     <img className="clinic" src={logo4} alt="คลินิกฝังเข็ม" />
                 </Link>
             </div>
+            </div>
 
+        </div>
     </div>
-    </div>
-    </div>
+    
   );
 };
 

@@ -304,7 +304,13 @@ body{
     }
    
     #appointment-request-list{
-        margin-left: 950px;
+        margin-left: 970px;
+    }
+    .admin-appointment-pysical #admin-appointments-connected{
+        margin-left: 750px
+    }
+    .admin-appointment-pysical #appointment-request-list{
+        margin-left: 0px
     }
     .appointment-hearder{
         display: flex;
@@ -380,10 +386,78 @@ body{
         border-radius: 5px;
         width: 530px;
         height: 38px;
-        padding-left: 10px;
-        z-index: 4; 
+        padding-left: 10px; 
 
     }
+    #admin-add-appointment-connected{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.357);
+        position: absolute;
+        top:0px;
+        z-index: 1;
+        display: none;
+        
+    }
+    #admin-add-appointment-connected .admin-appointmemt-popup{
+        width: 30%;
+        height: 80%;
+        background-color: #ffffff;
+        position: absolute;
+        margin: 6% 35%;
+        border-radius: 20px;
+        padding: 30px;
+    }
+    #admin-add-appointment-connected .select-date-appointment{
+       
+        width: 520px;
+    }
+    #admin-add-appointment-connected2{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.357);
+        position: absolute;
+        top:0px;
+        z-index: 1;
+        display: none;
+        
+    }
+    #admin-add-appointment-connected2 .admin-appointmemt-popup{
+        width: 60%;
+        height: 80%;
+        background-color: #ffffff;
+        position: absolute;
+        margin: 6% 20%;
+        border-radius: 20px;
+        padding: 20px;
+    }
+    .admin-appointmemt-popup-flexbox{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+    }
+    .admin-appointmemt-popup-item{
+        box-sizing: border-box;
+	    width: 50%;
+        padding: 20px;
+    }
+
+    #admin-add-appointment-connected2 .select-date-appointment{
+       
+        width: 520px;
+    
+    }
+    #admin-add-appointment-connected2 .admin-timetable-btn{
+        margin: 20px;
+    }
+    #admin-add-appointment-connected2 .input-big{
+
+    }
+    
+   
 
 
 

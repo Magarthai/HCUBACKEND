@@ -4,7 +4,7 @@ body{
     background-color: #ffffff;
 }
 @media(min-width:300px){
-    .admin-timetable-topicBox{
+    .admin-topicBox{
         margin-top: 30px;
         display: flex;
         flex-direction: row;
@@ -14,7 +14,7 @@ body{
         box-sizing: border-box;
         margin-bottom: 50px;
     }
-    .admin-timetable-topicBox div{
+    .admin-topicBox div{
         box-sizing: border-box;
 	    width: 33.3%;
     }

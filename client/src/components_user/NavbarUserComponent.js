@@ -118,7 +118,7 @@ const NavbarUserComponent = (props) => {
             <li><a><div className="textss"><Link to="/">ข้อมูลทั่วไป</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">ประเมินความพึงพอใจ</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">คู่มือการใช้งาน</Link></div></a></li>
-            <li style={{height:80}}><button className="navbtn" onClick={handleLogout}>LOG OUT</button></li>
+            <li style={{height:60}}><button className="navbtn" onClick={handleLogout}>LOG OUT</button></li>
           </ul>
         </div>
       </div>

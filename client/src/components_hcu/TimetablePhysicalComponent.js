@@ -485,7 +485,7 @@ const TimetablePhysicalComponent = (props) => {
     return (
         <div style={containerStyle}>
             <NavbarComponent />
-            <div className="admin-timetable-topicBox">
+            <div className="admin-topicBox">
                 <div></div>
                 <div>
                     <h1 className="colorPrimary-800 center">ช่วงเวลาเข้าทำการแพทย์</h1>

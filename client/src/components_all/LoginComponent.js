@@ -75,7 +75,7 @@ const LoginComponent = () => {
                 <div className="login-flexbox-item">
                     <header className="login-hearder">
                         <img className="logo" src={logo} alt="logo health care unit" />
-                        <h3 className="colorPrimary-800">Health Care Unit</h3>
+                        <h4 className="colorPrimary-800">Health Care Unit</h4>
                         <p className="textBody-medium colorPrimary-800">กลุ่มงานบริการสุขภาพและอนามัย</p>
                         <hr></hr>
                     </header>

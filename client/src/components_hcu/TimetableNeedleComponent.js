@@ -490,7 +490,7 @@ const TimetableNeedleComponent = (props) => {
     return (
         <div style={containerStyle}>
             <NavbarComponent />
-            <div className="admin-timetable-topicBox colorPrimary-800">
+            <div className="admin-topicBox colorPrimary-800">
                 <div></div>
                 <div>
                     <h1 className="center">ช่วงเวลาเข้าทำการแพทย์</h1>
@@ -801,8 +801,8 @@ const TimetableNeedleComponent = (props) => {
 
                             </div>
                             <div className="admin-timetable-btn">
-                                <button onClick={() => openEdittimetable()} className="btn-secondary" id="btn-systrm" >กลับ</button>
-                                <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                                <button type="button" onClick={() => openEdittimetable()} className="btn-secondary btn-systrm" >กลับ</button>
+                                <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary btn-systrm" target="_parent" />
                             </div>
                         </form>
                     </div>

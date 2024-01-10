@@ -10,7 +10,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 
-const AppointmentManagerComponent = (props) => {
+
+
+const AppointmentManagerPhysicalComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
 
@@ -285,6 +287,8 @@ const AppointmentManagerComponent = (props) => {
 
     };
 
+
+
     const openDetailAppointment = (element) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
@@ -391,6 +395,51 @@ const AppointmentManagerComponent = (props) => {
         })
 
     }
+    const openContinueAddinAppointment = () => {
+        let x = document.getElementById("admin-add-appointment-connected");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+
+        } else {
+            x.style.display = "none";
+
+
+        }
+
+    }
+    const openContinueAddinAppointment2 = () => {
+        let x = document.getElementById("admin-add-appointment-connected2");
+        let y = document.getElementById("admin-add-appointment-connected");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+
+        } else {
+            x.style.display = "none";
+
+
+        }
+
+    }
+    const submitFormAddContinue = () => {
+        let x = document.getElementById("admin-add-appointment-connected2");
+        let y = document.getElementById("admin-add-appointment-connected");
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+
+
+        } else {
+            x.style.display = "none";
+
+
+        }
+
+    };
+    const submitFormAddContinue2 = async (e) => {
+      
+
+    };
 
 
 
@@ -407,11 +456,12 @@ const AppointmentManagerComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            <div className="clinic">
-                <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
+            <div className="clinic admin-appointment-pysical">
+                <a href="/appointmentAdmin" target="_parent" >คลินิกทั่วไป</a>
                 <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
+                <a href="/AppointmentManagerComponent" target="_parent" id="select" >คลินิกกายภาพ</a>
                 <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                <a target="_parent" id="admin-appointments-connected" onClick={()=> openContinueAddinAppointment()} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
                 <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
             </div>
             <div className="flex">
@@ -424,7 +474,7 @@ const AppointmentManagerComponent = (props) => {
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
-                                <h3>นัดหมายคลินิกทั่วไป</h3>
+                                <h3>นัดหมายคลินิกกายภาพ</h3>
                                 <p className="textBody-large">
                                     {selectedDate
                                         ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
@@ -545,7 +595,8 @@ const AppointmentManagerComponent = (props) => {
                             <h3 className="center">แก้ไขนัดหมาย</h3>
                             <div className="center-container">
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
-                                <input type="date" className="form-control"></input>
+                                <br></br>
+                                <input type="date"  className="form-control"></input>
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
@@ -582,7 +633,182 @@ const AppointmentManagerComponent = (props) => {
                 </div>
 
             </div>
+            <div id="admin-add-appointment-connected">
+                <div  className="admin-appointmemt-popup">
+                    <h1 className="center colorPrimary-800">เพิ่มนัดหมายต่อเนื่อง</h1>
+                    <div>
+                        <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                    </div>
+                    <div className="center-container">
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
+                                <br></br>
+                                <input type="date" className="form-control"></input>
+                    </div>
+                    <div>
+                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                <select
+                                    name="time"
+                                    value={JSON.stringify(appointmentTime)}
+                                    onChange={(e) => {
+                                        handleSelectChange();
+                                        const selectedValue = JSON.parse(e.target.value);
 
+                                        if (selectedValue && Array.isArray(selectedValue)) {
+                                            const [timetableId, timeSlotIndex] = selectedValue;
+                                            console.log("timetableId:", timetableId);
+                                            console.log("timeSlotIndex:", timeSlotIndex);
+
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: [timetableId, timeSlotIndex],
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        } else if (e.target.value === "") {
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: [],
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        }
+                                        else {
+                                            console.error("Invalid selected value:", selectedValue);
+                                        }
+                                    }}
+                                    className={selectedCount >= 2 ? 'selected' : ''}
+                                >
+                                    <option value="" disabled>กรุณาเลือกช่วงเวลา</option>
+                                    {timeOptions.map((timeOption, index) => (
+                                        <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
+                                            {timeOption.label}
+                                        </option>
+                                    ))}
+                                </select>
+
+                    </div>
+                    <div>
+                        <label className="admin-textBody-large colorPrimary-800">จำนวนครั้ง</label><br></br>
+                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="5" />
+                    </div>
+                    <div>
+                        <label className="admin-textBody-large colorPrimary-800">ระยะห่าง(วัน)</label><br></br>
+                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="7" />
+                    </div>
+                    <div>
+                        <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="" />
+                    </div>
+                    <div>
+                        <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="" />
+                    </div>
+                    <div>
+                        <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="" />
+                    </div>
+                    <div className="admin-timetable-btn">
+                        <button type="button" className="btn-secondary btn-systrm" onClick={()=> openContinueAddinAppointment()}>กลับ</button>
+                        <button type="button" className="btn-primary btn-systrm" onClick={()=> submitFormAddContinue()}>ถัดไป</button>
+                    </div>
+                    
+                </div>
+
+            </div>
+            <div id="admin-add-appointment-connected2">
+                <form onSubmit={submitFormAddContinue2} className="admin-appointmemt-popup">
+                    <h1 className="center colorPrimary-800">สรุปนัดหมายต่อเนื่อง</h1>
+                    <div className="admin-appointmemt-popup-flexbox">
+                        <div className="admin-appointmemt-popup-item">
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                            </div>
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">จำนวนครั้ง</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="5" />
+                            </div>
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="" />
+                            </div>
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="" />
+                            </div>
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <input type="text" className="form-control input-big" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="" />
+                            </div>
+
+                        </div>
+                        <div className="admin-appointmemt-popup-item border-L">
+                            <p className="admin-textBody-large">ครั้งที่ 1 สถานะ : ว่าง</p>
+                            <div className="center-container">
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
+                                <br></br>
+                                <input type="date"  className="form-control"></input>
+                            </div>
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                <select
+                                    name="time"
+                                    value={JSON.stringify(appointmentTime)}
+                                    onChange={(e) => {
+                                        handleSelectChange();
+                                        const selectedValue = JSON.parse(e.target.value);
+
+                                        if (selectedValue && Array.isArray(selectedValue)) {
+                                            const [timetableId, timeSlotIndex] = selectedValue;
+                                            console.log("timetableId:", timetableId);
+                                            console.log("timeSlotIndex:", timeSlotIndex);
+
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: [timetableId, timeSlotIndex],
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        } else if (e.target.value === "") {
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: [],
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        }
+                                        else {
+                                            console.error("Invalid selected value:", selectedValue);
+                                        }
+                                    }}
+                                    className={selectedCount >= 2 ? 'selected' : ''}
+                                >
+                                    <option value="" disabled>กรุณาเลือกช่วงเวลา</option>
+                                    {timeOptions.map((timeOption, index) => (
+                                        <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
+                                            {timeOption.label}
+                                        </option>
+                                    ))}
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="admin-timetable-btn">
+                        <button type="button" className="btn-secondary btn-systrm" onClick={()=>openContinueAddinAppointment2()}>กลับ</button>
+                        <input type="submit" value="เพิ่มนัดหมายต่อเนื่อง" className="btn-primary btn-systrm" target="_parent" />
+                    </div>
+                    
+                    
+                </form>
+
+            </div>
 
 
 
@@ -591,4 +817,5 @@ const AppointmentManagerComponent = (props) => {
     );
 }
 
-export default AppointmentManagerComponent;
+export default AppointmentManagerPhysicalComponent;
+

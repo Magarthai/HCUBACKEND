@@ -465,7 +465,7 @@ const TimetableGeneralComponent = (props) => {
     return (
         <div style={containerStyle}>
             <NavbarComponent />
-            <div className="admin-timetable-topicBox colorPrimary-800">
+            <div className="admin-topicBox colorPrimary-800">
                 <div></div>
                 <div>
                     <h1 className="center">ช่วงเวลาเข้าทำการแพทย์</h1>
