@@ -107,18 +107,28 @@ const AppointmentManagerComponent = (props) => {
                         setIsChecked(initialIsChecked);
 
 
-                        const timeOptionsFromTimetable = allTimeableLists.map((timeSlot) => ({
-                            label: `${timeSlot.start} - ${timeSlot.end}`,
-                            value: [timeSlot.timeTableId, timeSlot.timeSlotIndex],
-                        }));
-                        const sortedTimeOptions = timeOptionsFromTimetable.sort((a, b) => {
-                            const timeA = new Date(`01/01/2000 ${a.value.start}`);
-                            const timeB = new Date(`01/01/2000 ${b.value.start}`);
-                            return timeA - timeB;
-                        });
+                        const timeOptionsFromTimetable = [
+                            { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true }, // Additional disabled option
+                            ...allTimeableLists
+                                .sort((a, b) => {
+                                    // Sort by start time
+                                    const timeA = new Date(`01/01/2000 ${a.start}`);
+                                    const timeB = new Date(`01/01/2000 ${b.start}`);
+                                    return timeA - timeB;
+                                })
+                                .map((timeSlot) => ({
+                                    label: `${timeSlot.start} - ${timeSlot.end}`,
+                                    value: [timeSlot.timeTableId, timeSlot.timeSlotIndex],
+                                })),
+                        ];
+                        
+                        
+                        
+                        
+
 
                         console.log("Before setTimeOptions", timeOptionsFromTimetable);
-                        setTimeOptions(sortedTimeOptions);
+                        setTimeOptions(timeOptionsFromTimetable);
                         console.log("After setTimeOptions", timeOptionsFromTimetable);
 
                         console.log(allTimeableLists);
@@ -163,6 +173,7 @@ const AppointmentManagerComponent = (props) => {
         if (!userDataFetched) {
             fetchAllUserData();
         }
+        
         console.log("All user Data",alluserdata)
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
@@ -218,9 +229,9 @@ const AppointmentManagerComponent = (props) => {
                 appointmentNotation,
                 clinic: "คลินิกทั่วไป",
             };
-    
+            
             const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-
+            console.log('Succuessful adddoc',appointmentInfo)
             console.log(appointmentId)
             console.log(appointmentRef.id)
             console.log("Newly created appointment ID:", appointmentRef.id);
@@ -511,7 +522,7 @@ const AppointmentManagerComponent = (props) => {
                                     }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
                                 >
-                                    <option value="" disabled>กรุณาเลือกช่วงเวลา</option>
+          
                                     {timeOptions.map((timeOption, index) => (
                                         <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
                                             {timeOption.label}
@@ -526,15 +537,15 @@ const AppointmentManagerComponent = (props) => {
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="เป็นไข้" />
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="ปวดหัว, ตัวร้อน" />
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวักทั่วไป" />
                             </div>
                             <button type="button" onClick={openAddAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
                             <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />

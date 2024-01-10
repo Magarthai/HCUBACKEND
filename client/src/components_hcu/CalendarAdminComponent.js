@@ -21,11 +21,11 @@ const CalendarAdminComponent = (props) => {
       month: currentMonth,
       year: currentYear,
       dayName: dayName,
-    };
-
-    setSelectedDate(formattedSelectedDate);
-    props.onDateSelect(formattedSelectedDate);
   };
+
+  setSelectedDate(formattedSelectedDate);
+  props.onDateSelect(formattedSelectedDate);
+};
 
   const renderCalendar = () => {
     let firstDayofMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
