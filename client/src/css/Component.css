@@ -339,7 +339,7 @@
     .user{
         width: 100%;
         margin: 0px;
-        max-width: 500px;
+        
     }
     .user-header {
         background: #008080;
@@ -348,7 +348,6 @@
         padding-left: 40px;
         color: #FFF;
         width: 100%;
-        max-width: 550px;
         height: 133px;
         position: fixed;
         z-index: 2;
@@ -368,7 +367,7 @@
         padding: 5px;
     }
 
-@media (min-width: 600px) {
+/* @media (min-width: 600px) {
     .user{
         width: 80%;
         margin: 0px 10%;
@@ -413,10 +412,18 @@
         max-width: 500px;
         min-width: 500px;
     }
-}
-@media (min-width: 1000px) {
+} */
+@media (min-width: 1025px) {
     .user{
-        margin: 0px 27%;
+        width: 55%;
+        margin: 0px 28%;
+        max-width: 500px;
+        min-width: 500px;
+    }
+    .user-header {
+        width: 55%;
+        max-width: 500px;
+        min-width: 500px;
     }
    
 }

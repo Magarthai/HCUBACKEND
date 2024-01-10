@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import CalendarUserComponent from "../components_user/CalendarUserComponent";
+import CalendarUserComponent from "./CalendarUserComponent";
 import "../css/Login&SignupComponent.css";
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from './NavbarUserComponent';
 
 
-const ProfileComponent = (props) => {
+const ExampleComponent = (props) => {
 
 
     return (
@@ -31,4 +31,4 @@ const ProfileComponent = (props) => {
     );
 }
 
-export default ProfileComponent;
+export default ExampleComponent;

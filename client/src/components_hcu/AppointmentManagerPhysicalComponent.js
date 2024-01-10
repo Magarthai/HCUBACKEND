@@ -799,7 +799,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             </div>
                         </div>
                     </div>
-
+                    <br></br>
                     <div className="admin-timetable-btn">
                         <button type="button" className="btn-secondary btn-systrm" onClick={()=>openContinueAddinAppointment2()}>กลับ</button>
                         <input type="submit" value="เพิ่มนัดหมายต่อเนื่อง" className="btn-primary btn-systrm" target="_parent" />
