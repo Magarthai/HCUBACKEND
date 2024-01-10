@@ -19,6 +19,7 @@ const AddAppointmentUser = () => {
                     </header>
 
                     <body className="AddAppointmentUser-body">
+                        <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>ปฏิทิน</h2>
                         
                         {/* ชื่อคลินิกตามที่ต้องการนัดหมาย */}
                         <label className="Clinicname-data" style={{marginLeft:45,marginBottom:20}}>คลินิก</label>
