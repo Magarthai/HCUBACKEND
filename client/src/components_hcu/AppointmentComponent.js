@@ -299,7 +299,7 @@ const AppointmentComponent = (props) => {
                 <div className="box">
                     <div >
                         <div className="box-header-container">
-                            <div className="box-header colorPrimary-800 system-top-item"><h3>นัดหมายคลินิกทั่วไป</h3></div>
+                            <div className="box-header colorPrimary-800 system-top-item"><h5>นัดหมายคลินิกทั่วไป</h5></div>
                             <div className="box-date colorPrimary-800 system-top-item textBody-large">{selectedDate
                                         ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
                                         : `${date}/${month}/${year}`}</div>

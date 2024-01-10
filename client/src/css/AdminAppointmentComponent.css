@@ -4,7 +4,7 @@ body{
     background-color: #ffffff;
 }
 
-@media(min-width:300px){
+
     body{
         width: 100%;
         padding:0%;
@@ -304,10 +304,10 @@ body{
     }
    
     #appointment-request-list{
-        margin-left: 970px;
+        margin-left: 965px;
     }
     .admin-appointment-pysical #admin-appointments-connected{
-        margin-left: 750px
+        margin-left: 745px
     }
     .admin-appointment-pysical #appointment-request-list{
         margin-left: 0px
@@ -401,7 +401,7 @@ body{
     }
     #admin-add-appointment-connected .admin-appointmemt-popup{
         width: 30%;
-        height: 80%;
+        height: 810px;
         background-color: #ffffff;
         position: absolute;
         margin: 6% 35%;
@@ -424,10 +424,10 @@ body{
     }
     #admin-add-appointment-connected2 .admin-appointmemt-popup{
         width: 60%;
-        height: 80%;
+        height: 650px;
         background-color: #ffffff;
         position: absolute;
-        margin: 6% 20%;
+        margin: 12% 20%;
         border-radius: 20px;
         padding: 20px;
     }
@@ -460,18 +460,3 @@ body{
    
 
 
-
-
-
-
-
-
-}
-@media(min-width:600px){
-
-}
-@media(min-width:900px){
-
-}
-@media(min-width:1200px){
-}

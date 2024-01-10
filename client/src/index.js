@@ -19,6 +19,7 @@ import SelectDateAppointmentUser from './components_user/SelectDateAppointmentUs
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
 import AdminAppointmentManagerPhysicalComponent from './components_hcu/AppointmentManagerPhysicalComponent.js';
 import UserDateateAppointment from './components_user/DateAppointment.js';
+import AddAppointmentUser from './components_user/AddAppointmentUser.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
   {
     path: "/exampleAppointment",
     element: <ProtectRoute><ExampleComponent/></ProtectRoute>
+  },
+  {
+    path: "/AddAppointmentUser",
+    element: <ProtectRoute><AddAppointmentUser/></ProtectRoute>
   },
 
 ])
