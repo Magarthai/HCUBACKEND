@@ -6,6 +6,7 @@ import CalendarUserComponent from "../components_user/CalendarUserComponent";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/AdminAppointmentComponent.css";
+import "../css/Component.css";
 import { addDoc } from 'firebase/firestore';
 import Swal from "sweetalert2";
 
@@ -273,6 +274,7 @@ const AppointmentComponent = (props) => {
     return (
         <div className="appointment" style={containerStyle}>
             <NavbarComponent />
+          
             <div className="admin-topicBox colorPrimary-800">
                 <div></div>
                 <div>
@@ -283,15 +285,21 @@ const AppointmentComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            <div className="clinic">
-                <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/adminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
-                <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
-            </div>
-            <div className="flex">
-            <CalendarAdminComponent
+            <div className="admin">
+                <div className="admin-header">
+                    <div className="admin-hearder-item">
+                        <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
+                        <a href="/adminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                    </div>
+                    <div className="admin-hearder-item admin-right">
+                        <a href="/adminAppointmentRequestManagementComponent" target="_parent" >รายการขอนัดหมาย</a>
+                    </div>
+                </div>
+                <div className="flex">
+                    
+                <CalendarAdminComponent
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
                     onDateSelect={handleDateSelect}
@@ -335,6 +343,7 @@ const AppointmentComponent = (props) => {
                     </div>
                 </div>
                
+            </div>
             </div>
 
 

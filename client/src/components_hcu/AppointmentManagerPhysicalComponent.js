@@ -456,20 +456,26 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            <div className="clinic admin-appointment-pysical">
-                <a href="/appointmentAdmin" target="_parent" >คลินิกทั่วไป</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/AppointmentManagerComponent" target="_parent" id="select" >คลินิกกายภาพ</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
-                <a target="_parent" id="admin-appointments-connected" onClick={()=> openContinueAddinAppointment()} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
-                <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
-            </div>
-            <div className="flex">
-                <CalendarAdminComponent
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
-                    onDateSelect={handleDateSelect}
-                />
+            <div className="admin">
+                <div className="admin-header">
+                    <div className="admin-hearder-item">
+                        <a href="/appointmentAdmin" target="_parent" >คลินิกทั่วไป</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" id="select" >คลินิกกายภาพ</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                    </div>
+                    <div className="admin-hearder-item admin-right">
+                        <a target="_parent"  onClick={()=> openContinueAddinAppointment()} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
+                        <a href="/" target="_parent" >รายการขอนัดหมาย</a>
+                    </div>
+                </div>
+            
+                <div className="flex">
+                    <CalendarAdminComponent
+                        selectedDate={selectedDate}
+                        setSelectedDate={setSelectedDate}
+                        onDateSelect={handleDateSelect}
+                    />
                 <div className="box">
                     <div >
                         <div className="appointment-hearder">
@@ -799,7 +805,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             </div>
                         </div>
                     </div>
-
+                    <br></br>
                     <div className="admin-timetable-btn">
                         <button type="button" className="btn-secondary btn-systrm" onClick={()=>openContinueAddinAppointment2()}>กลับ</button>
                         <input type="submit" value="เพิ่มนัดหมายต่อเนื่อง" className="btn-primary btn-systrm" target="_parent" />
@@ -809,6 +815,9 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 </form>
 
             </div>
+            </div>
+            
+            
 
 
 
