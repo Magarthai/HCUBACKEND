@@ -72,7 +72,7 @@ const NavbarComponent = (props) => {
 
       <ul className="nav flex-column font1" id="navManager">
         <li className="nav-item pr-3 pb-3">
-          <Link to="#" className="nav-link" target="_parent">
+          <Link to="/adminQueueManagementSystemComponent" className="nav-link" target="_parent">
             ระบบจัดการคิว
           </Link>
         </li>
