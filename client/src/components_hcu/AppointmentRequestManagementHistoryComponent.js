@@ -4,8 +4,6 @@ import "../css/AppointmentRequestManagementComponent.css";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "./NavbarComponent";
-import Close_icon from "../picture/close.png";
-import Tick_icon from "../picture/tick-circle.png";
 import arrow_icon from "../picture/arrow.png";
 
 

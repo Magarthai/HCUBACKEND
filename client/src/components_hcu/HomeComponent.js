@@ -96,7 +96,7 @@ const HomeComponent = () => {
         </div>
       </div>
       <div className="flexbox-function">
-        <Link to="#" className="function">
+        <Link to="/adminQueueManagementSystemComponent" className="function">
           <img className="function" src={function1} alt="Queue management system" />
         </Link>
         <Link to="/appointmentAdmin" className="function">
