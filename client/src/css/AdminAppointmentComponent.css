@@ -29,7 +29,7 @@ body{
         padding-right: 4%;
     }
     .flex{
-        margin: 0% 3.8%;
+        margin: 2% 0%;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -43,7 +43,7 @@ body{
     .box{
         border: 1px solid rgba(10, 15, 21, 0.482);
         box-sizing: border-box;
-	    width: 600px;
+	    width: 34%;
         padding: 0% 2% 0% 2%;
         background-color: #EEF2F7;
         height: 640px;
@@ -51,20 +51,21 @@ body{
     
 
     }
-    .clinic{
+    /* .clinic{
         margin: 0% 4% 1% 4%;
-    }
+    } */
     .clinic a{
-        padding: 5px 15px;
-        background-color: #DCE5EF;
-        color: #456A91;
-        text-decoration: none;
-        margin-right: 10px;
-        border-radius: 20px;
-    }
-    #select{
+        padding: 10px 20px;
         background-color: #263A50;
         color: #FBFFFF;
+        text-decoration: none;
+        margin-right: 10px;
+        border-radius: 50px;
+        font-size: 18px;
+    }
+    #select{
+        background-color: #DCE5EF;
+        color: #456A91;
     }
     .flex-column{
         display: flex;
@@ -397,11 +398,12 @@ body{
         top:0px;
         z-index: 1;
         display: none;
+        left: 0px;
         
     }
     #admin-add-appointment-connected .admin-appointmemt-popup{
         width: 30%;
-        height: 810px;
+        height: 830px;
         background-color: #ffffff;
         position: absolute;
         margin: 6% 35%;
@@ -420,6 +422,7 @@ body{
         top:0px;
         z-index: 1;
         display: none;
+        left: 0px;
         
     }
     #admin-add-appointment-connected2 .admin-appointmemt-popup{
@@ -427,7 +430,7 @@ body{
         height: 650px;
         background-color: #ffffff;
         position: absolute;
-        margin: 12% 20%;
+        margin: 10% 20%;
         border-radius: 20px;
         padding: 20px;
     }
@@ -456,6 +459,7 @@ body{
     #admin-add-appointment-connected2 .input-big{
 
     }
+    
     
    
 

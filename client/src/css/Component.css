@@ -260,7 +260,7 @@
         font-weight: 300;
     }
     .admin-textBody-large{
-        font-size: 20px;
+        font-size: 21px;
         font-weight: 400;
     }
     .admin-textBody-medium{
@@ -268,12 +268,16 @@
         font-weight: 400;
     }
     .admin-textBody-small{
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 300;
     }
     .admin-textBody-huge{
         font-size: 18px;
         font-weight: 400;
+    }
+    .admin-textBody-huge2{
+        font-size: 18px;
+        font-weight: 300;
     }
     .admin-textButton-Normal{
         font-size: 18px;
@@ -366,6 +370,41 @@
         margin-top: 160px;
         padding: 5px;
     }
+    .admin-header{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        width:  100%;
+    
+    }
+    .admin-hearder-item{
+        box-sizing: border-box;
+        width: 50%;
+    }
+    .admin-right{
+        text-align: right;
+    }
+    .admin{
+        margin: 0% 4% 1% 4%;
+    
+    }
+    .admin-body{
+        margin: 2% 0%;
+    
+    }
+    .admin-header  a{
+        padding: 10px 20px;
+        background-color: #263A50;
+        color: #FBFFFF;
+        text-decoration: none;
+        margin-right: 10px;
+        border-radius: 50px;
+        font-size: 18px;
+    }
+    
 
 /* @media (min-width: 600px) {
     .user{

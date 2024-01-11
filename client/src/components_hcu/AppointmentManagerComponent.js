@@ -418,12 +418,17 @@ const AppointmentManagerComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            <div className="clinic">
-                <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
-                <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
-                <a href="/" target="_parent" id="appointment-request-list">รายการขอนัดหมาย</a>
+            <div className="admin">
+            <div className="admin-header">
+                <div className="admin-hearder-item">
+                    <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
+                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
+                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
+                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                    </div>
+                <div className="admin-hearder-item admin-right">
+                    <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
+                </div>
             </div>
             <div className="flex">
                 <CalendarAdminComponent
@@ -592,6 +597,7 @@ const AppointmentManagerComponent = (props) => {
                     </div>
                 </div>
 
+            </div>
             </div>
 
 
