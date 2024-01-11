@@ -4,7 +4,7 @@ import "../css/Login&SignupComponent.css";
 import NavbarUserComponent from '../components_user/NavbarUserComponent';
 
 
-const ProfileComponent = (props) => {
+const ExampleComponent = (props) => {
 
 
     return (
@@ -31,4 +31,4 @@ const ProfileComponent = (props) => {
     );
 }
 
-export default ProfileComponent;
+export default ExampleComponent;
