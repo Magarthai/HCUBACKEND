@@ -4,8 +4,8 @@ import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection ,doc} from "../firebase/config";
-import { addDoc ,query, where,updateDoc,arrayUnion} from 'firebase/firestore';
+import { db, getDocs, collection, doc ,getDoc} from "../firebase/config";
+import { addDoc, query, where, updateDoc, arrayUnion} from 'firebase/firestore';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
@@ -23,7 +23,7 @@ const AppointmentManagerComponent = (props) => {
             appointmentTime: "",
         });
     };
-    
+
     const [state, setState] = useState({
         appointmentDate: "",
         appointmentTime: "",
@@ -34,6 +34,8 @@ const AppointmentManagerComponent = (props) => {
         clinic: ""
     })
 
+
+      
 
     const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic } = state
     const inputValue = (name) => (event) => {
@@ -77,64 +79,81 @@ const AppointmentManagerComponent = (props) => {
             if (user && selectedDate && selectedDate.dayName) {
                 const timeTableCollection = collection(db, 'timeTable');
                 const timeTableSnapshot = await getDocs(timeTableCollection);
-
+    
                 const timeTableData = timeTableSnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-
+    
                 if (timeTableData.length > 0) {
                     const filteredTimeTableData = timeTableData.filter(
                         (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
                     );
-
+    
                     if (filteredTimeTableData.length > 0) {
                         const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
                             if (item.timeablelist && Array.isArray(item.timeablelist)) {
                                 acc.push(
-                                    ...item.timeablelist.map((timeSlot, index) => ({ ...timeSlot, timeTableId: item.id, timeSlotIndex: index }))
+                                    ...item.timeablelist.map((timeSlot, index) => ({
+                                        ...timeSlot,
+                                        timeTableId: item.id,
+                                        timeSlotIndex: index
+                                    }))
                                 );
                             }
                             return acc;
                         }, []);
-                        setTimetable(allTimeableLists);
+    
+                        const appointmentsCollection = collection(db, 'appointment');
+                        const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
+    
+                        const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
+    
+                        if (existingAppointments.length > 0) {
+                            console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
+                        } else {
+                            console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
+                        }
+    
+                        const availableTimeSlots = allTimeableLists.filter((timeSlot) => 
+                            !existingAppointments.some(existingSlot => 
+                                existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
+                            )
+                        );
 
-                        const initialIsChecked = allTimeableLists.reduce((acc, timetableItem) => {
+
+
+                        console.log("availableTimeSlots",availableTimeSlots)
+                        const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
                             acc[timetableItem.id] = timetableItem.status === "Enabled";
                             return acc;
                         }, {});
-
+    
                         setIsChecked(initialIsChecked);
-
-
+    
                         const timeOptionsFromTimetable = [
-                            { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true }, // Additional disabled option
-                            ...allTimeableLists
+                            { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
+                            ...availableTimeSlots
                                 .sort((a, b) => {
-                                    // Sort by start time
                                     const timeA = new Date(`01/01/2000 ${a.start}`);
                                     const timeB = new Date(`01/01/2000 ${b.start}`);
                                     return timeA - timeB;
                                 })
                                 .map((timeSlot) => ({
                                     label: `${timeSlot.start} - ${timeSlot.end}`,
-                                    value: [timeSlot.timeTableId, timeSlot.timeSlotIndex],
+                                    value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
                                 })),
                         ];
-                        
-                        
-                        
-                        
-
-
+    
                         console.log("Before setTimeOptions", timeOptionsFromTimetable);
                         setTimeOptions(timeOptionsFromTimetable);
                         console.log("After setTimeOptions", timeOptionsFromTimetable);
-
-                        console.log(allTimeableLists);
-                    } else {
+                    }else {
                         console.log("Time table not found for selected day and clinic");
+                        const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                        setTimeOptions([noTimeSlotsAvailableOption]);
                     }
+                    
                 } else {
                     console.log("Time table not found");
                 }
@@ -143,6 +162,9 @@ const AppointmentManagerComponent = (props) => {
             console.error('Error fetching user data:', error);
         }
     };
+    
+    
+    
 
 
     useEffect(() => {
@@ -173,8 +195,8 @@ const AppointmentManagerComponent = (props) => {
         if (!userDataFetched) {
             fetchAllUserData();
         }
-        
-        console.log("All user Data",alluserdata)
+
+        console.log("All user Data", alluserdata)
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
@@ -213,15 +235,15 @@ const AppointmentManagerComponent = (props) => {
         console.log(selectedCount)
     };
 
+    
+
     const submitForm = async (e) => {
         e.preventDefault();
-    
+
         try {
-    
+
             const appointmentInfo = {
-                appointmentDate: selectedDate
-                    ? new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day)
-                    : null,
+                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
                 appointmentTime,
                 appointmentId: appointmentId || null,
                 appointmentCasue,
@@ -229,9 +251,9 @@ const AppointmentManagerComponent = (props) => {
                 appointmentNotation,
                 clinic: "คลินิกทั่วไป",
             };
-            
+
             const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-            console.log('Succuessful adddoc',appointmentInfo)
+            console.log('Succuessful adddoc', appointmentInfo)
             console.log(appointmentId)
             console.log(appointmentRef.id)
             console.log("Newly created appointment ID:", appointmentRef.id);
@@ -261,27 +283,28 @@ const AppointmentManagerComponent = (props) => {
                 const userId = userQuerySnapshot.docs[0].id;
 
                 const userDocRef = doc(db, 'users', userId);
-    
+
                 await updateDoc(userDocRef, {
                     appointments: arrayUnion(appointmentRef.id),
                 });
-    
+
                 console.log("User document updated with new appointment.");
-    
+
             } else {
                 console.log("User not found in alluserdata");
             }
-            
-    
+
+
             Swal.fire({
                 icon: "success",
                 title: "Appointment Successful!",
                 text: "Your appointment has been successfully created!",
             });
-    
+            fetchTimeTableData();
+
         } catch (firebaseError) {
             console.error('Firebase signup error:', firebaseError);
-    
+
             console.error('Firebase error response:', firebaseError);
             Swal.fire({
                 icon: "error",
@@ -290,8 +313,8 @@ const AppointmentManagerComponent = (props) => {
             });
         }
     };
-    
-    
+
+
     const submitEditForm = async (e) => {
 
     };
@@ -495,14 +518,14 @@ const AppointmentManagerComponent = (props) => {
                                         handleSelectChange();
                                         const selectedValue = JSON.parse(e.target.value);
 
-                                        if (selectedValue && Array.isArray(selectedValue)) {
-                                            const [timetableId, timeSlotIndex] = selectedValue;
+                                        if (selectedValue && typeof selectedValue === 'object') {
+                                            const { timetableId, timeSlotIndex } = selectedValue;
                                             console.log("timetableId:", timetableId);
                                             console.log("timeSlotIndex:", timeSlotIndex);
 
                                             inputValue("appointmentTime")({
                                                 target: {
-                                                    value: [timetableId, timeSlotIndex],
+                                                    value: { timetableId, timeSlotIndex },
                                                 },
                                             });
 
@@ -510,25 +533,25 @@ const AppointmentManagerComponent = (props) => {
                                         } else if (e.target.value === "") {
                                             inputValue("appointmentTime")({
                                                 target: {
-                                                    value: [],
+                                                    value: {},
                                                 },
                                             });
 
                                             handleSelectChange();
-                                        }
-                                        else {
+                                        } else {
                                             console.error("Invalid selected value:", selectedValue);
                                         }
                                     }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
                                 >
-          
                                     {timeOptions.map((timeOption, index) => (
-                                        <option key={`${timeOption.value[0]}-${timeOption.value[1]}`} value={JSON.stringify(timeOption.value)}>
-                                            {timeOption.label}
-                                        </option>
-                                    ))}
+                                    <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                                        {timeOption.label}
+                                    </option>
+                                ))}
+
                                 </select>
+
 
                             </div>
                             <div>
