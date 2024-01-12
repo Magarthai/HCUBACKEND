@@ -124,7 +124,7 @@ const LoginComponent = () => {
                     </form>
 
                     <div className="center">
-                        <a href="/signup" role="button" className="colorPrimary-800" >ยังไม่มีบัญชี? Sign up</a>
+                        <a href="/signup" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ยังไม่มีบัญชี? Sign up</a>
                         <p className="textBody-small login-kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 

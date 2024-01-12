@@ -137,17 +137,19 @@ const QueueManagementSystemComponent = (props) => {
         </div>
         <div className="admin">
             <div className="admin-header">
+                <div className="admin-hearder-item">
                 <a href="/" target="_parent" id="select">คลินิกทั่วไป</a>
                 <a href="/" target="_parent" >คลินิกเฉพาะทาง</a>
                 <a href="/" target="_parent" >คลินิกกายภาพ</a>
                 <a href="/" target="_parent" >คลินิกฝั่งเข็ม</a>
+                </div>
             </div>
             
             <div className="admin-body">
                 <div className="admin-queue-flexbox">
                     <div className="admin-queue-box">
                         <h2 className="colorPrimary-800">นัดหมายคลินิกทั่วไป</h2>
-                        <div className="admin-queue-card" >
+                        <div className="admin-queue-card focused" >
                             <div className="admin-queue-card-time colorPrimary-800">
                                 <p className="admin-textBody-small">13:01 - 13:06</p>
                             </div>
