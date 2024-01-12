@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import {where,doc} from 'firebase/firestore';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
 } from 'firebase/auth';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 
 import { auth, db } from '../firebase/config';
 
@@ -33,18 +34,17 @@ export function UserAuthContextProvider({ children }) {
     try {
       if (user && !userData) {
         const usersCollection = collection(db, 'users');
-        const usersSnapshot = await getDocs(usersCollection);
-
-        const usersData = usersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-        if (currentUserData) {
+  
+        // Create a query to get the document with the specified UID
+        const q = query(usersCollection, where('uid', '==', user.uid));
+  
+        const usersSnapshot = await getDocs(q);
+  
+        if (!usersSnapshot.empty) {
+          const currentUserData = usersSnapshot.docs[0].data();
           setUserData(currentUserData);
-          console.log(currentUserData);
+          console.log('User Data:', currentUserData);
+          console.log(user.uid)
         } else {
           console.log('User not found');
         }
@@ -53,6 +53,7 @@ export function UserAuthContextProvider({ children }) {
       console.error('Error fetching user data:', error);
     }
   };
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
@@ -67,14 +68,14 @@ export function UserAuthContextProvider({ children }) {
 
   useEffect(() => {
     document.title = 'Health Care Unit';
-    console.log(user);
-
-    fetchUserData();
-  }, [user]);
-
-  useEffect(() => {
     console.log(userData);
-  }, [userData]);
+    console.log(user);
+    if (user && !userData) {
+      fetchUserData();
+    }
+  }, [user]);
+  
+
 
   return (
     <userAuthContext.Provider value={{ user, userData, logIn, signUp, logOut }}>
