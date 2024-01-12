@@ -186,6 +186,9 @@ body{
         box-sizing: border-box;
         padding: 10px;
     }
+    .underline{
+        text-decoration: underline;
+    }
 }
 @media(min-width:600px){
     .login-hcu-image{
