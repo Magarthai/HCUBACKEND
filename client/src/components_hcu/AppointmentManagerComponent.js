@@ -14,17 +14,7 @@ const AppointmentManagerComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
 
-    const handleDateSelect = (selectedDate) => {
-        console.log("Selected Date in AppointmentManager:", selectedDate);
-        setSelectedDate(selectedDate);
-        setState({
-            ...state,
-            appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
-            appointmentTime: "",
-        });
-        setAllAppointmentUsersData([]);
-        fetchUserDataWithAppointments();
-    };
+   
 
     const [state, setState] = useState({
         appointmentDate: "",
@@ -81,18 +71,19 @@ const AppointmentManagerComponent = (props) => {
         try {
             if (user && selectedDate && selectedDate.dayName) {
                 const timeTableCollection = collection(db, 'timeTable');
-                const timeTableSnapshot = await getDocs(timeTableCollection);
+                const querySnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('addDay', '==', selectedDate.dayName),
+                    where('clinic', '==', 'คลินิกทั่วไป')
+                ));
 
-                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
+                const timeTableData = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
 
                 if (timeTableData.length > 0) {
-                    const filteredTimeTableData = timeTableData.filter(
-                        (item) => item.addDay === selectedDate.dayName && item.clinic === "คลินิกทั่วไป"
-                    );
-
+                    const filteredTimeTableData = timeTableData
                     if (filteredTimeTableData.length > 0) {
                         const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
                             if (item.timeablelist && Array.isArray(item.timeablelist)) {
@@ -158,6 +149,8 @@ const AppointmentManagerComponent = (props) => {
                     }
 
                 } else {
+                    const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                    setTimeOptions([noTimeSlotsAvailableOption]);
                     console.log("Time table not found");
                 }
             }
@@ -174,7 +167,7 @@ const AppointmentManagerComponent = (props) => {
             if (user && selectedDate && selectedDate.dayName) {
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
-
+    
                 const timeTableCollection = collection(db, 'timeTable');
                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
                     const appointmentData = doc.data();
@@ -183,65 +176,63 @@ const AppointmentManagerComponent = (props) => {
                         ...appointmentData,
                     };
                 });
-
-
-
-                console.log("existingAppointments",existingAppointments)
-
+    
+                console.log("existingAppointments", existingAppointments);
+    
                 if (existingAppointments.length > 0) {
                     console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
-
+    
                     const AppointmentUsersDataArray = [];
-
-                    await Promise.all(existingAppointments.map(async (appointment) => {
-                        const timeSlotIndex = appointment.appointmentTime.timeSlotIndex
-                        const timeTableId = appointment.appointmentTime.timetableId
-                        const timetableDocRef = doc(timeTableCollection, timeTableId);
-                        const timetableDocSnapshot = await getDoc(timetableDocRef);
-                        const timetableData = timetableDocSnapshot.data();
-                        console.log("Timetable Data:", timetableData);
-                        const timeslot = timetableData.timeablelist[timeSlotIndex]
-                        console.log("Timeslot info",timeslot)
-                        if (timetableDocSnapshot.exists()) {
-                        // Document exists, you can access its data
+    
+                    for (const appointment of existingAppointments) {
+                        const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
+                        const timeTableId = appointment.appointmentTime.timetableId;
                         
-                        } 
-                        else {
-                        console.log("No such document with ID:", timeTableId);
+                        try {
+                            const timetableDocRef = doc(timeTableCollection, timeTableId);
+                            const timetableDocSnapshot = await getDoc(timetableDocRef);
+    
+                            if (timetableDocSnapshot.exists()) {
+                                const timetableData = timetableDocSnapshot.data();
+                                console.log("Timetable Data:", timetableData);
+                                const timeslot = timetableData.timeablelist[timeSlotIndex];
+                                console.log("Timeslot info", timeslot);
+    
+                                const userDetails = await getUserDataFromUserId(appointment.appointmentId, timeslot);
+    
+                                if (userDetails) {
+                                    AppointmentUsersDataArray.push(userDetails);
+                                    console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
+                                } else {
+                                    console.log("No user details found for appointmentId", appointment.appointmentId);
+                                }
+                            } else {
+                                console.log("No such document with ID:", timeTableId);
+                            }
+                        } catch (error) {
+                            console.error('Error fetching timetable data:', error);
                         }
-                        const userDetails = await getUserDataFromUserId(appointment.appointmentId,timeslot);
-
-                        if (userDetails) {
-                            AppointmentUsersDataArray.push(userDetails);
-                            console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
-                        } else {
-                            console.log("No user details found for appointmentId", appointment.appointmentId);
-                        }
-                    }));
-
-                    // อัปเดต state ด้วยข้อมูลผู้ใช้ทั้งหมด
+                    }
+    
                     if (AppointmentUsersDataArray.length > 0) {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
-                        console.log("AppointmentUsersData", AppointmentUsersData)
+                        console.log("AppointmentUsersData", AppointmentUsersDataArray);
                     } else {
                         console.log("No user details found for any appointmentId");
                     }
-
-                    console.log("AppointmentUsersDataArray", AppointmentUsersDataArray)
+    
+                    console.log("AppointmentUsersDataArray", AppointmentUsersDataArray);
                     setAllAppointmentUsersData(AppointmentUsersDataArray);
-                    console.log("AppointmentUsersData", AppointmentUsersData)
-                    fetchUserDataWithAppointments();
-
+                    console.log("AppointmentUsersData", AppointmentUsersDataArray);
                 } else {
                     console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
                 }
             }
         } catch (error) {
             console.error('Error fetching user data with appointments:', error);
-        } finally {
-            setUserDataAppointmentFetched(true);
         }
     };
+    
 
     const getUserDataFromUserId = async (userId,timeslot) => {
         const usersCollection = collection(db, 'users');
@@ -298,7 +289,7 @@ const AppointmentManagerComponent = (props) => {
             window.removeEventListener("resize", responsivescreen);
         };
 
-    }, [selectedDate, alluserdata, userDataFetched,userDataAppointmentFetched]);
+    }, [selectedDate, alluserdata, userDataFetched, userDataAppointmentFetched]);
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -522,6 +513,17 @@ const AppointmentManagerComponent = (props) => {
 
     }
 
+
+    const handleDateSelect = (selectedDate) => {
+        console.log("Selected Date in AppointmentManager:", selectedDate);
+        setAllAppointmentUsersData([]);
+        setSelectedDate(selectedDate);
+        setState({
+            ...state,
+            appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+            appointmentTime: "",
+        });
+    };
 
 
     return (
