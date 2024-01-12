@@ -91,3 +91,41 @@
     width: 10%;
     border-radius: 0px 8px 8px 0px;
 }
+.admin-queue-detail-header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+.admin-queue-detail-header-items{
+    box-sizing: border-box;
+    width: 33.33%;
+}
+/* .admin-queue-detail-status{
+   
+    border-radius: 50px;
+    background-color: #D1D1D1;
+} */
+#detail-appointment-status{
+    /* background-color: #D1D1D1; */
+    padding: 7px 15px;
+    border-radius: 50px;
+    color: #ffffff;
+}
+.confirmed-background{
+    background-color: #D88C09;
+}
+
+.completed-background{
+    background-color: #098B66;
+}
+
+.failed-background{
+    background-color: #C11F1F;
+}
+
+.pending-confirmation-background{
+    background-color: #A1A1A1;
+}
