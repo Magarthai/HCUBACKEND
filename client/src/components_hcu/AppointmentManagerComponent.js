@@ -5,10 +5,12 @@ import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
-import { addDoc, query, where, updateDoc, arrayUnion } from 'firebase/firestore';
+import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc} from 'firebase/firestore';
+import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
+
 
 const AppointmentManagerComponent = (props) => {
 
@@ -23,10 +25,12 @@ const AppointmentManagerComponent = (props) => {
         appointmentCasue: "",
         appointmentSymptom: "",
         appointmentNotation: "",
-        clinic: ""
+        clinic: "",
+        uid:"",
+        timeablelist:"",
     })
 
-    const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic } = state
+    const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic,uid,timeablelist } = state
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
     };
@@ -78,6 +82,8 @@ const AppointmentManagerComponent = (props) => {
                     id: doc.id,
                     ...doc.data(),
                 }));
+                console.log("timeTableData selectedDate",selectedDate)
+                console.log("timeTableData",timeTableData)
 
                 if (timeTableData.length > 0) {
                     const filteredTimeTableData = timeTableData
@@ -139,16 +145,18 @@ const AppointmentManagerComponent = (props) => {
                         console.log("Before setTimeOptions", timeOptionsFromTimetable);
                         setTimeOptions(timeOptionsFromTimetable);
                         console.log("After setTimeOptions", timeOptionsFromTimetable);
+                        console.log(timeOptions)
                     } else {
                         console.log("Time table not found for selected day and clinic");
                         const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                         setTimeOptions([noTimeSlotsAvailableOption]);
+                        console.log(timeOptions)
                     }
 
                 } else {
                     const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                     setTimeOptions([noTimeSlotsAvailableOption]);
-                    console.log("Time table not found");
+                    console.log("Time table not found",timeOptions);
                 }
             }
         } catch (error) {
@@ -170,9 +178,11 @@ const AppointmentManagerComponent = (props) => {
                     const appointmentData = doc.data();
                     return {
                         appointmentId: doc.id,
+                        appointmentuid: doc.id,
                         ...appointmentData,
                     };
                 });
+                
     
                 console.log("existingAppointments", existingAppointments);
     
@@ -195,7 +205,7 @@ const AppointmentManagerComponent = (props) => {
                                 const timeslot = timetableData.timeablelist[timeSlotIndex];
                                 console.log("Timeslot info", timeslot);
     
-                                const userDetails = await getUserDataFromUserId(appointment.appointmentId, timeslot);
+                                const userDetails = await getUserDataFromUserId(appointment,appointment.appointmentId, timeslot,appointment.appointmentuid);
     
                                 if (userDetails) {
                                     AppointmentUsersDataArray.push(userDetails);
@@ -229,9 +239,12 @@ const AppointmentManagerComponent = (props) => {
             console.error('Error fetching user data with appointments:', error);
         }
     };
+
+
+
     
 
-    const getUserDataFromUserId = async (userId,timeslot) => {
+    const getUserDataFromUserId = async (appointment,userId,timeslot,appointmentuid) => {
         const usersCollection = collection(db, 'users');
         const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
 
@@ -242,6 +255,8 @@ const AppointmentManagerComponent = (props) => {
         <u></u>
         const userDatas = userQuerySnapshot.docs[0].data();
         userDatas.timeslot = timeslot;
+        userDatas.appointment = appointment;
+        userDatas.appointmentuid = appointmentuid;
         console.log("User Data for userId", userId, ":", userDatas);
         console.log("userDatas",userDatas)
         console.log("testxd",userDatas.timeslot.start)
@@ -388,7 +403,7 @@ const AppointmentManagerComponent = (props) => {
             fetchTimeTableData();
 
         } catch (firebaseError) {
-            console.error('Firebase signup error:', firebaseError);
+            console.error('Firebase submit error:', firebaseError);
 
             console.error('Firebase error response:', firebaseError);
             Swal.fire({
@@ -401,8 +416,44 @@ const AppointmentManagerComponent = (props) => {
 
 
     const submitEditForm = async (e) => {
-
+        e.preventDefault();
+        try {
+            const timetableRef = doc(db, 'appointment', uid);
+            console.log(uid);
+    
+            const updatedTimetable = {
+                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentTime: appointmentTime,
+                appointmentId: appointmentId,
+                appointmentCasue: appointmentCasue,
+                appointmentSymptom: appointmentSymptom,
+                appointmentNotation: appointmentNotation,
+                clinic: "คลินิกทั่วไป",
+            };
+    
+            await updateDoc(timetableRef, updatedTimetable);
+    
+            Swal.fire({
+                icon: "success",
+                title: "Alert",
+                text: "Appointment Updated!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetchUserDataWithAppointments();
+                }
+            });
+        } catch (firebaseError) {
+            console.error('Firebase update error:', firebaseError);
+        }
     };
+
+    const getDayName = (date) => {
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const dayIndex = date.getDay();
+        return daysOfWeek[dayIndex];
+    };
+    
+    
 
     const openDetailAppointment = (element) => {
         let x = document.getElementById("detail-appointment");
@@ -436,24 +487,40 @@ const AppointmentManagerComponent = (props) => {
 
     }
 
-    const openEditAppointment = () => {
+    const openEditAppointment = (appointmentUserData) => {
+        console.log("Edit appointment data:", appointmentUserData.appointmentuid);
+    
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
+    
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+    
+            setState((prevState) => ({
+                ...prevState,
+                appointmentDate: appointmentUserData.appointmentDate,
+                appointmentTime: appointmentUserData.appointmentTime,
+                appointmentId: appointmentUserData.appointmentId,
+                appointmentCasue: appointmentUserData.appointmentCasue,
+                appointmentSymptom: appointmentUserData.appointmentSymptom,
+                appointmentNotation: appointmentUserData.appointmentNotation,
+                clinic: appointmentUserData.clinic,
+                uid:appointmentUserData.appointmentuid
+            }));
 
         } else {
             x.style.display = "none";
-
-
         }
-
     }
+    
 
-    const DeleteAppointment = () => {
+
+
+    const DeleteAppointment = (appointmentuid) => {
+        const timetableRef = doc(db, 'appointment',appointmentuid );
 
         Swal.fire({
             title: 'ลบนัดหมาย',
@@ -471,8 +538,13 @@ const AppointmentManagerComponent = (props) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 try {
+                    deleteDoc(timetableRef,appointmentuid)
+                    console.log(appointmentuid);
+                    setUserDataAppointmentFetched([]);
+                    fetchUserDataWithAppointments();
                     Swal.fire(
                         {
+                            
                             title: 'Deleted!',
                             text: `ลบนัดหมายสำเร็จ`,
                             icon: 'success',
@@ -482,11 +554,12 @@ const AppointmentManagerComponent = (props) => {
                                 confirmButton: 'custom-confirm-button',
                             }
                         })
-                    // .then((result) => {
-                    //     if (result.isConfirmed) {
+                    .then((result) => {
+                        if (result.isConfirmed) {
+                            
+                        }
 
-                    //     }
-                    // });
+                    });
                 } catch {
 
                 }
@@ -522,6 +595,34 @@ const AppointmentManagerComponent = (props) => {
             appointmentTime: "",
         });
     };
+
+    const formatDateForDisplay = (isoDate) => {
+        const dateParts = isoDate.split("-");
+        if (dateParts.length === 3) {
+            setAllAppointmentUsersData([]);
+            const [year, month, day] = dateParts;
+            const formattedMonth = parseInt(month, 10).toString();
+            const formattedDate = `${day}/${formattedMonth}/${year}`;
+
+            const dayName = getDayName(new Date(isoDate)).toLowerCase();;
+            const formattedSelectedDate = {
+                day: day,
+                month: formattedMonth,
+                year: year,
+                dayName: dayName,
+            };
+          
+            setAllAppointmentUsersData([]);
+            setSelectedDate(formattedSelectedDate);
+            setState({
+                ...state,
+                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentTime: "",
+            });
+            return formattedDate;
+        }
+        return isoDate;
+    }
 
 
     return (
@@ -571,19 +672,20 @@ const AppointmentManagerComponent = (props) => {
                         </div>
                         <div className="box-list">
                         {AppointmentUsersData.map((AppointmentUsersData, index) => (
-                            <div className="box-userapointment">
-
-                                    <div className="time-apppoint textBody-medium" onClick={openDetailAppointment}>{AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}</div>
-                                    <div className="appoint-info">
-                                        <div className="user-appointment-info flex-column" onClick={openDetailAppointment}>
-                                            <p id="student-id" className="textBody-huge">{AppointmentUsersData.id}</p>
-                                            <p id="student-name" className="textBody-medium">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
-                                        </div>
-                                        <div className="appointment-function">
-                                            <img src={edit} className="icon" onClick={openEditAppointment} />
-                                            <img src={icon_delete} className="icon" onClick={DeleteAppointment} />
-                                        </div>
+                            <div className="box-userapointment" key={index}>
+                                <div className="time-apppoint textBody-medium" onClick={openDetailAppointment}>
+                                    {AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}
+                                </div>
+                                <div className="appoint-info">
+                                    <div className="user-appointment-info flex-column" onClick={openDetailAppointment}>
+                                        <p id="student-id" className="textBody-huge">{AppointmentUsersData.id}</p>
+                                        <p id="student-name" className="textBody-medium">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
                                     </div>
+                                    <div className="appointment-function">
+                                        <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUsersData.appointment)} />
+                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUsersData.appointment.appointmentuid)} />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                         </div>
@@ -682,22 +784,66 @@ const AppointmentManagerComponent = (props) => {
                             <h3 className="center">แก้ไขนัดหมาย</h3>
                             <div className="center-container">
                                 <label className="textBody-large colorPrimary-800">วันที่</label>
-                                <input type="date" className="form-control"></input>
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    onChange={(e) => {
+                                        inputValue("appointmentDate")(e); // อัปเดต state หรือทำการตั้งค่าที่ต้องการ
+                                        const formattedDate = formatDateForDisplay(e.target.value);
+                                        // Now you can use formattedDate for whatever you need
+                                        console.log("Formatted Date:", formattedDate);
+                                    }}
+                                />
+
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="time"
-                                    value={appointmentTime}
-                                    onChange={(e) => { inputValue("appointmentTime")(e); handleSelectChange(); }}
+                                    value={JSON.stringify(appointmentTime)}
+                                    onChange={(e) => {
+                                        handleSelectChange();
+                                        const selectedValue = JSON.parse(e.target.value);
+
+                                        if (selectedValue && typeof selectedValue === 'object') {
+                                            const { timetableId, timeSlotIndex } = selectedValue;
+                                            console.log("timetableId:", timetableId);
+                                            console.log("timeSlotIndex:", timeSlotIndex);
+
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: { timetableId, timeSlotIndex },
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        } else if (e.target.value === "") {
+                                            inputValue("appointmentTime")({
+                                                target: {
+                                                    value: {},
+                                                },
+                                            });
+
+                                            handleSelectChange();
+                                        } else {
+                                            console.error("Invalid selected value:", selectedValue);
+                                        }
+                                    }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
                                 >
-                                    <option value="" disabled> กรุณาเลือกช่วงเวลา </option>
+                                    {timeOptions.map((timeOption, index) => (
+                                        <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                                            {timeOption.label}
+                                        </option>
+                                    ))}
+
                                 </select>
+
+
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentId}  disabled onChange={inputValue("appointmentId")} placeholder="64000000000" />
                             </div>
                             <div>
                                 <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>

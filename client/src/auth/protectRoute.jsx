@@ -15,9 +15,9 @@ function ProtectRoute({ children }) {
 
             console.log(userData);
         };
-
+        console.log(userData)
         checkUserAdminStatus();
-    }, [navigate]);
+    }, [navigate,userData]);
 
     if (!user) {
         return <Navigate to="/login" />;
