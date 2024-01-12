@@ -12,7 +12,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 
 const LoginComponent = () => {
     const [error, setError] = useState("");
-    const { logIn } = useUserAuth();
+    const { user,logIn } = useUserAuth();
 
     const [state, setState] = useState({
         email: "",
@@ -35,6 +35,9 @@ const LoginComponent = () => {
 
     useEffect(() => {
         document.title = 'Health Care Unit';
+        if (user) {
+            navigate('/chooseClinicUser');
+        }
     }, [navigate])
 
     const submitForm = async (e) => {
