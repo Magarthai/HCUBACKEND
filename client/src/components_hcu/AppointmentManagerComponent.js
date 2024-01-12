@@ -23,7 +23,7 @@ const AppointmentManagerComponent = (props) => {
             appointmentTime: "",
         });
         setAllAppointmentUsersData([]);
-
+        fetchUserDataWithAppointments();
     };
 
     const [state, setState] = useState({
@@ -298,7 +298,7 @@ const AppointmentManagerComponent = (props) => {
             window.removeEventListener("resize", responsivescreen);
         };
 
-    }, [selectedDate, alluserdata, userDataFetched]);
+    }, [selectedDate, alluserdata, userDataFetched,userDataAppointmentFetched]);
     const containerStyle = {
         zoom: zoomLevel,
     };
