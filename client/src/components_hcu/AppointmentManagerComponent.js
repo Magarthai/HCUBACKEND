@@ -26,9 +26,6 @@ const AppointmentManagerComponent = (props) => {
         clinic: ""
     })
 
-
-
-
     const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic } = state
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
@@ -387,6 +384,7 @@ const AppointmentManagerComponent = (props) => {
                 title: "Appointment Successful!",
                 text: "Your appointment has been successfully created!",
             });
+            fetchUserDataWithAppointments();
             fetchTimeTableData();
 
         } catch (firebaseError) {
