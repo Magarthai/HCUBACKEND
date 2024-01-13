@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"; // นำเข้า useN
 import Manface from "../picture/Manface.png";
 import { fetchUserById } from '../firebase/firebaseUtils';
 import { useEffect, useState, useRef } from "react";
+
 import NavbarComponent from "../components_hcu/NavbarComponent";
 import "../css/AdminHomeComponent.css";
 import function1 from "../picture/function1.jpg";
@@ -16,6 +17,8 @@ import function8 from "../picture/function8.jpg";
 import logo from "../picture/LogoHCU.png";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
+import { query, where,  } from 'firebase/firestore';
+
 
 const NavbarUserComponent = (props) => {
   const { user, logOut } = useUserAuth();
@@ -41,18 +44,17 @@ const NavbarUserComponent = (props) => {
     try {
       if (user && !userData) {
         const usersCollection = collection(db, 'users');
-        const usersSnapshot = await getDocs(usersCollection);
-
-        const usersData = usersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-        if (currentUserData) {
+  
+        // Create a query to get the document with the specified UID
+        const q = query(usersCollection, where('uid', '==', user.uid));
+  
+        const usersSnapshot = await getDocs(q);
+  
+        if (!usersSnapshot.empty) {
+          // Access the first document (assuming there's only one matching document)
+          const currentUserData = usersSnapshot.docs[0].data();
           setUserData(currentUserData);
-          console.log(currentUserData);
+          console.log('User Data:', currentUserData);
         } else {
           console.log('User not found');
         }

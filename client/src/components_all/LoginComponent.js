@@ -12,7 +12,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 
 const LoginComponent = () => {
     const [error, setError] = useState("");
-    const { logIn } = useUserAuth();
+    const { user,logIn } = useUserAuth();
 
     const [state, setState] = useState({
         email: "",
@@ -35,6 +35,9 @@ const LoginComponent = () => {
 
     useEffect(() => {
         document.title = 'Health Care Unit';
+        if (user) {
+            navigate('/chooseClinicUser');
+        }
     }, [navigate])
 
     const submitForm = async (e) => {
@@ -121,7 +124,7 @@ const LoginComponent = () => {
                     </form>
 
                     <div className="center">
-                        <a href="/signup" role="button" className="colorPrimary-800" >ยังไม่มีบัญชี? Sign up</a>
+                        <a href="/signup" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ยังไม่มีบัญชี? Sign up</a>
                         <p className="textBody-small login-kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useUserAuth } from '../context/UserAuthContext';
-import Swal from "sweetalert2";
 
 function ProtectRoute({ children }) {
     const { user, userData } = useUserAuth();
@@ -9,18 +8,16 @@ function ProtectRoute({ children }) {
 
     useEffect(() => {
         const checkUserAdminStatus = () => {
-            if (userData) {
-                if (userData.role === 'admin') {
-                    console.log('User is not an admin');
-                    navigate('/homeAdmin');
-                }
-
-                console.log(userData);
+            if (userData && userData.role === 'admin') {
+                console.log('User is not an admin');
+                navigate('/homeAdmin');
             }
-        };
 
+            console.log(userData);
+        };
+        console.log(userData)
         checkUserAdminStatus();
-    }, [userData, navigate]);
+    }, [navigate,userData]);
 
     if (!user) {
         return <Navigate to="/login" />;
@@ -28,5 +25,4 @@ function ProtectRoute({ children }) {
 
     return children;
 }
-
 export default ProtectRoute;

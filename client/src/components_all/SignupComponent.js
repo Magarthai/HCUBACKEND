@@ -101,7 +101,7 @@ const SignupComponent = (props) => {
             text: "Your account has been successfully created!",
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.href = '/login';
+              window.location.href = '/chooseClinicUser';
             }
           });
       
@@ -261,7 +261,7 @@ const SignupComponent = (props) => {
       </form>
 
       <div className="center">
-        <a href="/login" role="button" className="colorPrimary-800 " target="_parent">
+        <a href="/login" role="button" className="colorPrimary-800 " target="_parent" style={{textDecoration:"underline"}}>
           มีบัญชีแล้ว Log in
         </a>
         <p className="textBody-small singup-kmutt">

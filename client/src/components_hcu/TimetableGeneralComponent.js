@@ -47,6 +47,7 @@ const TimetableGeneralComponent = (props) => {
     };
 
 
+
     const [selectedCount, setSelectedCount] = useState(1);
 
     const handleSelectChange = () => {
@@ -294,6 +295,8 @@ const TimetableGeneralComponent = (props) => {
         });
     };
 
+    const [saveDetailId, setsaveDetailId] = useState([])
+    const [saveEditId, setsaveEditId] = useState([])
 
     const openAddtimetable = () => {
         let x = document.getElementById("Addtimetable");
@@ -303,6 +306,8 @@ const TimetableGeneralComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+            setsaveDetailId("")
+            setsaveEditId("")
         } else {
             x.style.display = "none";
 
@@ -311,7 +316,6 @@ const TimetableGeneralComponent = (props) => {
     }
 
     const navigate = useNavigate();
-
 
     const openEdittimetable = (element, timetable) => {
         let x = document.getElementById("Edittimetable");
@@ -322,6 +326,8 @@ const TimetableGeneralComponent = (props) => {
           x.style.display = "block";
           y.style.display = "none";
           z.style.display = "none";
+          setsaveDetailId("")
+          setsaveEditId(timetable.id)
       
           setState((prevState) => ({
             ...prevState,
@@ -331,25 +337,43 @@ const TimetableGeneralComponent = (props) => {
             timeAppointmentStart: timetable.timeAppointmentStart,
             timeAppointmentEnd: timetable.timeAppointmentEnd,
             numberAppointment: timetable.numberAppointment,
-            clinic: "คลิ",
+            clinic: "คลินิก",
             timeablelist: timetable.timeablelist,
             status: "Enabled",
-            timetableId: timetable.id,  // Update the id in the state
+            timetableId: timetable.id, 
           }));
 
-          console.log(timetable.id)
-      
-          window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
+        //   console.log(timetable.id)
+        //   window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
         } else {
-          x.style.display = "none";
+            if(saveEditId === timetable.id){
+                x.style.display = "none";
+                setsaveEditId("")
+            }else{
+                setsaveEditId(timetable.id)
+      
+                setState((prevState) => ({
+                    ...prevState,
+                addDay: timetable.addDay,
+                timeStart: timetable.timeStart,
+                timeEnd: timetable.timeEnd,
+                timeAppointmentStart: timetable.timeAppointmentStart,
+                timeAppointmentEnd: timetable.timeAppointmentEnd,
+                numberAppointment: timetable.numberAppointment,
+                clinic: "คลินิก",
+                timeablelist: timetable.timeablelist,
+                status: "Enabled",
+                timetableId: timetable.id,  
+                }));
+
+                // console.log(timetable.id)
+            }
+         
         }
       };
 
-
-
-
-
     const openDetailtimetable = (element, timetable) => {
+        
         let x = document.getElementById("Detailtimetable");
         let y = document.getElementById("Edittimetable");
         let z = document.getElementById("Addtimetable");
@@ -358,8 +382,11 @@ const TimetableGeneralComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+            setsaveEditId("")
+            setsaveDetailId(timetable.id)
             let detailDay = timetable.addDay;
             let listtimetable = ""
+        
             if (detailDay === "monday") {
                 document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันจันทร์`
             } else if (detailDay === "tuesday") {
@@ -380,9 +407,40 @@ const TimetableGeneralComponent = (props) => {
                 console.log(timetable.timeablelist[i])
             }
             document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
-            window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
+            // window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
         } else {
-            x.style.display = "none";
+            if(saveDetailId === timetable.id){
+                x.style.display = "none";
+                setsaveDetailId("")
+            }
+            else{
+                setsaveDetailId(timetable.id)
+                let detailDay = timetable.addDay;
+                let listtimetable = ""
+                if (detailDay === "monday") {
+                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันจันทร์`
+                } else if (detailDay === "tuesday") {
+                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันอังคาร`
+                } else if (detailDay === "wednesday") {
+                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันพุธ`
+                } else if (detailDay === "thursday") {
+                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันพฤหัสบดี`
+                } else if (detailDay === "friday") {
+                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันศุกร์`
+                }
+                document.getElementById("Detailtimeall").innerHTML = `<b>ช่วงเวลาเปิดให้บริการ</b> : ${timetable.timeStart} - ${timetable.timeEnd} `
+                document.getElementById("Detailtime").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมาย</b> : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
+                document.getElementById("Detailqueue").innerHTML = `<b>จำนวนคิวนัดหมาย</b> : ${timetable.numberAppointment} `
+                console.log(timetable.timeablelist.length)
+                for (let i = 0; i < timetable.timeablelist.length; i++) {
+                    listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
+                    console.log(timetable.timeablelist[i])
+                }
+                document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
+                // window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
+                
+            }
+            
         }
 
     }
@@ -459,6 +517,16 @@ const TimetableGeneralComponent = (props) => {
 
     }
 
+    const adminCards = document.querySelectorAll('.card');
+
+    function handleCardClick(event) {
+        adminCards.forEach(card => card.classList.remove('focused'));    
+        event.currentTarget.classList.add('focused');
+    }
+
+    adminCards.forEach(card => {
+        card.addEventListener('click', handleCardClick);
+    });
 
 
 
@@ -492,7 +560,7 @@ const TimetableGeneralComponent = (props) => {
                         <h3 className="colorPrimary-800">วันจันทร์</h3>
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกทั่วไป").map((timetable, index) => (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card focused">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
