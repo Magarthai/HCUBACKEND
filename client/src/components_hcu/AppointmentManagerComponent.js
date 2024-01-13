@@ -386,12 +386,15 @@ const AppointmentManagerComponent = (props) => {
         return daysOfWeek[dayIndex];
     };
     
-    
+    const [saveDetailId, setsaveDetailId] = useState([])
+    const [saveEditId, setsaveEditId] = useState([])
 
     const openDetailAppointment = (AppointmentUsersData) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("edit-appointment");
+        setsaveEditId("")
+        setsaveDetailId(AppointmentUsersData.appointmentuid)
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
@@ -406,11 +409,24 @@ const AppointmentManagerComponent = (props) => {
             document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
             
         } else {
-            x.style.display = "none";
-
+            if(saveDetailId === AppointmentUsersData.appointmentuid){
+                x.style.display = "none";
+                setsaveEditId("")
+            }else{
+                setsaveEditId(AppointmentUsersData.appointmentuid)
+                console.log(AppointmentUsersData.timeslot.start)
+                document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
+                document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start} - ${AppointmentUsersData.timeslot.end}`
+                document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
+                document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
+                document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
+                document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
+                document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
+            }
 
         }
     }
+
     const openAddAppointment = () => {
         let x = document.getElementById("add-appointment");
         let y = document.getElementById("detail-appointment");
@@ -419,6 +435,8 @@ const AppointmentManagerComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+            setsaveDetailId("")
+            setsaveEditId("")
 
         } else {
             x.style.display = "none";
@@ -430,7 +448,7 @@ const AppointmentManagerComponent = (props) => {
 
     const openEditAppointment = (appointmentUserData) => {
         console.log("Edit appointment data:", appointmentUserData.appointmentuid);
-    
+        console.log(appointmentUserData.appointmentuid)
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
@@ -439,6 +457,8 @@ const AppointmentManagerComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+            setsaveDetailId("")
+            setsaveEditId(appointmentUserData.appointmentuid)
             
             setState((prevState) => ({
                 ...prevState,
@@ -453,7 +473,23 @@ const AppointmentManagerComponent = (props) => {
             }));
 
         } else {
-            x.style.display = "none";
+            if(saveEditId === appointmentUserData.appointmentuid){
+                x.style.display = "none";
+                setsaveEditId("")
+            }else{
+                setsaveEditId(appointmentUserData.appointmentuid)
+                setState((prevState) => ({
+                    ...prevState,
+                    appointmentDate: appointmentUserData.appointmentDate,
+                    appointmentTime: null,
+                    appointmentId: appointmentUserData.appointmentId,
+                    appointmentCasue: appointmentUserData.appointmentCasue,
+                    appointmentSymptom: appointmentUserData.appointmentSymptom,
+                    appointmentNotation: appointmentUserData.appointmentNotation,
+                    clinic: appointmentUserData.clinic,
+                    uid:appointmentUserData.appointmentuid
+                }));
+            }
         }
     }
     
@@ -615,6 +651,18 @@ const AppointmentManagerComponent = (props) => {
         zoom: zoomLevel,
     };
 
+    const adminCards = document.querySelectorAll('.admin-appointment-card');
+
+    function handleCardClick(event) {
+        adminCards.forEach(card => card.classList.remove('focused'));    
+        event.currentTarget.classList.add('focused');
+    }
+
+    adminCards.forEach(card => {
+        card.addEventListener('click', handleCardClick);
+    });
+
+
     return (
         <div className="appointment" style={containerStyle}>
             <NavbarComponent />
@@ -640,18 +688,18 @@ const AppointmentManagerComponent = (props) => {
                     <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
                 </div>
             </div>
-            <div className="flex">
+            <div className="admin-appointment-flex">
                 <CalendarAdminComponent
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
                     onDateSelect={handleDateSelect}
                 />
-                <div className="box">
+                <div className="admin-appointment-box">
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
-                                <h3>นัดหมายคลินิกทั่วไป</h3>
-                                <p className="textBody-large">
+                                <h2>นัดหมายคลินิกทั่วไป</h2>
+                                <p className="admin-textBody-large">
                                     {selectedDate
                                         ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
                                         : `${date}/${month}/${year}`}
@@ -660,52 +708,51 @@ const AppointmentManagerComponent = (props) => {
                             </div>
                             <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
                         </div>
-                        <div className="box-list">
+                        <div className="admin-appointment-box-card">
                         {AppointmentUsersData.map((AppointmentUsersData, index) => (
-                            <div className="box-userapointment" key={index} onClick={() => openDetailAppointment(AppointmentUsersData)}>
-                                <div className="time-apppoint textBody-medium" >
-                                    {AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}
+                            <div className="admin-appointment-card colorPrimary-800" key={index} >
+                                <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUsersData)}>
+                                    {AppointmentUsersData.timeslot.start}  -  {AppointmentUsersData.timeslot.end}
                                 </div>
-                                <div className="appoint-info">
-                                    <div className="user-appointment-info flex-column">
-                                        <p id="student-id" className="textBody-huge">{AppointmentUsersData.id}</p>
-                                        <p id="student-name" className="textBody-medium">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
-                                    </div>
-                                    <div className="appointment-function">
-                                        <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUsersData.appointment)} />
-                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUsersData.appointment.appointmentuid,AppointmentUsersData.userUid)} />
-                                    </div>
+                                <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUsersData)}>
+                                    <p id="student-id" className="admin-textBody-huge">{AppointmentUsersData.id}</p>
+                                    <p id="student-name" className="admin-textBody-small">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
                                 </div>
+                                <div className="admin-appointment-functon">
+                                    <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUsersData.appointment)} />
+                                    <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUsersData.appointment.appointmentuid,AppointmentUsersData.userUid)} />
+                                </div>
+                               
                             </div>
                         ))}
                         </div>
                     </div>
 
                 </div>
-                <div className="box">
+                <div className="admin-appointment-box">
                     <div id="detail-appointment" className="colorPrimary-800">
-                        <h3 className="center">รายละเอียนัดหมาย</h3>
-                        <p id="detail-appointment-date" className="textBody-big"></p>
-                        <p id="detail-appointment-time" className="textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
-                        <p id="detail-appointment-id" className="textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
-                        <p id="detail-appointment-name" className="textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
-                        <p id="detail-appointment-casue" className="textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
-                        <p id="detail-appointment-symptom" className="textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
-                        <p id="detail-appointment-notation" className="textBody-big"><b>หมายเหตุ</b>: -</p>
+                        <h2 className="center">รายละเอียดนัดหมาย</h2>
+                        <p id="detail-appointment-date" className="admin-textBody-big"></p>
+                        <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
+                        <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
+                        <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
+                        <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                        <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
+                        <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
 
 
                     </div>
                     <div id="add-appointment" className="colorPrimary-800">
                         <form onSubmit={submitForm}>
-                            <h3 className="center">เพิ่มนัดหมาย</h3>
+                            <h2 className="center">เพิ่มนัดหมาย</h2>
                             <div>
-                                <label className="textBody-large colorPrimary-800">วันที่</label>
-                                <p className="textBody-big">{selectedDate
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
+                                <p className="admin-textBody-big">{selectedDate
                                     ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
                                     : "Select a date"}</p>
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">ช่วงเวลา</label>
+                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                 <select
                                     name="time"
                                     value={JSON.stringify(appointmentTime)}
@@ -750,30 +797,32 @@ const AppointmentManagerComponent = (props) => {
 
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="เป็นไข้" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="ปวดหัว, ตัวร้อน" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวักทั่วไป" />
                             </div>
-                            <button type="button" onClick={openAddAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled}  />
+                            <div className="admin-timetable-btn">
+                                <button type="button" onClick={openAddAppointment} className="btn-secondary btn-systrm">กลับ</button>
+                                <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary btn-systrm" target="_parent" disabled={isSubmitEnabled}  />
+                            </div>
                         </form>
                     </div>
                     <div id="edit-appointment" className="colorPrimary-800">
                         <form onSubmit={submitEditForm}>
-                            <h3 className="center">แก้ไขนัดหมาย</h3>
+                            <h2 className="center">แก้ไขนัดหมาย</h2>
                             <div className="center-container">
-                                <label className="textBody-large colorPrimary-800">ช่วงเวลา</label>
+                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                 <input
                                     type="date"
                                     className="form-control"
@@ -786,7 +835,7 @@ const AppointmentManagerComponent = (props) => {
 
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">วัน</label>
+                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="time"
                                     value={JSON.stringify(appointmentTime)}
@@ -831,24 +880,25 @@ const AppointmentManagerComponent = (props) => {
 
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentId}  disabled onChange={inputValue("appointmentId")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
                             </div>
-                            <button type="button" onClick={openEditAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled} />
-
+                            <div className="admin-timetable-btn">
+                                <button type="button" onClick={openEditAppointment} className="btn-secondary btn-systrm">กลับ</button>
+                                <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary btn-systrm" target="_parent" disabled={isSubmitEnabled} />
+                            </div>
                         </form>
                     </div>
                 </div>

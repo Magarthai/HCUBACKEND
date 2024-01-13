@@ -9,6 +9,7 @@ import { addDoc ,query, where,updateDoc,arrayUnion} from 'firebase/firestore';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
+import "../css/AdminAppointmentComponent.css";
 
 
 
@@ -441,6 +442,16 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
     };
 
+    const adminCards = document.querySelectorAll('.admin-appointment-card');
+
+    function handleCardClick(event) {
+        adminCards.forEach(card => card.classList.remove('focused'));    
+        event.currentTarget.classList.add('focused');
+    }
+
+    adminCards.forEach(card => {
+        card.addEventListener('click', handleCardClick);
+    });
 
 
     return (
@@ -470,18 +481,18 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     </div>
                 </div>
             
-                <div className="flex">
+                <div className="admin-appointment-flex">
                     <CalendarAdminComponent
                         selectedDate={selectedDate}
                         setSelectedDate={setSelectedDate}
                         onDateSelect={handleDateSelect}
                     />
-                <div className="box">
+                <div className="admin-appointment-box">
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
-                                <h3>นัดหมายคลินิกกายภาพ</h3>
-                                <p className="textBody-large">
+                                <h2>นัดหมายคลินิกกายภาพ</h2>
+                                <p className="admin-textBody-large">
                                     {selectedDate
                                         ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
                                         : `${date}/${month}/${year}`}
@@ -490,35 +501,35 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             </div>
                             <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
                         </div>
-                        <div className="box-list">
-                            <div className="box-userapointment" >
-                                <div className="time-apppoint textBody-medium" onClick={openDetailAppointment}>13:01-13:06</div>
-                                <div className="appoint-info">
-                                    <div className="user-appointment-info flex-column" onClick={openDetailAppointment}>
-                                        <p id="student-id" className="textBody-huge">64090500440</p>
-                                        <p id="student-name" className="textBody-medium">uvuvwevwevwe onyetenyevwe</p>
-                                    </div>
-                                    <div className="appointment-function">
-                                        <img src={edit} className="icon" onClick={openEditAppointment} />
-                                        <img src={icon_delete} className="icon" onClick={DeleteAppointment} />
-                                    </div>
+                        <div className="admin-appointment-box-card colorPrimary-800">
+                            <div className="admin-appointment-card focus">
+                                <div className="admin-appointment-card-time admin-textBody-small">13:01-13:06</div>
+                                <div className="admin-appointment-info admin-appointment-flex-column">
+                                    <p id="student-id" className="admin-textBody-huge">64090500440</p>
+                                    <p id="student-name" className="admin-textBody-small">uvuvwevwevwe onyetenyevwe</p>
                                 </div>
+                                <div className="admin-appointment-functon">
+                                    <img src={edit} className="icon" onClick={() => openEditAppointment()}/>
+                                    <img src={icon_delete} className="icon" onClick={() => DeleteAppointment()}/>
+                                </div>
+                                
+                            
                             </div>
-
+                            
                         </div>
                     </div>
 
                 </div>
-                <div className="box">
+                <div className="admin-appointment-box">
                     <div id="detail-appointment" className="colorPrimary-800">
-                        <h3 className="center">รายละเอียนัดหมาย</h3>
-                        <p id="detail-appointment-date" className="textBody-big"><b>วันที่</b> : 13/12/2023</p>
-                        <p id="detail-appointment-time" className="textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
-                        <p id="detail-appointment-id" className="textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
-                        <p id="detail-appointment-name" className="textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
-                        <p id="detail-appointment-casue" className="textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
-                        <p id="detail-appointment-symptom" className="textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
-                        <p id="detail-appointment-notation" className="textBody-big"><b>หมายเหตุ</b>: -</p>
+                        <h2 className="center">รายละเอียนัดหมาย</h2>
+                        <p id="detail-appointment-date" className="admin-textBody-big"><b>วันที่</b> : 13/12/2023</p>
+                        <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
+                        <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
+                        <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
+                        <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                        <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
+                        <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
 
 
                     </div>
@@ -526,13 +537,13 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         <form onSubmit={submitForm}>
                             <h3 className="center">เพิ่มนัดหมาย</h3>
                             <div>
-                                <label className="textBody-large colorPrimary-800">วันที่</label>
-                                <p className="textBody-big">{selectedDate
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
+                                <p className="admin-textBody-big">{selectedDate
                                     ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
                                     : "Select a date"}</p>
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">วัน</label>
+                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="time"
                                     value={JSON.stringify(appointmentTime)}
@@ -577,35 +588,37 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
                             </div>
-                            <button type="button" onClick={openAddAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                            <div className="admin-timetable-btn">
+                                <button type="button" onClick={openAddAppointment} className="btn-secondary btn-systrm">กลับ</button>
+                                <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary btn-systrm" target="_parent" />
+                            </div>
                         </form>
                     </div>
                     <div id="edit-appointment" className="colorPrimary-800">
                         <form onSubmit={submitEditForm}>
-                            <h3 className="center">แก้ไขนัดหมาย</h3>
+                            <h2 className="center">แก้ไขนัดหมาย</h2>
                             <div className="center-container">
-                                <label className="textBody-large colorPrimary-800">วันที่</label>
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                 <br></br>
                                 <input type="date"  className="form-control"></input>
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">วัน</label>
+                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
                                 <select
                                     name="time"
                                     value={appointmentTime}
@@ -616,24 +629,25 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                 </select>
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
                             </div>
-                            <button type="button" onClick={openEditAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
-
+                            <div className="admin-timetable-btn">
+                                <button type="button" onClick={openEditAppointment} className="btn-secondary btn-systrm">กลับ</button>
+                                <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary btn-systrm" target="_parent" />
+                                </div>
                         </form>
                     </div>
                 </div>
