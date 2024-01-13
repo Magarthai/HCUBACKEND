@@ -15,7 +15,7 @@ const AppointmentDetail = (props) => {
                     <h2>รายละเอียดนัดหมาย</h2>
                 </div>
 
-                <NavbarUserComponent />
+                <NavbarUserComponent/>
             </header>
 
             <div className="user-body">
@@ -25,11 +25,11 @@ const AppointmentDetail = (props) => {
                         <p className="textBody-big gap-4">ID : 64000000000</p>
                         <p className="textBody-big gap-4">ชื่อ-นามสกุล : Rawisada Anurutikun</p>
                         <p className="textBody-big gap-4">คลินิก : คลินิกทั่วไป</p>
-                        <p className="textBody-big gap-4"> <img src={CalendarFlat_icon} />  14/12/2023</p>
-                        <p className="textBody-big gap-4"> <img src={ClockFlat_icon} />  10:01 - 10:06</p>
-                        <h3>สาเหตุการนัดหมาย</h3>
+                        <p className="textBody-big gap-4"> <img src={CalendarFlat_icon}/>  14/12/2023</p>
+                        <p className="textBody-big gap-4"> <img src={ClockFlat_icon}/>  10:01 - 10:06</p>
+                        <h5>สาเหตุการนัดหมาย</h5>
                         <p className="textBody-big">: ตรวจรักษาโรค</p>
-                        <h3>อาการเบื้องต้น</h3>
+                        <h5>อาการเบื้องต้น</h5>
                         <p className="textBody-big">: มีอาการปวดหัว อาเจียน</p>
                     </div>
                 </div>
@@ -38,8 +38,8 @@ const AppointmentDetail = (props) => {
                     <button className="btn-primary">หน้าแรก</button>
                 </div>
             </div>
-
-
+    
+            
         </div>
 
     );
@@ -47,3 +47,4 @@ const AppointmentDetail = (props) => {
 
 export default AppointmentDetail;
 
+ 

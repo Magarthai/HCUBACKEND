@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
-.UserAllAppointComponent {
+
+.UserHistoryAppointment{
     position: relative;
     font-family: 'Mitr', sans-serif;
     background-color: #ffffff;
@@ -18,56 +19,35 @@
     height: 24px;
 }
 
-.head-txt-List{
+.head-txt-HistoryApp{
     font-size: 28px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
 }
 
-.head-txt-All{
+.head-txt-HistoryApp-status{
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
 }
 
-.AppointList-header{
-    background: linear-gradient(to right, #008080, #008080) no-repeat,      linear-gradient(to left, #ffffff 50%, transparent 50%) right,      linear-gradient(to right, #ffffff 50%, transparent 50%) left;
-    background-size: 100% 100%, 5px 100%, 5px 100%;
-    border-radius: 0px 0px var(--Radius-Card, 20px) var(--Radius-Card, 20px);
-    padding: 8px;
-    padding-left: 40px;
-    color: #FFF;
-}
-
-.search-text{
+.historyAppsearch-txt{
     font-size: 16px;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
 }
 
-.outer-card-ref{
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-
-.outer-card-ref p{
-    text-decoration: none;
-    text-decoration-style: none;
-}
-
-.AppointList-body-search{
+.HistoryAppointment-body-search{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
 }
 
-.inner-card-ref{
+.HistoryAppointment-body-card-inner{
     margin: 10px;
     padding: 20px;
     border-radius: var(--Radius-Card, 20px);
@@ -77,83 +57,21 @@
     color: #263A50;
 }
 
-.inner-card-ref-items-ClinicName{
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-.inner-card-ref-items-Calendar{
-    display: flex;
-}
-
-.inner-card-ref-items-Calendar-txt{
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-}
-
-.inner-card-ref-items-TimeClick{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-.inner-card-ref-items-TimeClick-Time{
-    display: flex;
-}
-
-.inner-card-ref-items-TimeClick-Time-txt{
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-}
-
-.inner-card-ref-items-TimeClick-Click-txt{
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-    text-decoration-line: underline;
-}
-
-.text-status-appointment{
-    text-align: center;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 250;
-    line-height: normal;
-}
-
-
-
-.AppointList-body-card-fini{
-    margin: 10px;
-    padding: 20px;
-    border-radius: var(--Radius-Card, 20px);
-    background: var(--Neutral-blue-50, #FBFFFF);
-    box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25);
-    line-height: 200%;
-    color: #263A50;
-}
-
-.AppointList-body-card-fini-ref-clinic{
+.HistoryAppointment-body-card-inner-items-Clinic{
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 50%;
 }
 
-.AppointList-body-card-fini-ref-clinic-Name{
+.HistoryAppointment-body-card-inner-items-Clinic-clinicAppointType{
     font-size: 20px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
 }
 
-.AppointList-body-card-fini-ref-clinic-status {
+.HistoryAppointment-body-card-inner-items-Clinic-clinicAppointStatus{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -162,38 +80,36 @@
     background-color: #0CB686;
     color: #FBFFFF;
 }
-
-.AppointList-body-card-fini-ref-Date{
+.HistoryAppointment-body-card-inner-ref-date{
     display: flex;
 }
 
-.AppointList-body-card-fini-ref-Date-txt{
+.HistoryAppointment-body-card-inner-ref-date-txt{
     font-size: 16px;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
 }
 
-.AppointList-body-card-fini-ref-Time{
+.HistoryAppointment-body-card-inner-ref-time{
     display: flex;
 }
 
-.AppointList-body-card-fini-ref-Time-txt{
+.HistoryAppointment-body-card-inner-ref-time-txt{
     font-size: 16px;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
 }
 
-
-.AppointList-footer-btn{
+.HistoryApppointment-footer-btn{
     display: flex;
     flex-direction: column;
     text-align: center;
     align-items: center;
     justify-content: center;
 }
-.return-btn{
+.HistoryApppointment-footer-btn-return{
     display: flex;
     padding: 4px;
     justify-content: center;
@@ -209,7 +125,7 @@
 }
 
 @media (max-width: 505px) {
-    .ListAppointmentUser{
+    .UserHistoryAppointment{
         width: 100% !important;
         padding: 0 !important;
         padding-left: 0;

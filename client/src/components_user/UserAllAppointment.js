@@ -32,7 +32,7 @@ const UserAllAppointment = () => {
 
                         <div className="user-appointment-bar-btn">
                             <h2 className='User-appointmentmenu-headbar'>นัดหมายสัปดาห์นี้</h2>
-                            <button className="user-appointment-btn-add"><Link to="/ChooseClinicUser"><x>เพิ่มนัดหมาย +</x></Link></button>
+                            <button className="user-appointment-btn-add"><Link to="/appointment/clinic"><x>เพิ่มนัดหมาย +</x></Link></button>
                         </div>
 
                         <div className="user-appointment-funtion">
@@ -110,8 +110,8 @@ const UserAllAppointment = () => {
                         </div>
                     </body>
                     <footer className="UserAllAppointmet-footermenu">
-                        <lable class="user-appointment-vertical"><Link to="/"><y>นัดหมายทั้งหมด</y></Link></lable>
-                        <lable><Link to="/"><y>ประวัติการดำเนิน<br></br>การนัดหมาย</y></Link></lable>
+                        <lable class="user-appointment-vertical"><Link to="/appointment/list"><y>นัดหมายทั้งหมด</y></Link></lable>
+                        <lable><Link to="/apppointment/history"><y>ประวัติการดำเนิน<br></br>การนัดหมาย</y></Link></lable>
                     </footer>
                 </div>
             </div>

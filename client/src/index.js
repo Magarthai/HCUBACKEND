@@ -24,6 +24,8 @@ import AdminAppointmentRequestManagementComponent from './components_hcu/Appoint
 import AdminAppointmentRequestManagementHistoryComponent from './components_hcu/AppointmentRequestManagementHistoryComponent.js';
 import AdminQueueManagementSystemComponent from './components_hcu/QueueManagementSystemComponent.js';
 import UserHomeComponent from './components_user/HomeCompoment.js';
+import UserEditAppointment from "./components_user/UserEditAppointment.js"
+import UserHistoryAppointment from "./components_user/UserHistoryAppointment.js"
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -95,27 +97,23 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/AppointmentDetail",
+    path: "/appointment/detail",
     element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
   },
   {
-    path: "/AllAppointmentUser",
+    path: "/appointment",
     element: <ProtectRoute><UserAllAppointment/></ProtectRoute>
   },
   {
-    path: "/chooseClinicUser",
+    path: "/appointment/clinic",
     element: <ProtectRoute><UserChooseClinic/></ProtectRoute>
   },
   {
-    path: "/SelectDateAppointmentUser",
-    element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
-  },
-  {
-    path: "/ListAppointmentUser",
+    path: "/appointment/list",
     element: <ProtectRoute><ListAppointmentUser/></ProtectRoute>
   },
   {
-    path: "/dateAppointment",
+    path: "/appointment/date",
     element: <ProtectRoute><UserDateateAppointment/></ProtectRoute>
   },
   {
@@ -123,12 +121,24 @@ const router = createBrowserRouter([
     element: <ProtectRoute><ExampleComponent/></ProtectRoute>
   },
   {
-    path: "/AddAppointmentUser",
+    path: "/appointment/add",
     element: <ProtectRoute><AddAppointmentUser/></ProtectRoute>
   },
   {
-    path: "/Home",
+    path: "/home",
     element: <ProtectRoute><UserHomeComponent/></ProtectRoute>
+  },
+  {
+    path: "/apppointment/edit",
+    element: <ProtectRoute><UserEditAppointment/></ProtectRoute>
+  },
+  {
+    path: "/apppointment/history",
+    element: <ProtectRoute><UserHistoryAppointment/></ProtectRoute>
+  },
+  {
+    path: "/appointment/selectDate",
+    element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
   },
 
 ])

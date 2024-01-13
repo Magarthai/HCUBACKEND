@@ -1,21 +1,19 @@
 import React from "react";
 import "../css/DateAppointment.css";
-import List_icon from "../picture/List.png";
+import "../css/Component.css";
 import CalendarFlat_icon from "../picture/calendar-flat.png";
 import ClockFlat_icon from "../picture/clock-flat.png";
-// import DropdownDateUserComponent from "./DropdownDateUserComponent"
 import Delete_icon from "../picture/icon_delete.jpg";
 import Edit_icon from "../picture/icon_edit.jpg";
 import NavbarUserComponent from '../components_user/NavbarUserComponent';
 
 
 
-
-const DateAppointment = (props) =>{
+const UserDateAppointment = (props) =>{
     return (
-        <body>
-        <div id="main">
-            <div className="user-DateAppointment-container">
+        
+        
+            <div className="user">
                 {/* <div className="user-DateAppointment-header_container gap-32">
                     <header className="user-DateAppointment-header">
                         <h1 className="user-DateAppointment-header_title">รายการนัดหมาย</h1>
@@ -78,9 +76,8 @@ const DateAppointment = (props) =>{
                 </div>
                 </div>
             </div>
-        </div>
-        </body>
+        
     )
 }
 
-export default  DateAppointment;
+export default  UserDateAppointment;

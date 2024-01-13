@@ -404,6 +404,9 @@
         border-radius: 50px;
         font-size: 18px;
     }
+    .user-home{
+        padding: 3%;
+    }
     
 
 /* @media (min-width: 600px) {

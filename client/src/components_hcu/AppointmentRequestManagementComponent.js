@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/Component.css";
-import "../css/AppointmentRequestManagementComponent.css";
+import "../css/AdminAppointmentRequestManagementComponent.css";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "../components_hcu/NavbarComponent";

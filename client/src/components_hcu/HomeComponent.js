@@ -19,31 +19,63 @@ import ResponsiveComponent from "./ResponsiveComponent";
 
 const HomeComponent = () => {
   const { user, userData } = useUserAuth();
-  const [zoomLevel, setZoomLevel] = useState(1);
-
-  const containerStyle = {
-    zoom: zoomLevel,
-  };
+    const [showTime, setShowTime] = useState(getShowTime);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const animationFrameRef = useRef();
   
   
-  useEffect(() => {
-    document.title = 'Health Care Unit';
-    console.log(user);
-    console.log(userData)
-    const responsivescreen = () => {
-      const innerWidth = window.innerWidth;
-      const baseWidth = 1920;
-      const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-      setZoomLevel(newZoomLevel);
+    useEffect(() => {
+        document.title = 'Health Care Unit';
+        console.log(user);
+        console.log(userData)
+        const responsivescreen = () => {
+        const innerWidth = window.innerWidth;
+        const baseWidth = 1920;
+        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+        setZoomLevel(newZoomLevel);
+        };
+
+        responsivescreen();
+        window.addEventListener("resize", responsivescreen);
+        const updateShowTime = () => {
+        const newTime = getShowTime();
+        if (newTime !== showTime) {
+            setShowTime(newTime);
+        }
+        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        };
+  
+        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+    
+        return () => {
+            cancelAnimationFrame(animationFrameRef.current);
+            window.removeEventListener("resize", responsivescreen);
+        };
+    
+    }, [user]); 
+    const containerStyle = {
+        zoom: zoomLevel,
     };
 
-    responsivescreen();
-    window.addEventListener("resize", responsivescreen);
+    function getShowTime() {
+        const today = new Date();
+        const hours = today.getHours();
+        const minutes = today.getMinutes();
+        const seconds = today.getSeconds();
+        return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
+    }
 
-    return () => {
-      window.removeEventListener("resize", responsivescreen);
-    };
-  }, []);
+    function formatNumber(num) {
+        return num < 10 ? "0" + num : num.toString();
+    }
+
+    const locale = 'en';
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    const day = today.toLocaleDateString(locale, { weekday: 'long' });
+    const currentDate = `${day} ${month}/${date}/${year}`;
     
 
 
@@ -58,7 +90,8 @@ const HomeComponent = () => {
         </div>
         <div className="top-item date colorPrimary-800">
           {userData && <p className="admin-textBody-large">Welcome, {userData.firstName} {userData.lastName}</p>}
-          <p className="admin-textBody-large">Time : <ClockComponent /></p>
+          <p className="admin-textBody-large">Date : {currentDate}</p>
+          <p className="admin-textBody-large">Time : {showTime}</p>
         </div>
       </div>
       <div className="flexbox-function">
