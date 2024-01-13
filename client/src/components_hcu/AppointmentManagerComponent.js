@@ -485,7 +485,7 @@ const AppointmentManagerComponent = (props) => {
             setState((prevState) => ({
                 ...prevState,
                 appointmentDate: appointmentUserData.appointmentDate,
-                appointmentTime,
+                appointmentTime: "",
                 appointmentId: appointmentUserData.appointmentId,
                 appointmentCasue: appointmentUserData.appointmentCasue,
                 appointmentSymptom: appointmentUserData.appointmentSymptom,
