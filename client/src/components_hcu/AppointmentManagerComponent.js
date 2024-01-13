@@ -330,6 +330,7 @@ const AppointmentManagerComponent = (props) => {
                 appointmentSymptom,
                 appointmentNotation,
                 clinic: "คลินิกทั่วไป",
+                status: "รอยืนยันสิทธิ์",
             };
 
             const usersCollection = collection(db, 'users');
@@ -404,6 +405,7 @@ const AppointmentManagerComponent = (props) => {
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
                 clinic: "คลินิกทั่วไป",
+                status: "รอยืนยันสิทธิ์",
             };
     
             await updateDoc(timetableRef, updatedTimetable);
