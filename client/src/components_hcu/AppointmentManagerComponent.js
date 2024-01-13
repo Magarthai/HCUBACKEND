@@ -16,7 +16,7 @@ const AppointmentManagerComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
 
-   
+    
 
     const [state, setState] = useState({
         appointmentDate: "",
@@ -31,6 +31,8 @@ const AppointmentManagerComponent = (props) => {
     })
 
     const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic,uid,timeablelist } = state
+    const isSubmitEnabled =
+    !appointmentDate || !appointmentTime || !appointmentId;
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
     };
@@ -770,7 +772,7 @@ const AppointmentManagerComponent = (props) => {
                                 <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวักทั่วไป" />
                             </div>
                             <button type="button" onClick={openAddAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                            <input type="submit" value="เพิ่มนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled}  />
                         </form>
                     </div>
                     <div id="edit-appointment" className="colorPrimary-800">
@@ -852,7 +854,7 @@ const AppointmentManagerComponent = (props) => {
                                 <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
                             </div>
                             <button type="button" onClick={openEditAppointment} className="btn-secondary" id="btn-systrm">กลับ</button>
-                            <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" />
+                            <input type="submit" value="แก้ไขนัดหมาย" className="btn-primary" id="btn-systrm" target="_parent" disabled={isSubmitEnabled} />
 
                         </form>
                     </div>
