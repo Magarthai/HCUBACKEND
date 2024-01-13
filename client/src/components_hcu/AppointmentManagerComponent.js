@@ -15,7 +15,13 @@ import Swal from "sweetalert2";
 const AppointmentManagerComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
-
+    const [showTime, setShowTime] = useState(getShowTime);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const animationFrameRef = useRef();
+    const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
+    const { user, userData } = useUserAuth();
+    const [isChecked, setIsChecked] = useState({});
+    const [timeOptions, setTimeOptions] = useState([]);
     
 
     const [state, setState] = useState({
@@ -37,16 +43,6 @@ const AppointmentManagerComponent = (props) => {
         setState({ ...state, [name]: event.target.value });
     };
 
-    const [showTime, setShowTime] = useState(getShowTime);
-    const [zoomLevel, setZoomLevel] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const animationFrameRef = useRef();
-    const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
-    const { user, userData } = useUserAuth();
-    const [timetable, setTimetable] = useState([])
-    const [isChecked, setIsChecked] = useState({});
-    const [timeOptions, setTimeOptions] = useState([]);
-    const [userDataFetched, setUserDataFetched] = useState(false);
 
 
     const fetchTimeTableData = async () => {
@@ -145,14 +141,12 @@ const AppointmentManagerComponent = (props) => {
         }
     };
 
-
-    const [userDataAppointmentFetched, setUserDataAppointmentFetched] = useState(false);
-
     const fetchUserDataWithAppointments = async () => {
         try {
             if (user && selectedDate && selectedDate.dayName) {
                 const appointmentsCollection = collection(db, 'appointment');
-                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
+                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', 
+                `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
     
                 const timeTableCollection = collection(db, 'timeTable');
                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -247,45 +241,7 @@ const AppointmentManagerComponent = (props) => {
         return userDatas;
     };
 
-    useEffect(() => {
-        document.title = 'Health Care Unit';
-        console.log(user);
-        fetchTimeTableData();
-        const responsivescreen = () => {
-            const innerWidth = window.innerWidth;
-            const baseWidth = 1920;
-            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-            setZoomLevel(newZoomLevel);
-        };
-        console.log(selectedDate)
-        responsivescreen();
-        window.addEventListener("resize", responsivescreen);
-        const updateShowTime = () => {
-            const newTime = getShowTime();
-            if (newTime !== showTime) {
-                setShowTime(newTime);
-            }
-            animationFrameRef.current = requestAnimationFrame(updateShowTime);
-        };
-
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
-
-
-
-
-        if (!userDataAppointmentFetched) {
-            fetchUserDataWithAppointments();
-        }
-        console.log("AppointmentUsersData XD", AppointmentUsersData)
-        return () => {
-            cancelAnimationFrame(animationFrameRef.current);
-            window.removeEventListener("resize", responsivescreen);
-        };
-
-    }, [selectedDate, userDataFetched, userDataAppointmentFetched]);
-    const containerStyle = {
-        zoom: zoomLevel,
-    };
+    
 
 
     function getShowTime() {
@@ -528,8 +484,7 @@ const AppointmentManagerComponent = (props) => {
                 console.log("Appointment deleted:", appointmentuid);
         
                 const userRef = doc(db, "users", uid);
-        
-                // Remove the appointment UID from the user's 'appointments' array
+
                 await updateDoc(userRef, {
                   "appointments": arrayRemove("appointments", appointmentuid)
                 });
@@ -622,6 +577,43 @@ const AppointmentManagerComponent = (props) => {
         return isoDate;
     }
 
+    useEffect(() => {
+        document.title = 'Health Care Unit';
+        console.log(user);
+        fetchTimeTableData();
+        const responsivescreen = () => {
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
+        };
+        console.log(selectedDate)
+        responsivescreen();
+        window.addEventListener("resize", responsivescreen);
+        const updateShowTime = () => {
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        };
+
+        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+
+
+
+
+            fetchUserDataWithAppointments();
+        console.log("AppointmentUsersData XD", AppointmentUsersData)
+        return () => {
+            cancelAnimationFrame(animationFrameRef.current);
+            window.removeEventListener("resize", responsivescreen);
+        };
+
+    }, [selectedDate]);
+    const containerStyle = {
+        zoom: zoomLevel,
+    };
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -670,12 +662,12 @@ const AppointmentManagerComponent = (props) => {
                         </div>
                         <div className="box-list">
                         {AppointmentUsersData.map((AppointmentUsersData, index) => (
-                            <div className="box-userapointment" key={index}>
-                                <div className="time-apppoint textBody-medium" onClick={openDetailAppointment}>
+                            <div className="box-userapointment" key={index} onClick={() => openDetailAppointment(AppointmentUsersData)}>
+                                <div className="time-apppoint textBody-medium" >
                                     {AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}
                                 </div>
                                 <div className="appoint-info">
-                                    <div className="user-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUsersData)}>
+                                    <div className="user-appointment-info flex-column">
                                         <p id="student-id" className="textBody-huge">{AppointmentUsersData.id}</p>
                                         <p id="student-name" className="textBody-medium">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
                                     </div>
