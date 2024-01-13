@@ -23,6 +23,7 @@ import AddAppointmentUser from './components_user/AddAppointmentUser.js';
 import AdminAppointmentRequestManagementComponent from './components_hcu/AppointmentRequestManagementComponent.js';
 import AdminAppointmentRequestManagementHistoryComponent from './components_hcu/AppointmentRequestManagementHistoryComponent.js';
 import AdminQueueManagementSystemComponent from './components_hcu/QueueManagementSystemComponent.js';
+import UserHomeComponent from './components_user/HomeCompoment.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
   {
     path: "/AddAppointmentUser",
     element: <ProtectRoute><AddAppointmentUser/></ProtectRoute>
+  },
+  {
+    path: "/Home",
+    element: <ProtectRoute><UserHomeComponent/></ProtectRoute>
   },
 
 ])
