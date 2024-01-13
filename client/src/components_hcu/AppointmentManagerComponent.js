@@ -4,8 +4,8 @@ import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
-import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc} from 'firebase/firestore';
+import { db, getDocs, collection, doc, getDoc ,firestore} from "../firebase/config";
+import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -44,28 +44,7 @@ const AppointmentManagerComponent = (props) => {
     const [timetable, setTimetable] = useState([])
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
-    const [alluserdata, setAllUserData] = useState([]);
     const [userDataFetched, setUserDataFetched] = useState(false);
-    const fetchAllUserData = async () => {
-        try {
-            if (user && !userDataFetched) {
-                const allUserCollection = collection(db, 'users');
-                const allUserSnapshot = await getDocs(allUserCollection);
-
-                const timeTableData = allUserSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-                if (timeTableData.length > 0) {
-                    setAllUserData(timeTableData);
-                    setUserDataFetched(true);
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
 
 
     const fetchTimeTableData = async () => {
@@ -252,11 +231,14 @@ const AppointmentManagerComponent = (props) => {
             console.log("No user found with id:", userId);
             return null;
         }
+
         <u></u>
+        const userUid = userQuerySnapshot.docs[0].id;
         const userDatas = userQuerySnapshot.docs[0].data();
         userDatas.timeslot = timeslot;
         userDatas.appointment = appointment;
         userDatas.appointmentuid = appointmentuid;
+        userDatas.userUid = userUid;
         console.log("User Data for userId", userId, ":", userDatas);
         console.log("userDatas",userDatas)
         console.log("testxd",userDatas.timeslot.start)
@@ -288,20 +270,17 @@ const AppointmentManagerComponent = (props) => {
 
 
 
-        if (!userDataFetched) {
-            fetchAllUserData();
-        }
+
         if (!userDataAppointmentFetched) {
             fetchUserDataWithAppointments();
         }
         console.log("AppointmentUsersData XD", AppointmentUsersData)
-        console.log("All user Data", alluserdata)
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
 
-    }, [selectedDate, alluserdata, userDataFetched, userDataAppointmentFetched]);
+    }, [selectedDate, userDataFetched, userDataAppointmentFetched]);
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -351,35 +330,25 @@ const AppointmentManagerComponent = (props) => {
                 clinic: "คลินิกทั่วไป",
             };
 
-            const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-            console.log('Succuessful adddoc', appointmentInfo)
-            console.log(appointmentId)
-            console.log(appointmentRef.id)
-            console.log("Newly created appointment ID:", appointmentRef.id);
-            const foundUser = alluserdata.find(user => user.id === appointmentId);
             const usersCollection = collection(db, 'users');
 
-
             const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
-
+            const userDocuments = userQuerySnapshot.docs;
+            const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
+            const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
             if (!userQuerySnapshot.empty) {
-
-                const userId = userQuerySnapshot.docs[0].id;
-
-
                 console.log("User's collection ID:", userId);
             } else {
                 console.log("No user found with the specified appointmentId");
             }
-            if (foundUser) {
-                console.log("Found user:", foundUser);
 
-            } else {
-                console.log("User not found in alluserdata");
-            }
             if (foundUser) {
+                const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+                console.log('Succuessful adddoc', appointmentInfo)
+                console.log(appointmentId)
+                console.log(appointmentRef.id)
+                console.log("Newly created appointment ID:", appointmentRef.id);
                 console.log("Found user:", foundUser);
-                const userId = userQuerySnapshot.docs[0].id;
 
                 const userDocRef = doc(db, 'users', userId);
 
@@ -388,19 +357,23 @@ const AppointmentManagerComponent = (props) => {
                 });
 
                 console.log("User document updated with new appointment.");
+                Swal.fire({
+                    icon: "success",
+                    title: "Appointment Successful!",
+                    text: "Your appointment has been successfully created!",
+                });
+                fetchUserDataWithAppointments();
+                fetchTimeTableData();
 
             } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Something went wrong!",
+                    text: "Your Student ID Not Found!",
+                });
                 console.log("User not found in alluserdata");
             }
 
-
-            Swal.fire({
-                icon: "success",
-                title: "Appointment Successful!",
-                text: "Your appointment has been successfully created!",
-            });
-            fetchUserDataWithAppointments();
-            fetchTimeTableData();
 
         } catch (firebaseError) {
             console.error('Firebase submit error:', firebaseError);
@@ -455,7 +428,7 @@ const AppointmentManagerComponent = (props) => {
     
     
 
-    const openDetailAppointment = (element) => {
+    const openDetailAppointment = (AppointmentUsersData) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("edit-appointment");
@@ -463,7 +436,15 @@ const AppointmentManagerComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
-
+            console.log(AppointmentUsersData.timeslot.start)
+            document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
+            document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start} - ${AppointmentUsersData.timeslot.end}`
+            document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
+            document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
+            document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
+            document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
+            document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
+            
         } else {
             x.style.display = "none";
 
@@ -519,9 +500,9 @@ const AppointmentManagerComponent = (props) => {
 
 
 
-    const DeleteAppointment = (appointmentuid) => {
-        const timetableRef = doc(db, 'appointment',appointmentuid );
-
+    const DeleteAppointment = async (appointmentuid, uid) => {
+        const timetableRef = doc(db, 'appointment', appointmentuid);
+    
         Swal.fire({
             title: 'ลบนัดหมาย',
             text: `วันที่ 15/12/2023 เวลา 13:01 - 13:10`,
@@ -535,12 +516,25 @@ const AppointmentManagerComponent = (props) => {
                 confirmButton: 'custom-confirm-button',
                 cancelButton: 'custom-cancel-button',
             }
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                try {
-                    deleteDoc(timetableRef,appointmentuid)
+              try {
+                await deleteDoc(timetableRef);
+        
+                console.log("Appointment deleted:", appointmentuid);
+        
+                const userRef = doc(db, "users", uid);
+        
+                // Remove the appointment UID from the user's 'appointments' array
+                await updateDoc(userRef, {
+                  "appointments": arrayRemove("appointments", appointmentuid)
+                });
+
+
+
+
                     console.log(appointmentuid);
-                    setUserDataAppointmentFetched([]);
+                    setAllAppointmentUsersData([])
                     fetchUserDataWithAppointments();
                     Swal.fire(
                         {
@@ -677,13 +671,13 @@ const AppointmentManagerComponent = (props) => {
                                     {AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}
                                 </div>
                                 <div className="appoint-info">
-                                    <div className="user-appointment-info flex-column" onClick={openDetailAppointment}>
+                                    <div className="user-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUsersData)}>
                                         <p id="student-id" className="textBody-huge">{AppointmentUsersData.id}</p>
                                         <p id="student-name" className="textBody-medium">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
                                     </div>
                                     <div className="appointment-function">
                                         <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUsersData.appointment)} />
-                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUsersData.appointment.appointmentuid)} />
+                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUsersData.appointment.appointmentuid,AppointmentUsersData.userUid)} />
                                     </div>
                                 </div>
                             </div>
@@ -695,7 +689,7 @@ const AppointmentManagerComponent = (props) => {
                 <div className="box">
                     <div id="detail-appointment" className="colorPrimary-800">
                         <h3 className="center">รายละเอียนัดหมาย</h3>
-                        <p id="detail-appointment-date" className="textBody-big"><b>วันที่</b> : 13/12/2023</p>
+                        <p id="detail-appointment-date" className="textBody-big"></p>
                         <p id="detail-appointment-time" className="textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
                         <p id="detail-appointment-id" className="textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
                         <p id="detail-appointment-name" className="textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
