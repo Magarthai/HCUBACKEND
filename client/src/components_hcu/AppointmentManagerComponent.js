@@ -481,11 +481,11 @@ const AppointmentManagerComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
-    
+            
             setState((prevState) => ({
                 ...prevState,
                 appointmentDate: appointmentUserData.appointmentDate,
-                appointmentTime: "",
+                appointmentTime: null,
                 appointmentId: appointmentUserData.appointmentId,
                 appointmentCasue: appointmentUserData.appointmentCasue,
                 appointmentSymptom: appointmentUserData.appointmentSymptom,
@@ -711,7 +711,7 @@ const AppointmentManagerComponent = (props) => {
                                     : "Select a date"}</p>
                             </div>
                             <div>
-                                <label className="textBody-large colorPrimary-800">วัน</label>
+                                <label className="textBody-large colorPrimary-800">ช่วงเวลา</label>
                                 <select
                                     name="time"
                                     value={JSON.stringify(appointmentTime)}
@@ -779,14 +779,13 @@ const AppointmentManagerComponent = (props) => {
                         <form onSubmit={submitEditForm}>
                             <h3 className="center">แก้ไขนัดหมาย</h3>
                             <div className="center-container">
-                                <label className="textBody-large colorPrimary-800">วันที่</label>
+                                <label className="textBody-large colorPrimary-800">ช่วงเวลา</label>
                                 <input
                                     type="date"
                                     className="form-control"
                                     onChange={(e) => {
-                                        inputValue("appointmentDate")(e); // อัปเดต state หรือทำการตั้งค่าที่ต้องการ
+                                        inputValue("appointmentDate")(e); 
                                         const formattedDate = formatDateForDisplay(e.target.value);
-                                        // Now you can use formattedDate for whatever you need
                                         console.log("Formatted Date:", formattedDate);
                                     }}
                                 />
