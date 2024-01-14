@@ -1,4 +1,4 @@
-import "../css/NavbarUserComponent.css";
+import "../css/UserNavbarComponent.css";
 import { Link, useNavigate } from "react-router-dom"; // นำเข้า useNavigate มาด้วย
 import Manface from "../picture/Manface.png";
 import { fetchUserById } from '../firebase/firebaseUtils';
@@ -115,7 +115,7 @@ const NavbarUserComponent = (props) => {
             <li><a><div className="textss"><Link to="/appointment">นัดหมาย</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">กิจกรรม</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">สถานะคิว</Link></div></a></li>
-            <li><a><div className="textss"><Link to="/">ช่วงเวลาเข้าทําการแพทย์</Link></div></a></li>
+            <li><a><div className="textss"><Link to="/timetable">ช่วงเวลาเข้าทําการแพทย์</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">ตำแหน่งที่ตั้ง</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">ข้อมูลทั่วไป</Link></div></a></li>
             <li><a><div className="textss"><Link to="/">ประเมินความพึงพอใจ</Link></div></a></li>

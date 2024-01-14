@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/DateAppointment.css";
+import "../css/UserDateAppointment.css";
 import "../css/Component.css";
 import CalendarFlat_icon from "../picture/calendar-flat.png";
 import ClockFlat_icon from "../picture/clock-flat.png";
@@ -26,8 +26,8 @@ const UserDateAppointment = (props) =>{
                 </div> */}
                 <header className="user-header">
                     <div>
-                        <h1>การนัดหมาย</h1>
-                        <h2>รายการนัดหมาย</h2>
+                        <h2>การนัดหมาย</h2>
+                        <h3>รายการนัดหมาย</h3>
                     </div>
 
                     <NavbarUserComponent/>
@@ -47,7 +47,7 @@ const UserDateAppointment = (props) =>{
                             <div className="user-DateAppointment-card_header">
                                 <h3 className="user-DateAppointment-clinic gap-8">คลินิกทั่วไป</h3>
                                 <div className="user-DateAppointment-icon">
-                                    <a href="/DateAppointment"><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt=""/></a>
+                                    <a href="/apppointment/edit"><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt=""/></a>
                                     <a href="/DateAppointment"><img className="user-DateAppointment-icon_delete" src={Delete_icon} alt=""/></a>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@ const UserDateAppointment = (props) =>{
                             <div className="user-DateAppointment-card_header">
                                 <h3 className="user-DateAppointment-clinic gap-8">คลินิกเฉพาะทาง</h3>
                                 <div className="user-DateAppointment-icon">
-                                    <a href="/DateAppointment"><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt=""/></a>
+                                    <a href="/apppointment/edit"><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt=""/></a>
                                     <a href="/DateAppointment"><img className="user-DateAppointment-icon_delete" src={Delete_icon} alt=""/></a>
                                 </div>
                             </div>

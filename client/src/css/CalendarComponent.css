@@ -110,14 +110,14 @@ header .icons span:last-child{
     color: #ffffff;
 }
 .days li.active::before{
-    border: 1.5px solid #54B2B0;
+    border: 1.5px solid #365372;
 }
 .days li.inactive{
     pointer-events: none;
     color: #A1A1A1;
 }
 .days li.active{
-    color: #54B2B0;
+    color: #365372;
 }
 #userCalendar{
     border-radius: 20px 20px 20px 20px ;

@@ -15,8 +15,8 @@ const UserEditAppointment = (props) =>{
         <div className="user">
             <header className="user-header">
                     <div>
-                        <h1>การนัดหมาย</h1>
-                        <h2>แก้ไขนัดหมาย</h2>
+                        <h2>การนัดหมาย</h2>
+                        <h3>แก้ไขนัดหมาย</h3>
                     </div>
 
                     <NavbarUserComponent/>
