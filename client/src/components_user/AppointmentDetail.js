@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/AppointmentDetail.css";
+import "../css/UserAppointmentDetail.css";
 import '../css/Component.css';
 import CalendarFlat_icon from "../picture/calendar-flat.png";
 import ClockFlat_icon from "../picture/clock-flat.png";
@@ -11,8 +11,8 @@ const AppointmentDetail = (props) => {
         <div className="user">
             <header className="user-header">
                 <div>
-                    <h1>การนัดหมาย</h1>
-                    <h2>รายละเอียดนัดหมาย</h2>
+                    <h2>การนัดหมาย</h2>
+                    <h3>รายละเอียดนัดหมาย</h3>
                 </div>
 
                 <NavbarUserComponent/>
@@ -35,7 +35,7 @@ const AppointmentDetail = (props) => {
                 </div>
 
                 <div className="user-AppointmenDetail-Button_container">
-                    <button className="btn-primary">หน้าแรก</button>
+                    <a className="btn btn-primary" href="/appointment" role="button"  target="_parent">หน้าแรก</a>
                 </div>
             </div>
     
