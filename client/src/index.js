@@ -26,6 +26,7 @@ import AdminQueueManagementSystemComponent from './components_hcu/QueueManagemen
 import UserHomeComponent from './components_user/HomeCompoment.js';
 import UserEditAppointment from "./components_user/UserEditAppointment.js"
 import UserHistoryAppointment from "./components_user/UserHistoryAppointment.js"
+import AppointmentManagerComponentSpecial from './components_hcu/AppointmentManagerComponentSpecial.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -95,7 +96,10 @@ const router = createBrowserRouter([
     path: "/adminQueueManagementSystemComponent",
     element: <ProtectAdminRoute><AdminQueueManagementSystemComponent/></ProtectAdminRoute>
   },
-
+  {
+    path: "/AppointmentManagerComponentSpecial",
+    element: <ProtectAdminRoute><AppointmentManagerComponentSpecial/></ProtectAdminRoute>
+  },
   {
     path: "/appointment/detail",
     element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
@@ -140,6 +144,7 @@ const router = createBrowserRouter([
     path: "/appointment/selectDate",
     element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
   },
+
 
 ])
 

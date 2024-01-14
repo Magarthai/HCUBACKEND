@@ -1,5 +1,5 @@
 import NavbarComponent from "./NavbarComponent";
-import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
+import CalendarAdminComponent from "./CalendarAdminComponent";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
@@ -12,7 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 
 
-const AppointmentManagerComponent = (props) => {
+const AppointmentManagerComponentSpecial = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [showTime, setShowTime] = useState(getShowTime);
@@ -52,7 +52,7 @@ const AppointmentManagerComponent = (props) => {
                 const querySnapshot = await getDocs(query(
                     timeTableCollection,
                     where('addDay', '==', selectedDate.dayName),
-                    where('clinic', '==', 'คลินิกทั่วไป')
+                    where('clinic', '==', 'คลินิกเฉพาะทาง')
                 ));
 
                 const timeTableData = querySnapshot.docs.map((doc) => ({
@@ -285,7 +285,7 @@ const AppointmentManagerComponent = (props) => {
                 appointmentCasue,
                 appointmentSymptom,
                 appointmentNotation,
-                clinic: "คลินิกทั่วไป",
+                clinic: "คลินิกเฉพาะทาง",
                 status: "รอยืนยันสิทธิ์",
             };
 
@@ -360,7 +360,7 @@ const AppointmentManagerComponent = (props) => {
                 appointmentCasue: appointmentCasue,
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
-                clinic: "คลินิกทั่วไป",
+                clinic: "คลินิกเฉพาะทาง",
                 status: "รอยืนยันสิทธิ์",
             };
     
@@ -685,8 +685,8 @@ const AppointmentManagerComponent = (props) => {
             <div className="admin">
             <div className="admin-header">
                 <div className="admin-hearder-item">
-                    <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
-                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
+                    <a href="/appointmentAdmin" target="_parent">คลินิกทั่วไป</a>
+                    <a href="/AppointmentManagerComponent" target="_parent" id="select">คลินิกเฉพาะทาง</a>
                     <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
                     <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
                     </div>
@@ -704,7 +704,7 @@ const AppointmentManagerComponent = (props) => {
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
-                                <h2>นัดหมายคลินิกทั่วไป</h2>
+                                <h2>นัดหมายคลินิกเฉพาะทาง</h2>
                                 <p className="admin-textBody-large">
                                     {selectedDate
                                         ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
@@ -736,7 +736,6 @@ const AppointmentManagerComponent = (props) => {
                                 </div>
                             </div>
                         ))}
-
                         </div>
                     </div>
 
@@ -926,4 +925,4 @@ const AppointmentManagerComponent = (props) => {
     );
 }
 
-export default AppointmentManagerComponent;
+export default AppointmentManagerComponentSpecial;
