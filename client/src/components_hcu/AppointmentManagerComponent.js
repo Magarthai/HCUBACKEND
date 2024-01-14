@@ -401,7 +401,7 @@ const AppointmentManagerComponent = (props) => {
             z.style.display = "none";
             console.log(AppointmentUsersData.timeslot.start)
             document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
-            document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start} - ${AppointmentUsersData.timeslot.end}`
+            document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
             document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
             document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
             document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
@@ -416,7 +416,7 @@ const AppointmentManagerComponent = (props) => {
                 setsaveEditId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
                 document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
-                document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start} - ${AppointmentUsersData.timeslot.end}`
+                document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
                 document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
                 document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
                 document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
@@ -712,7 +712,7 @@ const AppointmentManagerComponent = (props) => {
                         {AppointmentUsersData.map((AppointmentUsersData, index) => (
                             <div className="admin-appointment-card colorPrimary-800" key={index} >
                                 <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUsersData)}>
-                                    {AppointmentUsersData.timeslot.start}  -  {AppointmentUsersData.timeslot.end}
+                                    {AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}
                                 </div>
                                 <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUsersData)}>
                                     <p id="student-id" className="admin-textBody-huge">{AppointmentUsersData.id}</p>
