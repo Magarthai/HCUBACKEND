@@ -23,7 +23,7 @@ const HomeComponent = (props) => {
                 <a class="btn btn-primary" href="/appointment" role="button"  target="_parent">นัดหมาย</a>
                 <a class="btn btn-primary" href="/" role="button"  target="_parent">กิจกรรม</a>
                 <a class="btn btn-primary" href="/" role="button"  target="_parent">สถานะคิว</a>
-                <a class="btn btn-primary" href="/" role="button"  target="_parent">ช่วงเวลาเข้าทําการแพทย์</a>
+                <a class="btn btn-primary" href="/timetable" role="button"  target="_parent">ช่วงเวลาเข้าทําการแพทย์</a>
                 <a class="btn btn-primary" href="/" role="button"  target="_parent">ตำแหน่งที่ตั้ง</a>
                 <a class="btn btn-primary" href="/" role="button"  target="_parent">ข้อมูลทั่วไป</a>
                 <a class="btn btn-primary" href="/" role="button"  target="_parent">ประเมินความพึงพอใจ</a>

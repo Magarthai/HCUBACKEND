@@ -27,6 +27,7 @@ import UserHomeComponent from './components_user/HomeCompoment.js';
 import UserEditAppointment from "./components_user/UserEditAppointment.js"
 import UserHistoryAppointment from "./components_user/UserHistoryAppointment.js"
 import AppointmentManagerComponentSpecial from './components_hcu/AppointmentManagerComponentSpecial.js';
+import UserTimetableComponet from './components_user/TimetableComponet.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -143,6 +144,10 @@ const router = createBrowserRouter([
   {
     path: "/appointment/selectDate",
     element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
+  },
+  {
+    path: "/timetable",
+    element: <ProtectRoute><UserTimetableComponet/></ProtectRoute>
   },
 
 
