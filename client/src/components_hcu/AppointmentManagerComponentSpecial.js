@@ -146,7 +146,8 @@ const AppointmentManagerComponentSpecial = (props) => {
             if (user && selectedDate && selectedDate.dayName) {
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', 
-                `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
+                `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
+                where('clinic', '==', 'คลินิกเฉพาะทาง')));
     
                 const timeTableCollection = collection(db, 'timeTable');
                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -685,10 +686,10 @@ const AppointmentManagerComponentSpecial = (props) => {
             <div className="admin">
             <div className="admin-header">
                 <div className="admin-hearder-item">
-                    <a href="/appointmentAdmin" target="_parent">คลินิกทั่วไป</a>
-                    <a href="/AppointmentManagerComponent" target="_parent" id="select">คลินิกเฉพาะทาง</a>
-                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกกายภาพ</a>
-                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                    <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
+                    <a href="/AppointmentManagerComponentSpecial" target="_parent" id="select">คลินิกเฉพาะทาง</a>
+                    <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
+                    <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
                     </div>
                 <div className="admin-hearder-item admin-right">
                     <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>

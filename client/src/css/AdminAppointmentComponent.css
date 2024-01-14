@@ -440,7 +440,7 @@ body{
     }
     #admin-add-appointment-connected2 .admin-appointmemt-popup{
         width: 60%;
-        height: 650px;
+        min-height: 650px;
         background-color: #ffffff;
         position: absolute;
         margin: 190px 20%;
