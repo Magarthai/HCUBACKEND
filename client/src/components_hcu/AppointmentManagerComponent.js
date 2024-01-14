@@ -709,22 +709,22 @@ const AppointmentManagerComponent = (props) => {
                             <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
                         </div>
                         <div className="admin-appointment-box-card">
-                        {AppointmentUsersData.map((AppointmentUsersData, index) => (
-                            <div className="admin-appointment-card colorPrimary-800" key={index} >
-                                <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUsersData)}>
-                                    {AppointmentUsersData.timeslot.start}-{AppointmentUsersData.timeslot.end}
+                        {AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
+                            <div className="admin-appointment-card colorPrimary-800" key={index}>
+                                <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                    {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
                                 </div>
-                                <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUsersData)}>
-                                    <p id="student-id" className="admin-textBody-huge">{AppointmentUsersData.id}</p>
-                                    <p id="student-name" className="admin-textBody-small">{`${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`}</p>
+                                <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                    <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
+                                    <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
                                 </div>
                                 <div className="admin-appointment-functon">
-                                    <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUsersData.appointment)} />
-                                    <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUsersData.appointment.appointmentuid,AppointmentUsersData.userUid)} />
+                                    <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
+                                    <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
                                 </div>
-                               
                             </div>
                         ))}
+
                         </div>
                     </div>
 
