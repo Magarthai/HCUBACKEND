@@ -803,7 +803,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
     function cleanUpOldPopups() {
         const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
     
-        // Remove all child elements
         while (appointmentPopupItem.firstChild) {
             appointmentPopupItem.removeChild(appointmentPopupItem.firstChild);
         }
