@@ -65,9 +65,6 @@ const TimetableSpecialComponent = (props) => {
                     ...doc.data(),
                 }));
 
-
-
-
                 if (timeTableData) {
                     setTimetable(timeTableData);
                     const initialIsChecked = timeTableData.reduce((acc, timetableItem) => {
@@ -104,19 +101,18 @@ const TimetableSpecialComponent = (props) => {
         for (let i = 0; i < numberAppointment; i++) {
             const slotStart = new Date(start.getTime() + i * interval * 60000);
             const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-
-
+        
             if (slotEnd.getTime() > end.getTime()) {
                 timeablelist.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
                 });
                 break;
             }
-
+        
             timeablelist.push({
-                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
             });
         }
 
@@ -129,7 +125,7 @@ const TimetableSpecialComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "special",
+                clinic: "คลินิกเฉพาะทาง",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -186,7 +182,7 @@ const TimetableSpecialComponent = (props) => {
     
         try {
             const timetableRef = doc(db, 'timeTable', timetableId);
-            console.log(timetableId);  // Corrected from console.log(timetable.id)
+            console.log(timetableId);
     
             const updatedTimetable = {
                 addDay: addDay,
@@ -195,7 +191,7 @@ const TimetableSpecialComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "special",
+                clinic: "คลินิกเฉพาะทาง",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -319,8 +315,6 @@ const TimetableSpecialComponent = (props) => {
         });
     };
 
-    const [saveDetailId, setsaveDetailId] = useState([])
-    const [saveEditId, setsaveEditId] = useState([])
 
     const openAddtimetable = () => {
         let x = document.getElementById("Addtimetable");
@@ -330,8 +324,6 @@ const TimetableSpecialComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
-            setsaveDetailId("")
-            setsaveEditId("")
         } else {
             x.style.display = "none";
 
@@ -351,8 +343,6 @@ const TimetableSpecialComponent = (props) => {
           x.style.display = "block";
           y.style.display = "none";
           z.style.display = "none";
-          setsaveDetailId("")
-          setsaveEditId(timetable.id)
       
           setState((prevState) => ({
             ...prevState,
@@ -362,34 +352,17 @@ const TimetableSpecialComponent = (props) => {
             timeAppointmentStart: timetable.timeAppointmentStart,
             timeAppointmentEnd: timetable.timeAppointmentEnd,
             numberAppointment: timetable.numberAppointment,
-            clinic: "special",
+            clinic: "คลินิกเฉพาะทาง",
             timeablelist: timetable.timeablelist,
             status: "Enabled",
             timetableId: timetable.id,  // Update the id in the state
           }));
 
-        //   console.log(timetable.id)
-        //   window.history.replaceState({}, null, `/timeTableSpecialAdmin/${timetable.id}`);
+          console.log(timetable.id)
+      
+          window.history.replaceState({}, null, `/timeTableSpecialAdmin/${timetable.id}`);
         } else {
-            if(saveEditId === timetable.id){
-                x.style.display = "none";
-                setsaveEditId("")
-            }else{
-                setsaveEditId(timetable.id)
-                setState((prevState) => ({
-                    ...prevState,
-                    addDay: timetable.addDay,
-                    timeStart: timetable.timeStart,
-                    timeEnd: timetable.timeEnd,
-                    timeAppointmentStart: timetable.timeAppointmentStart,
-                    timeAppointmentEnd: timetable.timeAppointmentEnd,
-                    numberAppointment: timetable.numberAppointment,
-                    clinic: "special",
-                    timeablelist: timetable.timeablelist,
-                    status: "Enabled",
-                    timetableId: timetable.id,  // Update the id in the state
-                  }));
-            }
+          x.style.display = "none";
         }
       };
 
@@ -406,8 +379,6 @@ const TimetableSpecialComponent = (props) => {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
-            setsaveEditId("")
-            setsaveDetailId(timetable.id)
             let detailDay = timetable.addDay;
             let listtimetable = ""
             if (detailDay === "monday") {
@@ -430,38 +401,9 @@ const TimetableSpecialComponent = (props) => {
                 console.log(timetable.timeablelist[i])
             }
             document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
-            // window.history.replaceState({}, null, `/timeTableSpecialAdmin/${timetable.id}`);
+            window.history.replaceState({}, null, `/timeTableSpecialAdmin/${timetable.id}`);
         } else {
-            if(saveDetailId === timetable.id){
-                x.style.display = "none";
-                setsaveDetailId("")
-            }
-            else{
-                setsaveDetailId(timetable.id)
-                let detailDay = timetable.addDay;
-                let listtimetable = ""
-                if (detailDay === "monday") {
-                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันจันทร์`
-                } else if (detailDay === "tuesday") {
-                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันอังคาร`
-                } else if (detailDay === "wednesday") {
-                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันพุธ`
-                } else if (detailDay === "thursday") {
-                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันพฤหัสบดี`
-                } else if (detailDay === "friday") {
-                    document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันศุกร์`
-                }
-                document.getElementById("Detailtimeall").innerHTML = `<b>ช่วงเวลาเปิดให้บริการ</b> : ${timetable.timeStart} - ${timetable.timeEnd} `
-                document.getElementById("Detailtime").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมาย</b> : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
-                document.getElementById("Detailqueue").innerHTML = `<b>จำนวนคิวนัดหมาย</b> : ${timetable.numberAppointment} `
-                console.log(timetable.timeablelist.length)
-                for (let i = 0; i < timetable.timeablelist.length; i++) {
-                    listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
-                    console.log(timetable.timeablelist[i])
-                }
-                document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
-            
-            }
+            x.style.display = "none";
         }
 
     }
@@ -538,17 +480,6 @@ const TimetableSpecialComponent = (props) => {
 
     }
 
-    const adminCards = document.querySelectorAll('.card');
-
-    function handleCardClick(event) {
-        adminCards.forEach(card => card.classList.remove('focused'));    
-        event.currentTarget.classList.add('focused');
-    }
-
-    adminCards.forEach(card => {
-        card.addEventListener('click', handleCardClick);
-    });
-
 
 
 
@@ -580,9 +511,9 @@ const TimetableSpecialComponent = (props) => {
                     </div>
                     <div className="admin-timetable-system-detail">
                     <h3 className="colorPrimary-800">วันจันทร์</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "special").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกเฉพาะทาง").map((timetable, index) => (
                             <div className="row" >
-                                <div className="card focused">
+                                <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
@@ -605,7 +536,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "special").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -613,7 +544,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
                         )}
                         <h3 className="colorPrimary-800">วันอังคาร</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "special").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกเฉพาะทาง").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -633,7 +564,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "special").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -641,7 +572,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
                         )}
                         <h3 className="colorPrimary-800">วันพุธ</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "special").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกเฉพาะทาง").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -661,7 +592,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "special").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -669,7 +600,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
                         )}
                          <h3 className="colorPrimary-800">วันพฤหัสบดี</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "special").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกเฉพาะทาง").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -689,7 +620,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "special").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -697,7 +628,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
                         )}
                         <h3 className="colorPrimary-800">วันศุกร์</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "special").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกเฉพาะทาง").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -717,7 +648,7 @@ const TimetableSpecialComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "special").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
