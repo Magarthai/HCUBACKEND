@@ -699,44 +699,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
     };
 
 
-    function handleSelectChangeFunction(event) {
-        // Extract the selected value from the event
-        const selectedValue = JSON.parse(event.target.value);
-    
-        // Check if the selected value is an object
-        if (selectedValue && typeof selectedValue === 'object') {
-            // Destructure the timetableId and timeSlotIndex from the selected object
-            const { timetableId, timeSlotIndex } = selectedValue;
-    
-            // Log the extracted values
-            console.log("timetableId:", timetableId);
-            console.log("timeSlotIndex:", timeSlotIndex);
-    
-            // Call the inputValue function with the extracted values
-            inputValue("appointmentTime")({
-                target: {
-                    value: { timetableId, timeSlotIndex },
-                },
-            });
-    
-            // Call the handleSelectChange function
-            handleSelectChange();
-        } else if (event.target.value === "") {
-            // If the selected value is an empty string, set the inputValue to an empty object
-            inputValue("appointmentTime")({
-                target: {
-                    value: {},
-                },
-            });
-    
-            // Call the handleSelectChange function
-            handleSelectChange();
-        } else {
-            // Log an error message for invalid selected values
-            console.error("Invalid selected value:", selectedValue);
-        }
-    }
-
     const submitFormAddContinue = () => {
         let x = document.getElementById("admin-add-appointment-connected2");
         let y = document.getElementById("admin-add-appointment-connected");
@@ -763,16 +725,20 @@ const AppointmentManagerPhysicalComponent = (props) => {
             }));
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
             const formattedAppointmentDate = formatToDDMMYYYY(appointmentDate);
-    
+            const handleSelectChanges = () => {
+                setSelectedCount(selectedCount + 1);
+                console.log(selectedCount)
+        
+            };
             for (let i = 1; i <= time; i++) {
                 const instanceDate = new Date(formattedAppointmentDate);
                 instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
     
                 const divElement = document.createElement('div');
                 divElement.id = `admin-add-appointment-connected2-${i}`;
-                divElement.className = "your-class"; // Add any necessary classes
+                divElement.className = "your-class"; 
                 divElement.addEventListener("change", (e) => {
-                    handleSelectChange();
+                    handleSelectChanges();
                     const selectedValue = JSON.parse(e.target.value);
                 
                     if (selectedValue && typeof selectedValue === 'object') {
@@ -788,8 +754,8 @@ const AppointmentManagerPhysicalComponent = (props) => {
                           }));
                           
                 
-                        console.log(state[`appointmentTime${i}`]); // Log the dynamic state variable
-                        handleSelectChange();
+                        console.log(state[`appointmentTime${i}`]);
+                        handleSelectChanges();
                     } else if (e.target.value === "") {
                         inputValue(`appointmentTime${i}`)({
                             target: {
@@ -797,7 +763,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             },
                         });
                 
-                        handleSelectChange();
+                        handleSelectChanges();
                     } else {
                         console.error("Invalid selected value:", selectedValue);
                     }
