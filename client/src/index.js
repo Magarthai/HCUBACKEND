@@ -28,6 +28,8 @@ import UserEditAppointment from "./components_user/UserEditAppointment.js"
 import UserHistoryAppointment from "./components_user/UserHistoryAppointment.js"
 import AppointmentManagerComponentSpecial from './components_hcu/AppointmentManagerComponentSpecial.js';
 import UserTimetableComponet from './components_user/TimetableComponet.js';
+import UserProfileComponent from './components_user/ProfileComponent.js';
+import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -148,6 +150,14 @@ const router = createBrowserRouter([
   {
     path: "/timetable",
     element: <ProtectRoute><UserTimetableComponet/></ProtectRoute>
+  },
+  {
+    path: "/profile",
+    element: <ProtectRoute><UserProfileComponent/></ProtectRoute>
+  },
+  {
+    path: "/profile/edit",
+    element: <ProtectRoute><UserProfileEditComponent/></ProtectRoute>
   },
 
 

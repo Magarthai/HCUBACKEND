@@ -3,18 +3,7 @@ import { Link, useNavigate } from "react-router-dom"; // นำเข้า useN
 import Manface from "../picture/Manface.png";
 import { fetchUserById } from '../firebase/firebaseUtils';
 import { useEffect, useState, useRef } from "react";
-
-import NavbarComponent from "../components_hcu/NavbarComponent";
 import "../css/AdminHomeComponent.css";
-import function1 from "../picture/function1.jpg";
-import function2 from "../picture/function2.jpg";
-import function3 from "../picture/function3.jpg";
-import function4 from "../picture/function4.jpg";
-import function5 from "../picture/function5.jpg";
-import function6 from "../picture/function6.jpg";
-import function7 from "../picture/function7.jpg";
-import function8 from "../picture/function8.jpg";
-import logo from "../picture/LogoHCU.png";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import { query, where,  } from 'firebase/firestore';
@@ -94,7 +83,7 @@ const NavbarUserComponent = (props) => {
         <div className="navs" style={{ display: showNav ? 'block' : 'none' }}>
           <ul>
             <li className="profiles">
-              <Link to="/">
+              <Link to="/profile">
                 <div className="profilecontainer">
                   <div className="profilebox">
                     <div className="profile-picture">
