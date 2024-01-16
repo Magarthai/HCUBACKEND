@@ -7,7 +7,8 @@ import "../css/AdminHomeComponent.css";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import { query, where,  } from 'firebase/firestore';
-
+import male from "../picture/male.png";
+import female from "../picture/female.png";
 
 const NavbarUserComponent = (props) => {
   const { user, logOut } = useUserAuth();
@@ -87,7 +88,7 @@ const NavbarUserComponent = (props) => {
                 <div className="profilecontainer">
                   <div className="profilebox">
                     <div className="profile-picture">
-                      <img className="logo" src={Manface} alt="logo health care unit" />
+                    {userData &&<img className="logo" src={userData.gender === 'female' ? female : male} alt="logo health care unit" />}
                     </div>
                     <div className="profile-info">
                       <div className="profilename">
