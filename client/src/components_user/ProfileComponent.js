@@ -45,7 +45,7 @@ const ProfileUserComponent = (props) => {
                   <use href="#user-profile-gentle-wave" x="48" y="7" fill="#fff" />
                 </g>
               </svg>
-              <img className="user-profile-img" src={male} alt="logo health care unit" />
+              {userData &&<img className="user-profile-img" src={userData.gender === 'female' ? female : male} alt="logo health care unit" />}
             </div>
             <div class="header">
             </div>
@@ -53,7 +53,7 @@ const ProfileUserComponent = (props) => {
 
           <div className="user-profile-info colorPrimary-800">
             {/* <h2 className="colorPrimary-800" style={{marginTop:"-5px",marginBottom:"20px"}}>ข้อมูลทั่วไป</h2> */}
-            <p className="textButton-Normal user-profile-header-user-name">{userData.firstName} {userData.lastName}</p>
+            {userData &&<p className="textButton-Normal user-profile-header-user-name">{userData.firstName} {userData.lastName}</p>}
             <p className="textButton-Normal colorPrimary-800">รหัสนักศึกษา/รหัสพนักงาน</p>
             {userData && <p className="colorPrimary-800 user-profile-detail textBody-big">{userData.id}</p>}
             <p className="textButton-Normal colorPrimary-800">email</p>
