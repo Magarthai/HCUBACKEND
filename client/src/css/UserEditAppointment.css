@@ -2,8 +2,8 @@
     margin-bottom: 32px;
 }
 .user-EditAppointment-Calendar_container{
-    margin-left: 8%;
-    margin-right: 8%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .user-EditAppointment-Canlendar_title{
     color: #263A50;
@@ -14,8 +14,8 @@
     margin-bottom: 32px;
 }
 .user-EditAppointment-Dropdown_container{
-    margin-left: 8%;
-    margin-right: 8%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .user-EditAppointment-Dropdown_title{
     color: #263A50;
@@ -24,8 +24,8 @@
     color: #263A50;
 }
 .user-EditAppointment-Reason_container{
-    margin-left: 8%;
-    margin-right: 8%;
+    margin-left: 5%;
+    margin-right: 5%;
     color: #263A50;
 }
 .user-EditAppointment-Reason{
@@ -34,8 +34,8 @@
     font-weight: 300;
 }
 .user-EditAppointment-Symptom_container{
-    margin-left: 8%;
-    margin-right: 8%;
+    margin-left: 5%;
+    margin-right: 5%;
     color: #263A50;
 }
 .user-EditAppointment-Symptom{
@@ -50,6 +50,6 @@
     background-color: #ffffff;
 }
 .user-EditAppointment-Button_container{
-    margin-left: 8%;
-    margin-right: 8%;
+    margin-left: 5%;
+    margin-right: 5%;
 }

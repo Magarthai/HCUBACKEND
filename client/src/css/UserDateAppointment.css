@@ -70,7 +70,7 @@
     justify-content: space-between;
 }
 .user-DateAppointment-icon{
-    width: 104px;
+    width: 75px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -103,3 +103,7 @@
     padding: 0px 10px;
     background-color: #ffffff;
 }
+.user-DateAppointment-icon_edit,.user-DateAppointment-icon_delete{
+    width: 32px;
+    height: 32px;
+    }

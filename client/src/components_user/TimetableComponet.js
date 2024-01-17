@@ -65,7 +65,7 @@ const TimetableComponet = (props) => {
             <div className="user-body">
                 <div className="user-timetable">
                     <div style={{marginBottom:"10px"}}>
-                        <label className="textBody-huge colorPrimary-800" style={{marginBottom:"15px"}}>คลินิก</label>
+                        <label className="colorPrimary-800"><h3>คลินิก</h3></label>
                         <select
                             name="clinic"
                             value={clinic}
