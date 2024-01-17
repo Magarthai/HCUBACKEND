@@ -469,6 +469,38 @@ body{
     #admin-add-appointment-connected2 .admin-timetable-btn{
         margin: 20px;
     }
+    .admin-appointment-detail-header{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    .admin-appointment-detail-header-items1{
+        box-sizing: border-box;
+        width: 60%;
+    }
+    .admin-appointment-detail-header-items2{
+        box-sizing: border-box;
+        width: 18%;
+    }
+    .confirmed-background{
+        background-color: #D88C09;
+    }
+    
+    .completed-background{
+        background-color: #098B66;
+    }
+    
+    .failed-background{
+        background-color: #C11F1F;
+    }
+    
+    .pending-confirmation-background{
+        background-color: #A1A1A1;
+    }
+    
 
     
    

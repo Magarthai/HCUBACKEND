@@ -41,17 +41,21 @@ const QueueManagementSystemComponent = (props) => {
         let statusElementDetail = document.getElementById("detail-appointment-status");
 
         if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
                 console.log("Adding Class...");
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("confirmed-background");
             }
             else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("completed-background");
             }
             else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("failed-background");
             }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธ์') {
+            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("pending-confirmation-background");
             }
         }
