@@ -309,7 +309,10 @@ const AppointmentManagerComponent = (props) => {
             y.style.display = "none";
             z.style.display = "none";
             console.log(AppointmentUsersData.timeslot.start)
-            document.getElementById("detail-appointment-status").innerHTML = `${AppointmentUsersData.appointment.status}`
+            const statusElement = document.getElementById("detail-appointment-status");
+            if (statusElement) {
+                statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
+            }
             document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
             document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
             document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -325,7 +328,10 @@ const AppointmentManagerComponent = (props) => {
             }else{
                 setsaveEditId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
-                document.getElementById("detail-appointment-status").innerHTML = `${AppointmentUsersData.appointment.status}`
+                const statusElement = document.getElementById("detail-appointment-status");
+                if (statusElement) {
+                    statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
+                }
                 document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
                 document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
                 document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -415,6 +421,8 @@ const AppointmentManagerComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
+        let x = document.getElementById("detail-appointment");
+        x.style.display = "none";
     };
 
     const formatDateForDisplay = (isoDate) => {
@@ -610,21 +618,21 @@ const AppointmentManagerComponent = (props) => {
 
                 </div>
                 <div className="admin-appointment-box">
-                    <div id="detail-appointment" className="colorPrimary-800">
-                        
-                        <div className="admin-appointment-detail-header">
+                        <div id="detail-appointment" className="colorPrimary-800">
+                            {selectedDate && `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
+                            <div className="admin-appointment-detail-header">
                                 <div className="admin-appointment-detail-header-items2"></div>
                                 <h2 className="admin-appointment-detail-header-items1 center">รายละเอียดนัดหมาย</h2>
                                 <div className="admin-appointment-detail-header-items2 admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
-                        </div>
-                        
-                        <p id="detail-appointment-date" className="admin-textBody-big"></p>
-                        <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
-                        <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
-                        <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
-                        <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
-                        <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
-                        <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
+                            </div>
+                            ) : (<h2 className="center">รายละเอียดนัดหมาย</h2>)}
+                            <p id="detail-appointment-date" className="admin-textBody-big"></p>
+                            <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
+                            <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
+                            <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
+                            <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                            <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
+                            <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
 
 
                     </div>

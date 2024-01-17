@@ -479,11 +479,11 @@ body{
     }
     .admin-appointment-detail-header-items1{
         box-sizing: border-box;
-        width: 60%;
+        width: 50%;
     }
     .admin-appointment-detail-header-items2{
         box-sizing: border-box;
-        width: 18%;
+        width: 25%;
     }
     .confirmed-background{
         background-color: #D88C09;
