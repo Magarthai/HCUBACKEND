@@ -16,16 +16,37 @@ import Swal from 'sweetalert2';
 const UserAllAppointment = () => {
     
     const { user, userData } = useUserAuth();
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState();
     const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
+    const locale = 'en';
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    const day = today.toLocaleDateString(locale, { weekday: 'long' });
+    const currentDate = `${day} ${month}/${date}/${year}`;
+    const formattedSelectedDate = {
+        day: date,
+        month: month,
+        year: year,
+        dayName: day,
+    };
+
+    const handleDateSelect = (selectedDate) => {
+        console.log("Selected Date in AppointmentManager:", selectedDate);
+        setSelectedDate(selectedDate);
+    };
 
     useEffect(() => {
         document.title = 'Health Care Unit';
-
-        setSelectedDate(formattedSelectedDate)
-        
+        if (AppointmentUsersData.length <= 0) {
+            fetchUserDataWithAppointments();
+        }
+        if (AppointmentUsersData.length <= 0) {
+            fetchUserDataWithAppointments();
+        }
         let statusElementDetail = document.getElementById("detail-appointment-status");
-
+    
         if (statusElementDetail) {
             if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
                 console.log("Adding Class...");
@@ -42,38 +63,22 @@ const UserAllAppointment = () => {
             }
         }
 
-        fetchUserDataWithAppointments();
-
-        console.log("AppointmentUsersData")
-
-    }, [user,userData]);
-
     
-    const locale = 'en';
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
-    const date = today.getDate();
-    const day = today.toLocaleDateString(locale, { weekday: 'long' });
-    const currentDate = `${day} ${month}/${date}/${year}`;
-    const formattedSelectedDate = {
-        day: date,
-        month: month,
-        year: year,
-        dayName: day,
-    };
-
+        console.log("AppointmentUsersData", AppointmentUsersData);
+    
+    }, [user, userData, AppointmentUsersData,selectedDate]);
 
 
     const handleApprove = async (id, AppointmentUserData) => {
         Swal.fire({
-            title: 'Confirm',
-            text: `ยินยันคิว ${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`,
+            title:`ยืนยันสิทธิ์`,
+            html: `วันที่ ${AppointmentUserData.appointment.appointmentDate} </br>` + `เวลา ${AppointmentUserData.timeslot.start} - ${AppointmentUserData.timeslot.end}`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'ยืนยันสิทธ์แล้ว',
-            cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#DC2626',
+            confirmButtonText: 'ยืนยันสิทธ์',
+            cancelButtonText: '<span style="color: #444444;">ยกเลิก</span>',
+            confirmButtonColor: '#263A50',
+            cancelButtonColor: `rgba(68, 68, 68, 0.13)`,
             reverseButtons: true,
             customClass: {
                 confirmButton: 'custom-confirm-button',
@@ -89,8 +94,7 @@ const UserAllAppointment = () => {
 
                     Swal.fire(
                         {
-                            title: 'Updated!',
-                            text: `อัพเดตคิวเสร็จสิ้น`,
+                            title: 'ยืนยันสิทธิ์สำเร็จ',
                             icon: 'success',
                             confirmButtonText: 'ตกลง',
                             confirmButtonColor: '#263A50',
@@ -112,8 +116,7 @@ const UserAllAppointment = () => {
             ) {
                 Swal.fire(
                     {
-                        title: 'Deleted!',
-                        text: `อัพเดตคิวไม่สำเร็จ`,
+                        title: 'ยืนยันสิทธิ์ไม่สำเร็จ',
                         icon: 'error',
                         confirmButtonText: 'ตกลง',
                         confirmButtonColor: '#263A50',
@@ -150,17 +153,18 @@ const UserAllAppointment = () => {
 
     statusElements.forEach(changeStatusTextColor);
 
-    const DeleteAppointment = async (appointmentuid, uid) => {
+    const DeleteAppointment = async (AppointmentUserData,appointmentuid, uid) => {
         const timetableRef = doc(db, 'appointment', appointmentuid);
     
         Swal.fire({
             title: 'ยกเลิกสิทธิ์',
-            text: `กดยืนยันเพื่อยกเลิกสิทธิ์`,
+            html: `วันที่ ${AppointmentUserData.appointment.appointmentDate} </br>` + `เวลา ${AppointmentUserData.timeslot.start} - ${AppointmentUserData.timeslot.end}`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'ยืนยัน',
-            cancelButtonText: 'ยกเลิก',
+            confirmButtonText: 'ยกเลิกสิทธิ์',
+            cancelButtonText: '<span style="color: #444444;">ยกเลิก</span>',
             confirmButtonColor: '#DC2626',
+            cancelButtonColor: `rgba(68, 68, 68, 0.13)`,
             reverseButtons: true,
             customClass: {
                 confirmButton: 'custom-confirm-button',
@@ -188,8 +192,7 @@ const UserAllAppointment = () => {
                     Swal.fire(
                         {
                             
-                            title: 'Deleted!',
-                            text: `ลบนัดหมายสำเร็จ`,
+                            title: 'ยกเลิกสิทธิ์สำเร็จ',
                             icon: 'success',
                             confirmButtonText: 'ตกลง',
                             confirmButtonColor: '#263A50',
@@ -212,8 +215,7 @@ const UserAllAppointment = () => {
             ) {
                 Swal.fire(
                     {
-                        title: 'Deleted!',
-                        text: `ลบนัดหมายไม่สำเร็จ`,
+                        title: 'ยกเลิกสิทธิ์ไม่สำเร็จ',
                         icon: 'error',
                         confirmButtonText: 'ตกลง',
                         confirmButtonColor: '#263A50',
@@ -327,29 +329,29 @@ const UserAllAppointment = () => {
         return userDatas;
     };
 
-
-
     return(
-        <div id='user-appointment-xd'>
-            <div className="UserAllAppointmetComponent">
-                <div className="UserAllAppointmet">
-                    <header className="UserAllAppointmet-header">
+            <div className="user">
+                    <header className="user-header">
                         <div>
-                        <h1>การนัดหมาย</h1>
-                        <h2>รายการ</h2>
+                        <h2>การนัดหมาย</h2>
+                        <h3>รายการ</h3>
                         </div>
 
                         <NavbarUserComponent/>
                     </header>
 
-                    <body className="UserAllAppointmet-body">
-                        <h2 className='User-appointmentmenu-headbar'>ปฏิทิน</h2>
+                    <body className="user-body">
+                        <h3 className='User-appointmentmenu-headbar'>ปฏิทิน</h3>
                         <div className="CalendarUser-appointment">
-                            <CalendarUserComponent/>
+                        <CalendarUserComponent
+                            selectedDate={selectedDate}
+                            setSelectedDate={setSelectedDate}
+                            onDateSelect={handleDateSelect}
+                        />
                         </div>
 
                         <div className="user-appointment-bar-btn">
-                            <h2 className='User-appointmentmenu-headbar'>นัดหมายสัปดาห์นี้</h2>
+                            <h3 className='User-appointmentmenu-headbar'>นัดหมายสัปดาห์นี้</h3>
                             <button className="user-appointment-btn-add"><Link to="/appointment/clinic"><x>เพิ่มนัดหมาย +</x></Link></button>
                         </div>
 
@@ -387,7 +389,7 @@ const UserAllAppointment = () => {
                                 <label className="user-appointment-warn">: กรุณายืนยันสิทธิ์ก่อน 15 นาที</label>
 
                                 <div className="user-appointment-btn-submit-set">
-                                    <button onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} className="user-appointment-btn-cancel">ยกเลิกสิทธิ์</button>
+                                    <button onClick={() => DeleteAppointment(AppointmentUserData,AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} className="user-appointment-btn-cancel">ยกเลิกสิทธิ์</button>
                                     <button onClick={() => handleApprove(AppointmentUserData.appointment.appointmentuid, AppointmentUserData)} className="user-appointment-btn-submit">ยืนยันสิทธิ์</button>
                                 </div>
                             </div>
@@ -431,7 +433,9 @@ const UserAllAppointment = () => {
                                 </div>
                             ))
                         ) : (
-                            <div className="user-appointment-card"></div>
+                            <div className="user-non-appointment-card">
+                                <p className="user-non-appointmaent"> ไม่มีการนัดหมายในสัปดาห์นี้ </p>
+                            </div>
                         )}
 
                             
@@ -443,8 +447,6 @@ const UserAllAppointment = () => {
                         <lable><Link to="/apppointment/history"><y>ประวัติการดำเนิน<br></br>การนัดหมาย</y></Link></lable>
                     </footer>
                 </div>
-            </div>
-        </div>
 
     )
 }

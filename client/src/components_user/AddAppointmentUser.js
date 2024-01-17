@@ -1,10 +1,14 @@
-import React from "react"
+import { useEffect, useState } from "react";
 import "../css/AddAppointmentUser.css";
 import NavbarUserComponent from '../components_user/NavbarUserComponent';
 import CalendarUserComponent from "./CalendarUserComponent";
 
 const AddAppointmentUser = () => {
-
+    const [selectedDate, setSelectedDate] = useState();
+    const handleDateSelect = (selectedDate) => {
+        console.log("Selected Date in AppointmentManager:", selectedDate);
+        setSelectedDate(selectedDate);
+    };
     return(
         <div id='xd'>
             <div className="AddAppointmentUserComponent">
@@ -25,7 +29,11 @@ const AddAppointmentUser = () => {
                         <label className="Clinicname-data" style={{marginLeft:45,marginBottom:20}}>คลินิก</label>
 
                         <div className="CalendarUser">
-                            <CalendarUserComponent/>
+                        <CalendarUserComponent
+                            selectedDate={selectedDate}
+                            setSelectedDate={setSelectedDate}
+                            onDateSelect={handleDateSelect}
+                        />
                         </div>
                             <p>ช่วงเวลา</p>
                             <div class="UserAddAppointment-dropdown">

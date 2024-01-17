@@ -17,6 +17,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
 
+
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
@@ -24,16 +25,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
-    // const [timeOptions1, setTimeOptions1] = useState([]);
-    // const [timeOptions2, setTimeOptions2] = useState([]);
-    // const [timeOptions3, setTimeOptions3] = useState([]);
-    // const [timeOptions4, setTimeOptions4] = useState([]);
-    // const [timeOptions5, setTimeOptions5] = useState([]);
-    // const [timeOptions6, setTimeOptions6] = useState([]);
-    // const [timeOptions7, setTimeOptions7] = useState([]);
-    // const [timeOptions8, setTimeOptions8] = useState([]);
-    // const [timeOptions9, setTimeOptions9] = useState([]);
-    // const [timeOptions10, setTimeOptions10] = useState([]);
 
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
@@ -816,7 +807,9 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 for (let i = 1; i <= time; i++) {
 
 
-
+                    const changeDateSelect = (e) =>{
+                        setState({ ...state, [`appointmentTime${i}`]: e.target.value, });
+                    }
 
                     const instanceDate = new Date(formattedAppointmentDate);
                     instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
@@ -941,11 +934,18 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                                 timeSlotIndex: timeSlotIndex,
                                             },
                                         }));
+                                        inputValue("appointmentTime")({
+                                                    target: {
+                                                        value: { timetableId, timeSlotIndex },
+                                                    },
+                                                });
                                         setState(prevState => ({
                                             ...prevState,
                                             [`timeOptions${i}`]: a,
                                         }));
 
+                                        
+                                        changeDateSelect(e)
 
 
                                         console.log(state[`appointmentTime${i}`]);
@@ -978,7 +978,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                 <select
                                         name="time"
                                 
-                                        value=""
+                                        value="{appointmentDate${i}}"
                                         class=${selectedCount >= 2 ? 'selected' : ''}
                                     >
                                         ${timeOptionsFromTimetable.map((timeOption) =>
@@ -1008,13 +1008,14 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                     <select
                                         name="time"
                                 
-                                        value=""
+                                        value=${JSON.stringify(appointmentTime)}
                                         class=${selectedCount >= 2 ? 'selected' : ''}
                                     >
-                                        ${timeOptionsFromTimetable.map((timeOption) =>
-                                    `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                                                ${timeOption.label}
-                                            </option>`
+                                    ${timeOptionsFromTimetable.map((timeOption, index) => (
+                                        <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                                            {timeOption.label}
+                                        </option>
+                                    ))}}
                                 )}
                                     </select>
                                 </div>
@@ -1426,7 +1427,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             <label className="admin-textBody-large colorPrimary-800">วัน</label>
                             <select
                                 name="time"
-                                value={JSON.stringify(appointmentTime)}
                                 onChange={(e) => {
                                     console.log("XXD", appointmentTime1)
                                     handleSelectChange();
