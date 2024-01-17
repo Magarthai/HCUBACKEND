@@ -10,23 +10,21 @@ const AddAppointmentUser = () => {
         setSelectedDate(selectedDate);
     };
     return(
-        <div id='xd'>
-            <div className="AddAppointmentUserComponent">
-                <div className="AddAppointmentUser">
-                    <header className="AddAppointmentUser-header">
+            <div className="user">
+                    <header className="user-header">
                         <div>
-                        <h1>การนัดหมาย</h1>
-                        <h2>ขอนัดหมาย</h2>
+                        <h2>การนัดหมาย</h2>
+                        <h3>ขอนัดหมาย</h3>
                         </div>
 
                         <NavbarUserComponent/>
                     </header>
 
-                    <body className="AddAppointmentUser-body">
-                        <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>ปฏิทิน</h2>
+                    <body className="user-body">
+                        <h3 className="user-head-context">ปฏิทิน</h3>
                         
                         {/* ชื่อคลินิกตามที่ต้องการนัดหมาย */}
-                        <label className="Clinicname-data" style={{marginLeft:45,marginBottom:20}}>คลินิก</label>
+                        <label className="user-head-clinicname">คลินิก</label>
 
                         <div className="CalendarUser">
                         <CalendarUserComponent
@@ -35,29 +33,25 @@ const AddAppointmentUser = () => {
                             onDateSelect={handleDateSelect}
                         />
                         </div>
-                            <p>ช่วงเวลา</p>
-                            <div class="UserAddAppointment-dropdown">
-                                <button class="dropbtn">ตารางนัดหมาย</button>
-                                <div class="UserAddAppointment-dropdown-content">
-                                    <a href="#">10:00 - 10:30</a>
-                                    <a href="#">12:00 - 12:30</a>
-                                </div>
+                        <h3 className="user-head-context">ช่วงเวลา</h3>
+                        <div class="User-AddAppointment-dropdown">
+                            /* Dropdown */
+                        </div>
+
+                        <h3 className="user-head-context">สาเหตุการนัด</h3>
+                            <div className="user-addappointment-cause"> ตรวจรักษาโรค</div>
+                            
+                        <h3 className="user-head-context">อาการ</h3>
+                            <div className="user-addappointment-description user-add-center">
+                                <input type="text" className="UserAddAppointment-textbox" placeholder="Text..."></input>
                             </div>
 
-                            <p>สาเหตุการนัด</p>
-                                <p> ตรวจรักษาโรค</p>
-                            
-                            <p>อาการ</p>
-                                <input type="text" className="UserAddAppointment-textbox"></input>
-
-                            <button className="UserAddAppointment-btn-request">ส่งคำขอ</button>
-
-                        <div className="User-AddAppointment-Description"></div>
+                        <div className="user-add-center">
+                            <button className="user-add-btn-request">ส่งคำขอ</button>
+                        </div>
 
                     </body>
-                </div>
             </div>
-        </div>
 
     )
 }

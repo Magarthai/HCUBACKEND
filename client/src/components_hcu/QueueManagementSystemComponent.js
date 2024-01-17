@@ -38,29 +38,8 @@ const QueueManagementSystemComponent = (props) => {
 
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
-        let statusElementDetail = document.getElementById("detail-appointment-status");
-
-        if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
-                console.log("Adding Class...");
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("confirmed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("completed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("failed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("pending-confirmation-background");
-            }
-        }
         const updateAppointmentsStatus = async () => {
-            const currentFormattedTime = new Date(); // Get the current time as a Date object
+            const currentFormattedTime = new Date(); 
             console.log("currentFormattedTime", currentFormattedTime);
         
             AppointmentUsersData.forEach(async (AppointmentUserData) => {
@@ -105,8 +84,7 @@ const QueueManagementSystemComponent = (props) => {
         const intervalId = setInterval(() => {
             updateAppointmentsStatus();
             fetchUserDataWithAppointments();
-        }, 6000);
-        
+        }, 60000);
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
@@ -342,8 +320,58 @@ const QueueManagementSystemComponent = (props) => {
         return userDatas;
     };
 
+    const [saveDetailId, setsaveDetailId] = useState([])
+    const [saveEditId, setsaveEditId] = useState([])
+    const openDetailAppointment = (AppointmentUsersData) => {
+        let x = document.getElementById("detail-appointment");
+        let statusElementDetail = document.getElementById("detail-appointment-status");
+        if (AppointmentUsersData.appointment.status === 'ยืนยันสิทธิ์แล้ว') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("confirmed-background");
+        } else if (AppointmentUsersData.appointment.status === 'เสร็จสิ้น') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("completed-background");
+        } else if (AppointmentUsersData.appointment.status === 'ไม่สำเร็จ') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("failed-background");
+        } else if (AppointmentUsersData.appointment.status === 'รอยืนยันสิทธิ์') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("pending-confirmation-background");
+        }
+        setsaveEditId("")
+        setsaveDetailId(AppointmentUsersData.appointmentuid)
+        if (window.getComputedStyle(x).display === "none") {
+            x.style.display = "block";
+            console.log(AppointmentUsersData.timeslot.start)
+            document.getElementById("detail-appointment-status").innerHTML = `${AppointmentUsersData.appointment.status}`
+            document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
+            document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
+            document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
+            document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
+            document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
+            document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
+            document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
+            
+        } else {
+            if(saveDetailId === AppointmentUsersData.appointmentuid){
+                x.style.display = "none";
+                setsaveEditId("")
+            }else{
+                let x = document.getElementById("detail-appointment");
+                setsaveEditId(AppointmentUsersData.appointmentuid)
+                console.log(AppointmentUsersData.timeslot.start)
+                document.getElementById("detail-appointment-status").innerHTML = `${AppointmentUsersData.appointment.status}`
+                document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
+                document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
+                document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
+                document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
+                document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
+                document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
+                document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
+            }
 
-
+        }
+    }
 
     return (
 
@@ -375,7 +403,7 @@ const QueueManagementSystemComponent = (props) => {
                             <h2 className="colorPrimary-800">นัดหมายคลินิกทั่วไป</h2>
                             {AppointmentUsersData && AppointmentUsersData.length > 0 ? (
                                 AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
-                                    <div className="admin-queue-card" key={index}>
+                                    <div className="admin-queue-card" onClick={() => openDetailAppointment(AppointmentUserData)} key={index}>
                                     <div className="admin-queue-card-time colorPrimary-800">
                                         <p className="admin-textBody-small">{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</p>
                                     </div>
@@ -406,10 +434,11 @@ const QueueManagementSystemComponent = (props) => {
 
                         </div>
                         <div className="admin-queue-box border-L colorPrimary-800">
+                            <div id="detail-appointment">
                             <div className="admin-queue-detail-header">
                                 <div className="admin-queue-detail-header-items"></div>
                                 <h2 className="admin-queue-detail-header-items center">รายละเอียดนัดหมาย</h2>
-                                <div className="admin-queue-detail-header-items admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
+                                <div className="admin-queue-detail-header-items admin-right" ><span id="detail-appointment-status" className="">ยืนยันสิทธ์แล้ว</span></div>
                             </div>
                             <br></br>
                             <p id="detail-appointment-date" className="admin-textBody-big"><b>วันที่</b> : 13/12/2023</p>
@@ -419,7 +448,7 @@ const QueueManagementSystemComponent = (props) => {
                             <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
                             <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
                             <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
-
+                            </div>
                         </div>
 
                     </div>
