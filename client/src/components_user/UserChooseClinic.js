@@ -12,9 +12,8 @@ const UserChooseClinic = () => {
   return (
 
     
-    <div className="UserChooseClinicComponent">
-        <div className="UserChooseClinic">
-            <header className="UserChooseClinic-header">
+    <div className="user">
+            <header className="user-header">
                 <div>
                     <h1>การนัดหมาย</h1>
                     <h2>เลือกคลินิก</h2>
@@ -22,7 +21,7 @@ const UserChooseClinic = () => {
 
                 <NavbarUserComponent/>
             </header>
-            <div className='user-chooseClinic-body'>
+            <div className='user-body'>
             <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>คลินิก</h2>
             <div className="clinic-function">
                 <Link to="/appointment/add" className="clinic-card" style={{marginTop:10}}>
@@ -57,7 +56,6 @@ const UserChooseClinic = () => {
             </div>
 
         </div>
-    </div>
     
   );
 };
