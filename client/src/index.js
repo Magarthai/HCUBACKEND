@@ -23,6 +23,14 @@ import AddAppointmentUser from './components_user/AddAppointmentUser.js';
 import AdminAppointmentRequestManagementComponent from './components_hcu/AppointmentRequestManagementComponent.js';
 import AdminAppointmentRequestManagementHistoryComponent from './components_hcu/AppointmentRequestManagementHistoryComponent.js';
 import AdminQueueManagementSystemComponent from './components_hcu/QueueManagementSystemComponent.js';
+import UserHomeComponent from './components_user/HomeCompoment.js';
+import UserEditAppointment from "./components_user/UserEditAppointment.js"
+import UserHistoryAppointment from "./components_user/UserHistoryAppointment.js"
+import AppointmentManagerComponentSpecial from './components_hcu/AppointmentManagerComponentSpecial.js';
+import UserTimetableComponet from './components_user/TimetableComponet.js';
+import UserProfileComponent from './components_user/ProfileComponent.js';
+import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
+import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManagerNeedleComponent.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -69,16 +77,16 @@ const router = createBrowserRouter([
     element: <ProtectAdminRoute><NeedleTimetableComponent/></ProtectAdminRoute>
   },
   {
-    path: "/appointmentAdmin",
-    element: <ProtectAdminRoute><AdminAppointmentComponent/></ProtectAdminRoute>
-  },
-  {
     path: "/AppointmentManagerComponent",
     element: <ProtectAdminRoute><AppointmentManagerComponent/></ProtectAdminRoute>
   },
   {
     path: "/adminAppointmentManagerPhysicalComponent",
     element: <ProtectAdminRoute><AdminAppointmentManagerPhysicalComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminAppointmentManagerNeedleComponent",
+    element: <ProtectAdminRoute><AppointmentManagerNeedleComponent/></ProtectAdminRoute>
   },
   {
     path: "/adminAppointmentRequestManagementComponent",
@@ -92,29 +100,28 @@ const router = createBrowserRouter([
     path: "/adminQueueManagementSystemComponent",
     element: <ProtectAdminRoute><AdminQueueManagementSystemComponent/></ProtectAdminRoute>
   },
-
   {
-    path: "/AppointmentDetail",
+    path: "/AppointmentManagerComponentSpecial",
+    element: <ProtectAdminRoute><AppointmentManagerComponentSpecial/></ProtectAdminRoute>
+  },
+  {
+    path: "/appointment/detail",
     element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
   },
   {
-    path: "/AllAppointmentUser",
+    path: "/appointment",
     element: <ProtectRoute><UserAllAppointment/></ProtectRoute>
   },
   {
-    path: "/chooseClinicUser",
+    path: "/appointment/clinic",
     element: <ProtectRoute><UserChooseClinic/></ProtectRoute>
   },
   {
-    path: "/SelectDateAppointmentUser",
-    element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
-  },
-  {
-    path: "/ListAppointmentUser",
+    path: "/appointment/list",
     element: <ProtectRoute><ListAppointmentUser/></ProtectRoute>
   },
   {
-    path: "/dateAppointment",
+    path: "/appointment/date",
     element: <ProtectRoute><UserDateateAppointment/></ProtectRoute>
   },
   {
@@ -122,9 +129,38 @@ const router = createBrowserRouter([
     element: <ProtectRoute><ExampleComponent/></ProtectRoute>
   },
   {
-    path: "/AddAppointmentUser",
+    path: "/appointment/add",
     element: <ProtectRoute><AddAppointmentUser/></ProtectRoute>
   },
+  {
+    path: "/home",
+    element: <ProtectRoute><UserHomeComponent/></ProtectRoute>
+  },
+  {
+    path: "/apppointment/edit",
+    element: <ProtectRoute><UserEditAppointment/></ProtectRoute>
+  },
+  {
+    path: "/apppointment/history",
+    element: <ProtectRoute><UserHistoryAppointment/></ProtectRoute>
+  },
+  {
+    path: "/appointment/selectDate",
+    element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
+  },
+  {
+    path: "/timetable",
+    element: <ProtectRoute><UserTimetableComponet/></ProtectRoute>
+  },
+  {
+    path: "/profile",
+    element: <ProtectRoute><UserProfileComponent/></ProtectRoute>
+  },
+  {
+    path: "/profile/edit",
+    element: <ProtectRoute><UserProfileEditComponent/></ProtectRoute>
+  },
+
 
 ])
 

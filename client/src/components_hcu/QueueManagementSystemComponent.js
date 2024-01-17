@@ -1,38 +1,41 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/Component.css";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection } from "../firebase/config";
+import { db, getDocs, collection, doc, getDoc, firestore } from "../firebase/config";
+import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import NavbarComponent from "./NavbarComponent";
 import "../css/AdminQueueManagementSystemComponent.css";
 import verify_rights_icon from "../picture/verify_rights_icon.png";
+import Swal from "sweetalert2";
 const QueueManagementSystemComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
-  
-  
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
     useEffect(() => {
         document.title = 'Health Care Unit';
-        console.log(user);
-        console.log(userData)
+        fetchUserDataWithAppointments();
+        console.log("AppointmentUsersData",AppointmentUsersData)
         const responsivescreen = () => {
-        const innerWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-        setZoomLevel(newZoomLevel);
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
-
+        setSelectedDate(formattedSelectedDate)
+        console.log("Appointment",formattedSelectedDate)
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {
-        const newTime = getShowTime();
-        if (newTime !== showTime) {
-            setShowTime(newTime);
-        }
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
-  
+
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
         let statusElementDetail = document.getElementById("detail-appointment-status");
@@ -42,28 +45,88 @@ const QueueManagementSystemComponent = (props) => {
                 console.log("Adding Class...");
                 statusElementDetail.classList.add("confirmed-background");
             }
-            else if(statusElementDetail.textContent.trim() === 'เสร็จสิ้น'){
+            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
                 statusElementDetail.classList.add("completed-background");
             }
-            else if(statusElementDetail.textContent.trim() === 'ไม่สำเร็จ'){
+            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
                 statusElementDetail.classList.add("failed-background");
             }
-            else if(statusElementDetail.textContent.trim() === 'รอยืนยันสิทธ์'){
+            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธ์') {
                 statusElementDetail.classList.add("pending-confirmation-background");
             }
         }
-    
+        const updateAppointmentsStatus = async () => {
+            const currentFormattedTime = new Date(); // Get the current time as a Date object
+            console.log("currentFormattedTime", currentFormattedTime);
+        
+            AppointmentUsersData.forEach(async (AppointmentUserData) => {
+                const { timeslot, appointment } = AppointmentUserData;
+                const currentDate = new Date();
+                const [hoursEnd, minutesEnd] = timeslot.end.split(':').map(Number);
+                const [hoursStart, minutesStart] = timeslot.start.split(':').map(Number);
+
+                const timeslotEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), hoursEnd, minutesEnd, 0);
+                const timeslotStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), hoursStart, minutesStart, 0);
+
+
+                console.log(";-;", currentFormattedTime, timeslotEnd,timeslotStart);
+        
+                if (
+                    appointment.status == 'รอยืนยันสิทธ์' &&
+                    currentFormattedTime >= timeslotStart &&
+                    currentFormattedTime >= timeslotEnd
+                ) {
+                    try {
+                        const docRef = doc(db, 'appointment', appointment.appointmentuid);
+                        await updateDoc(docRef, { status: "ไม่สำเร็จ" });
+        
+                        setAllAppointmentUsersData((prevData) => {
+                            const updatedData = prevData.map((data) => {
+                                if (data.appointment.appointmentuid === appointment.appointmentuid) {
+                                    return { ...data, appointment: { ...data.appointment, status: "ไม่สำเร็จ" } };
+                                }
+                                return data;
+                            });
+                            return updatedData;
+                        });
+        
+                        console.log(`Updated status for appointment ${appointment.appointmentuid} to "ไม่สำเร็จ"`);
+                    } catch (error) {
+                        console.error('Error updating appointment status:', error);
+                    }
+                }
+            });
+        };
+        
+        const intervalId = setInterval(() => {
+            updateAppointmentsStatus();
+            fetchUserDataWithAppointments();
+        }, 60000);
+        
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
+            clearInterval(intervalId);
         };
 
-    
-    }, [user]); 
+        
+
+
+    }, [user,userData]);
     const containerStyle = {
         zoom: zoomLevel,
     };
+    function timeToCheck() {
+        const today = new Date();
+        const hours = today.getHours();
+        const minutes = today.getMinutes();
+        const seconds = today.getSeconds();
+        return `${formatNumber(hours)}:${formatNumber(minutes)}`;
+    }
 
+    function formatNumber(num) {
+        return num < 10 ? "0" + num : num.toString();
+    }
     function getShowTime() {
         const today = new Date();
         const hours = today.getHours();
@@ -83,13 +146,82 @@ const QueueManagementSystemComponent = (props) => {
     const date = today.getDate();
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
+    const formattedSelectedDate = {
+        day: date,
+        month: month,
+        year: year,
+        dayName: day,
+    };
 
- 
-  
+    const handleToggle = async (id, AppointmentUserData) => {
+        Swal.fire({
+            title: 'Confirm',
+            text: `ยินยันคิว ${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'เสร็จสิ้น',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#DC2626',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'custom-confirm-button',
+                cancelButton: 'custom-cancel-button',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    const docRef = doc(db, 'appointment', id);
+                    updateDoc(docRef, { status: "เสร็จสิ้น" }).catch(error => {
+                        console.error('Error updating timetable status:', error);
+                    });
+
+                    Swal.fire(
+                        {
+                            title: 'Updated!',
+                            text: `อัพเดตคิวเสร็จสิ้น`,
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        }
+                    ).then((result) => {
+                        if (result.isConfirmed) {
+                            fetchUserDataWithAppointments();
+                        }
+                    });
+                } catch {
+
+                }
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                Swal.fire(
+                    {
+                        title: 'Deleted!',
+                        text: `อัพเดตคิวไม่สำเร็จ`,
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    }
+                )
+            }
+        })
+
+
+
+    };
+
+
     const adminQueueCards = document.querySelectorAll('.admin-queue-card');
 
     function handleCardClick(event) {
-        adminQueueCards.forEach(card => card.classList.remove('focused'));    
+        adminQueueCards.forEach(card => card.classList.remove('focused'));
         event.currentTarget.classList.add('focused');
     }
 
@@ -98,57 +230,190 @@ const QueueManagementSystemComponent = (props) => {
     });
 
     const statusElements = document.querySelectorAll('.admin-queue-card-status p');
-    
+
     function changeStatusTextColor(element) {
         if (element.textContent.trim() === 'เสร็จสิ้น') {
             element.style.color = '#098B66';
         }
-        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
-            element.style.color = '#C11F1F'; 
+        else if (element.textContent.trim() === 'ไม่สำเร็จ') {
+            element.style.color = '#C11F1F';
         }
-        else if(element.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
-            element.style.color = '#D88C09'; 
+        else if (element.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+            element.style.color = '#D88C09';
         }
-        else if(element.textContent.trim() === 'รอยืนยันสิทธ์') {
-            element.style.color = '#A1A1A1'; 
+        else if (element.textContent.trim() === 'รอยืนยันสิทธ์') {
+            element.style.color = '#A1A1A1';
         }
     }
 
     statusElements.forEach(changeStatusTextColor);
 
-    
-        
-    
-      
+    const fetchUserDataWithAppointments = async () => {
+        try {
+            if (user && selectedDate && selectedDate.dayName) {
+                const appointmentsCollection = collection(db, 'appointment');
+                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
+                    `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
+                    where('clinic', '==', 'คลินิกทั่วไป')));
+
+                const timeTableCollection = collection(db, 'timeTable');
+                const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
+                    const appointmentData = doc.data();
+                    return {
+                        appointmentId: doc.id,
+                        appointmentuid: doc.id,
+                        ...appointmentData,
+                    };
+                });
+
+
+                if (existingAppointments.length > 0) {
+                    const AppointmentUsersDataArray = [];
+
+                    for (const appointment of existingAppointments) {
+                        const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
+                        const timeTableId = appointment.appointmentTime.timetableId;
+
+                        try {
+                            const timetableDocRef = doc(timeTableCollection, timeTableId);
+                            const timetableDocSnapshot = await getDoc(timetableDocRef);
+
+                            if (timetableDocSnapshot.exists()) {
+                                const timetableData = timetableDocSnapshot.data();
+                                const timeslot = timetableData.timeablelist[timeSlotIndex];
+
+                                const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
+
+                                if (userDetails) {
+                                    AppointmentUsersDataArray.push(userDetails);
+                                
+                                } else {
+                                  
+                                }
+                            } else {
+
+                            }
+                        } catch (error) {
+                            console.error('Error fetching timetable data:', error);
+                        }
+                    }
+
+                    if (AppointmentUsersDataArray.length > 0) {
+                        setAllAppointmentUsersData(AppointmentUsersDataArray);
+                        
+                    } else {
+ 
+                    }
+
+                  
+                    setAllAppointmentUsersData(AppointmentUsersDataArray);
+                   
+                } else {
+                    console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data with appointments:', error);
+        }
+    };
+
+    const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
+        const usersCollection = collection(db, 'users');
+        const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
+
+        if (userQuerySnapshot.empty) {
+            console.log("No user found with id:", userId);
+            return null;
+        }
+
+        const userUid = userQuerySnapshot.docs[0].id;
+        const userDatas = userQuerySnapshot.docs[0].data();
+        userDatas.timeslot = timeslot;
+        userDatas.appointment = appointment;
+        userDatas.appointmentuid = appointmentuid;
+        userDatas.userUid = userUid;
+        console.log("User Data for userId", userId, ":", userDatas);
+        console.log("userDatas", userDatas)
+        console.log("testxd", userDatas.timeslot.start)
+        return userDatas;
+    };
+
+
+
 
     return (
-        
+
         <div style={containerStyle}>
-        <NavbarComponent />
-        <div className="admin-topicBox colorPrimary-800">
-            <div></div>
-            <div>
-                <h1 className="center">ระบบการจัดการคิว</h1>
-            </div>
-            <div className="dateTime">
-                <p className="admin-textBody-large">Date : {currentDate}</p>
-                <p className="admin-textBody-large">Time : {showTime}</p>
-            </div>
-        </div>
-        <div className="admin">
-            <div className="admin-header">
-                <div className="admin-hearder-item">
-                <a href="/" target="_parent" id="select">คลินิกทั่วไป</a>
-                <a href="/" target="_parent" >คลินิกเฉพาะทาง</a>
-                <a href="/" target="_parent" >คลินิกกายภาพ</a>
-                <a href="/" target="_parent" >คลินิกฝั่งเข็ม</a>
+            <NavbarComponent />
+            <div className="admin-topicBox colorPrimary-800">
+                <div></div>
+                <div>
+                    <h1 className="center">ระบบการจัดการคิว</h1>
+                </div>
+                <div className="dateTime">
+                    <p className="admin-textBody-large">Date : {currentDate}</p>
+                    <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            
-            <div className="admin-body">
-                <div className="admin-queue-flexbox">
-                    <div className="admin-queue-box">
-                        <h2 className="colorPrimary-800">นัดหมายคลินิกทั่วไป</h2>
+            <div className="admin">
+                <div className="admin-header">
+                    <div className="admin-hearder-item">
+                        <a href="/" target="_parent" id="select">คลินิกทั่วไป</a>
+                        <a href="/" target="_parent" >คลินิกเฉพาะทาง</a>
+                        <a href="/" target="_parent" >คลินิกกายภาพ</a>
+                        <a href="/" target="_parent" >คลินิกฝั่งเข็ม</a>
+                    </div>
+                </div>
+
+                <div className="admin-body">
+                    <div className="admin-queue-flexbox">
+                        <div className="admin-queue-box">
+                            <h2 className="colorPrimary-800">นัดหมายคลินิกทั่วไป</h2>
+                            {AppointmentUsersData && AppointmentUsersData.length > 0 ? (
+                                AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
+                                    <div className="admin-queue-card" key={index}>
+                                    <div className="admin-queue-card-time colorPrimary-800">
+                                        <p className="admin-textBody-small">{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</p>
+                                    </div>
+                                    <div className="admin-queue-card-info colorPrimary-800">
+                                        <p className="admin-textBody-huge">{AppointmentUserData.id}</p>
+                                        <p className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
+                                    </div>
+                                    <div className="admin-queue-card-status">
+                                        <p className="admin-textBody-small">{AppointmentUserData.appointment.status}</p>
+                                    </div>
+                                    {AppointmentUserData.appointment.status === 'ยืนยันสิทธ์แล้ว' ? (
+                                        <div className="admin-queue-card-function-succeed" onClick={() => handleToggle(AppointmentUserData.appointment.appointmentuid, AppointmentUserData)}>
+                                        <img src={verify_rights_icon} className="admin-queue-card-icon" alt="verify_rights_icon" />
+                                        </div>
+                                    ) : (
+                                        <div className="admin-queue-card-function">
+                                        <img src={verify_rights_icon} className="admin-queue-card-icon" alt="verify_rights_icon" />
+                                        </div>
+                                    )}
+                                    </div>
+                                ))
+                                ) : (
+                                <div className="admin-queue-card" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+                                    <h1 className="admin-textBody-huge colorPrimary-800" style={{fontSize:30}}>ไม่มีนัดหมายวันนี้</h1>
+                                </div>
+                                )}
+
+                            {/* <div className="admin-queue-card focused" >
+                            <div className="admin-queue-card-time colorPrimary-800">
+                                <p className="admin-textBody-small">13:01 - 13:06</p>
+                            </div>
+                            <div className="admin-queue-card-info colorPrimary-800">
+                                <p className="admin-textBody-huge">64090500444</p>
+                                <p className="admin-textBody-small">รวิษฎา อนุรุตติกุล</p>
+                            </div>
+                            <div className="admin-queue-card-status">
+                                <p className="admin-textBody-small">ไม่สำเร็จ</p>
+                            </div>
+                            <div className="admin-queue-card-function">
+                                <img src={verify_rights_icon} className="admin-queue-card-icon"/>
+                            </div>
+                        </div>
                         <div className="admin-queue-card focused" >
                             <div className="admin-queue-card-time colorPrimary-800">
                                 <p className="admin-textBody-small">13:01 - 13:06</p>
@@ -193,9 +458,9 @@ const QueueManagementSystemComponent = (props) => {
                             <div className="admin-queue-card-function">
                                 <img src={verify_rights_icon} className="admin-queue-card-icon"/>
                             </div>
-                        </div>
-                        {/* กรอง status == ยืนยันสิทธ์ เป็นอันด้านล่างนะ */}
-                        <div className="admin-queue-card" >
+                        </div> */}
+                            {/* กรอง status == ยืนยันสิทธ์ เป็นอันด้านล่างนะ */}
+                            {/* <div className="admin-queue-card" >
                             <div className="admin-queue-card-time colorPrimary-800">
                                 <p className="admin-textBody-small">13:01 - 13:06</p>
                             </div>
@@ -209,34 +474,34 @@ const QueueManagementSystemComponent = (props) => {
                             <div className="admin-queue-card-function-succeed">
                                 <img src={verify_rights_icon} className="admin-queue-card-icon"/>
                             </div>
+                        </div> */}
+
+                        </div>
+                        <div className="admin-queue-box border-L colorPrimary-800">
+                            <div className="admin-queue-detail-header">
+                                <div className="admin-queue-detail-header-items"></div>
+                                <h2 className="admin-queue-detail-header-items center">รายละเอียดนัดหมาย</h2>
+                                <div className="admin-queue-detail-header-items admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
+                            </div>
+                            <br></br>
+                            <p id="detail-appointment-date" className="admin-textBody-big"><b>วันที่</b> : 13/12/2023</p>
+                            <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
+                            <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
+                            <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
+                            <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                            <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
+                            <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
+
                         </div>
 
                     </div>
-                    <div className="admin-queue-box border-L colorPrimary-800">
-                        <div className="admin-queue-detail-header">
-                            <div className="admin-queue-detail-header-items"></div>
-                            <h2 className="admin-queue-detail-header-items center">รายละเอียดนัดหมาย</h2>
-                            <div className="admin-queue-detail-header-items admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
-                        </div>
-                        <br></br>
-                        <p id="detail-appointment-date" className="admin-textBody-big"><b>วันที่</b> : 13/12/2023</p>
-                        <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
-                        <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
-                        <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
-                        <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
-                        <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
-                        <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
 
-                    </div>
 
                 </div>
-                
-                
+
             </div>
-           
+
         </div>
-        
-    </div>
 
     );
 }

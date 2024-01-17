@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/Component.css";
-import "../css/AppointmentRequestManagementComponent.css";
+import "../css/AdminAppointmentRequestManagementComponent.css";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "../components_hcu/NavbarComponent";
@@ -83,7 +83,7 @@ const AppointmentRequestManagementComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            <a href="/appointmentAdmin"><img src={arrow_icon} className="approval-icon admin-back-arrow"/></a>
+            <a href="/AppointmentManagerComponent"><img src={arrow_icon} className="approval-icon admin-back-arrow"/></a>
             <div className="admin">
                 <div className="admin-header">
                     <p className="admin-hearder-item admin-textBody-large colorPrimary-800">รายการนัดหมาย</p>

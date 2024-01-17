@@ -104,19 +104,18 @@ const TimetableNeedleComponent = (props) => {
         for (let i = 0; i < numberAppointment; i++) {
             const slotStart = new Date(start.getTime() + i * interval * 60000);
             const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-
-
+        
             if (slotEnd.getTime() > end.getTime()) {
                 timeablelist.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
                 });
                 break;
             }
-
+        
             timeablelist.push({
-                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
             });
         }
 
@@ -129,7 +128,7 @@ const TimetableNeedleComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "needle",
+                clinic: "คลินิกฝั่งเข็ม",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -195,7 +194,7 @@ const TimetableNeedleComponent = (props) => {
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
                 numberAppointment: numberAppointment,
-                clinic: "needle",
+                clinic: "คลินิกฝั่งเข็ม",
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
@@ -362,7 +361,7 @@ const TimetableNeedleComponent = (props) => {
             timeAppointmentStart: timetable.timeAppointmentStart,
             timeAppointmentEnd: timetable.timeAppointmentEnd,
             numberAppointment: timetable.numberAppointment,
-            clinic: "needle",
+            clinic: "คลินิกฝั่งเข็ม",
             timeablelist: timetable.timeablelist,
             status: "Enabled",
             timetableId: timetable.id,  // Update the id in the state
@@ -384,7 +383,7 @@ const TimetableNeedleComponent = (props) => {
                     timeAppointmentStart: timetable.timeAppointmentStart,
                     timeAppointmentEnd: timetable.timeAppointmentEnd,
                     numberAppointment: timetable.numberAppointment,
-                    clinic: "needle",
+                    clinic: "คลินิกฝั่งเข็ม",
                     timeablelist: timetable.timeablelist,
                     status: "Enabled",
                     timetableId: timetable.id,  // Update the id in the state
@@ -577,7 +576,7 @@ const TimetableNeedleComponent = (props) => {
                     </div>
                     <div className="admin-timetable-system-detail">
                         <h3 className="colorPrimary-800">วันจันทร์</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "needle").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกฝั่งเข็ม").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card focused">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -602,7 +601,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "needle").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกฝั่งเข็ม").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -610,7 +609,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
                         )}
                          <h3 className="colorPrimary-800">วันอังคาร</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "needle").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกฝั่งเข็ม").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -630,7 +629,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "needle").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกฝั่งเข็ม").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -638,7 +637,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
                         )}
                         <h3 className="colorPrimary-800">วันพุธ</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "needle").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกฝั่งเข็ม").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -658,7 +657,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "needle").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกฝั่งเข็ม").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -666,7 +665,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
                         )}
                          <h3 className="colorPrimary-800">วันพฤหัสบดี</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "needle").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกฝั่งเข็ม").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -686,7 +685,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "needle").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกฝั่งเข็ม").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
@@ -694,7 +693,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
                         )}
                         <h3 className="colorPrimary-800">วันศุกร์</h3>
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "needle").map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกฝั่งเข็ม").map((timetable, index) => (
                             <div className="row" >
                                 <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
@@ -714,7 +713,7 @@ const TimetableNeedleComponent = (props) => {
                             </div>
 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "needle").length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกฝั่งเข็ม").length === 0 && (
                             <div className="row" >
                                 <div className="card">
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>

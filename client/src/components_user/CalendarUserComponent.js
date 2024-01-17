@@ -21,10 +21,11 @@ const CalendarUserComponent = (props) => {
       month: currentMonth,
       year: currentYear,
       dayName: dayName,
-    };
-
-    setSelectedDate(formattedSelectedDate);
   };
+
+  setSelectedDate(formattedSelectedDate);
+  props.onDateSelect(formattedSelectedDate);
+};
 
   const renderCalendar = () => {
     let firstDayofMonth = new Date(currentYear, currentMonth - 1, 1).getDay();

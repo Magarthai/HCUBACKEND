@@ -1,19 +1,18 @@
 import NavbarComponent from "./NavbarComponent";
-import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
+import CalendarAdminComponent from "./CalendarAdminComponent";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
+import { db, getDocs, collection, doc, getDoc ,firestore} from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
-import { fetchTimeTableDataFromBackend } from '../backend/backendGeneral'
-import { fetchUserDataWithAppointments } from '../backend/backendGeneral'
-import { DeleteAppointment } from '../backend/backendGeneral'
-const AppointmentManagerComponent = (props) => {
+
+
+const AppointmentManagerComponentSpecial = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [showTime, setShowTime] = useState(getShowTime);
@@ -48,8 +47,21 @@ const AppointmentManagerComponent = (props) => {
 
     const fetchTimeTableData = async () => {
         try {
+            if (user && selectedDate && selectedDate.dayName) {
+                const timeTableCollection = collection(db, 'timeTable');
+                const querySnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('addDay', '==', selectedDate.dayName),
+                    where('clinic', '==', 'คลินิกเฉพาะทาง')
+                ));
 
-            const timeTableData = await fetchTimeTableDataFromBackend(user, selectedDate);
+                const timeTableData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                console.log("timeTableData selectedDate",selectedDate)
+                console.log("timeTableData",timeTableData)
+
                 if (timeTableData.length > 0) {
                     const filteredTimeTableData = timeTableData
                     if (filteredTimeTableData.length > 0) {
@@ -123,25 +135,110 @@ const AppointmentManagerComponent = (props) => {
                     setTimeOptions([noTimeSlotsAvailableOption]);
                     console.log("Time table not found",timeOptions);
                 }
-            
+            }
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
     };
 
-    const fetchUserDataWithAppointmentsWrapper = async () => {
+    const fetchUserDataWithAppointments = async () => {
         try {
-          if (user && selectedDate && selectedDate.dayName) {
-            await fetchUserDataWithAppointments(user, selectedDate, setAllAppointmentUsersData);
+            if (user && selectedDate && selectedDate.dayName) {
+                const appointmentsCollection = collection(db, 'appointment');
+                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', 
+                `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
+                where('clinic', '==', 'คลินิกเฉพาะทาง')));
     
+                const timeTableCollection = collection(db, 'timeTable');
+                const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
+                    const appointmentData = doc.data();
+                    return {
+                        appointmentId: doc.id,
+                        appointmentuid: doc.id,
+                        ...appointmentData,
+                    };
+                });
+                
     
-          } else {
-            console.log("User, selectedDate, or dayName is missing");
-          }
+                console.log("existingAppointments", existingAppointments);
+    
+                if (existingAppointments.length > 0) {
+                    console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
+    
+                    const AppointmentUsersDataArray = [];
+    
+                    for (const appointment of existingAppointments) {
+                        const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
+                        const timeTableId = appointment.appointmentTime.timetableId;
+                        
+                        try {
+                            const timetableDocRef = doc(timeTableCollection, timeTableId);
+                            const timetableDocSnapshot = await getDoc(timetableDocRef);
+    
+                            if (timetableDocSnapshot.exists()) {
+                                const timetableData = timetableDocSnapshot.data();
+                                console.log("Timetable Data:", timetableData);
+                                const timeslot = timetableData.timeablelist[timeSlotIndex];
+                                console.log("Timeslot info", timeslot);
+    
+                                const userDetails = await getUserDataFromUserId(appointment,appointment.appointmentId, timeslot,appointment.appointmentuid);
+    
+                                if (userDetails) {
+                                    AppointmentUsersDataArray.push(userDetails);
+                                    console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
+                                } else {
+                                    console.log("No user details found for appointmentId", appointment.appointmentId);
+                                }
+                            } else {
+                                console.log("No such document with ID:", timeTableId);
+                            }
+                        } catch (error) {
+                            console.error('Error fetching timetable data:', error);
+                        }
+                    }
+    
+                    if (AppointmentUsersDataArray.length > 0) {
+                        setAllAppointmentUsersData(AppointmentUsersDataArray);
+                        console.log("AppointmentUsersData", AppointmentUsersDataArray);
+                    } else {
+                        console.log("No user details found for any appointmentId");
+                    }
+    
+                    console.log("AppointmentUsersDataArray", AppointmentUsersDataArray);
+                    setAllAppointmentUsersData(AppointmentUsersDataArray);
+                    console.log("AppointmentUsersData", AppointmentUsersDataArray);
+                } else {
+                    console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
+                }
+            }
         } catch (error) {
-          console.error('Error in fetchUserDataWithAppointmentsWrapper:', error);
+            console.error('Error fetching user data with appointments:', error);
         }
-      };
+    };
+
+
+
+    
+
+    const getUserDataFromUserId = async (appointment,userId,timeslot,appointmentuid) => {
+        const usersCollection = collection(db, 'users');
+        const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
+
+        if (userQuerySnapshot.empty) {
+            console.log("No user found with id:", userId);
+            return null;
+        }
+        const userUid = userQuerySnapshot.docs[0].id;
+        const userDatas = userQuerySnapshot.docs[0].data();
+        userDatas.timeslot = timeslot;
+        userDatas.appointment = appointment;
+        userDatas.appointmentuid = appointmentuid;
+        userDatas.userUid = userUid;
+        console.log("User Data for userId", userId, ":", userDatas);
+        console.log("userDatas",userDatas)
+        console.log("testxd",userDatas.timeslot.start)
+        return userDatas;
+    };
 
     
 
@@ -187,7 +284,7 @@ const AppointmentManagerComponent = (props) => {
                 appointmentCasue,
                 appointmentSymptom,
                 appointmentNotation,
-                clinic: "คลินิกทั่วไป",
+                clinic: "คลินิกเฉพาะทาง",
                 status: "รอยืนยันสิทธิ์",
             };
 
@@ -223,7 +320,7 @@ const AppointmentManagerComponent = (props) => {
                     title: "Appointment Successful!",
                     text: "Your appointment has been successfully created!",
                 });
-                fetchUserDataWithAppointmentsWrapper();
+                fetchUserDataWithAppointments();
                 fetchTimeTableData();
 
             } else {
@@ -262,7 +359,7 @@ const AppointmentManagerComponent = (props) => {
                 appointmentCasue: appointmentCasue,
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
-                clinic: "คลินิกทั่วไป",
+                clinic: "คลินิกเฉพาะทาง",
                 status: "รอยืนยันสิทธิ์",
             };
     
@@ -274,7 +371,7 @@ const AppointmentManagerComponent = (props) => {
                 text: "Appointment Updated!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetchUserDataWithAppointmentsWrapper();
+                    fetchUserDataWithAppointments();
                 }
             });
         } catch (firebaseError) {
@@ -401,7 +498,86 @@ const AppointmentManagerComponent = (props) => {
         }
     }
     
+
+
+
+    const DeleteAppointment = async (appointmentuid, uid) => {
+        const timetableRef = doc(db, 'appointment', appointmentuid);
     
+        Swal.fire({
+            title: 'ลบนัดหมาย',
+            text: `วันที่ 15/12/2023 เวลา 13:01 - 13:10`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#DC2626',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'custom-confirm-button',
+                cancelButton: 'custom-cancel-button',
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                await deleteDoc(timetableRef);
+        
+                console.log("Appointment deleted:", appointmentuid);
+        
+                const userRef = doc(db, "users", uid);
+
+                await updateDoc(userRef, {
+                  "appointments": arrayRemove("appointments", appointmentuid)
+                });
+
+
+
+
+                    console.log(appointmentuid);
+                    setAllAppointmentUsersData([])
+                    fetchUserDataWithAppointments();
+                    Swal.fire(
+                        {
+                            
+                            title: 'Deleted!',
+                            text: `ลบนัดหมายสำเร็จ`,
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        })
+                    .then((result) => {
+                        if (result.isConfirmed) {
+                            
+                        }
+
+                    });
+                } catch {
+
+                }
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                Swal.fire(
+                    {
+                        title: 'Deleted!',
+                        text: `ลบนัดหมายไม่สำเร็จ`,
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    }
+                )
+            }
+        })
+
+    }
+
 
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
@@ -468,7 +644,7 @@ const AppointmentManagerComponent = (props) => {
 
 
 
-        fetchUserDataWithAppointmentsWrapper();
+            fetchUserDataWithAppointments();
         console.log("AppointmentUsersData XD", AppointmentUsersData)
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
@@ -508,8 +684,8 @@ const AppointmentManagerComponent = (props) => {
             <div className="admin">
             <div className="admin-header">
             <div className="admin-hearder-item">
-                        <a href="/AppointmentManagerComponent" target="_parent" id="select">คลินิกทั่วไป</a>
-                        <a href="/AppointmentManagerComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
+                        <a href="/AppointmentManagerComponentSpecial" target="_parent" id="select">คลินิกเฉพาะทาง</a>
                         <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent">คลินิกกายภาพ</a>
                         <a href="/adminAppointmentManagerNeedleComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
                     </div>
@@ -527,7 +703,7 @@ const AppointmentManagerComponent = (props) => {
                     <div >
                         <div className="appointment-hearder">
                             <div className="colorPrimary-800 appointment-hearder-item">
-                                <h2>นัดหมายคลินิกทั่วไป</h2>
+                                <h2>นัดหมายคลินิกเฉพาะทาง</h2>
                                 <p className="admin-textBody-large">
                                     {selectedDate
                                         ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
@@ -553,7 +729,7 @@ const AppointmentManagerComponent = (props) => {
                                     ) : (
                                         <>
                                             <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
-                                            <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid,setAllAppointmentUsersData,fetchUserDataWithAppointmentsWrapper)} />
+                                            <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
                                         </>
                                     )}
                                 </div>
@@ -748,4 +924,4 @@ const AppointmentManagerComponent = (props) => {
     );
 }
 
-export default AppointmentManagerComponent;
+export default AppointmentManagerComponentSpecial;

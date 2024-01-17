@@ -36,7 +36,7 @@ const LoginComponent = () => {
     useEffect(() => {
         document.title = 'Health Care Unit';
         if (user) {
-            navigate('/chooseClinicUser');
+            navigate('/Home');
         }
     }, [navigate])
 
@@ -52,7 +52,7 @@ const LoginComponent = () => {
                 text: "Login Success!",
               }).then((result) => {
                 if (result.isConfirmed) {
-                    navigate('/chooseClinicUser');
+                    navigate('/home');
                 }
               });
             

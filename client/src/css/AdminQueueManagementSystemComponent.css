@@ -46,15 +46,24 @@
     box-sizing: border-box;
     width: 15%;
     border-right: 3px solid #D1D1D1;
+    height: 72px;
+    padding-top: 15px;
+    
 
 }
 .admin-queue-card-info{
 
     box-sizing: border-box;
     width: 60%;
-    padding: 7px 10px;
+    padding: 9px 10px;
+    height: 72px;
 
 }
+.admin-queue-card-info p{
+    padding: 0px;
+    margin: 0px;
+}
+
 .admin-queue-card-status{
     display: flex;
     flex-direction: row;
@@ -63,6 +72,8 @@
     align-items: center;
     box-sizing: border-box;
     width: 15%;
+    padding-top: 15px;
+    height: 72px;
 
 }
 .admin-queue-card-function{
@@ -75,6 +86,7 @@
     background-color: #D1D1D1;
     width: 10%;
     border-radius: 0px 8px 8px 0px;
+    height: 72px;
 }
 .admin-queue-card-icon{
     width: 40px;
@@ -90,6 +102,7 @@
     background-color: #098B66;
     width: 10%;
     border-radius: 0px 8px 8px 0px;
+    height: 72px;
 }
 .admin-queue-detail-header{
     display: flex;

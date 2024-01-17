@@ -101,7 +101,7 @@ const SignupComponent = (props) => {
             text: "Your account has been successfully created!",
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.href = '/chooseClinicUser';
+              window.location.href = '/home';
             }
           });
       

@@ -1,29 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;700&display=swap");
-@media (min-width: 431px){
-.user-DateAppointment-container{
-    font-family: 'Mitr', sans-serif;
-    background-color: #ffffff;
-    width: 43vh;
-    height: 844px;
-    display: flex;
-    flex-direction: column;
-    margin: 0px;
-}
-#main{
-    display: flex;
-    justify-content: center;
-}
-}
 
-@media (max-width: 431px){
-    #main{
-        display: flex;
-        align-items: center;
-    }
-    .user-DateAppointment-container{
-        width: 100%
-    }
-}
+
 .gap-32{
     margin-bottom: 32px;
 }
@@ -93,11 +70,12 @@
     justify-content: space-between;
 }
 .user-DateAppointment-icon{
-    width: 88px;
+    width: 104px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .user-DateAppointment-card_noAppointment{
     height: 134px;
     background-color: #D1D1D1;
