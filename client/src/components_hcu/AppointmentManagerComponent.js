@@ -491,6 +491,25 @@ const AppointmentManagerComponent = (props) => {
         card.addEventListener('click', handleCardClick);
     });
 
+    const statusElements = document.querySelectorAll('.admin-appointment-status');
+    
+    function changeStatusTextColor(element) {
+        if (element.textContent.trim() === 'เสร็จสิ้น') {
+            element.style.color = '#098B66';
+        }
+        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
+            element.style.color = '#C11F1F'; 
+        }
+        else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
+            element.style.color = '#D88C09'; 
+        }
+        else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
+            element.style.color = '#A1A1A1'; 
+        }
+    }
+
+    statusElements.forEach(changeStatusTextColor);
+
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -549,7 +568,7 @@ const AppointmentManagerComponent = (props) => {
                                 </div>
                                 <div className="admin-appointment-functon">
                                     {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                        <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}}>{`${AppointmentUserData.appointment.status}`}</p>
+                                        <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}} className="admin-appointment-status admin-textBody-small" >{`${AppointmentUserData.appointment.status}`}</p>
                                     ) : (
                                         <>
                                             <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
