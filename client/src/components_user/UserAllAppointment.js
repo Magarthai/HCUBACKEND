@@ -88,7 +88,7 @@ const UserAllAppointment = () => {
             if (result.isConfirmed) {
                 try {
                     const docRef = doc(db, 'appointment', id);
-                    updateDoc(docRef, { status: "ยืนยันสิทธ์แล้ว" }).catch(error => {
+                    updateDoc(docRef, { status: "ยืนยันสิทธิ์แล้ว" }).catch(error => {
                         console.error('Error updating timetable status:', error);
                     });
 
