@@ -42,11 +42,9 @@ const UserAllAppointment = () => {
             }
         }
 
-        if (AppointmentUsersData) {
-            fetchUserDataWithAppointments();
-        }
-        
-        console.log("AppointmentUsersData",AppointmentUsersData)
+        fetchUserDataWithAppointments();
+
+        console.log("AppointmentUsersData")
 
     }, [user,userData]);
 

@@ -30,6 +30,7 @@ import AppointmentManagerComponentSpecial from './components_hcu/AppointmentMana
 import UserTimetableComponet from './components_user/TimetableComponet.js';
 import UserProfileComponent from './components_user/ProfileComponent.js';
 import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
+import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManagerNeedleComponent.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -76,16 +77,16 @@ const router = createBrowserRouter([
     element: <ProtectAdminRoute><NeedleTimetableComponent/></ProtectAdminRoute>
   },
   {
-    path: "/appointmentAdmin",
-    element: <ProtectAdminRoute><AdminAppointmentComponent/></ProtectAdminRoute>
-  },
-  {
     path: "/AppointmentManagerComponent",
     element: <ProtectAdminRoute><AppointmentManagerComponent/></ProtectAdminRoute>
   },
   {
     path: "/adminAppointmentManagerPhysicalComponent",
     element: <ProtectAdminRoute><AdminAppointmentManagerPhysicalComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminAppointmentManagerNeedleComponent",
+    element: <ProtectAdminRoute><AppointmentManagerNeedleComponent/></ProtectAdminRoute>
   },
   {
     path: "/adminAppointmentRequestManagementComponent",

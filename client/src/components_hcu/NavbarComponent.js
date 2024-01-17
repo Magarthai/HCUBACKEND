@@ -77,7 +77,7 @@ const NavbarComponent = (props) => {
           </Link>
         </li>
         <li className="nav-item pr-3 pb-3">
-          <Link to="/appointmentAdmin" className="nav-link" target="_parent">
+          <Link to="/AppointmentManagerComponent" className="nav-link" target="_parent">
             ระบบนัดหมาย
           </Link>
         </li>

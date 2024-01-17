@@ -318,7 +318,7 @@ const AppointmentComponent = (props) => {
             <div className="admin">
                 <div className="admin-header">
                     <div className="admin-hearder-item">
-                        <a href="/appointmentAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
+                        <a href="/AppointmentManagerComponent" target="_parent" id="select">คลินิกทั่วไป</a>
                         <a href="/AppointmentManagerComponent" target="_parent" >คลินิกเฉพาะทาง</a>
                         <a href="/adminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
                         <a href="/AppointmentManagerComponent" target="_parent" >คลินิกฝั่งเข็ม</a>

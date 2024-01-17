@@ -1,5 +1,5 @@
 import NavbarComponent from "./NavbarComponent";
-import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
+import CalendarAdminComponent from "./CalendarAdminComponent";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
@@ -13,7 +13,7 @@ import "../css/AdminAppointmentComponent.css";
 
 
 
-const AppointmentManagerPhysicalComponent = (props) => {
+const AppointmentManagerNeedleComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
 
@@ -203,7 +203,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 const querySnapshot = await getDocs(query(
                     timeTableCollection,
                     where('addDay', '==', selectedDate.dayName),
-                    where('clinic', '==', 'คลินิกกายภาพ')
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
                 ));
 
                 const timeTableData = querySnapshot.docs.map((doc) => ({
@@ -299,7 +299,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
                     `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                    where('clinic', '==', 'คลินิกกายภาพ')));
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')));
 
                 const timeTableCollection = collection(db, 'timeTable');
                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -468,7 +468,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 appointmentCasue,
                 appointmentSymptom,
                 appointmentNotation,
-                clinic: "คลินิกกายภาพ",
+                clinic: "คลินิกฝั่งเข็ม",
                 status: "รอยืนยันสิทธิ์",
             };
 
@@ -542,7 +542,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 appointmentCasue: appointmentCasue,
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
-                clinic: "คลินิกกายภาพ",
+                clinic: "คลินิกฝั่งเข็ม",
                 status: "รอยืนยันสิทธิ์",
             };
 
@@ -775,7 +775,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
         }
     };
 
-
     const submitFormAddContinue = async () => {
         let x = document.getElementById("admin-add-appointment-connected2");
         let y = document.getElementById("admin-add-appointment-connected");
@@ -850,7 +849,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     const querySnapshot = await getDocs(query(
                         timeTableCollection,
                         where('addDay', '==', xd.dayName),
-                        where('clinic', '==', 'คลินิกกายภาพ')
+                        where('clinic', '==', 'คลินิกฝั่งเข็ม')
                     ));
                     const timeTableData = querySnapshot.docs.map((doc) => ({
                         id: doc.id,
@@ -877,7 +876,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             
                             const appointmentsCollection = collection(db, 'appointment');
                             const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
-                            where('clinic', '==', 'คลินิกกายภาพ')));
+                            where('clinic', '==', 'คลินิกฝั่งเข็ม')));
     
                             const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
                             if (existingAppointments.length > 0) {
@@ -975,18 +974,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                     <span>${formatdate}</span>
                                 </div>
                                 <br>
-                                <select
-                                        name="time"
-                                
-                                        value=""
-                                        class=${selectedCount >= 2 ? 'selected' : ''}
-                                    >
-                                        ${timeOptionsFromTimetable.map((timeOption) =>
-                                    `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                                                ${timeOption.label}
-                                            </option>`
-                                )}
-                                    </select>
                                 <div class="center-container">
                                     <br>
                                 </div>
@@ -1100,7 +1087,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         appointmentCasue: appointmentCasue,
                         appointmentSymptom: appointmentSymptom,
                         appointmentNotation: appointmentNotation,
-                        clinic: "คลินิกกายภาพ",
+                        clinic: "คลินิกฝั่งเข็ม",
                         status: "รอยืนยันสิทธิ์",
                     };
                     console.log(`time`, state[`appointmentTime${i}`],)
@@ -1165,11 +1152,11 @@ const AppointmentManagerPhysicalComponent = (props) => {
             </div>
             <div className="admin">
                 <div className="admin-header">
-                <div className="admin-hearder-item">
+                    <div className="admin-hearder-item">
                         <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
                         <a href="/AppointmentManagerComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
-                        <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" id="select">คลินิกกายภาพ</a>
-                        <a href="/adminAppointmentManagerNeedleComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
+                        <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
+                        <a href="/adminAppointmentManagerNeedleComponent" target="_parent" id="select">คลินิกฝั่งเข็ม</a>
                     </div>
                     <div className="admin-hearder-item admin-right">
                         <a target="_parent" onClick={() => openContinueAddinAppointment()} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
@@ -1187,7 +1174,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         <div >
                             <div className="appointment-hearder">
                                 <div className="colorPrimary-800 appointment-hearder-item">
-                                    <h2>นัดหมายคลินิกกายภาพ</h2>
+                                    <h2>นัดหมายคลินิกฝั่งเข็ม</h2>
                                     <p className="admin-textBody-large">
                                         {selectedDate
                                             ? `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`
@@ -1547,5 +1534,5 @@ const AppointmentManagerPhysicalComponent = (props) => {
     );
 }
 
-export default AppointmentManagerPhysicalComponent;
+export default AppointmentManagerNeedleComponent;
 
