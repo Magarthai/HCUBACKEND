@@ -5,7 +5,6 @@ import LoginComponent from "./components_all/LoginComponent"
 import SignupComponent from "./components_all/SignupComponent";
 import AdminHomeComponent from "./components_hcu/HomeComponent"
 import ProtectAdminRoute from './auth/protectAdminRoute.jsx';
-import AdminAppointmentComponent from "./components_hcu/AppointmentComponent"
 import GeneralTimetableComponent from "./components_hcu/TimetableGeneralComponent.js"
 import SpecialTimetableComponent from "./components_hcu/TimetableSpecialComponent"
 import PhysicalTimetableComponent from "./components_hcu/TimetablePhysicalComponent"
@@ -15,7 +14,7 @@ import AppointmentDetail from './components_user/AppointmentDetail.js';
 import UserChooseClinic from './components_user/UserChooseClinic.js';
 import ExampleComponent from './components_user/ExampleComponent.js';
 import UserAllAppointment from './components_user/UserAllAppointment.js';
-import SelectDateAppointmentUser from './components_user/SelectDateAppointmentUser.js';
+
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
 import AdminAppointmentManagerPhysicalComponent from './components_hcu/AppointmentManagerPhysicalComponent.js';
 import UserDateateAppointment from './components_user/DateAppointment.js';
@@ -143,10 +142,6 @@ const router = createBrowserRouter([
   {
     path: "/apppointment/history",
     element: <ProtectRoute><UserHistoryAppointment/></ProtectRoute>
-  },
-  {
-    path: "/appointment/selectDate",
-    element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
   },
   {
     path: "/timetable",

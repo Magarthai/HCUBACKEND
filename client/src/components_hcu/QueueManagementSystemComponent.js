@@ -41,17 +41,21 @@ const QueueManagementSystemComponent = (props) => {
         let statusElementDetail = document.getElementById("detail-appointment-status");
 
         if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
                 console.log("Adding Class...");
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("confirmed-background");
             }
             else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("completed-background");
             }
             else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("failed-background");
             }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธ์') {
+            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("pending-confirmation-background");
             }
         }
@@ -72,7 +76,7 @@ const QueueManagementSystemComponent = (props) => {
                 console.log(";-;", currentFormattedTime, timeslotEnd,timeslotStart);
         
                 if (
-                    appointment.status == 'รอยืนยันสิทธ์' &&
+                    appointment.status == 'รอยืนยันสิทธิ์' &&
                     currentFormattedTime >= timeslotStart &&
                     currentFormattedTime >= timeslotEnd
                 ) {
@@ -101,7 +105,7 @@ const QueueManagementSystemComponent = (props) => {
         const intervalId = setInterval(() => {
             updateAppointmentsStatus();
             fetchUserDataWithAppointments();
-        }, 60000);
+        }, 6000);
         
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
@@ -238,10 +242,10 @@ const QueueManagementSystemComponent = (props) => {
         else if (element.textContent.trim() === 'ไม่สำเร็จ') {
             element.style.color = '#C11F1F';
         }
-        else if (element.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+        else if (element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
             element.style.color = '#D88C09';
         }
-        else if (element.textContent.trim() === 'รอยืนยันสิทธ์') {
+        else if (element.textContent.trim() === 'รอยืนยันสิทธิ์') {
             element.style.color = '#A1A1A1';
         }
     }
@@ -382,7 +386,7 @@ const QueueManagementSystemComponent = (props) => {
                                     <div className="admin-queue-card-status">
                                         <p className="admin-textBody-small">{AppointmentUserData.appointment.status}</p>
                                     </div>
-                                    {AppointmentUserData.appointment.status === 'ยืนยันสิทธ์แล้ว' ? (
+                                    {AppointmentUserData.appointment.status === 'ยืนยันสิทธิ์แล้ว' ? (
                                         <div className="admin-queue-card-function-succeed" onClick={() => handleToggle(AppointmentUserData.appointment.appointmentuid, AppointmentUserData)}>
                                         <img src={verify_rights_icon} className="admin-queue-card-icon" alt="verify_rights_icon" />
                                         </div>
@@ -395,86 +399,10 @@ const QueueManagementSystemComponent = (props) => {
                                 ))
                                 ) : (
                                 <div className="admin-queue-card" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-                                    <h1 className="admin-textBody-huge colorPrimary-800" style={{fontSize:30}}>ไม่มีนัดหมายวันนี้</h1>
+                                    <h2 className="colorPrimary-800">ไม่มีนัดหมายวันนี้</h2>
                                 </div>
                                 )}
 
-                            {/* <div className="admin-queue-card focused" >
-                            <div className="admin-queue-card-time colorPrimary-800">
-                                <p className="admin-textBody-small">13:01 - 13:06</p>
-                            </div>
-                            <div className="admin-queue-card-info colorPrimary-800">
-                                <p className="admin-textBody-huge">64090500444</p>
-                                <p className="admin-textBody-small">รวิษฎา อนุรุตติกุล</p>
-                            </div>
-                            <div className="admin-queue-card-status">
-                                <p className="admin-textBody-small">ไม่สำเร็จ</p>
-                            </div>
-                            <div className="admin-queue-card-function">
-                                <img src={verify_rights_icon} className="admin-queue-card-icon"/>
-                            </div>
-                        </div>
-                        <div className="admin-queue-card focused" >
-                            <div className="admin-queue-card-time colorPrimary-800">
-                                <p className="admin-textBody-small">13:01 - 13:06</p>
-                            </div>
-                            <div className="admin-queue-card-info colorPrimary-800">
-                                <p className="admin-textBody-huge">64090500444</p>
-                                <p className="admin-textBody-small">รวิษฎา อนุรุตติกุล</p>
-                            </div>
-                            <div className="admin-queue-card-status">
-                                <p className="admin-textBody-small">ไม่สำเร็จ</p>
-                            </div>
-                            <div className="admin-queue-card-function">
-                                <img src={verify_rights_icon} className="admin-queue-card-icon"/>
-                            </div>
-                        </div>
-                        <div className="admin-queue-card" >
-                            <div className="admin-queue-card-time colorPrimary-800">
-                                <p className="admin-textBody-small">13:01 - 13:06</p>
-                            </div>
-                            <div className="admin-queue-card-info colorPrimary-800">
-                                <p className="admin-textBody-huge">64090500444</p>
-                                <p className="admin-textBody-small">รวิษฎา อนุรุตติกุล</p>
-                            </div>
-                            <div className="admin-queue-card-status">
-                                <p className="admin-textBody-small">เสร็จสิ้น</p>
-                            </div>
-                            <div className="admin-queue-card-function">
-                                <img src={verify_rights_icon} className="admin-queue-card-icon"/>
-                            </div>
-                        </div>
-                        <div className="admin-queue-card" >
-                            <div className="admin-queue-card-time colorPrimary-800">
-                                <p className="admin-textBody-small">13:01 - 13:06</p>
-                            </div>
-                            <div className="admin-queue-card-info colorPrimary-800">
-                                <p className="admin-textBody-huge">64090500444</p>
-                                <p className="admin-textBody-small">รวิษฎา อนุรุตติกุล</p>
-                            </div>
-                            <div className="admin-queue-card-status">
-                                <p className="admin-textBody-small">รอยืนยันสิทธ์</p>
-                            </div>
-                            <div className="admin-queue-card-function">
-                                <img src={verify_rights_icon} className="admin-queue-card-icon"/>
-                            </div>
-                        </div> */}
-                            {/* กรอง status == ยืนยันสิทธ์ เป็นอันด้านล่างนะ */}
-                            {/* <div className="admin-queue-card" >
-                            <div className="admin-queue-card-time colorPrimary-800">
-                                <p className="admin-textBody-small">13:01 - 13:06</p>
-                            </div>
-                            <div className="admin-queue-card-info colorPrimary-800">
-                                <p className="admin-textBody-huge">64090500444</p>
-                                <p className="admin-textBody-small">รวิษฎา อนุรุตติกุล</p>
-                            </div>
-                            <div className="admin-queue-card-status">
-                                <p className="admin-textBody-small">ยืนยันสิทธ์แล้ว</p>
-                            </div>
-                            <div className="admin-queue-card-function-succeed">
-                                <img src={verify_rights_icon} className="admin-queue-card-icon"/>
-                            </div>
-                        </div> */}
 
                         </div>
                         <div className="admin-queue-box border-L colorPrimary-800">

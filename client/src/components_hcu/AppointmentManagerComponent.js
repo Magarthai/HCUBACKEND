@@ -12,6 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 import { fetchTimeTableDataFromBackend } from '../backend/backendGeneral'
 import { fetchUserDataWithAppointments } from '../backend/backendGeneral'
+import "../css/AdminQueueManagementSystemComponent.css";
 import { DeleteAppointment } from '../backend/backendGeneral'
 const AppointmentManagerComponent = (props) => {
 
@@ -308,6 +309,7 @@ const AppointmentManagerComponent = (props) => {
             y.style.display = "none";
             z.style.display = "none";
             console.log(AppointmentUsersData.timeslot.start)
+            document.getElementById("detail-appointment-status").innerHTML = `${AppointmentUsersData.appointment.status}`
             document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
             document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
             document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -323,6 +325,7 @@ const AppointmentManagerComponent = (props) => {
             }else{
                 setsaveEditId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
+                document.getElementById("detail-appointment-status").innerHTML = `${AppointmentUsersData.appointment.status}`
                 document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
                 document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
                 document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -491,6 +494,49 @@ const AppointmentManagerComponent = (props) => {
         card.addEventListener('click', handleCardClick);
     });
 
+    const statusElements = document.querySelectorAll('.admin-appointment-status');
+    
+    function changeStatusTextColor(element) {
+        if (element.textContent.trim() === 'เสร็จสิ้น') {
+            element.style.color = '#098B66';
+            
+        }
+        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
+            element.style.color = '#C11F1F'; 
+        }
+        else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
+            element.style.color = '#D88C09'; 
+        }
+        else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
+            element.style.color = '#A1A1A1'; 
+        }
+    }
+
+    statusElements.forEach(changeStatusTextColor);
+
+    let statusElementDetail = document.getElementById("detail-appointment-status");
+
+        if (statusElementDetail) {
+            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                console.log("Adding Class...");
+                
+                statusElementDetail.classList.add("confirmed-background");
+            }
+            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                statusElementDetail.classList.add("completed-background");
+            }
+            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                statusElementDetail.classList.add("failed-background");
+            }
+            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                statusElementDetail.classList.add("pending-confirmation-background");
+            }
+        }
+
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -549,7 +595,7 @@ const AppointmentManagerComponent = (props) => {
                                 </div>
                                 <div className="admin-appointment-functon">
                                     {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                        <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}}>{`${AppointmentUserData.appointment.status}`}</p>
+                                        <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}} className="admin-appointment-status admin-textBody-small" >{`${AppointmentUserData.appointment.status}`}</p>
                                     ) : (
                                         <>
                                             <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
@@ -565,7 +611,13 @@ const AppointmentManagerComponent = (props) => {
                 </div>
                 <div className="admin-appointment-box">
                     <div id="detail-appointment" className="colorPrimary-800">
-                        <h2 className="center">รายละเอียดนัดหมาย</h2>
+                        
+                        <div className="admin-appointment-detail-header">
+                                <div className="admin-appointment-detail-header-items2"></div>
+                                <h2 className="admin-appointment-detail-header-items1 center">รายละเอียดนัดหมาย</h2>
+                                <div className="admin-appointment-detail-header-items2 admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
+                        </div>
+                        
                         <p id="detail-appointment-date" className="admin-textBody-big"></p>
                         <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
                         <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
