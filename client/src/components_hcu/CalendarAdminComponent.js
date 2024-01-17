@@ -50,13 +50,9 @@ const CalendarAdminComponent = (props) => {
       const isSelected = i === selectedDateIndex ? "focused" : "";
       const handleClick = () => handleDateClick(i);
 
-      if (
-        (i >= new Date().getDate() &&
-          currentMonth === new Date().getMonth() + 1 &&
-          currentYear === new Date().getFullYear()) ||
-        (currentMonth > new Date().getMonth() + 1 &&
-          currentYear === new Date().getFullYear()) ||
-        (currentYear > new Date().getFullYear())
+      if ((i >= new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear()) ||
+        (currentMonth > new Date().getMonth() + 1 && currentMonth < new Date().getMonth() + 4 && currentYear === new Date().getFullYear() ) ||
+        (currentYear > new Date().getFullYear()) 
       ) {
         days.push(
           <li key={`active-${i}`} className={`${isToday} ${isSelected}`} onClick={handleClick}>
