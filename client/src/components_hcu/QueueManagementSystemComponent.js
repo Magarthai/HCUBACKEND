@@ -165,7 +165,7 @@ const QueueManagementSystemComponent = (props) => {
             showCancelButton: true,
             confirmButtonText: 'เสร็จสิ้น',
             cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#DC2626',
+            confirmButtonColor: '#263A50',
             reverseButtons: true,
             customClass: {
                 confirmButton: 'custom-confirm-button',
