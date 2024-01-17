@@ -228,8 +228,6 @@ const AppointmentManagerComponentSpecial = (props) => {
             console.log("No user found with id:", userId);
             return null;
         }
-
-        <u></u>
         const userUid = userQuerySnapshot.docs[0].id;
         const userDatas = userQuerySnapshot.docs[0].data();
         userDatas.timeslot = timeslot;

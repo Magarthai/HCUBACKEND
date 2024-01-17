@@ -11,7 +11,7 @@ import male from "../picture/male.png";
 import female from "../picture/female.png";
 
 const NavbarUserComponent = (props) => {
-  const { user, logOut } = useUserAuth();
+  const { user,userData, logOut } = useUserAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -23,42 +23,20 @@ const NavbarUserComponent = (props) => {
     }
   };
 
-  const [userData, setUserData] = useState(null);
+  
   const [showNav, setShowNav] = useState(false);
 
   const toggleNav = () => {
     setShowNav(!showNav);
   };
 
-  const fetchUserData = async () => {
-    try {
-      if (user && !userData) {
-        const usersCollection = collection(db, 'users');
   
-        // Create a query to get the document with the specified UID
-        const q = query(usersCollection, where('uid', '==', user.uid));
-  
-        const usersSnapshot = await getDocs(q);
-  
-        if (!usersSnapshot.empty) {
-          // Access the first document (assuming there's only one matching document)
-          const currentUserData = usersSnapshot.docs[0].data();
-          setUserData(currentUserData);
-          console.log('User Data:', currentUserData);
-        } else {
-          console.log('User not found');
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
 
   useEffect(() => {
     document.title = 'Health Care Unit';
     console.log(user);
 
-    fetchUserData();
+
   }, [user]);
 
   const locale = 'en';
