@@ -30,6 +30,9 @@ import UserTimetableComponet from './components_user/TimetableComponet.js';
 import UserProfileComponent from './components_user/ProfileComponent.js';
 import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
 import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManagerNeedleComponent.js';
+
+
+
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -37,7 +40,9 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import ProtectRoute from './auth/protectRoute.jsx';
-
+import QueueManagementSystemComponentPhysic from './components_hcu/QueueManagementSystemComponentPhysic.js';
+import QueueManagementSystemComponentSpecial from './components_hcu/QueueManagementSystemComponentSpecial.js';
+import QueueManagementSystemComponentNeedle from './components_hcu/QueueManagementSystemComponentNeedle.js'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -103,6 +108,21 @@ const router = createBrowserRouter([
     path: "/AppointmentManagerComponentSpecial",
     element: <ProtectAdminRoute><AppointmentManagerComponentSpecial/></ProtectAdminRoute>
   },
+  {
+    path: "/adminQueueManagementSystemComponentSpecial",
+    element: <ProtectAdminRoute><QueueManagementSystemComponentSpecial/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminQueueManagementSystemComponentNeedle",
+    element: <ProtectAdminRoute><QueueManagementSystemComponentNeedle/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminQueueManagementSystemComponentPhysic",
+    element: <ProtectAdminRoute><QueueManagementSystemComponentPhysic/></ProtectAdminRoute>
+  },
+
+
+
   {
     path: "/appointment/detail",
     element: <ProtectRoute><AppointmentDetail/></ProtectRoute>

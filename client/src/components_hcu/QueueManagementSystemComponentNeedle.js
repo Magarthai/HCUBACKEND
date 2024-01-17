@@ -8,7 +8,7 @@ import "../css/AdminQueueManagementSystemComponent.css";
 import verify_rights_icon from "../picture/verify_rights_icon.png";
 import Swal from "sweetalert2";
 import { ScaleLoader } from "react-spinners";
-const QueueManagementSystemComponent = (props) => {
+const QueueManagementSystemComponentSpecial = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -237,7 +237,7 @@ const QueueManagementSystemComponent = (props) => {
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
                     `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                    where('clinic', '==', 'คลินิกทั่วไป')));
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')));
 
                 const timeTableCollection = collection(db, 'timeTable');
                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -390,20 +390,21 @@ const QueueManagementSystemComponent = (props) => {
             </div>
             <div className="admin">
                 <div className="admin-header">
-                    <div className="admin-hearder-item">
-                        <a href="/adminQueueManagementSystemComponent" target="_parent" id="select">คลินิกทั่วไป</a>
-                        <a href="/adminQueueManagementSystemComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
+                <div className="admin-hearder-item">
+                        <a href="/adminQueueManagementSystemComponent" target="_parent" >คลินิกทั่วไป</a>
+                        <a href="/adminQueueManagementSystemComponentSpecial" target="_parent">คลินิกเฉพาะทาง</a>
                         <a href="/adminQueueManagementSystemComponentPhysic" target="_parent" >คลินิกกายภาพ</a>
-                        <a href="/adminQueueManagementSystemComponentNeedle" target="_parent" >คลินิกฝั่งเข็ม</a>
+                        <a href="/adminQueueManagementSystemComponentNeedle" target="_parent" id="select">คลินิกฝั่งเข็ม</a>
                     </div>
                 </div>
 
                 <div className="admin-body">
                     <div className="admin-queue-flexbox">
                         <div className="admin-queue-box">
-                            <h2 className="colorPrimary-800">นัดหมายคลินิกทั่วไป</h2>
-                            {AppointmentUsersData && AppointmentUsersData.length > 0 ? (
-                                AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
+                            <h2 className="colorPrimary-800">นัดหมายคลินิกฝั่งเข็ม</h2>
+                            {AppointmentUsersData ? (
+    AppointmentUsersData.length > 0 ? (
+        AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
                                     <div className="admin-queue-card" onClick={() => openDetailAppointment(AppointmentUserData)} key={index}>
                                     <div className="admin-queue-card-time colorPrimary-800">
                                         <p className="admin-textBody-small">{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</p>
@@ -430,7 +431,12 @@ const QueueManagementSystemComponent = (props) => {
                                     <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                     <ScaleLoader color={"#36D7B7"} size={25} />
                                 </div>
-                                )}
+                                )
+                            ) : (
+                                <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                    <ScaleLoader color={"#36D7B7"} size={25} />
+                                </div>
+                            )}
 
 
                         </div>
@@ -464,4 +470,4 @@ const QueueManagementSystemComponent = (props) => {
     );
 }
 
-export default QueueManagementSystemComponent;
+export default QueueManagementSystemComponentSpecial;

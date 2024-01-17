@@ -1,5 +1,5 @@
 import NavbarComponent from "./NavbarComponent";
-import CalendarAdminComponent from "./CalendarAdminComponent";
+import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
@@ -13,9 +13,10 @@ import "../css/AdminAppointmentComponent.css";
 
 
 
-const AppointmentManagerNeedleComponent = (props) => {
+const AppointmentManagerPhysicalComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDates, setSelectedDates] = useState(null);
 
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -24,6 +25,7 @@ const AppointmentManagerNeedleComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
+    const [timeOptionss, setTimeOptionss] = useState([]);
     // const [timeOptions1, setTimeOptions1] = useState([]);
     // const [timeOptions2, setTimeOptions2] = useState([]);
     // const [timeOptions3, setTimeOptions3] = useState([]);
@@ -44,14 +46,13 @@ const AppointmentManagerNeedleComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
-        let x = document.getElementById("detail-appointment");
-        x.style.display = "none";
     };
 
 
 
     const [state, setState] = useState({
         appointmentDate: "",
+        appointmentDates: "",
         appointmentTime: "",
         appointmentId: "",
         appointmentCasue: "",
@@ -100,12 +101,13 @@ const AppointmentManagerNeedleComponent = (props) => {
         timeOptions9: [],
         timeOptions10: [],
 
-        
+
     })
 
 
     const {
         appointmentDate,
+        appointmentDates,
         appointmentId,
         appointmentCasue,
         appointmentSymptom,
@@ -158,8 +160,8 @@ const AppointmentManagerNeedleComponent = (props) => {
         !appointmentDate || !appointmentTime || !appointmentId;
 
     const isAutoSubmitEnabled =
-    !appointmentDate || !appointmentTime || !appointmentId || !time || !timelength;
-        
+        !appointmentDate || !appointmentTime || !appointmentId || !time || !timelength;
+
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
     };
@@ -198,6 +200,130 @@ const AppointmentManagerNeedleComponent = (props) => {
     }
 
 
+    const formatDatesForDisplay = (isoDate) => {
+        const dateParts = isoDate.split("-");
+        if (dateParts.length === 3) {
+            setAllAppointmentUsersData([]);
+            const [year, month, day] = dateParts;
+            const formattedMonth = parseInt(month, 10).toString();
+            const formattedDate = `${day}/${formattedMonth}/${year}`;
+
+            const dayName = getDayName(new Date(isoDate)).toLowerCase();;
+            const formattedSelectedDate = {
+                day: day,
+                month: formattedMonth,
+                year: year,
+                dayName: dayName,
+            };
+            setAllAppointmentUsersData([]);
+            setSelectedDates(formattedSelectedDate);
+            setState({
+                ...state,
+                appointmentDates: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentTimes: "",
+            });
+            return formattedDate;
+        }
+        return isoDate;
+    }
+
+    const fetchMainTimeTableData = async () => {
+        try {
+            if (user && selectedDates && selectedDates.dayName) {
+                const timeTableCollection = collection(db, 'timeTable');
+                const querySnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('addDay', '==', selectedDates.dayName),
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
+                ));
+                const timeTableData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                console.log("timeTableData selectedDate", selectedDates)
+                console.log("timeTableData", timeTableData)
+
+                if (timeTableData.length > 0) {
+                    const filteredTimeTableData = timeTableData
+                    if (filteredTimeTableData.length > 0) {
+                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                                acc.push(
+                                    ...item.timeablelist.map((timeSlot, index) => ({
+                                        ...timeSlot,
+                                        timeTableId: item.id,
+                                        timeSlotIndex: index
+                                    }))
+                                );
+                            }
+                            return acc;
+                        }, []);
+
+                        const appointmentsCollection = collection(db, 'appointment');
+                        const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${selectedDates.day}/${selectedDate.month}/${selectedDate.year}`)));
+
+                        const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
+
+                        if (existingAppointments.length > 0) {
+                            console.log(`Appointments found for ${selectedDates.day}/${selectedDates.month}/${selectedDates.year}:`, existingAppointments);
+                        } else {
+                            console.log(`No appointments found for ${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
+                        }
+
+                        const availableTimeSlots = allTimeableLists.filter((timeSlot) =>
+                            !existingAppointments.some(existingSlot =>
+                                existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
+                            )
+                        );
+
+
+
+                        console.log("availableTimeSlots", availableTimeSlots)
+                        const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
+                            acc[timetableItem.id] = timetableItem.status === "Enabled";
+                            return acc;
+                        }, {});
+
+                        setIsChecked(initialIsChecked);
+
+                        const timeOptionsFromTimetable = [
+                            { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
+                            ...availableTimeSlots
+                                .filter(timeSlot => timeSlot.type === 'main')
+                                .sort((a, b) => {
+                                    const timeA = new Date(`01/01/2000 ${a.start}`);
+                                    const timeB = new Date(`01/01/2000 ${b.start}`);
+                                    return timeA - timeB;
+                                })
+                                .map((timeSlot) => ({
+                                    label: `${timeSlot.start} - ${timeSlot.end}`,
+                                    value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
+                                })),
+                        ];
+
+
+                        console.log("Before setTimeOptions", timeOptionsFromTimetable);
+                        setTimeOptionss(timeOptionsFromTimetable);
+                        console.log("After setTimeOptions", timeOptionsFromTimetable);
+                        console.log(timeOptions)
+                    } else {
+                        console.log("Time table not found for selected day and clinic");
+                        const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                        setTimeOptionss([noTimeSlotsAvailableOption]);
+                        console.log(timeOptions)
+                    }
+
+                } else {
+                    const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                    setTimeOptionss([noTimeSlotsAvailableOption]);
+                    console.log("Time table not found", timeOptions);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
     const fetchTimeTableData = async () => {
         try {
             if (user && selectedDate && selectedDate.dayName) {
@@ -207,7 +333,6 @@ const AppointmentManagerNeedleComponent = (props) => {
                     where('addDay', '==', selectedDate.dayName),
                     where('clinic', '==', 'คลินิกฝั่งเข็ม')
                 ));
-
                 const timeTableData = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
@@ -261,6 +386,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                         const timeOptionsFromTimetable = [
                             { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
                             ...availableTimeSlots
+                                .filter(timeSlot => timeSlot.type === 'talk')
                                 .sort((a, b) => {
                                     const timeA = new Date(`01/01/2000 ${a.start}`);
                                     const timeB = new Date(`01/01/2000 ${b.start}`);
@@ -271,6 +397,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
                                 })),
                         ];
+
 
                         console.log("Before setTimeOptions", timeOptionsFromTimetable);
                         setTimeOptions(timeOptionsFromTimetable);
@@ -396,6 +523,7 @@ const AppointmentManagerNeedleComponent = (props) => {
         document.title = 'Health Care Unit';
         console.log(user);
         fetchTimeTableData();
+        fetchMainTimeTableData();
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
             const baseWidth = 1920;
@@ -422,7 +550,7 @@ const AppointmentManagerNeedleComponent = (props) => {
             window.removeEventListener("resize", responsivescreen);
         };
 
-    }, [selectedDate,selectedDate1,selectedDate2,selectedDate3,selectedDate4,selectedDate5,timeOptions1,timeOptions2,timeOptions3,timeOptions4,timeOptions5]);
+    }, [selectedDate,selectedDates, selectedDate1, selectedDate2, selectedDate3, selectedDate4, selectedDate5, timeOptions1, timeOptions2, timeOptions3, timeOptions4, timeOptions5]);
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -471,6 +599,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                 appointmentSymptom,
                 appointmentNotation,
                 clinic: "คลินิกฝั่งเข็ม",
+                type: "talk",
                 status: "รอยืนยันสิทธิ์",
             };
 
@@ -580,10 +709,6 @@ const AppointmentManagerNeedleComponent = (props) => {
             y.style.display = "none";
             z.style.display = "none";
             console.log(AppointmentUsersData.timeslot.start)
-            const statusElement = document.getElementById("detail-appointment-status");
-            if (statusElement) {
-                statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
-            }
             document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
             document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
             document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -599,10 +724,6 @@ const AppointmentManagerNeedleComponent = (props) => {
             } else {
                 setsaveEditId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
-                const statusElement = document.getElementById("detail-appointment-status");
-                if (statusElement) {
-                    statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
-                }
                 document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
                 document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
                 document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -762,16 +883,18 @@ const AppointmentManagerNeedleComponent = (props) => {
 
     const openContinueAddinAppointment = () => {
         let x = document.getElementById("admin-add-appointment-connected");
+        fetchMainTimeTableData();
         if (window.getComputedStyle(x).display === "none") {
-            x.style.display = "block";
 
+            x.style.display = "block";
         } else {
+
             x.style.display = "none";
 
-
+        
         }
+    };
 
-    }
 
 
     const openContinueAddinAppointment2 = () => {
@@ -784,6 +907,7 @@ const AppointmentManagerNeedleComponent = (props) => {
             x.style.display = "none";
         }
     };
+
 
     const submitFormAddContinue = async () => {
         let x = document.getElementById("admin-add-appointment-connected2");
@@ -809,236 +933,243 @@ const AppointmentManagerNeedleComponent = (props) => {
 
             }));
 
-                cleanUpOldPopups();
+            cleanUpOldPopups();
+            const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
+            const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
 
-                const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
-                const formattedAppointmentDate = formatToDDMMYYYY( `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
-                
-                const handleSelectChanges = () => {
-                    setSelectedCount(selectedCount + 1);
-                    console.log(selectedCount)
+            const handleSelectChanges = () => {
+                setSelectedCount(selectedCount + 1);
+                console.log(selectedCount)
 
-                };
-                
-                
-
-                for (let i = 1; i <= time; i++) {
+            };
 
 
 
-
-                    const instanceDate = new Date(formattedAppointmentDate);
-                    instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
-                    const formatdate = covertToSubmitPopup(instanceDate)
-                    setState((prevState) => ({
-                        ...prevState,
-                        [`appointmentDate${i}`]: formatdate,
-                    }));
-                    const formatDmy = (dateString) => {
-                        const [day, month, year] = dateString.split('/').map(Number);
-                        const formattedMonth = month < 10 ? `${month}` : `${month}`;
-                        const formattedDay = day < 10 ? `${day}` : `${day}`;
-                        const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
-                        const dateObject = new Date(year, month - 1, day);
-                        const dayName = getDayName(new Date(dateObject)).toLowerCase();;
-                        const formattedSelectedDate = {
-                            day: day,
-                            month: formattedMonth,
-                            year: year,
-                            dayName: dayName,
-                        };
-                    
-                        return formattedSelectedDate;
+            for (let i = 1; i <= time; i++) {
+                const instanceDate = new Date(formattedAppointmentDate);
+                instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
+                const formatdate = covertToSubmitPopup(instanceDate)
+                setState((prevState) => ({
+                    ...prevState,
+                    [`appointmentDate${i}`]: formatdate,
+                }));
+                const formatDmy = (dateString) => {
+                    const [day, month, year] = dateString.split('/').map(Number);
+                    const formattedMonth = month < 10 ? `${month}` : `${month}`;
+                    const formattedDay = day < 10 ? `${day}` : `${day}`;
+                    const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
+                    const dateObject = new Date(year, month - 1, day);
+                    const dayName = getDayName(new Date(dateObject)).toLowerCase();;
+                    const formattedSelectedDate = {
+                        day: day,
+                        month: formattedMonth,
+                        year: year,
+                        dayName: dayName,
                     };
-                    
 
-                    const xd = formatDmy(formatdate)
-                    console.log("xdformat",xd)
-                    const divElement = document.createElement('div');
-                    const timeTableCollection = collection(db, 'timeTable');
-                    const querySnapshot = await getDocs(query(
-                        timeTableCollection,
-                        where('addDay', '==', xd.dayName),
-                        where('clinic', '==', 'คลินิกฝั่งเข็ม')
-                    ));
-                    const timeTableData = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    console.log("timeTableData selectedDate", xd)
-                    console.log("timeTableData", timeTableData)
-                    
-                    if (timeTableData.length > 0) {
-                        const filteredTimeTableData = timeTableData
-                        if (filteredTimeTableData.length > 0) {
-                            const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
-                                if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                    acc.push(
-                                        ...item.timeablelist.map((timeSlot, index) => ({
-                                            ...timeSlot,
-                                            timeTableId: item.id,
-                                            timeSlotIndex: index
-                                        }))
-                                    );
-                                }
-                                return acc;
-                            }, []);
-                            
-                            const appointmentsCollection = collection(db, 'appointment');
-                            const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
-                            where('clinic', '==', 'คลินิกฝั่งเข็ม')));
-    
-                            const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
-                            if (existingAppointments.length > 0) {
-                                
-                                console.log(`Appointments found for ${xd.day}/${xd.month}/${xd.year}:`, existingAppointments);
-                            } else {
-                                console.log(`No appointments found for ${xd.day}/${xd.month}/${xd.year}`);
+                    return formattedSelectedDate;
+                };
+
+
+                const xd = formatDmy(formatdate)
+                console.log("xdformat", xd)
+                const divElement = document.createElement('div');
+                const timeTableCollection = collection(db, 'timeTable');
+                const querySnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('addDay', '==', xd.dayName),
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
+                ));
+                const timeTableData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                console.log("timeTableData selectedDate", xd)
+                console.log("timeTableData", timeTableData)
+
+                if (timeTableData.length > 0) {
+                    const filteredTimeTableData = timeTableData
+                    if (filteredTimeTableData.length > 0) {
+                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                                acc.push(
+                                    ...item.timeablelist.map((timeSlot, index) => ({
+                                        ...timeSlot,
+                                        timeTableId: item.id,
+                                        timeSlotIndex: index
+                                    }))
+                                );
                             }
-    
-                            const availableTimeSlots = allTimeableLists.filter((timeSlot) =>
-                                !existingAppointments.some(existingSlot =>
-                                    existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
-                                )
-                            );
-    
-    
-    
-                            console.log("availableTimeSlots", availableTimeSlots)
-                            const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
-                                acc[timetableItem.id] = timetableItem.status === "Enabled";
-                                return acc;
-                            }, {});
-                            setIsChecked();
-                            setIsChecked(initialIsChecked);
-    
-                            const timeOptionsFromTimetable = [
-                                { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
-                                ...availableTimeSlots
-                                    .sort((a, b) => {
-                                        const timeA = new Date(`01/01/2000 ${a.start}`);
-                                        const timeB = new Date(`01/01/2000 ${b.start}`);
-                                        return timeA - timeB;
-                                    })
-                                    .map((timeSlot) => ({
-                                        label: `${timeSlot.start} - ${timeSlot.end}`,
-                                        value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
-                                    })),
-                            ];
-                
-                            console.log("Before setTimeOptions", timeOptionsFromTimetable);
-                            const a = timeOptionsFromTimetable
-                            const timeOptionsProperty = `timeOptions${i}`;
-                            const timeOptionsValue = state[timeOptionsProperty];
+                            return acc;
+                        }, []);
 
-                                divElement.id = `admin-add-appointment-connected2-${i}`;
-                                divElement.className = "auto-create";
-                                divElement.addEventListener("change", (e) => {
-                                    handleSelectChanges();
-                                    fetchTimeTableData();
-                                    const selectedValue = JSON.parse(e.target.value);
+                        const appointmentsCollection = collection(db, 'appointment');
+                        const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
+                            where('clinic', '==', 'คลินิกฝั่งเข็ม')));
 
-                                    if (selectedValue && typeof selectedValue === 'object') {
-                                        const { timetableId, timeSlotIndex } = selectedValue;
-                                        console.log("timetableId:", timetableId);
-                                        console.log("timeSlotIndex:", timeSlotIndex);
-                                        handleOuterChange(timeSlotIndex);
-                                        setState((prevState) => ({
-                                            ...prevState,
-                                            [`appointmentTime${i}`]: {
-                                                timetableId: timetableId,
-                                                timeSlotIndex: timeSlotIndex,
-                                            },
-                                        }));
-                                        setState(prevState => ({
-                                            ...prevState,
-                                            [`timeOptions${i}`]: a,
-                                        }));
+                        const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
+                        if (existingAppointments.length > 0) {
+
+                            console.log(`Appointments found for ${xd.day}/${xd.month}/${xd.year}:`, existingAppointments);
+                        } else {
+                            console.log(`No appointments found for ${xd.day}/${xd.month}/${xd.year}`);
+                        }
+
+                        const availableTimeSlots = allTimeableLists.filter((timeSlot) =>
+                            !existingAppointments.some(existingSlot =>
+                                existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
+                            )
+                        );
 
 
 
-                                        console.log(state[`appointmentTime${i}`]);
-                                        handleSelectChanges();
-                                    } else if (e.target.value === "") {
-                                        inputValue(`appointmentTime${i}`)({
-                                            target: {
-                                                value: {},
-                                            },
-                                        });
+                        console.log("availableTimeSlots", availableTimeSlots)
+                        const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
+                            acc[timetableItem.id] = timetableItem.status === "Enabled";
+                            return acc;
+                        }, {});
+                        setIsChecked();
+                        setIsChecked(initialIsChecked);
 
-                                        handleSelectChanges();
-                                    } else {
-                                        console.error("Invalid selected value:", selectedValue);
-                                    }
+                        const timeOptionsFromTimetable = [
+                            { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
+                            ...availableTimeSlots
+                                .filter(timeSlot => timeSlot.type === 'main')
+                                .sort((a, b) => {
+                                    const timeA = new Date(`01/01/2000 ${a.start}`);
+                                    const timeB = new Date(`01/01/2000 ${b.start}`);
+                                    return timeA - timeB;
+                                })
+                                .map((timeSlot) => ({
+                                    label: `${timeSlot.start} - ${timeSlot.end}`,
+                                    value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
+                                })),
+                        ];
+
+
+                        console.log("Before setTimeOptions", timeOptionsFromTimetable);
+                        const a = timeOptionsFromTimetable
+                        const timeOptionsProperty = `timeOptions${i}`;
+                        const timeOptionsValue = state[timeOptionsProperty];
+
+                        divElement.id = `admin-add-appointment-connected2-${i}`;
+                        divElement.className = "auto-create";
+                        divElement.addEventListener("change", (e) => {
+                            handleSelectChanges();
+                            fetchTimeTableData();
+                            const selectedValue = JSON.parse(e.target.value);
+
+                            if (selectedValue && typeof selectedValue === 'object') {
+                                const { timetableId, timeSlotIndex } = selectedValue;
+                                console.log("timetableId:", timetableId);
+                                console.log("timeSlotIndex:", timeSlotIndex);
+                                handleOuterChange(timeSlotIndex);
+                                setState((prevState) => ({
+                                    ...prevState,
+                                    [`appointmentTime${i}`]: {
+                                        timetableId: timetableId,
+                                        timeSlotIndex: timeSlotIndex,
+                                    },
+                                }));
+                                setState(prevState => ({
+                                    ...prevState,
+                                    [`timeOptions${i}`]: a,
+                                }));
+
+
+
+                                console.log(state[`appointmentTime${i}`]);
+                                handleSelectChanges();
+                            } else if (e.target.value === "") {
+                                inputValue(`appointmentTime${i}`)({
+                                    target: {
+                                        value: {},
+                                    },
                                 });
 
-                                const handleOuterChange = (timeSlotIndex) => {
-                                    console.log("Received timeSlotIndex from inner change:", timeSlotIndex);
-                                  };
+                                handleSelectChanges();
+                            } else {
+                                console.error("Invalid selected value:", selectedValue);
+                            }
+                        });
+
+                        const handleOuterChange = (timeSlotIndex) => {
+                            console.log("Received timeSlotIndex from inner change:", timeSlotIndex);
+                        };
 
 
-                                divElement.innerHTML = `
+                        divElement.innerHTML = `
                                 <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : ว่าง</p>
                                 <div class="center-container">
-                                    <label class="admin-textBody-large colorPrimary-800">วันที่</label><br>
-                                    <span>${formatdate}</span>
+                                    <label class="admin-textBody-large colorPrimary-800">วันที่</label>
+                                    <span> ${formatdate}</span>
                                 </div>
-                                <br>
                                 <div class="center-container">
-                                    <br>
-                                </div>
-                            `;
-                                
-                            if (existingAppointments.length > 0) {
-                            
-                            console.log(selectedCount,"heheboi")
-                            divElement.innerHTML = `
-                                <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน</p>
-                                <div class="center-container">
-                                    <label class="admin-textBody-large colorPrimary-800">วันที่</label><br>
-                                    <span>${formatdate}</span>
-                                </div>
-                                <br>
-                                <div class="center-container">
-                                    <label class="admin-textBody-large colorPrimary-800">เลือกเวลา</label>
-                                    <br>
-                                    <select
+                                <select
                                         name="time"
                                 
                                         value=""
                                         class=${selectedCount >= 2 ? 'selected' : ''}
                                     >
                                         ${timeOptionsFromTimetable.map((timeOption) =>
-                                    `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                            `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
                                                 ${timeOption.label}
                                             </option>`
-                                )}
+                        )}
+                                    </select>
+                                
+                                    
+                                </div>
+                                <br>
+                            `;
+
+                        if (existingAppointments.length > 0) {
+
+                            console.log(selectedCount, "heheboi")
+                            divElement.innerHTML = `
+                                <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน</p>
+                                <div class="center-container">
+                                    <label class="admin-textBody-large colorPrimary-800">วันที่</label>
+                                    <span> ${formatdate}</span>
+                                </div>
+                                <div class="center-container">
+                                    <label class="admin-textBody-large colorPrimary-800">เลือกเวลา</label>
+                                    <select
+                                        name="time"
+                                        value=""
+                                        class=${selectedCount >= 2 ? 'selected' : ''}
+                                    >
+                                        ${timeOptionsFromTimetable.map((timeOption) =>
+                                `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                                                ${timeOption.label}
+                                            </option>`
+                            )}
                                     </select>
                                 </div>
+                                <br>
                             `;
-                                        }
-                                appointmentPopupItem.appendChild(divElement);
-                            
-                        } else {
-                            console.log("Time table not found for selected day and clinic");
-                            const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                
-                            setState(prevState => ({
-                                ...prevState,
-                                [`timeOptions${i}`]: noTimeSlotsAvailableOption,
-                            }));
-                            const a = `timeOptions${i}`
-                            console.log("state",state[a]);
                         }
-                    } else 
-                        {
+                        appointmentPopupItem.appendChild(divElement);
+
+                    } else {
+                        console.log("Time table not found for selected day and clinic");
                         const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                        setTimeOptions([noTimeSlotsAvailableOption]);
-                        console.log("Time table not found", timeOptions);
+
+                        setState(prevState => ({
+                            ...prevState,
+                            [`timeOptions${i}`]: noTimeSlotsAvailableOption,
+                        }));
+                        const a = `timeOptions${i}`
+                        console.log("state", state[a]);
                     }
-                    }
-            
-        } 
+                } else {
+                    const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                    setTimeOptions([noTimeSlotsAvailableOption]);
+                    console.log("Time table not found", timeOptions);
+                }
+            }
+
+        }
     };
 
     function cleanUpOldPopups() {
@@ -1099,6 +1230,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                         appointmentNotation: appointmentNotation,
                         clinic: "คลินิกฝั่งเข็ม",
                         status: "รอยืนยันสิทธิ์",
+                        type: "main",
                     };
                     console.log(`time`, state[`appointmentTime${i}`],)
                     const appointmentRef = await addDoc(collection(db, 'appointment'), updatedTimetable);
@@ -1118,10 +1250,11 @@ const AppointmentManagerNeedleComponent = (props) => {
                     icon: "success",
                     title: "Appointment Successful!",
                     text: "Your appointments have been successfully created!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetForm();
+                    }
                 });
-
-                fetchUserDataWithAppointments();
-                fetchTimeTableData();
             } else {
                 Swal.fire({
                     icon: "error",
@@ -1142,61 +1275,10 @@ const AppointmentManagerNeedleComponent = (props) => {
         }
     };
 
-    const adminCards = document.querySelectorAll('.admin-appointment-card');
+    const resetForm = () => {
+        window.location.reload();
+      };
 
-    function handleCardClick(event) {
-        adminCards.forEach(card => card.classList.remove('focused'));    
-        event.currentTarget.classList.add('focused');
-    }
-
-    adminCards.forEach(card => {
-        card.addEventListener('click', handleCardClick);
-    });
-
-    const statusElements = document.querySelectorAll('.admin-appointment-status');
-    
-    function changeStatusTextColor(element) {
-        if (element.textContent.trim() === 'เสร็จสิ้น') {
-            element.style.color = '#098B66';
-            
-        }
-        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
-            element.style.color = '#C11F1F'; 
-        }
-        else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
-            element.style.color = '#D88C09'; 
-        }
-        else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
-            element.style.color = '#A1A1A1'; 
-        }
-    }
-
-    statusElements.forEach(changeStatusTextColor);
-
-    let statusElementDetail = document.getElementById("detail-appointment-status");
-
-        if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                console.log("Adding Class...");
-                
-                statusElementDetail.classList.add("confirmed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("completed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("failed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("pending-confirmation-background");
-            }
-        }
-
-    
 
 
 
@@ -1223,11 +1305,12 @@ const AppointmentManagerNeedleComponent = (props) => {
                         <a href="/adminAppointmentManagerNeedleComponent" target="_parent" id="select">คลินิกฝั่งเข็ม</a>
                     </div>
                     <div className="admin-hearder-item admin-right">
-                        <a target="_parent" onClick={() => openContinueAddinAppointment()} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
+                        <a target="_parent" onClick={() => {
+                            openContinueAddinAppointment();
+                        }} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
                         <a href="/" target="_parent" >รายการขอนัดหมาย</a>
                     </div>
                 </div>
-
                 <div className="admin-appointment-flex">
                     <CalendarAdminComponent
                         selectedDate={selectedDate}
@@ -1249,27 +1332,57 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
                             </div>
                             <div className="admin-appointment-box-card colorPrimary-800">
-                                {AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
-                                    <div className="admin-appointment-card colorPrimary-800" key={index}>
-                                        <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
-                                            {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
+                                {AppointmentUsersData
+                                    .filter(appointmentUserData => appointmentUserData.appointment.type === "talk")
+                                    .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                                    .map((AppointmentUserData, index) => (
+                                        <div className="admin-appointment-card colorPrimary-800" key={index}>
+                                            <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                                {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
+                                            </div>
+                                            <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                                <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
+                                                <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
+                                            </div>
+                                            <div className="admin-appointment-functon">
+                                                {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
+                                                    <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }}>{`${AppointmentUserData.appointment.status}`}</p>
+                                                ) : (
+                                                    <>
+                                                        <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
+                                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
-                                            <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
-                                            <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
+                                    ))}
+                                <div style={{ marginTop:20,marginBottom: 10,display:"flex",textAlign:"center",alignItems:"center",justifyContent:"center"}}><p>---------------- นัดหมายฝั่งเข็ม ----------------</p></div>
+                            
+                                {AppointmentUsersData
+                                    .filter(appointmentUserData => appointmentUserData.appointment.type === "main")
+                                    .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                                    .map((AppointmentUserData, index) => (
+                                        <div className="admin-appointment-card colorPrimary-800" key={index}>
+                                            <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                                {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
+                                            </div>
+                                            <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                                <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
+                                                <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
+                                            </div>
+                                            <div className="admin-appointment-functon">
+                                                {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
+                                                    <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }}>{`${AppointmentUserData.appointment.status}`}</p>
+                                                ) : (
+                                                    <>
+                                                        <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
+                                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="admin-appointment-functon">
-                                            {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                                <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
-                                            ) : (
-                                                <>
-                                                    <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
-                                                    <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+
 
                             </div>
                         </div>
@@ -1277,13 +1390,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                     </div>
                     <div className="admin-appointment-box">
                         <div id="detail-appointment" className="colorPrimary-800">
-                            {selectedDate && `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                <div className="admin-appointment-detail-header">
-                                    <div className="admin-appointment-detail-header-items2"></div>
-                                    <h2 className="admin-appointment-detail-header-items1 center">รายละเอียดนัดหมาย</h2>
-                                    <div className="admin-appointment-detail-header-items2 admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
-                                </div>
-                            ) : (<h2 className="center">รายละเอียดนัดหมาย</h2>)}
+                            <h2 className="center">รายละเอียดนัดหมาย</h2>
                             <p id="detail-appointment-date" className="admin-textBody-big"></p>
                             <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
                             <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
@@ -1310,7 +1417,6 @@ const AppointmentManagerNeedleComponent = (props) => {
                                         value={JSON.stringify(appointmentTime)}
                                         onChange={(e) => {
                                             handleSelectChange();
-                                            console.log("XXD", appointmentTime2)
                                             const selectedValue = JSON.parse(e.target.value);
 
                                             if (selectedValue && typeof selectedValue === 'object') {
@@ -1318,12 +1424,13 @@ const AppointmentManagerNeedleComponent = (props) => {
                                                 console.log("timetableId:", timetableId);
                                                 console.log("timeSlotIndex:", timeSlotIndex);
 
-                                                inputValue("appointmentTime")({
-                                                    target: {
-                                                        value: { timetableId, timeSlotIndex },
+                                                setState((prevState) => ({
+                                                    ...prevState,
+                                                    "appointmentTime": {
+                                                        timetableId: timetableId,
+                                                        timeSlotIndex: timeSlotIndex,
                                                     },
-                                                });
-
+                                                }));
                                                 handleSelectChange();
                                             } else if (e.target.value === "") {
                                                 inputValue("appointmentTime")({
@@ -1423,7 +1530,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                         }}
                                         className={selectedCount >= 2 ? 'selected' : ''}
                                     >
-                                        {timeOptions.map((timeOption, index) => (
+                                        {timeOptionss.map((timeOption, index) => (
                                             <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
                                                 {timeOption.label}
                                             </option>
@@ -1472,10 +1579,10 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 type="date"
                                 className="form-control"
                                 onChange={(e) => {
-                                    inputValue("appointmentDate")(e);
-                                    const formattedDate = formatDateForDisplay(e.target.value);
+                                    inputValue("appointmentDates")(e);
+                                    const formattedDate = formatDatesForDisplay(e.target.value);
                                     console.log("Formatted Date:", formattedDate);
-
+                                    fetchMainTimeTableData();
                                 }}
                             />
                         </div>
@@ -1515,7 +1622,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 }}
                                 className={selectedCount >= 2 ? 'selected' : ''}
                             >
-                                {timeOptions.map((timeOption, index) => (
+                                {timeOptionss.map((timeOption, index) => (
                                     <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
                                         {timeOption.label}
                                     </option>
@@ -1526,11 +1633,11 @@ const AppointmentManagerNeedleComponent = (props) => {
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">จำนวนครั้ง</label><br></br>
-                            <input type="text" className="form-control appointment-input"  onChange={(e) => { setState({ ...state, time: e.target.value, }); }} placeholder="5" />
+                            <input type="text" className="form-control appointment-input" onChange={(e) => {inputValue("time")(e);}} placeholder="5" />
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">ระยะห่าง(วัน)</label><br></br>
-                            <input type="text" className="form-control appointment-input"  onChange={(e) => { setState({ ...state, timelength: e.target.value, }); }} placeholder="7" />
+                            <input type="text" className="form-control appointment-input" onChange={(e) => { inputValue("timelength")(e);  }} placeholder="7" />
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
@@ -1545,8 +1652,12 @@ const AppointmentManagerNeedleComponent = (props) => {
                             <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, }); }} placeholder="" />
                         </div>
                         <div className="admin-timetable-btn">
-                            <button type="button" className="btn-secondary btn-systrm" onClick={() => openContinueAddinAppointment()}>กลับ</button>
-                            <button type="button" className="btn-primary btn-systrm" disabled={isAutoSubmitEnabled} onClick={() => submitFormAddContinue()} >ถัดไป</button>
+                            <button type="button" className="btn-secondary btn-systrm" onClick={() => {
+                            resetForm();
+                            openContinueAddinAppointment();
+                        }}
+                        >กลับ</button>
+                            <button type="button" className="btn-primary btn-systrm" onClick={() => submitFormAddContinue()} >ถัดไป</button>
                         </div>
 
                     </div>
@@ -1567,7 +1678,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 </div>
                                 <div>
                                     <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
-                                    <input type="text" className="form-control appointment-input" value={appointmentCasue}  onChange={(e) => { setState({ ...state, appointmentCasue: e.target.value, }); }} placeholder="" />
+                                    <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={(e) => { setState({ ...state, appointmentCasue: e.target.value, }); }} placeholder="" />
                                 </div>
                                 <div>
                                     <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
@@ -1575,7 +1686,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 </div>
                                 <div>
                                     <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                    <input type="text" className="form-control input-big" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, });setState({ ...state, timeOptions1: e.target.value, }); }} placeholder="" />
+                                    <input type="text" className="form-control input-big" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, }); setState({ ...state, timeOptions1: e.target.value, }); }} placeholder="" />
                                 </div>
 
                             </div>
@@ -1585,7 +1696,10 @@ const AppointmentManagerNeedleComponent = (props) => {
                         </div>
                         <br></br>
                         <div className="admin-timetable-btn">
-                            <button type="button" className="btn-secondary btn-systrm" onClick={() => openContinueAddinAppointment2(time)}>กลับ</button>
+                            <button type="button" className="btn-secondary btn-systrm"onClick={() => {
+                            resetForm();
+                            openContinueAddinAppointment2(time);
+                        }}>กลับ</button>
                             <input type="submit" value="เพิ่มนัดหมายต่อเนื่อง" className="btn-primary btn-systrm" target="_parent" disabled={isAutoSubmitEnabled} />
                         </div>
 
@@ -1604,5 +1718,5 @@ const AppointmentManagerNeedleComponent = (props) => {
     );
 }
 
-export default AppointmentManagerNeedleComponent;
+export default AppointmentManagerPhysicalComponent;
 

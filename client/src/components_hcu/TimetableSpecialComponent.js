@@ -7,16 +7,15 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import Swal from "sweetalert2";
 import { auth } from '../firebase/config';
-import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc,where,query, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 const TimetableSpecialComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
-    const { user } = useUserAuth();
+    const { user,userData } = useUserAuth();
     const [timetable, setTimetable] = useState([])
     const { id } = useParams();
     const [state, setState] = useState({
@@ -58,7 +57,10 @@ const TimetableSpecialComponent = (props) => {
         try {
             if (user) {
                 const timeTableCollection = collection(db, 'timeTable');
-                const timeTableSnapshot = await getDocs(timeTableCollection);
+                const timeTableSnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('clinic', '==', 'คลินิกเฉพาะทาง')
+                ));
 
                 const timeTableData = timeTableSnapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -221,31 +223,6 @@ const TimetableSpecialComponent = (props) => {
     useEffect(() => {
         document.title = 'Health Care Unit';
         fetchTimeTableData();
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const usersCollection = collection(db, 'users');
-                    const usersSnapshot = await getDocs(usersCollection);
-
-                    const usersData = usersSnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-
-                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-                    if (currentUserData) {
-                        setUserData(currentUserData);
-                        console.log(currentUserData);
-                    } else {
-                        console.log("User not found");
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-        fetchUserData();
 
         const updateShowTime = () => {
             const newTime = getShowTime();
@@ -271,7 +248,7 @@ const TimetableSpecialComponent = (props) => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    }, [user]);
+    }, [user,userData]);
 
     const containerStyle = {
         zoom: zoomLevel,

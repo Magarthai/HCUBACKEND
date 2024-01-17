@@ -25,6 +25,13 @@ body{
     /* .box-header-container{
         margin-top: 10px;
     } */
+    .custom-admin-addtimetable{
+        padding: 0 8% 0 0;
+    }
+    .custome-admin-underline{
+        border-top: 3px dashed #263A50;
+        margin: 20px;
+    }
     .admin-timetable-system{
         margin: 0% 4%;
         display: flex;
@@ -232,7 +239,7 @@ body{
     }
 
 
-    #Detail p{
+    #Detail p, #Detail2 p{
         padding: 0px 30px;
     }
     .confirm{
