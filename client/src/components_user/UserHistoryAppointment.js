@@ -12,10 +12,8 @@ const UserHistoryAppointment = () => {
         
         <div className="user">
       <header className="user-header">
-       
           <h2 >รายการนัดหมาย</h2>
           <h3 >การดำเนินการนัดหมาย</h3>
-      
         <div className="HistoryAppointment-header-navbar">
           <NavbarUserComponent />
         </div>
