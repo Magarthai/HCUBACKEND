@@ -48,16 +48,16 @@ const QueueManagementSystemComponent = (props) => {
                 const currentDate = new Date();
                 const [hoursEnd, minutesEnd] = timeslot.end.split(':').map(Number);
                 const [hoursStart, minutesStart] = timeslot.start.split(':').map(Number);
-
+        
                 const timeslotEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), hoursEnd, minutesEnd, 0);
                 const timeslotStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), hoursStart, minutesStart, 0);
-
-
-                console.log(";-;", currentFormattedTime, timeslotEnd,timeslotStart);
+        
+                const currentFormattedTime2 = new Date(timeslotStart.getTime() - 15 * 60000);
+        
+                console.log(";-;", currentFormattedTime, currentFormattedTime2, timeslotEnd, timeslotStart);
         
                 if (
-                    appointment.status == 'รอยืนยันสิทธิ์' &&
-                    currentFormattedTime >= timeslotStart &&
+                    appointment.status == 'ลงทะเบียนแล้ว' &&
                     currentFormattedTime >= timeslotEnd
                 ) {
                     try {
@@ -78,19 +78,43 @@ const QueueManagementSystemComponent = (props) => {
                     } catch (error) {
                         console.error('Error updating appointment status:', error);
                     }
+                } else if (currentFormattedTime >= currentFormattedTime2 && appointment.status == 'ลงทะเบียนแล้ว' && currentFormattedTime2 <= timeslotEnd) {
+                    try {
+                        const docRef = doc(db, 'appointment', appointment.appointmentuid);
+                        await updateDoc(docRef, { status: "รอยืนยันสิทธิ์" });
+        
+                        setAllAppointmentUsersData((prevData) => {
+                            const updatedData = prevData.map((data) => {
+                                if (data.appointment.appointmentuid === appointment.appointmentuid) {
+                                    return { ...data, appointment: { ...data.appointment, status: "รอยืนยันสิทธิ์" } };
+                                }
+                                return data;
+                            });
+                            return updatedData;
+                        });
+        
+                        console.log(`Updated status for appointment ${appointment.appointmentuid} to "รอยืนยันสิทธิ์"`);
+                    } catch (error) {
+                        console.error('Error updating appointment status:', error);
+                    }
                 }
             });
         };
+
+
+
+        
         
         const intervalId = setInterval(() => {
             updateAppointmentsStatus();
             fetchUserDataWithAppointments();
-        }, 60000);
+        }, 6000);
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
             clearInterval(intervalId);
         };
+        
 
         
 
@@ -224,10 +248,14 @@ const QueueManagementSystemComponent = (props) => {
         else if (element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
             element.style.color = '#D88C09';
         }
+        else if (element.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            element.style.color = '#A1A1A1';
+        }
         else if (element.textContent.trim() === 'รอยืนยันสิทธิ์') {
             element.style.color = '#A1A1A1';
         }
     }
+
 
     statusElements.forEach(changeStatusTextColor);
 
@@ -335,7 +363,7 @@ const QueueManagementSystemComponent = (props) => {
         } else if (AppointmentUsersData.appointment.status === 'ไม่สำเร็จ') {
             statusElementDetail.classList.remove(...statusElementDetail.classList);
             statusElementDetail.classList.add("failed-background");
-        } else if (AppointmentUsersData.appointment.status === 'รอยืนยันสิทธิ์') {
+        } else if (AppointmentUsersData.appointment.status === 'ลงทะเบียนแล้ว') {
             statusElementDetail.classList.remove(...statusElementDetail.classList);
             statusElementDetail.classList.add("pending-confirmation-background");
         }
@@ -428,7 +456,7 @@ const QueueManagementSystemComponent = (props) => {
                                 ))
                                 ) : (
                                     <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                    <ScaleLoader color={"#36D7B7"} size={25} />
+                                    <ScaleLoader color={"#54B2B0"} size={25} />
                                 </div>
                                 )}
 

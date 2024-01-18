@@ -21,19 +21,19 @@ const UserChooseClinic = () => {
 
                 <NavbarUserComponent/>
             </header>
-            <div className='user-body'>
-            <h2 className='userrheader' style={{marginLeft:45,marginTop:20}}>คลินิก</h2>
+            <div className='user-body' style={{padding:0}}>
+            <h2 className='userrheader' >คลินิก</h2>
             <div className="clinic-function">
                 <Link to="/appointment/add" className="clinic-card" style={{marginTop:10}}>
                     <p>
-                    <b>คลินิกทั่วไป</b>
+                    <p className= "user-choose-button-main-text">คลินิกทั่วไป</p>
                     </p>
                     <img className="clinic" src={logo1} alt="คลินิกทั่วไป" />
                 </Link>
 
                 <Link to="/appointment/add" className="clinic-card">
                     <p>
-                    <b>คลินิกเฉพาะทาง</b>
+                    <p className= "user-choose-button-main-text">คลินิกเฉพาะทาง</p>
                     </p>
                     <txt>(หู คอ จมูก)</txt>
                     <img className="clinic" src={logo2} alt="คลินิกเฉพาะทาง" />
@@ -41,14 +41,14 @@ const UserChooseClinic = () => {
 
                 <Link to="/appointment/add" className="clinic-card">
                     <p>
-                    <b>คลินิกกายภาพ</b>
+                    <p className= "user-choose-button-main-text">คลินิกกายภาพ</p>
                     </p>
                     <img className="clinic" src={logo3} alt="คลินิกกายภาพ" />
                 </Link>
 
                 <Link to="/appointment/add" className="clinic-card">
                     <p>
-                    <b>คลินิกฝังเข็ม</b>
+                    <p className= "user-choose-button-main-text">คลินิกฝังเข็ม</p>
                     </p>
                     <img className="clinic" src={logo4} alt="คลินิกฝังเข็ม" />
                 </Link>

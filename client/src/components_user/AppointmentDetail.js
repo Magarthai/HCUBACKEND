@@ -21,7 +21,7 @@ const AppointmentDetail = (props) => {
             <div className="user-body">
                 <div className="user-AppointmenDetail-Card_container gap-32">
                     <div className="user-AppointmenDetail-Card colorPrimary-800">
-                        <h2 className="user-AppointmenDetail-Card_title">นัดหมาย</h2>
+                        <h2 className="user-AppointmenDetail-Card_title" style={{marginTop:10}}>นัดหมาย</h2>
                         <p className="textBody-big gap-4">ID : 64000000000</p>
                         <p className="textBody-big gap-4">ชื่อ-นามสกุล : Rawisada Anurutikun</p>
                         <p className="textBody-big gap-4">คลินิก : คลินิกทั่วไป</p>
@@ -35,7 +35,7 @@ const AppointmentDetail = (props) => {
                 </div>
 
                 <div className="user-AppointmenDetail-Button_container">
-                    <a className="btn btn-primary" href="/appointment" role="button"  target="_parent">หน้าแรก</a>
+                    <a className="btn btn-primary" href="/appointment" role="button"  target="_parent">ย้อนกลับ</a>
                 </div>
             </div>
     

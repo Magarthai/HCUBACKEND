@@ -156,11 +156,11 @@ const router = createBrowserRouter([
     element: <ProtectRoute><UserHomeComponent/></ProtectRoute>
   },
   {
-    path: "/apppointment/edit",
+    path: "/appointment/edit",
     element: <ProtectRoute><UserEditAppointment/></ProtectRoute>
   },
   {
-    path: "/apppointment/history",
+    path: "/appointment/history",
     element: <ProtectRoute><UserHistoryAppointment/></ProtectRoute>
   },
   {

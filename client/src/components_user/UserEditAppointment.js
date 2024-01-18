@@ -71,14 +71,12 @@ const UserEditAppointment = (props) =>{
                     <div className="user-EditAppointment-Dropdown_title">
                         <h4>ช่วงเวลา</h4>
                     </div>
-                    <dropdown>
                         <select className="user-EditAppointment-Dropdown_time">
                             <option disabled selected hidden>กรุณาเลือกช่วงเวลา</option>
                             <option>15/12/2023</option>
                             <option>16/12/2023</option>
                             <option>20/12/2023</option>
                         </select>
-                    </dropdown>
 
                 </div>
 

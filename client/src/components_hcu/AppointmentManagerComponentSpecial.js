@@ -8,6 +8,7 @@ import { db, getDocs, collection, doc, getDoc ,firestore} from "../firebase/conf
 import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
+import { PulseLoader } from "react-spinners";
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 
@@ -285,7 +286,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 appointmentSymptom,
                 appointmentNotation,
                 clinic: "คลินิกเฉพาะทาง",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
 
             const usersCollection = collection(db, 'users');
@@ -360,7 +361,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
                 clinic: "คลินิกเฉพาะทาง",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
     
             await updateDoc(timetableRef, updatedTimetable);
@@ -627,6 +628,7 @@ const AppointmentManagerComponentSpecial = (props) => {
         }
         return isoDate;
     }
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         document.title = 'Health Care Unit';
@@ -655,8 +657,12 @@ const AppointmentManagerComponentSpecial = (props) => {
 
 
             fetchUserDataWithAppointments();
+            const timeout = setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
         console.log("AppointmentUsersData XD", AppointmentUsersData)
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
@@ -690,6 +696,9 @@ const AppointmentManagerComponentSpecial = (props) => {
         else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
             element.style.color = '#D88C09'; 
         }
+        else if(element.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            element.style.color = '#A1A1A1'; 
+        }
         else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
             element.style.color = '#A1A1A1'; 
         }
@@ -714,7 +723,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("failed-background");
             }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
+            else if (statusElementDetail.textContent.trim() === 'ลงทะเบียนแล้ว') {
                 statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("pending-confirmation-background");
             }
@@ -734,6 +743,12 @@ const AppointmentManagerComponentSpecial = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
+
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin">
             <div className="admin-header">
             <div className="admin-hearder-item">
@@ -974,6 +989,7 @@ const AppointmentManagerComponentSpecial = (props) => {
 
             </div>
             </div>
+      )}
 
 
 

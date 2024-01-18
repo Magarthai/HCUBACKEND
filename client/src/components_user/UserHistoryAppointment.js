@@ -12,8 +12,10 @@ const UserHistoryAppointment = () => {
         
         <div className="user">
       <header className="user-header">
+       
           <h2 >รายการนัดหมาย</h2>
           <h3 >การดำเนินการนัดหมาย</h3>
+      
         <div className="HistoryAppointment-header-navbar">
           <NavbarUserComponent />
         </div>
@@ -27,7 +29,7 @@ const UserHistoryAppointment = () => {
 
         <div className="HistoryAppointment-body-card">
             <div className="HistoryAppointment-body-card-item">
-              <p className="HistoryAppointment-body-card-item-outDate">19/12/2023</p>
+              <p className="HistoryAppointment-body-card-item-outDate colorPrimary-800">19/12/2023</p>
               <div className="HistoryAppointment-body-card-item-innerCard">
                     <div className="HistoryAppointment-body-card-item-innerCard-TypeAppAndStatus">
                         <h1 className="HistoryAppointment-body-card-item-innerCard-Typeappointment">ยกเลิกนัดหมาย</h1>
@@ -51,7 +53,7 @@ const UserHistoryAppointment = () => {
             </div>
 
             <div className="HistoryAppointment-body-card-item">
-              <p className="HistoryAppointment-body-card-item-outDate">19/12/2023</p>
+              <p className="HistoryAppointment-body-card-item-outDate colorPrimary-800">19/12/2023</p>
               <div className="HistoryAppointment-body-card-item-innerCard">
                     <div className="HistoryAppointment-body-card-item-innerCard-TypeAppAndStatus">
                         <h1 className="HistoryAppointment-body-card-item-innerCard-Typeappointment">ขอเลื่อนนัดหมาย</h1>

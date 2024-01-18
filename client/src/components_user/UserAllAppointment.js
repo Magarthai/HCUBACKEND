@@ -45,23 +45,7 @@ const UserAllAppointment = () => {
         if (AppointmentUsersData.length <= 0) {
             fetchUserDataWithAppointments();
         }
-        let statusElementDetail = document.getElementById("detail-appointment-status");
-    
-        if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
-                console.log("Adding Class...");
-                statusElementDetail.classList.add("confirmed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
-                statusElementDetail.classList.add("completed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
-                statusElementDetail.classList.add("failed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธ์') {
-                statusElementDetail.classList.add("pending-confirmation-background");
-            }
-        }
+       
 
     
         console.log("AppointmentUsersData", AppointmentUsersData);
@@ -131,6 +115,21 @@ const UserAllAppointment = () => {
 
 
     };
+
+    const renderStatusClass = (status) => {
+        switch (status) {
+          case 'ยืนยันสิทธิ์แล้ว':
+            return 'user-appointment-status2';
+          case 'เสร็จสิ้น':
+            return 'user-appointment-status';
+          case 'ไม่สำเร็จ':
+            return 'user-appointment-status1 ';
+          case 'ลงทะเบียนแล้ว':
+            return 'user-appointment-status3';
+          default:
+            return 'user-appointment-status3 ';
+        }
+      };
 
 
 
@@ -250,7 +249,7 @@ const UserAllAppointment = () => {
                         appointmentId: doc.id,
                         appointmentuid: doc.id,
                         ...appointmentData,
-                    };
+                    };  
                 });
 
 
@@ -329,6 +328,7 @@ const UserAllAppointment = () => {
         return userDatas;
     };
 
+    
     return(
             <div className="user">
                     <header className="user-header">
@@ -394,40 +394,41 @@ const UserAllAppointment = () => {
                                 </div>
                             </div>
 
-                            
 
                         ) : (
                             <div className="user-appointment-card">
 
                             <div className="user-header-appointment-card">
-                                <label><b className='user-appointment-Bold-letter'>คลินิก</b></label>
-                                <div className="user-appointment-status">
-                                    เสร็จสิ้น
+                                <label><b className='user-appointment-Bold-letter'>{AppointmentUserData.appointment.clinic}</b></label>
+                                <div className={`${renderStatusClass(AppointmentUserData.appointment.status)}`}>
+                                {AppointmentUserData.appointment.status}
                                 </div>
                             </div>
-                            <div className="user-appointment-description1">
-                                <img className="user-appointment-icon-card" src={icon1} alt="icon-calendar" />
-                                <lable>05/12/2023</lable>
-                            </div>
-                            
-                            <div className="user-appointment-description1">
-                                <img className="user-appointment-icon-card" src={icon2} alt="icon-clock" />
-                                <lable>10:01 - 10:06</lable>
-                            </div>
-                            
-                            <div className="user-appointment-description2">
-                                <label><b className='user-appointment-Bold-letter'>สาเหตุการนัดหมาย</b></label> <br></br>
-                                <lable>: ตรวจรักษาโรค</lable>
-                            </div>
-                            
-                            <div className="user-appointment-description2">
-                                <label><b className='user-appointment-Bold-letter'>อาการ</b></label> <br></br>
-                                <lable>: มีอาการปวดหัว อาเจียน</lable>
-                            </div>
 
-                            <lable className="user-appointment-warn">หมายเหตุ</lable> <br></br>
-                            <lable className="user-appointment-warn">: กรุณามาก่อนเวลา 10 นาที</lable>
-                        </div>
+                                {/* ข้อมูลการนัดหมาย */}
+                                <div className="user-appointment-description1">
+                                    <img className="user-appointment-icon-card" src={icon1} alt="icon-calendar" />
+                                    <label>{AppointmentUserData.appointment.appointmentDate}</label>
+                                </div>
+
+                                <div className="user-appointment-description1">
+                                    <img className="user-appointment-icon-card" src={icon2} alt="icon-clock" />
+                                    <label>{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</label>
+                                </div>
+
+                                <div className="user-appointment-description2">
+                                    <label><b className='user-appointment-Bold-letter'>สาเหตุการนัดหมาย</b></label> <br></br>
+                                    <label>: {AppointmentUserData.appointment.appointmentNotation}</label>
+                                </div>
+
+                                <div className="user-appointment-description2">
+                                    <label><b className='user-appointment-Bold-letter'>อาการ</b></label> <br></br>
+                                    <label>: {AppointmentUserData.appointment.appointmentSymptom}</label>
+                                </div>
+
+                                <label className="user-appointment-warn">หมายเหตุ</label> <br></br>
+                                <label className="user-appointment-warn">: กรุณายืนยันสิทธิ์ก่อน 15 นาที</label>
+                            </div>
                                 
                                 )}
                                 </div>
@@ -444,7 +445,10 @@ const UserAllAppointment = () => {
                     </body>
                     <footer className="UserAllAppointmet-footermenu">
                         <lable class="user-appointment-vertical"><Link to="/appointment/list"><y>นัดหมายทั้งหมด</y></Link></lable>
-                        <lable><Link to="/apppointment/history"><y>ประวัติการดำเนิน<br></br>การนัดหมาย</y></Link></lable>
+                        <div className="user-appointment-middle">
+                        <div className="user-appointment-middle-line"></div>
+                        </div>
+                        <lable class="user-appointment-vertical"><Link to="/appointment/history"><y>ประวัติการดำเนิน<br></br>การนัดหมาย</y></Link></lable>
                     </footer>
                 </div>
 

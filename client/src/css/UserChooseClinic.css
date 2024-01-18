@@ -38,25 +38,28 @@
   border-radius: var(--Radius-Card, 20px);
   background-color: #263A50;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.20);
-  transition: all 0.3s ease;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.user-choose-button-main-text{
+  font-size: 23px;
+  font-weight: 500;
 }
 .clinic-card img{
   width: 16%;
   position: absolute;
   left: 300px;
   bottom: 20px;
-  transition: transform 0.3s ease;
 }
 .clinic-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
 }
 .userrheader{
   color: #263A50;
   font-weight: 500;
   font-size: 25px;
+  padding-left: 5%;
+  padding-right: 5%;
 }
 
 @media (max-width: 505px) {

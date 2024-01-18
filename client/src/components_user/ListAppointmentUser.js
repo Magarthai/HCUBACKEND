@@ -1,32 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import "../css/UserListAppointmentUser.css";
 import { Link } from "react-router-dom";
-import Popup from 'reactjs-popup';
 import NavbarUserComponent from "../components_user/NavbarUserComponent";
 import item1 from "../picture/calendar-dark.png";
 import item2 from "../picture/calen-search.png";
 import item3 from "../picture/clock-dark.png";
-import item4 from "../picture/close.png";
 
     
 const ListAppointmentUser = () => {
-
-  const [isOpenPop, setIsOpenPop] = useState(false);
-
-  const handleOpenPopup = () => {
-      setIsOpenPop(true); // เปิด Popup 1
-  };
-  const handleClosePopup = () => {
-      setIsOpenPop(false); // ปิด Popup 1
-  };
-  
   return (
     <div className="user">
       <header className="user-header">
-        <div className="AppointList-header-txt">
+       
           <h2>รายการนัดหมาย</h2>
           <h3>นัดหมายทั้งหมด</h3>
-        </div>
+        
         <div className="AppointList-header-navbar">
           <NavbarUserComponent />
         </div>
@@ -53,33 +41,9 @@ const ListAppointmentUser = () => {
                       <img className="mini-card-icon" src={item3} alt="icon-clock"/>
                       <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
                     </div>
-                    <div className="AppointList-body-card-item-innerCard-DescClick" onClick={handleOpenPopup}>
+                    <div className="AppointList-body-card-item-innerCard-DescClick">
                       คลิกเพื่อดูรายละเอียด
                     </div>
-                    <Popup className="Popup-ListAppointment" open={isOpenPop} onClose={() => setIsOpenPop(false)}>
-                                    <div className="Popup-ListAppointment-ref">
-                                      <div className="Popup-ListAppointment-ref-ClinicNameAndCloseBtn">
-                                        <p className="Popup-ListAppointment-ref-ClinicName">คลินิกทั่วไป</p>
-                                        <img className="PopupCloseBtn" src={item4} alt="icon-close" onClick={handleClosePopup}/>
-                                      </div>
-                                      <div className="Popup-ListAppointment-ref-DescDate">
-                                        <img className="mini-card-icon" src={item1} alt="icon-calen"/>
-                                        <p className="Popup-ListAppointment-ref-DescDate-txt">19/12/2023</p>
-                                      </div>
-                                      <div className="Popup-ListAppointment-ref-DescTime">
-                                        <img className="mini-card-icon" src={item3} alt="icon-clock"/>
-                                        <p className="Popup-ListAppointment-ref-DescTime-txt">10:00 - 16:00</p>
-                                      </div>
-                                      <div className="Popup-ListAppointment-ref-CauseSympt">
-                                        <p className="Popup-ListAppointment-ref-CauseSympt-Ques">สาเหตุการนัดหมาย</p>
-                                        <p className="Popup-ListAppointment-ref-CauseSympt-Ans">: ตรวจรักษาโรค</p>
-                                      </div>
-                                      <div className="Popup-ListAppointment-ref-BasicSympt">
-                                        <p className="Popup-ListAppointment-ref-BasicSympt-Ques">อาการเบื้องต้น</p>
-                                        <p className="Popup-ListAppointment-ref-BasicSympt-Ans">: มีอาการปวดหัว อาเจียน</p>
-                                      </div>
-                                    </div>
-                                </Popup>
                   </div>
               </div>
           </div>
@@ -98,14 +62,12 @@ const ListAppointmentUser = () => {
                       <img className="mini-card-icon" src={item3} alt="icon-clock"/>
                       <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
                     </div>
-                    <div className="AppointList-body-card-item-innerCard-DescClick" onClick={handleOpenPopup}>
+                    <div className="AppointList-body-card-item-innerCard-DescClick">
                       คลิกเพื่อดูรายละเอียด
                     </div>
-                    
                   </div>
               </div>
           </div>
-          
         </div>
 
         <div className="AppointList-body-BetweenCard">
@@ -129,7 +91,7 @@ const ListAppointmentUser = () => {
                   <div className="AppointList-body-cardCommitted-item-innerCard-TimeAndClick">
                     <div className="AppointList-body-cardCommitted-item-innerCard-DescTime">
                       <img className="mini-card-icon" src={item3} alt="icon-clock"/>
-                      <p className="AppointList-body-cardCommitted-item-innerCard-DescTime-txt">10:00 - 16:00</p>
+                      <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
                     </div>
                   </div>
               </div>
@@ -150,7 +112,7 @@ const ListAppointmentUser = () => {
                   <div className="AppointList-body-cardCommitted-item-innerCard-TimeAndClick">
                     <div className="AppointList-body-cardCommitted-item-innerCard-DescTime">
                       <img className="mini-card-icon" src={item3} alt="icon-clock"/>
-                      <p className="AppointList-body-cardCommitted-item-innerCard-DescTime-txt">10:00 - 16:00</p>
+                      <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
                     </div>
                   </div>
               </div>
@@ -159,7 +121,7 @@ const ListAppointmentUser = () => {
         </div>
 
         <div className="AppointList-body-returnButton">
-          <button className="return-btn">ย้อนกลับ</button>
+          <button className="return-btn" style={{width:'94%', marginTop:20}}>ย้อนกลับ</button>
         </div>
       </div>
       
