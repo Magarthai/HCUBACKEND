@@ -41,13 +41,9 @@ const CalendarAdminComponent = (props) => {
     }
 
     for (let i = 1; i <= lastDateofMonth; i++) {
-      const isToday = i === new Date().getDate() &&
-        currentMonth === new Date().getMonth() + 1 &&
-        currentYear === new Date().getFullYear()
-          ? "active"
-          : "";
+      const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "active": "";
       
-      const isSelected = i === selectedDateIndex ? "focused" : "";
+      const isSelected = i === selectedDateIndex && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "focused" : "";
       const handleClick = () => handleDateClick(i);
 
       if ((i >= new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear()) ||

@@ -46,7 +46,7 @@ const CalendarUserComponent = (props) => {
         currentYear === new Date().getFullYear()
           ? "active"
           : "";
-      const isSelected = i === selectedDateIndex ? "focused" : "";
+      const isSelected = i === selectedDateIndex && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "focused" : "";
       const handleClick = () => handleDateClick(i);
 
       if (
