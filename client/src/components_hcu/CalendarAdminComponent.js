@@ -12,6 +12,8 @@ const CalendarAdminComponent = (props) => {
   ];
   const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const [selectedDateIndex, setSelectedDateIndex] = useState(null);
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(null);
+  const [selectedYearIndex, setSelectedYearIndex] = useState(null);
 
   const handleDateClick = (day) => {
     const selectedDate = new Date(currentYear, currentMonth - 1, day);
@@ -24,7 +26,8 @@ const CalendarAdminComponent = (props) => {
       dayName: dayName,
     };
     setSelectedDateIndex(day);
-    console.log(selectedDateIndex)
+    setSelectedMonthIndex(currentMonth)
+    setSelectedYearIndex(currentYear)
     setSelectedDate(formattedSelectedDate);
     props.onDateSelect(formattedSelectedDate);
 };
@@ -43,7 +46,7 @@ const CalendarAdminComponent = (props) => {
     for (let i = 1; i <= lastDateofMonth; i++) {
       const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "active": "";
       
-      const isSelected = i === selectedDateIndex ? "focused" : "";
+      const isSelected = i === selectedDateIndex && currentMonth === selectedMonthIndex && currentYear === selectedYearIndex? "focused" : "";
       const handleClick = () => handleDateClick(i);
 
       if ((i >= new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear()) ||
