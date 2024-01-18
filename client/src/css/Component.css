@@ -186,7 +186,7 @@
         border: 1px solid #0a0f157a;
         height: 40px;
         margin-bottom: 10px;
-        color: #263A50;
+        color: #263A50 !important;
     }
     .center{
         width: 100%;
