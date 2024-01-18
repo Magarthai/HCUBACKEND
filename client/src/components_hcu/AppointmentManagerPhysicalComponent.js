@@ -1610,7 +1610,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                         }}
                                         className={selectedCount >= 2 ? 'selected' : ''}
                                     >
-                                        {timeOptionss.map((timeOption, index) => (
+                                        {timeOptions.map((timeOption, index) => (
                                             <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
                                                 {timeOption.label}
                                             </option>

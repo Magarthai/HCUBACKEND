@@ -31,7 +31,7 @@ const UserChooseClinic = () => {
                     <img className="clinic" src={logo1} alt="คลินิกทั่วไป" />
                 </Link>
 
-                <Link to="/appointment/add" className="clinic-card">
+                <Link to="/appointment/addSpecial" className="clinic-card">
                     <p>
                     <p className= "user-choose-button-main-text">คลินิกเฉพาะทาง</p>
                     </p>
@@ -39,14 +39,14 @@ const UserChooseClinic = () => {
                     <img className="clinic" src={logo2} alt="คลินิกเฉพาะทาง" />
                 </Link>
 
-                <Link to="/appointment/add" className="clinic-card">
+                <Link to="/appointment/addPhysic" className="clinic-card">
                     <p>
                     <p className= "user-choose-button-main-text">คลินิกกายภาพ</p>
                     </p>
                     <img className="clinic" src={logo3} alt="คลินิกกายภาพ" />
                 </Link>
 
-                <Link to="/appointment/add" className="clinic-card">
+                <Link to="/appointment/addNeedle" className="clinic-card">
                     <p>
                     <p className= "user-choose-button-main-text">คลินิกฝังเข็ม</p>
                     </p>

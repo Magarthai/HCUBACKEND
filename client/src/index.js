@@ -18,7 +18,7 @@ import UserAllAppointment from './components_user/UserAllAppointment.js';
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
 import AdminAppointmentManagerPhysicalComponent from './components_hcu/AppointmentManagerPhysicalComponent.js';
 import UserDateateAppointment from './components_user/DateAppointment.js';
-import AddAppointmentUser from './components_user/AddAppointmentUser.js';
+import AddAppointmentUserGeneral from './components_user/AddAppointmentUserGeneral.js';
 import AdminAppointmentRequestManagementComponent from './components_hcu/AppointmentRequestManagementComponent.js';
 import AdminAppointmentRequestManagementHistoryComponent from './components_hcu/AppointmentRequestManagementHistoryComponent.js';
 import AdminQueueManagementSystemComponent from './components_hcu/QueueManagementSystemComponent.js';
@@ -43,6 +43,9 @@ import ProtectRoute from './auth/protectRoute.jsx';
 import QueueManagementSystemComponentPhysic from './components_hcu/QueueManagementSystemComponentPhysic.js';
 import QueueManagementSystemComponentSpecial from './components_hcu/QueueManagementSystemComponentSpecial.js';
 import QueueManagementSystemComponentNeedle from './components_hcu/QueueManagementSystemComponentNeedle.js'
+import AddAppointmentUserNeedle from './components_user/AddAppointmentUserNeedle.js';
+import AddAppointmentUserPhysic from './components_user/AddAppointmentUserPhysics.js';
+import AddAppointmentUserSpecial from './components_user/AddAppointmentUserSpecial.js';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -124,8 +127,8 @@ const router = createBrowserRouter([
 
 
   {
-    path: "/appointment/detail",
-    element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
+    path: "/appointment/detail/:id",
+    element: <ProtectRoute><AppointmentDetail /></ProtectRoute>
   },
   {
     path: "/appointment",
@@ -149,8 +152,21 @@ const router = createBrowserRouter([
   },
   {
     path: "/appointment/add",
-    element: <ProtectRoute><AddAppointmentUser/></ProtectRoute>
+    element: <ProtectRoute><AddAppointmentUserGeneral/></ProtectRoute>
   },
+  {
+    path: "/appointment/addSpecial",
+    element: <ProtectRoute><AddAppointmentUserSpecial/></ProtectRoute>
+  },
+  {
+    path: "/appointment/addPhysic",
+    element: <ProtectRoute><AddAppointmentUserPhysic/></ProtectRoute>
+  },
+  {
+    path: "/appointment/addNeedle",
+    element: <ProtectRoute><AddAppointmentUserNeedle/></ProtectRoute>
+  },
+
   {
     path: "/home",
     element: <ProtectRoute><UserHomeComponent/></ProtectRoute>
