@@ -5,20 +5,6 @@
     height: 24px;
 }
 
-.head-txt-AppointList{
-    font-size: 28px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-.head-txt-AppointAll{
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
 .AppointList-body-searchItem{
     display: flex;
     flex-direction: row;
@@ -62,7 +48,7 @@
 .AppointList-body-card-item-innerCard-ClinicName{
     margin-bottom: 10px;
     color: #263A50;
-    font-size: 20px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -170,7 +156,7 @@
 
 .AppointList-body-cardCommitted-item-innerCard-ClinicName{
     color: #263A50;
-    font-size: 20px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -230,6 +216,72 @@
     margin-top: 15px;
     color: #ffffff;
     text-decoration: none;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
 }
 
 
+/*---------- popup ----------*/
+
+.Popup-ListAppointment{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 50%;
+}
+
+.Popup-ListAppointment-ref{
+    background-color: #FBFFFF;
+    padding: 25px;
+    border-radius: var(--Radius-Tag, 12px);
+    box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25);
+    width: 400px;
+}
+
+.Popup-ListAppointment-ref-ClinicNameAndCloseBtn{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+
+.PopupCloseBtn{
+    width: 32px;
+    height: 32px;
+}
+
+.Popup-ListAppointment-ref-ClinicName{
+    color: #263A50;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.Popup-ListAppointment-ref-DescDate, .Popup-ListAppointment-ref-DescTime{
+    display: flex;
+    gap: 3px;
+}
+
+.Popup-ListAppointment-ref-DescDate-txt, .Popup-ListAppointment-ref-DescTime-txt{
+    color: #263A50;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+.Popup-ListAppointment-ref-CauseSympt,.Popup-ListAppointment-ref-BasicSympt{
+    display: flex;
+    flex-direction: column;
+}
+
+.Popup-ListAppointment-ref-CauseSympt-Ans,.Popup-ListAppointment-ref-BasicSympt-Ans{
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    margin-left: 10px;
+}
