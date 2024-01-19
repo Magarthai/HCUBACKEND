@@ -10,7 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 import "../css/AdminAppointmentComponent.css";
-
+import { PulseLoader } from "react-spinners";
 
 
 const AppointmentManagerPhysicalComponent = (props) => {
@@ -518,7 +518,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
         console.log("testxd", userDatas.timeslot.start)
         return userDatas;
     };
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
@@ -542,15 +542,20 @@ const AppointmentManagerPhysicalComponent = (props) => {
         };
 
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
+
 
         fetchUserDataWithAppointments();
         console.log("AppointmentUsersData XD", AppointmentUsersData)
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
 
-    }, [selectedDate,selectedDates, selectedDate1, selectedDate2, selectedDate3, selectedDate4, selectedDate5, timeOptions1, timeOptions2, timeOptions3, timeOptions4, timeOptions5]);
+    }, [selectedDate, selectedDates, selectedDate1, selectedDate2, selectedDate3, selectedDate4, selectedDate5, timeOptions1, timeOptions2, timeOptions3, timeOptions4, timeOptions5]);
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -600,7 +605,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 appointmentNotation,
                 clinic: "คลินิกฝั่งเข็ม",
                 type: "talk",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
 
             const usersCollection = collection(db, 'users');
@@ -674,7 +679,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
                 clinic: "คลินิกฝั่งเข็ม",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
 
             await updateDoc(timetableRef, updatedTimetable);
@@ -899,7 +904,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
             x.style.display = "none";
 
-        
+
         }
     };
 
@@ -1237,7 +1242,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         appointmentSymptom: appointmentSymptom,
                         appointmentNotation: appointmentNotation,
                         clinic: "คลินิกฝั่งเข็ม",
-                        status: "รอยืนยันสิทธิ์",
+                        status: "ลงทะเบียนแล้ว",
                         type: "main",
                     };
                     console.log(`time`, state[`appointmentTime${i}`],)
@@ -1285,14 +1290,14 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
     const resetForm = () => {
         window.location.reload();
-      };
+    };
 
 
-    
+
     const adminCards = document.querySelectorAll('.admin-appointment-card');
 
     function handleCardClick(event) {
-        adminCards.forEach(card => card.classList.remove('focused'));    
+        adminCards.forEach(card => card.classList.remove('focused'));
         event.currentTarget.classList.add('focused');
     }
 
@@ -1301,20 +1306,23 @@ const AppointmentManagerPhysicalComponent = (props) => {
     });
 
     const statusElements = document.querySelectorAll('.admin-appointment-status');
-    
+
     function changeStatusTextColor(element) {
         if (element.textContent.trim() === 'เสร็จสิ้น') {
             element.style.color = '#098B66';
-            
+
         }
-        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
-            element.style.color = '#C11F1F'; 
+        else if (element.textContent.trim() === 'ไม่สำเร็จ') {
+            element.style.color = '#C11F1F';
         }
-        else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
-            element.style.color = '#D88C09'; 
+        else if (element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
+            element.style.color = '#D88C09';
         }
-        else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
-            element.style.color = '#A1A1A1'; 
+        else if (element.textContent.trim() === 'รอยืนยันสิทธิ์') {
+            element.style.color = '#A1A1A1';
+        }
+        else if (element.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            element.style.color = '#A1A1A1';
         }
     }
 
@@ -1322,25 +1330,25 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
     let statusElementDetail = document.getElementById("detail-appointment-status");
 
-        if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                console.log("Adding Class...");
-                
-                statusElementDetail.classList.add("confirmed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("completed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("failed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("pending-confirmation-background");
-            }
+    if (statusElementDetail) {
+        if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            console.log("Adding Class...");
+
+            statusElementDetail.classList.add("confirmed-background");
+        }
+        else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("completed-background");
+        }
+        else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("failed-background");
+        }
+        else if (statusElementDetail.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add("pending-confirmation-background");
+        }
     }
 
 
@@ -1357,6 +1365,12 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
+
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin">
                 <div className="admin-header">
                     <div className="admin-hearder-item">
@@ -1417,8 +1431,8 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                             </div>
                                         </div>
                                     ))}
-                                <div style={{ marginTop:20,marginBottom: 10,display:"flex",textAlign:"center",alignItems:"center",justifyContent:"center"}}><p className="colorNeutralBlack-400">---------------- นัดหมายฝั่งเข็ม ----------------</p></div>
-                            
+                                <div style={{ marginTop: 20, marginBottom: 10, display: "flex", textAlign: "center", alignItems: "center", justifyContent: "center" }}><p className="colorNeutralBlack-400">---------------- นัดหมายฝั่งเข็ม ----------------</p></div>
+
                                 {AppointmentUsersData
                                     .filter(appointmentUserData => appointmentUserData.appointment.type === "main")
                                     .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
@@ -1452,11 +1466,11 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     <div className="admin-appointment-box">
                         <div id="detail-appointment" className="colorPrimary-800">
                             {selectedDate && `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                            <div className="admin-appointment-detail-header">
-                                <div className="admin-appointment-detail-header-items2"></div>
-                                <h2 className="admin-appointment-detail-header-items1 center">รายละเอียดนัดหมาย</h2>
-                                <div className="admin-appointment-detail-header-items2 admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
-                            </div>
+                                <div className="admin-appointment-detail-header">
+                                    <div className="admin-appointment-detail-header-items2"></div>
+                                    <h2 className="admin-appointment-detail-header-items1 center">รายละเอียดนัดหมาย</h2>
+                                    <div className="admin-appointment-detail-header-items2 admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
+                                </div>
                             ) : (<h2 className="center">รายละเอียดนัดหมาย</h2>)}
                             <p id="detail-appointment-date" className="admin-textBody-big"></p>
                             <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
@@ -1700,11 +1714,11 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">จำนวนครั้ง</label><br></br>
-                            <input type="text" className="form-control appointment-input" onChange={(e) => {inputValue("time")(e);}} placeholder="5" />
+                            <input type="text" className="form-control appointment-input" onChange={(e) => { inputValue("time")(e); }} placeholder="5" />
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">ระยะห่าง(วัน)</label><br></br>
-                            <input type="text" className="form-control appointment-input" onChange={(e) => { inputValue("timelength")(e);  }} placeholder="7" />
+                            <input type="text" className="form-control appointment-input" onChange={(e) => { inputValue("timelength")(e); }} placeholder="7" />
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
@@ -1720,10 +1734,10 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         </div>
                         <div className="admin-timetable-btn">
                             <button type="button" className="btn-secondary btn-systrm" onClick={() => {
-                            resetForm();
-                            openContinueAddinAppointment();
-                        }}
-                        >กลับ</button>
+                                resetForm();
+                                openContinueAddinAppointment();
+                            }}
+                            >กลับ</button>
                             <button type="button" className="btn-primary btn-systrm" onClick={() => submitFormAddContinue()} >ถัดไป</button>
                         </div>
 
@@ -1763,10 +1777,10 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         </div>
                         <br></br>
                         <div className="admin-timetable-btn">
-                            <button type="button" className="btn-secondary btn-systrm"onClick={() => {
-                            resetForm();
-                            openContinueAddinAppointment2(time);
-                        }}>กลับ</button>
+                            <button type="button" className="btn-secondary btn-systrm" onClick={() => {
+                                resetForm();
+                                openContinueAddinAppointment2(time);
+                            }}>กลับ</button>
                             <input type="submit" value="เพิ่มนัดหมายต่อเนื่อง" className="btn-primary btn-systrm" target="_parent" disabled={isAutoSubmitEnabled} />
                         </div>
 
@@ -1775,7 +1789,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
                 </div>
             </div>
-
+      )}
 
 
 

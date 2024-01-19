@@ -12,8 +12,6 @@ const CalendarUserComponent = (props) => {
   ];
   const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const [selectedDateIndex, setSelectedDateIndex] = useState(null);
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(null);
-  const [selectedYearIndex, setSelectedYearIndex] = useState(null);
 
   const handleDateClick = (day) => {
     const selectedDate = new Date(currentYear, currentMonth - 1, day);
@@ -26,8 +24,6 @@ const CalendarUserComponent = (props) => {
       dayName: dayName,
   };
   setSelectedDateIndex(day);
-  setSelectedMonthIndex(currentMonth)
-  setSelectedYearIndex(currentYear)
   setSelectedDate(formattedSelectedDate);
   props.onDateSelect(formattedSelectedDate);
 };
@@ -50,7 +46,7 @@ const CalendarUserComponent = (props) => {
         currentYear === new Date().getFullYear()
           ? "active"
           : "";
-      const isSelected = i === selectedDateIndex && currentMonth === selectedMonthIndex && currentYear === selectedYearIndex? "focused" : "";
+      const isSelected = i === selectedDateIndex ? "focused" : "";
       const handleClick = () => handleDateClick(i);
 
       if (

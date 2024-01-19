@@ -57,7 +57,7 @@ const QueueManagementSystemComponentSpecial = (props) => {
                 console.log(";-;", currentFormattedTime, timeslotEnd,timeslotStart);
         
                 if (
-                    appointment.status == 'รอยืนยันสิทธิ์' &&
+                    appointment.status == 'ลงทะเบียนแล้ว' &&
                     currentFormattedTime >= timeslotStart &&
                     currentFormattedTime >= timeslotEnd
                 ) {
@@ -225,10 +225,14 @@ const QueueManagementSystemComponentSpecial = (props) => {
         else if (element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
             element.style.color = '#D88C09';
         }
+        else if (element.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            element.style.color = '#A1A1A1';
+        }
         else if (element.textContent.trim() === 'รอยืนยันสิทธิ์') {
             element.style.color = '#A1A1A1';
         }
     }
+
 
     statusElements.forEach(changeStatusTextColor);
 
@@ -336,7 +340,7 @@ const QueueManagementSystemComponentSpecial = (props) => {
         } else if (AppointmentUsersData.appointment.status === 'ไม่สำเร็จ') {
             statusElementDetail.classList.remove(...statusElementDetail.classList);
             statusElementDetail.classList.add("failed-background");
-        } else if (AppointmentUsersData.appointment.status === 'รอยืนยันสิทธิ์') {
+        } else if (AppointmentUsersData.appointment.status === 'ลงทะเบียนแล้ว') {
             statusElementDetail.classList.remove(...statusElementDetail.classList);
             statusElementDetail.classList.add("pending-confirmation-background");
         }
@@ -429,7 +433,7 @@ const QueueManagementSystemComponentSpecial = (props) => {
                                 ))
                                 ) : (
                                     <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                    <ScaleLoader color={"#36D7B7"} size={25} />
+                                    <ScaleLoader color={"#54B2B0"} size={25} />
                                 </div>
                                 )}
 

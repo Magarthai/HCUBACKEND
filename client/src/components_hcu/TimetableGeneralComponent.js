@@ -11,12 +11,12 @@ import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import "../css/Component.css";
-
+import { PulseLoader } from "react-spinners";
 const TimetableGeneralComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
     const animationFrameRef = useRef();
-    const { user,userData } = useUserAuth();
-    const [zoomLevel, setZoomLevel] = useState(1); 
+    const { user, userData } = useUserAuth();
+    const [zoomLevel, setZoomLevel] = useState(1);
     const [timetable, setTimetable] = useState([])
     const { id } = useParams();
     const [state, setState] = useState({
@@ -27,11 +27,11 @@ const TimetableGeneralComponent = (props) => {
         timeAppointmentEnd: "",
         numberAppointment: "",
         clinic: "",
-        timetableId: id || "", 
+        timetableId: id || "",
     })
 
 
-    const { addDay, timeStart, timeEnd, timeAppointmentStart, timeAppointmentEnd, numberAppointment, clinic ,timetableId} = state
+    const { addDay, timeStart, timeEnd, timeAppointmentStart, timeAppointmentEnd, numberAppointment, clinic, timetableId } = state
 
     const isSubmitEnabled =
         !addDay || !timeStart || !timeEnd || !timeAppointmentStart || !timeAppointmentEnd || !numberAppointment;
@@ -105,7 +105,7 @@ const TimetableGeneralComponent = (props) => {
         for (let i = 0; i < numberAppointment; i++) {
             const slotStart = new Date(start.getTime() + i * interval * 60000);
             const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-        
+
             if (slotEnd.getTime() > end.getTime()) {
                 timeablelist.push({
                     start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
@@ -113,16 +113,16 @@ const TimetableGeneralComponent = (props) => {
                 });
                 break;
             }
-        
+
             timeablelist.push({
                 start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
                 end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
             });
         }
-        
 
 
-        
+
+
 
         try {
             const additionalTImeTable = {
@@ -160,19 +160,19 @@ const TimetableGeneralComponent = (props) => {
         const start = new Date(`2000-01-01T${timeAppointmentStart}`);
         const end = new Date(`2000-01-01T${timeAppointmentEnd}`);
         const duration = (end - start) / 60000;
-    
+
         if (duration <= 0) {
             return;
         }
-    
+
         const timeablelist = [];
-    
+
         const interval = Math.floor(duration / numberAppointment);
-    
+
         for (let i = 0; i < numberAppointment; i++) {
             const slotStart = new Date(start.getTime() + i * interval * 60000);
             const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-    
+
             if (slotEnd.getTime() > end.getTime()) {
                 timeablelist.push({
                     start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -180,17 +180,17 @@ const TimetableGeneralComponent = (props) => {
                 });
                 break;
             }
-    
+
             timeablelist.push({
                 start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             });
         }
-    
+
         try {
             const timetableRef = doc(db, 'timeTable', timetableId);
             console.log(timetableId);  // Corrected from console.log(timetable.id)
-    
+
             const updatedTimetable = {
                 addDay: addDay,
                 timeStart: timeStart,
@@ -202,9 +202,9 @@ const TimetableGeneralComponent = (props) => {
                 timeablelist: timeablelist,
                 status: "Enabled",
             };
-    
+
             await updateDoc(timetableRef, updatedTimetable);
-    
+
             Swal.fire({
                 icon: "success",
                 title: "Alert",
@@ -218,15 +218,16 @@ const TimetableGeneralComponent = (props) => {
             console.error('Firebase update error:', firebaseError);
         }
     };
-    
 
 
 
+
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         fetchTimeTableData();
-        
+
         const updateShowTime = () => {
             const newTime = getShowTime();
             if (newTime !== showTime) {
@@ -246,8 +247,12 @@ const TimetableGeneralComponent = (props) => {
         responsivescreen();
 
         window.addEventListener("resize", responsivescreen);
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
 
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
@@ -325,37 +330,14 @@ const TimetableGeneralComponent = (props) => {
         let z = document.getElementById("Detailtimetable");
         console.log(timetable)
         if (window.getComputedStyle(x).display === "none") {
-          x.style.display = "block";
-          y.style.display = "none";
-          z.style.display = "none";
-          setsaveDetailId("")
-          setsaveEditId(timetable.id)
-      
-          setState((prevState) => ({
-            ...prevState,
-            addDay: timetable.addDay,
-            timeStart: timetable.timeStart,
-            timeEnd: timetable.timeEnd,
-            timeAppointmentStart: timetable.timeAppointmentStart,
-            timeAppointmentEnd: timetable.timeAppointmentEnd,
-            numberAppointment: timetable.numberAppointment,
-            clinic: "คลินิก",
-            timeablelist: timetable.timeablelist,
-            status: "Enabled",
-            timetableId: timetable.id, 
-          }));
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+            setsaveDetailId("")
+            setsaveEditId(timetable.id)
 
-        //   console.log(timetable.id)
-        //   window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
-        } else {
-            if(saveEditId === timetable.id){
-                x.style.display = "none";
-                setsaveEditId("")
-            }else{
-                setsaveEditId(timetable.id)
-      
-                setState((prevState) => ({
-                    ...prevState,
+            setState((prevState) => ({
+                ...prevState,
                 addDay: timetable.addDay,
                 timeStart: timetable.timeStart,
                 timeEnd: timetable.timeEnd,
@@ -365,17 +347,40 @@ const TimetableGeneralComponent = (props) => {
                 clinic: "คลินิก",
                 timeablelist: timetable.timeablelist,
                 status: "Enabled",
-                timetableId: timetable.id,  
+                timetableId: timetable.id,
+            }));
+
+            //   console.log(timetable.id)
+            //   window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
+        } else {
+            if (saveEditId === timetable.id) {
+                x.style.display = "none";
+                setsaveEditId("")
+            } else {
+                setsaveEditId(timetable.id)
+
+                setState((prevState) => ({
+                    ...prevState,
+                    addDay: timetable.addDay,
+                    timeStart: timetable.timeStart,
+                    timeEnd: timetable.timeEnd,
+                    timeAppointmentStart: timetable.timeAppointmentStart,
+                    timeAppointmentEnd: timetable.timeAppointmentEnd,
+                    numberAppointment: timetable.numberAppointment,
+                    clinic: "คลินิก",
+                    timeablelist: timetable.timeablelist,
+                    status: "Enabled",
+                    timetableId: timetable.id,
                 }));
 
                 // console.log(timetable.id)
             }
-         
+
         }
-      };
+    };
 
     const openDetailtimetable = (element, timetable) => {
-        
+
         let x = document.getElementById("Detailtimetable");
         let y = document.getElementById("Edittimetable");
         let z = document.getElementById("Addtimetable");
@@ -388,7 +393,7 @@ const TimetableGeneralComponent = (props) => {
             setsaveDetailId(timetable.id)
             let detailDay = timetable.addDay;
             let listtimetable = ""
-        
+
             if (detailDay === "monday") {
                 document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันจันทร์`
             } else if (detailDay === "tuesday") {
@@ -411,11 +416,11 @@ const TimetableGeneralComponent = (props) => {
             document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
             // window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
         } else {
-            if(saveDetailId === timetable.id){
+            if (saveDetailId === timetable.id) {
                 x.style.display = "none";
                 setsaveDetailId("")
             }
-            else{
+            else {
                 setsaveDetailId(timetable.id)
                 let detailDay = timetable.addDay;
                 let listtimetable = ""
@@ -440,14 +445,14 @@ const TimetableGeneralComponent = (props) => {
                 }
                 document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
                 // window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
-                
+
             }
-            
+
         }
 
     }
 
-    const Deletetimetable = async(element, timetable)  => {
+    const Deletetimetable = async (element, timetable) => {
         let detailDay = timetable.addDay;
         if (detailDay === "monday") {
             detailDay = 'วันจันทร์'
@@ -476,8 +481,8 @@ const TimetableGeneralComponent = (props) => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                try{
-                    deleteDoc(timetableRef,`${timetable.id}`)
+                try {
+                    deleteDoc(timetableRef, `${timetable.id}`)
                     console.log(`${timetable.id}`);
                     Swal.fire(
                         {
@@ -490,15 +495,15 @@ const TimetableGeneralComponent = (props) => {
                                 confirmButton: 'custom-confirm-button',
                             }
                         }
-                        ).then((result) => {
-                            if (result.isConfirmed) {
-                                fetchTimeTableData();
-                            }
-                        });
+                    ).then((result) => {
+                        if (result.isConfirmed) {
+                            fetchTimeTableData();
+                        }
+                    });
                 } catch {
 
                 }
-                
+
             } else if (
                 result.dismiss === Swal.DismissReason.cancel
             ) {
@@ -522,7 +527,7 @@ const TimetableGeneralComponent = (props) => {
     const adminCards = document.querySelectorAll('.card');
 
     function handleCardClick(event) {
-        adminCards.forEach(card => card.classList.remove('focused'));    
+        adminCards.forEach(card => card.classList.remove('focused'));
         event.currentTarget.classList.add('focused');
     }
 
@@ -545,13 +550,19 @@ const TimetableGeneralComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
+            
             <div className="clinic">
                 <a href="/timeTableGeneralAdmin" target="_parent" id="select">คลินิกทั่วไป</a>
                 <a href="/timeTableSpecialAdmin" target="_parent" >คลินิกเฉพาะทาง</a>
                 <a href="/timeTablePhysicalAdmin" target="_parent" >คลินิกกายภาพ</a>
                 <a href="/timeTableNeedleAdmin" target="_parent" >คลินิกฝั่งเข็ม</a>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
 
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin-timetable-system">
                 <div className="admin-timetable-system-item">
                     <div className="admin-timetable-system-top">
@@ -805,8 +816,8 @@ const TimetableGeneralComponent = (props) => {
                                     name="Day"
                                     value={addDay}
                                     onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
-                                    className={ selectedCount >= 2 ? 'selected' : ''}
-                                   
+                                    className={selectedCount >= 2 ? 'selected' : ''}
+
                                 >
                                     <option value="" disabled> กรุณาเลือกวัน </option>
                                     <option value="monday">วันจันทร์</option>
@@ -886,7 +897,7 @@ const TimetableGeneralComponent = (props) => {
             </div>
 
 
-
+      )}
         </div>
 
     );

@@ -10,7 +10,7 @@ import { auth } from '../firebase/config';
 import { doc, updateDoc,where,query, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-
+import { PulseLoader } from "react-spinners";
 const TimetablePhysicalComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1); 
@@ -249,7 +249,7 @@ const TimetablePhysicalComponent = (props) => {
         }
     };
     
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         document.title = 'Health Care Unit';
         fetchTimeTableData();
@@ -274,7 +274,12 @@ const TimetablePhysicalComponent = (props) => {
 
         window.addEventListener("resize", responsivescreen);
 
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
+
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
@@ -616,7 +621,12 @@ const TimetablePhysicalComponent = (props) => {
                 <a href="/timeTablePhysicalAdmin" target="_parent">คลินิกกายภาพ</a>
                 <a href="/timeTableNeedleAdmin" target="_parent" id="select">คลินิกฝั่งเข็ม</a>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
 
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin-timetable-system">
                 <div className="admin-timetable-system-item">
                     <div className="admin-timetable-system-top">
@@ -966,7 +976,7 @@ const TimetablePhysicalComponent = (props) => {
             </div>
 
 
-
+      )}
         </div>
 
     );

@@ -10,7 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 import "../css/AdminAppointmentComponent.css";
-
+import { PulseLoader } from "react-spinners";
 
 
 const AppointmentManagerPhysicalComponent = (props) => {
@@ -518,7 +518,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
         console.log("testxd", userDatas.timeslot.start)
         return userDatas;
     };
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
@@ -545,7 +545,11 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
         fetchUserDataWithAppointments();
         console.log("AppointmentUsersData XD", AppointmentUsersData)
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
@@ -600,7 +604,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 appointmentNotation,
                 clinic: "คลินิกกายภาพ",
                 type: "talk",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
 
             const usersCollection = collection(db, 'users');
@@ -674,7 +678,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
                 clinic: "คลินิกกายภาพ",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
 
             await updateDoc(timetableRef, updatedTimetable);
@@ -1237,7 +1241,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                         appointmentSymptom: appointmentSymptom,
                         appointmentNotation: appointmentNotation,
                         clinic: "คลินิกกายภาพ",
-                        status: "รอยืนยันสิทธิ์",
+                        status: "ลงทะเบียนแล้ว",
                         type: "main",
                     };
                     console.log(`time`, state[`appointmentTime${i}`],)
@@ -1313,6 +1317,9 @@ const AppointmentManagerPhysicalComponent = (props) => {
         else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
             element.style.color = '#D88C09'; 
         }
+        else if(element.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            element.style.color = '#A1A1A1'; 
+        }
         else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
             element.style.color = '#A1A1A1'; 
         }
@@ -1337,7 +1344,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("failed-background");
             }
-            else if (statusElementDetail.textContent.trim() === 'รอยืนยันสิทธิ์') {
+            else if (statusElementDetail.textContent.trim() === 'ลงทะเบียนแล้ว') {
                 statusElementDetail.classList.remove(...statusElementDetail.classList);
                 statusElementDetail.classList.add("pending-confirmation-background");
             }
@@ -1357,6 +1364,12 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
+
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin">
                 <div className="admin-header">
                     <div className="admin-hearder-item">
@@ -1775,7 +1788,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
                 </div>
             </div>
-
+      )}
 
 
 

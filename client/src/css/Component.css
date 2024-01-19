@@ -407,7 +407,14 @@
     .user-home{
         padding: 3%;
     }
+    .loading-spinner{
+        position: absolute;
+top: 50%; right: 50%;
+transform: translate(50%,-50%);
+    }
     
+    
+      
 
 /* @media (min-width: 600px) {
     .user{

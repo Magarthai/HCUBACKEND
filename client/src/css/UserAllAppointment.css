@@ -24,7 +24,7 @@
         justify-content: center;
         border: none;
         border-radius: var(--Radius-Card, 20px);
-        background: var(--Primary-700, #365372);
+        background: #263A50;
         width: 160px;
         height: 40px;
         color: #ffffff;
@@ -43,9 +43,6 @@
         align-items: center;
     }
     .user-appointment-funtion {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         width: 100%;
     }
     .user-appointment-card {
@@ -118,6 +115,37 @@
         background-color: #0CB686;
         color: #FBFFFF;
     }
+
+    .user-appointment-status1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 70px;
+        width: 110px;
+        background-color: #C11F1F;
+        color: #FBFFFF;
+    }
+
+    .user-appointment-status2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 70px;
+        width: 110px;
+        background-color: #D88C09;
+        color: #FBFFFF;
+    }
+
+    .user-appointment-status3 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 70px;
+        width: 110px;
+        background-color: #A1A1A1;
+        color: #FBFFFF;
+    }
+
     .user-header-appointment-card{
         display: flex;
         justify-content: space-between;
@@ -126,17 +154,16 @@
     .UserAllAppointmet-footermenu {
         background-color: #96CFCF;
         display: flex;
-        padding: 49px;
-        gap: 3%;
+
         justify-content: center;
         align-items: center;
         text-align: center;
-        height: 50px;
+        height: 80px;
     }
     .user-appointment-vertical {
-        border-right: 2px solid #263A50;
-        padding-right: 2rem;
-        margin-right: 2rem;        
+        justify-content: center;
+        align-items: center;
+        width: 100%;       
     }
     :link {
         text-decoration: none;
@@ -146,6 +173,11 @@
     }
     y{
         color: #263A50;
+    }
+    .user-appointment-middle{
+        width: 1px;
+        height: 65px;
+        border-right: 2px solid #263A5080;
     }
 }
 
