@@ -1491,7 +1491,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                                         : "Select a date"}</p>
                                 </div>
                                 <div>
-                                    <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                    <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                     <select
                                         name="time"
                                         value={JSON.stringify(appointmentTime)}
@@ -1562,7 +1562,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                             <form onSubmit={submitEditForm}>
                                 <h2 className="center">แก้ไขนัดหมาย</h2>
                                 <div className="center-container">
-                                    <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
+                                    <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                     <input
                                         type="date"
                                         className="form-control"
@@ -1575,7 +1575,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
 
                                 </div>
                                 <div>
-                                    <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                    <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                     <select
                                         name="time"
                                         value={JSON.stringify(appointmentTime)}

@@ -250,11 +250,6 @@
         height: 65px;
         margin-bottom: 10px;
     }
-    /* .logo{
-        width: 130px;
-        height: 75px;
-        margin-bottom: 10px;
-    } */
     .admin-textBody-big{
         font-size: 20px;
         font-weight: 300;
@@ -283,63 +278,6 @@
         font-size: 18px;
         font-weight: 500;
     }
-    /* h1{
-        font-size: 28px;
-        font-weight: 500;
-    }
-    h2{
-        font-size: 20px;
-        font-weight: medium;
-    }
-    h3{
-        font-size: 18px;
-        font-weight: medium;
-    }
-    h4{
-        font-size: 18px;
-        font-weight: 400;
-    } */
-    /* h1{
-        font-size:40px;
-        font-weight: bold;
-    }
-    h2{
-        font-size: 30px;
-        font-weight: 500;
-    }
-    h3{
-        font-size: 28px;
-        font-weight: 500;
-    }
-    h4{
-        font-size: 22px;
-        font-weight: 400;
-    }
-    .textBody-big{
-        font-size: 20px;
-        font-weight: 300;
-    }
-    .textBody-large{
-        font-size: 20px;
-        font-weight: 400;
-    }
-    .textBody-medium{
-        font-size: 16px;
-        font-weight: 400;
-    }
-    .textBody-small{
-        font-size: 14px;
-        font-weight: 300;
-    }
-    .textBody-huge{
-        font-size: 18px;
-        font-weight: 400;
-    }
-    .textButton-Normal{
-        font-size: 18px;
-        font-weight: 500;
-    } */
-
     .user{
         width: 100%;
         margin: 0px;
@@ -409,59 +347,10 @@
     }
     .loading-spinner{
         position: absolute;
-top: 50%; right: 50%;
-transform: translate(50%,-50%);
-    }
-    
-    
-      
-
-/* @media (min-width: 600px) {
-    .user{
-        width: 80%;
-        margin: 0px 10%;
-        max-width: 500px;
-        min-width: 500px;
-    }
-    .user-header {
-        width: 80%;
-        max-width: 500px;
-        min-width: 500px;
-
-    }
-    
-}
-@media (min-width: 660px) {
-    .user{
-        margin: 0px 13%;
+        top: 50%; right: 50%;
+        transform: translate(50%,-50%);
     }
 
-}
-@media (min-width: 700px) {
-    .user{
-        margin: 0px 17%;
-    }
-   
-}
-@media (min-width: 800px) {
-    .user{
-        margin: 0px 20%;
-    }
-   
-}
-@media (min-width: 900px) {
-    .user{
-        width: 55%;
-        margin: 0px 22.5%;
-        max-width: 500px;
-        min-width: 500px;
-    }
-    .user-header {
-        width: 55%;
-        max-width: 500px;
-        min-width: 500px;
-    }
-} */
 @media (min-width: 1025px) {
     .user{
         width: 55%;

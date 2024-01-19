@@ -32,8 +32,10 @@ const ListAppointmentUser = () => {
 
       <div className="user-body">
         <div className="AppointList-body-searchItem">
-          <p className="AppointList-body-searchItem-txt">ค้นหา</p>
-          <img className="mini-card-icon" src={item2} alt="icon-search" />
+          {/* <p className="AppointList-body-searchItem-txt">ค้นหา</p>
+          <img className="mini-card-icon" src={item2} alt="icon-search" /> */}
+          <label className="textBody-huge colorPrimary-800">ค้นหา</label>
+          <input type="date" className="form-control" placeholder="dd/mm/yyyy" />
         </div>
 
         <div className="AppointList-body-card">
@@ -54,7 +56,9 @@ const ListAppointmentUser = () => {
                     <div className="AppointList-body-card-item-innerCard-DescClick" onClick={handleOpenPopup}>
                       คลิกเพื่อดูรายละเอียด
                     </div>
-                    <Popup className="Popup-ListAppointment" open={isOpenPop} onClose={() => setIsOpenPop(false)}>
+                    
+                    <Popup className="Popup-ListAppointment" open={isOpenPop} onClose={() => setIsOpenPop(false)} >
+                          <div className="BlackBackground">
                                     <div className="Popup-ListAppointment-ref">
                                       <div className="Popup-ListAppointment-ref-ClinicNameAndCloseBtn">
                                         <p className="Popup-ListAppointment-ref-ClinicName">คลินิกทั่วไป</p>
@@ -77,6 +81,7 @@ const ListAppointmentUser = () => {
                                         <p className="Popup-ListAppointment-ref-BasicSympt-Ans">: มีอาการปวดหัว อาเจียน</p>
                                       </div>
                                     </div>
+                          </div>
                       </Popup>
                   </div>
               </div>

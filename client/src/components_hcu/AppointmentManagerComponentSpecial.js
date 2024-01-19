@@ -906,7 +906,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                         <form onSubmit={submitEditForm}>
                             <h2 className="center">แก้ไขนัดหมาย</h2>
                             <div className="center-container">
-                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                 <input
                                     type="date"
                                     className="form-control"
@@ -919,7 +919,7 @@ const AppointmentManagerComponentSpecial = (props) => {
 
                             </div>
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                 <select
                                     name="time"
                                     value={JSON.stringify(appointmentTime)}

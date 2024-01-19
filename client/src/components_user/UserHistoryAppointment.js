@@ -23,8 +23,10 @@ const UserHistoryAppointment = () => {
 
       <div className="user-body">
         <div className="HistoryAppointment-body-searchItem">
-          <p className="HistoryAppointment-body-searchItem-txt">ค้นหา</p>
-          <img className="mini-card-icon" src={item2} alt="icon-search" />
+          {/* <p className="HistoryAppointment-body-searchItem-txt">ค้นหา</p>
+          <img className="mini-card-icon" src={item2} alt="icon-search" /> */}
+          <label className="textBody-huge colorPrimary-800">ค้นหา</label>
+          <input type="date" className="form-control" placeholder="dd/mm/yyyy" />
         </div>
 
         <div className="HistoryAppointment-body-card">

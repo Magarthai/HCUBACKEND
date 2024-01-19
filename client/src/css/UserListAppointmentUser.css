@@ -6,11 +6,11 @@
 }
 
 .AppointList-body-searchItem{
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    gap: 0.5%;
-    margin-right: 20px;
+    gap: 0.5%; */
+    margin: 0px 20px 20px 20px;
 }
 
 .AppointList-body-searchItem-txt{
@@ -227,11 +227,12 @@
 /*---------- popup ----------*/
 
 .Popup-ListAppointment{
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 50%;
+    gap: 50%; */
 }
+
 
 .Popup-ListAppointment-ref{
     background-color: #FBFFFF;
@@ -239,6 +240,7 @@
     border-radius: var(--Radius-Tag, 12px);
     box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25);
     width: 400px;
+    margin-top: 10%;
 }
 
 .Popup-ListAppointment-ref-ClinicNameAndCloseBtn{
@@ -284,4 +286,64 @@
     font-style: normal;
     font-weight: 300;
     margin-left: 10px;
+}
+.BlackBackground {
+    background-color: rgba(0, 0, 0, 0.357);
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top:-50vh;
+    left: -50vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; 
+    gap: 50%;
+   
+}
+.form-control-date{
+    border: 1px solid #a3a3a3;
+    border-radius: 5px;
+    color: #263A50;
+    padding: 0px 5px 0px 10px;
+    height: 30px;
+    width: 200px;
+}
+
+@media (max-width: 440px) {
+    .Popup-ListAppointment-ref{
+        width: 380px;
+        
+    }
+}
+@media (max-width: 400px) {
+    .Popup-ListAppointment-ref{
+        width: 340px;
+        
+    }
+}
+@media (max-width: 350px) {
+    .Popup-ListAppointment-ref{
+        width: 300px;
+    }
+}
+@media (max-width: 300px) {
+    .Popup-ListAppointment-ref{
+        width: 280px;
+    }
+}
+@media (max-width: 280px) {
+    .Popup-ListAppointment-ref{
+        width: 250px;
+    }
+}
+@media (max-width: 250px) {
+    .Popup-ListAppointment-ref{
+        width: 200px;
+    }
+}
+@media (max-width: 200px) {
+    .Popup-ListAppointment-ref{
+        width: 150px;
+    }
 }
