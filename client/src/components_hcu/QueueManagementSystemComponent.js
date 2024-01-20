@@ -167,7 +167,7 @@ const QueueManagementSystemComponent = (props) => {
     const handleToggle = async (id, AppointmentUserData) => {
         Swal.fire({
             title: 'Confirm',
-            text: `ยินยันคิว ${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`,
+            text: `ยืนยันคิว ${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'เสร็จสิ้น',
