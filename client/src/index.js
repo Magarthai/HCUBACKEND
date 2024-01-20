@@ -30,7 +30,7 @@ import UserTimetableComponet from './components_user/TimetableComponet.js';
 import UserProfileComponent from './components_user/ProfileComponent.js';
 import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
 import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManagerNeedleComponent.js';
-
+import UserEditAppointmentPhysic from './components_user/UserEditAppointmentPhysic.js';
 
 
 import './index.css'
@@ -170,6 +170,10 @@ const router = createBrowserRouter([
   {
     path: "/appointment/edit",
     element: <ProtectRoute><UserEditAppointment/></ProtectRoute>
+  },
+  {
+    path: "/appointment/editPhysic",
+    element: <ProtectRoute><UserEditAppointmentPhysic/></ProtectRoute>
   },
   {
     path: "/appointment/history",

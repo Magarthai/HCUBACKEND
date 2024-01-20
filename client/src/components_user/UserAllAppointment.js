@@ -14,8 +14,9 @@ import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } f
 import { startOfWeek, endOfWeek, parse, isWithinInterval } from 'date-fns';
 import { PulseLoader } from "react-spinners";
 import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
 const UserAllAppointment = () => {
-
+    const navigate = useNavigate();
     const { user, userData } = useUserAuth();
     const [selectedDate, setSelectedDate] = useState();
     const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
@@ -33,23 +34,36 @@ const UserAllAppointment = () => {
         dayName: day,
     };
 
-    const handleDateSelect = (selectedDate) => {
-        console.log("Selected Date in AppointmentManager:", selectedDate);
-        setSelectedDate(selectedDate);
-    };
-    const [isLoading, setIsLoading] = useState(true);
-    useEffect(() => {
-        document.title = 'Health Care Unit';
-        if (AppointmentUsersData.length <= 0) {
-            fetchUserDataWithAppointments();
-        }
-        const timeout = setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
+    const [isInitialRender, setIsInitialRender] = useState(true);
 
-        console.log("AppointmentUsersData", AppointmentUsersData);
-        return () => clearTimeout(timeout);
-    }, [user, userData, AppointmentUsersData, selectedDate]);
+const handleDateSelect = (selectedDate) => {
+    console.log("Selected Date in AppointmentManager:", selectedDate);
+    setAllAppointmentUsersData([]);
+    setSelectedDate(selectedDate);
+    
+    if (!isInitialRender) {
+      navigate('/appointment/date', { state: { selectedDate } });
+    }
+  };
+  
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    document.title = 'Health Care Unit';
+  
+    if (AppointmentUsersData.length <= 0) {
+      fetchUserDataWithAppointments();
+    }
+  
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    
+    }, 500);
+    setIsInitialRender(false); 
+    console.log("AppointmentUsersData", AppointmentUsersData);
+  
+    return () => clearTimeout(timeout);
+  }, [user, userData, AppointmentUsersData, selectedDate]);
 
 
     const handleApprove = async (id, AppointmentUserData) => {
@@ -235,7 +249,6 @@ const UserAllAppointment = () => {
 
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection,
-                    where('clinic', '==', 'คลินิกทั่วไป'),
                     where('appointmentId', '==', userData.id),
                 ));
 

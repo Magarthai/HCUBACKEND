@@ -12,6 +12,10 @@ const AddAppointmentUser = () => {
     const handleDateSelect = (selectedDate) => {
         setAllAppointmentUsersData([]);
         setSelectedDate(selectedDate);
+        setState((prevState) => ({
+            ...prevState,
+            appointmentTime: "",
+          }));
     };
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
@@ -254,44 +258,44 @@ const AddAppointmentUser = () => {
                             <h4>ช่วงเวลา</h4>
                         </div>
                         <select
-    name="time"
-    value={JSON.stringify(appointmentTime)}
-    onChange={(e) => {
-        handleSelectChange();
-        const selectedValue = JSON.parse(e.target.value);
+                            name="time"
+                            value={JSON.stringify(appointmentTime)}
+                            onChange={(e) => {
+                                handleSelectChange();
+                                const selectedValue = JSON.parse(e.target.value);
 
-        if (selectedValue && typeof selectedValue === 'object') {
-            const { timetableId, timeSlotIndex } = selectedValue;
-            inputValue("appointmentTime")({
-                target: {
-                    value: { timetableId, timeSlotIndex },
-                },
-            });
+                                if (selectedValue && typeof selectedValue === 'object') {
+                                    const { timetableId, timeSlotIndex } = selectedValue;
+                                    inputValue("appointmentTime")({
+                                        target: {
+                                            value: { timetableId, timeSlotIndex },
+                                        },
+                                    });
 
-            handleSelectChange();
-        } else if (e.target.value === "") {
-            inputValue("appointmentTime")({
-                target: {
-                    value: {},
-                },
-            });
+                                    handleSelectChange();
+                                } else if (e.target.value === "") {
+                                    inputValue("appointmentTime")({
+                                        target: {
+                                            value: {},
+                                        },
+                                    });
 
-            handleSelectChange();
-        } else {
-            console.error("Invalid selected value:", selectedValue);
-        }
-    }}
-    className={selectedCount >= 2 ? 'selected' : ''}
->
-    {timeOptions.map((timeOption, index) => (
-        <option
-            key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`}
-            value={index === 0 ? 0 : JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}
-        >
-            {timeOption.label}
-        </option>
-    ))}
-</select>
+                                    handleSelectChange();
+                                } else {
+                                    console.error("Invalid selected value:", selectedValue);
+                                }
+                            }}
+                            className={selectedCount >= 2 ? 'selected' : ''}
+                        >
+                            {timeOptions.map((timeOption, index) => (
+                                <option
+                                    key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`}
+                                    value={index === 0 ? 0 : JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}
+                                >
+                                    {timeOption.label}
+                                </option>
+                            ))}
+                        </select>
 
                     </div>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/UserDateAppointment.css";
 import "../css/Component.css";
-import CalendarUserComponent from "../components_user/CalendarUserComponent";
+import CalendarUserComponentDate from "../components_user/CalendarUserComponentDate";
 import CalendarFlat_icon from "../picture/calendar-flat.png";
 import ClockFlat_icon from "../picture/clock-flat.png";
 import Delete_icon from "../picture/icon_delete.jpg";
@@ -12,9 +12,10 @@ import app, { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
-
+import { useLocation } from 'react-router-dom';
 
 const UserDateAppointment = (props) => {
+    const location = useLocation();
     const navigate = useNavigate();
 const [state, setState] = useState({
     appointmentDate: "",
@@ -107,6 +108,8 @@ const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
 const [timeOptionss, setTimeOptionss] = useState([]);
 const [isChecked, setIsChecked] = useState({});
 const [selectedDate, setSelectedDate] = useState(null);
+const selectedDateFromLocation = location.state?.selectedDate || null;
+
 const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
     const usersCollection = collection(db, 'users');
     const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
@@ -132,35 +135,56 @@ const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentu
 useEffect(() => {
     document.title = 'Health Care Unit';
     console.log(user);
+    
     fetchMainTimeTableData();
-    console.log(selectedDate)
-    console.log("AppointmentUsersData XD", AppointmentUsersData)
+
     if (userData) {
         setState((prevState) => ({
-          ...prevState,
-          userID: userData.id,
+            ...prevState,
+            userID: userData.id,
         }));
-      }
-}, [userData,selectedDate]);
+    }
+
+    if (!selectedDateFromLocation) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'กรุณาเลือกวันก่อน!',
+        }).then(() => {
+            navigate('/appointment');
+        });}
+}, [userData, selectedDate]);
 
 useEffect(() => {
     console.log("Updated selectedDate:", selectedDate);
     fetchUserDataWithAppointments();
-    console.log(selectedDate)
-}, [selectedDate,userData]);
+    console.log(selectedDate);
+}, [selectedDate, userData]);
 
 useEffect(() => {
     console.log("Updated Appointment:", AppointmentUsersData);
-    console.log(AppointmentUsersData)
-}, [AppointmentUsersData]);
 
+    if (!selectedDateFromLocation) {
+        console.log("check");
+    } else if (!isInitialRender) {
+        console.log("hello world");
+    } else {
+        setSelectedDate(selectedDateFromLocation);
+        console.log("date check", selectedDateFromLocation);
+
+        // Fetch user data with appointments after setting the selected date
+        fetchUserDataWithAppointments();
+
+        setIsInitialRender(false);
+    }
+}, [AppointmentUsersData]);
+const [isInitialRender, setIsInitialRender] = useState(true);
 const fetchUserDataWithAppointments = async () => {
     try {
         if (user && selectedDate && selectedDate.dayName) {
             const appointmentsCollection = collection(db, 'appointment');
             const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
                 `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                where('clinic', '==', 'คลินิกทั่วไป'),
                 where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
                 where('appointmentId', '==', userData.id)));
 
@@ -404,7 +428,11 @@ const formatDateForDisplay = (isoDate) => {
     };
 
     const EditAppointment = (AppointmentUserData) => {
-        navigate('/appointment/edit', { state: { AppointmentUserData: AppointmentUserData } });
+        if (AppointmentUserData.appointment.clinic === "คลินิกกายภาพ"){
+            navigate('/appointment/editPhysic', { state: { AppointmentUserData: AppointmentUserData,selectedDate } });
+        }else{
+
+        navigate('/appointment/edit', { state: { AppointmentUserData: AppointmentUserData,selectedDate } });}
       }
       
     
@@ -414,7 +442,7 @@ const formatDateForDisplay = (isoDate) => {
         <div className="user">
             <div style={{display:"none"}}>
             <div className="CalendarUser">
-                    <CalendarUserComponent
+                    <CalendarUserComponentDate
                         selectedDate={selectedDate}
                         setSelectedDate={setSelectedDate}
                         onDateSelect={handleDateSelect}
@@ -434,7 +462,7 @@ const formatDateForDisplay = (isoDate) => {
                 <div className="user-DateAppointment-Date_container gap-32">
 
                     <div className="user-DateAppointment-Date_title">
-                        <h4 className="colorPrimary-800">วันที่</h4>
+                        <h4 className="colorPrimary-800">เลือกดูวันที่</h4>
                     </div>
                     <div className="center-container">
                             <input
@@ -450,7 +478,7 @@ const formatDateForDisplay = (isoDate) => {
                         </div>
                 </div>
                 <div className="user-DateAppointment-AppointmentList_container ">
-                    <h4 className="colorPrimary-800 user-DateAppointment-card-h4">นัดหมาย</h4>
+                    {selectedDate &&<h4 className="colorPrimary-800 user-DateAppointment-card-h4">นัดหมายวันที่ {selectedDate.day}/{selectedDate.month}/{selectedDate.year}</h4>}
                     
                     <div className="user-DateAppointment-cardList_container">
                     {AppointmentUsersData.length > 0 ?

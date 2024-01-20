@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import { useUserAuth } from "../context/UserAuthContext";
-const UserEditAppointment = (props) => {
+const UserEditAppointmentPhysic = (props) => {
     const [selectedDate, setSelectedDate] = useState();
     const { user, userData } = useUserAuth();
     const [isChecked, setIsChecked] = useState({});
@@ -25,6 +25,9 @@ const UserEditAppointment = (props) => {
         uid: "",
         timeablelist: "",
         userID: "",
+        appointmentSymptom2: "",
+        appointmentTime2: "",
+        appointmentDate2:"",
     })
 
     const fetchTimeTableData = async () => {
@@ -127,7 +130,7 @@ const UserEditAppointment = (props) => {
         setState({ ...state, [name]: event.target.value });
     };
 
-    const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic, uid, timeablelist, userID } = state
+    const { appointmentDate2,appointmentSymptom2,appointmentTime2,appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic, uid, timeablelist, userID } = state
     const handleDateSelect = (selectedDate) => {
         setSelectedDate(selectedDate);
         setState({
@@ -228,14 +231,10 @@ const UserEditAppointment = (props) => {
         try {
             const timetableRef = doc(db, 'appointment', uid);
             const updatedTimetable = {
-                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
-                appointmentTime: appointmentTime,
-                appointmentId: appointmentId,
-                appointmentCasue: appointmentCasue,
-                appointmentSymptom: appointmentSymptom,
-                appointmentNotation: appointmentNotation,
-                clinic: clinic,
-                status: "ลงทะเบียนแล้ว",
+                appointmentDate2: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentTime2: appointmentTime2,
+                appointmentSymptom2: appointmentSymptom2,
+                status: "ยื่นแก้ไข้",
             };
 
             await updateDoc(timetableRef, updatedTimetable);
@@ -331,7 +330,7 @@ const UserEditAppointment = (props) => {
                                 if (selectedValue && typeof selectedValue === 'object') {
                                     const { timetableId, timeSlotIndex, label } = selectedValue;
                                     
-                                    inputValue("appointmentTime")({
+                                    inputValue("appointmentTime2")({
                                         target: {
                                             value: selectedValue,
                                         },
@@ -340,7 +339,7 @@ const UserEditAppointment = (props) => {
                                     console.log(label)
                                     handleSelectChange();
                                 } else if (e.target.value === "") {
-                                    inputValue("appointmentTime")({
+                                    inputValue("appointmentTime2")({
                                         target: {
                                             value: {},
                                         },
@@ -377,7 +376,7 @@ const UserEditAppointment = (props) => {
                         <textarea
                             placeholder="อาการเบื้องต้น"
                             className="user-EditAppointment-Symptom"
-                            value={appointmentSymptom}
+                            value={appointmentSymptom2}
                             onChange={inputValue("appointmentSymptom")}
                         ></textarea>
                     </div>
@@ -392,4 +391,4 @@ const UserEditAppointment = (props) => {
     )
 }
 
-export default UserEditAppointment;
+export default UserEditAppointmentPhysic;
