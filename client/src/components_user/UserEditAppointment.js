@@ -4,14 +4,38 @@ import "../css/Component.css";
 import NavbarUserComponent from '../components_user/NavbarUserComponent';
 import CalendarUserComponent from "./CalendarUserComponent";
 import Swal from "sweetalert2";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const UserEditAppointment = (props) =>{
+const UserEditAppointment = (props) => {
     const [selectedDate, setSelectedDate] = useState();
-
+    const navigate = useNavigate();
+  
     const handleDateSelect = (selectedDate) => {
-        console.log("Selected Date in AppointmentManager:", selectedDate);
-        setSelectedDate(selectedDate);
+      console.log("Selected Date in AppointmentManager:", selectedDate);
+      setSelectedDate(selectedDate);
     };
+  
+    const location = useLocation();
+    const { AppointmentUserData } = location.state || {}; // Set a default empty object
+  
+    useEffect(() => {
+      console.log('Data from state:', AppointmentUserData);
+  
+      // Check if AppointmentUserData is null
+      if (!AppointmentUserData) {
+        // Display SweetAlert
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Appointment data is missing!',
+        }).then(() => {
+          // Navigate to '/appointment' after user closes the alert
+          navigate('/appointment');
+        });
+      }
+    }, [AppointmentUserData, navigate]);
+
+
     const editAppointment = () => {
         Swal.fire({
             title: "ขอแก้ไขนัดหมาย",

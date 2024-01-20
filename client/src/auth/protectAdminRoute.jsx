@@ -34,7 +34,7 @@ function ProtectAdminRoute({ children }) {
     }, [userData, navigate, logOut]);
 
     if (!user) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/" />;
     }
 
     return children;

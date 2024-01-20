@@ -49,10 +49,6 @@ import AddAppointmentUserSpecial from './components_user/AddAppointmentUserSpeci
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-  },
-  {
-    path: "/login",
     element: <LoginComponent />
   },
   {

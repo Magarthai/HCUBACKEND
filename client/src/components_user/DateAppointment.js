@@ -11,11 +11,11 @@ import NavbarUserComponent from '../components_user/NavbarUserComponent';
 import app, { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import Swal from "sweetalert2";
-
+import { useNavigate } from 'react-router-dom';
 
 
 const UserDateAppointment = (props) => {
-    
+    const navigate = useNavigate();
 const [state, setState] = useState({
     appointmentDate: "",
     userID:"",
@@ -402,6 +402,12 @@ const formatDateForDisplay = (isoDate) => {
             appointmentTime: "",
         });
     };
+
+    const EditAppointment = (AppointmentUserData) => {
+        navigate('/appointment/edit', { state: { AppointmentUserData: AppointmentUserData } });
+      }
+      
+    
     return (
 
         
@@ -453,7 +459,7 @@ const formatDateForDisplay = (isoDate) => {
                                 <div className="user-DateAppointment-card_header">
                                     <h4 className="user-DateAppointment-clinic">{AppointmentUserData.appointment.clinic}</h4>
                                     <div className="user-DateAppointment-icon">
-                                        <a href="/appointment/edit"><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt="" /></a>
+                                        <a onClick={() => EditAppointment(AppointmentUserData)}><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt="" /></a>
                                         <a onClick={() => DeleteAppointment(AppointmentUserData, AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)}><img className="user-DateAppointment-icon_delete" src={Delete_icon} alt="" /></a>
                                     </div>
                                 </div>
