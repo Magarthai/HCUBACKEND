@@ -233,12 +233,11 @@ const UserEditAppointmentPhysic = (props) => {
             const updatedTimetable = {
                 appointmentDate2: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
                 appointmentTime2: appointmentTime2,
-                appointmentSymptom2: appointmentSymptom2,
+                appointmentSymptom2: appointmentSymptom2 || "เป็นไข้",
                 status: "ยื่นแก้ไข้",
             };
 
-            await updateDoc(timetableRef, updatedTimetable);
-
+            
             Swal.fire({
                 title: "ขอแก้ไขนัดหมาย",
                 html:  `อัพเดตเป็นวันที่ ${appointmentDate}<br/> เวลา ${selectedTimeLabel}`,
@@ -253,7 +252,8 @@ const UserEditAppointmentPhysic = (props) => {
                     confirmButton: 'custom-confirm-button',
                     cancelButton: 'custom-cancel-button',
                 }
-            }).then((result) => {
+            }).then(async (result) => {
+                await updateDoc(timetableRef, updatedTimetable);
                 if (result.isConfirmed) {
                 Swal.fire({
                     title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
@@ -322,7 +322,7 @@ const UserEditAppointmentPhysic = (props) => {
                         </div>
                         <select
                             name="time"
-                            value={JSON.stringify(appointmentTime)}
+                            value={JSON.stringify(appointmentTime2)}
                             onChange={(e) => {
                                 handleSelectChange();
                                 const selectedValue = JSON.parse(e.target.value);
@@ -335,8 +335,10 @@ const UserEditAppointmentPhysic = (props) => {
                                             value: selectedValue,
                                         },
                                     });
-                                    setSelectedTimeLabel(label || "");
-                                    console.log(label)
+
+                                    
+                                    setSelectedTimeLabel(label || ""); 
+
                                     handleSelectChange();
                                 } else if (e.target.value === "") {
                                     inputValue("appointmentTime2")({
@@ -345,6 +347,7 @@ const UserEditAppointmentPhysic = (props) => {
                                         },
                                     });
 
+                                    // Clear the label when nothing is selected
                                     setSelectedTimeLabel("");
 
                                     handleSelectChange();
@@ -363,6 +366,7 @@ const UserEditAppointmentPhysic = (props) => {
                                 </option>
                             ))}
                         </select>
+
 
                     </div>
 

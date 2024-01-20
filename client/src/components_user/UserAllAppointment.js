@@ -136,7 +136,7 @@ const handleDateSelect = (selectedDate) => {
             case 'เสร็จสิ้น':
                 return 'user-appointment-status';
             case 'ไม่สำเร็จ':
-                return 'user-appointment-status1 ';
+                return 'user-appointment-status1';
             case 'ลงทะเบียนแล้ว':
                 return 'user-appointment-status3';
             default:
@@ -380,7 +380,6 @@ const handleDateSelect = (selectedDate) => {
                     
                     {AppointmentUsersData && AppointmentUsersData.length > 0 ? (
                         <>
-                            {/* Filter appointments with "รอยืนยันสิทธิ์" status */}
                             {AppointmentUsersData
                                 .filter(AppointmentUserData => AppointmentUserData.appointment.status === "รอยืนยันสิทธิ์")
                                 .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
