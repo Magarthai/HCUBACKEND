@@ -356,15 +356,15 @@
 
 @media (min-width: 1025px) {
     .user{
-        width: 55%;
-        margin: 0px 28%;
-        max-width: 500px;
-        min-width: 500px;
+        width: 48%;
+        margin: 0px 26%;
+        /* max-width: 500px;
+        min-width: 500px; */
     }
     .user-header {
-        width: 55%;
-        max-width: 500px;
-        min-width: 500px;
+        width: 48%;
+        /* max-width: 500px;
+        min-width: 500px; */
     }
    
 }
@@ -373,20 +373,20 @@
     .user{
         width: 40%;
         margin: 0px 30%;
-        max-width: 500px;
-        min-width: 500px;
+        /* max-width: 500px;
+        min-width: 500px; */
   
     }
     .user-header {
         width: 40%;
-        max-width: 500px;
-        min-width: 500px;
+        /* max-width: 500px;
+        min-width: 500px; */
     }
     
 }
 @media (min-width: 1400px) {
     .user{
-        margin: 0px 33%;
+        margin: 0px 30%;
     }
    
 }
