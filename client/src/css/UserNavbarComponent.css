@@ -82,7 +82,7 @@
     align-items: center;
     /* top: 33px;
     right: 50px; */
-    width: 505px !important;
+    width: 40% !important;
     height: 70%;
     margin-left: -40px;
     /* margin-top: 5px; */
@@ -250,6 +250,11 @@
       border: none;
     }
     
+  }
+  @media (max-width: 1199px) {
+    .navs {
+      width: 48% !important;
+    }
   }
   @media (max-width: 1024px) {
     .navs {
