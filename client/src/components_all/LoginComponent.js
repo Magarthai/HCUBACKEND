@@ -66,7 +66,7 @@ const LoginComponent = () => {
                 text: "Invalid Email or Password",
               }).then((result) => {
                 if (result.isConfirmed) {
-                    navigate('/login');
+                    navigate('/');
                 }
               });
         }

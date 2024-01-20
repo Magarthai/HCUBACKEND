@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import "../css/UserEditAppointment.css";
 import "../css/Component.css";
 import NavbarUserComponent from '../components_user/NavbarUserComponent';
-import CalendarUserComponent from "./CalendarUserComponent";
+import CalendarAddUserComponent from "./CalendarAddUserComponent";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
@@ -283,7 +283,7 @@ const UserEditAppointment = (props) => {
                     </div>
                 </div>
                 <div className="user-EditAppointment-Calendar">
-                    <CalendarUserComponent selectedDate={selectedDate}
+                    <CalendarAddUserComponent selectedDate={selectedDate}
                         setSelectedDate={setSelectedDate}
                         onDateSelect={handleDateSelect} />
                 </div>
@@ -302,15 +302,12 @@ const UserEditAppointment = (props) => {
                                 if (selectedValue && typeof selectedValue === 'object') {
                                     const { timetableId, timeSlotIndex, label } = selectedValue;
                                     
-                                    // Pass the entire selected value to inputValue("appointmentTime")
                                     inputValue("appointmentTime")({
                                         target: {
                                             value: selectedValue,
                                         },
                                     });
-
-                                    // Set the label to setSelectedTimeLabel
-                                    setSelectedTimeLabel(label || ""); // Set label to empty string if it's not available
+                                    setSelectedTimeLabel(label || "");
                                     console.log(label)
                                     handleSelectChange();
                                 } else if (e.target.value === "") {

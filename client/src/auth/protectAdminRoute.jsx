@@ -20,7 +20,7 @@ function ProtectAdminRoute({ children }) {
                             text: "You are not an ADMIN!",
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                navigate('/login');
+                                navigate('/');
                             }
                         });
                     });
