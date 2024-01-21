@@ -101,7 +101,7 @@ const HomeComponent = () => {
         <Link to="/AppointmentManagerComponent" className="function">
           <img className="function" src={function2} alt="Appointment management system" />
         </Link>
-        <Link to="#" className="function">
+        <Link to="/adminActivityTodayComponent" className="function">
           <img className="function" src={function3} alt="Activity management system" />
         </Link>
         <Link to="#" className="function">
