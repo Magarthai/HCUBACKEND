@@ -6,7 +6,8 @@ import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import Swal from "sweetalert2";
 import { useUserAuth } from "../context/UserAuthContext";
-const AddAppointmentUser = () => {
+import { useNavigate } from "react-router-dom";
+const AddNeedleAppointmentUser = () => {
     const [selectedDate, setSelectedDate] = useState();
     const handleDateSelect = (selectedDate) => {
         setAllAppointmentUsersData([]);
@@ -16,6 +17,7 @@ const AddAppointmentUser = () => {
         setSelectedCount(selectedCount + 1);
     };
 
+    const navigate = useNavigate();
 
     const { user, userData } = useUserAuth();
     const [timeOptions, setTimeOptions] = useState([]);
@@ -168,41 +170,45 @@ const AddAppointmentUser = () => {
             };
 
             const usersCollection = collection(db, 'users');
-
+            const appointmentsCollection = collection(db, 'appointment');
+            const existingAppointmentsQuerySnapshot = await getDocs(query(
+                appointmentsCollection,
+                where('appointmentDate', '==', appointmentInfo.appointmentDate),
+                where('appointmentTime.timetableId', '==', appointmentInfo.appointmentTime.timetableId),
+                where('appointmentTime.timeSlotIndex', '==', appointmentInfo.appointmentTime.timeSlotIndex)
+            ));
             const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
             const userDocuments = userQuerySnapshot.docs;
             console.log("userDocuments",userDocuments,appointmentId)
             const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
             const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
-            if (!userQuerySnapshot.empty) {
-
-            } else {
-
-            }
 
             if (foundUser) {
-                const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-
-                const userDocRef = doc(db, 'users', userId);
-
-                await updateDoc(userDocRef, {
-                    appointments: arrayUnion(appointmentRef.id),
-                });
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Appointment Successful!",
-                    text: "Your appointment has been successfully created!",
-                });
-                fetchTimeTableData();
-
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Something went wrong!",
-                    text: "Your Student ID Not Found!",
-                });
-                console.log("RIP",appointmentInfo)
+                if (!existingAppointmentsQuerySnapshot.empty) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Time Slot Already Taken!",
+                        text: "Someone has already booked this time slot. Please choose another time.",
+                    });
+                } else {
+                    const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+        
+                    const userDocRef = doc(db, 'users', userId);
+        
+                    await updateDoc(userDocRef, {
+                        appointments: arrayUnion(appointmentRef.id),
+                    });
+        
+                    Swal.fire({
+                        icon: "success",
+                        title: "Appointment Successful!",
+                        text: "Your appointment has been successfully created!",
+                    });
+                    await fetchTimeTableData();
+        
+                    const encodedInfo = encodeURIComponent(JSON.stringify(appointmentInfo));
+                    navigate(`/appointment/detail/${appointmentRef.id}?info=${encodedInfo}`);
+                }
             }
 
 
@@ -215,6 +221,29 @@ const AddAppointmentUser = () => {
                 title: "Error",
                 text: "Failed to create user account. Please try again later.",
             });
+        }
+    };
+
+    const checkTimeSlotAvailability = () => {
+        try {
+            if (timeOptions.length === 0) {
+                return false;
+            }
+    
+            const selectedTimeSlot = appointmentTime;
+            const existingAppointments = AllAppointmentUsersData.map(appointment => appointment.appointmentTime);
+    
+            const isSlotAvailable = timeOptions.some(timeSlot => {
+                if (JSON.stringify(timeSlot.value) === JSON.stringify(selectedTimeSlot)) {
+                    return !existingAppointments.includes(JSON.stringify(selectedTimeSlot));
+                }
+                return false;
+            });
+    
+            return isSlotAvailable;
+        } catch (error) {
+            console.error('Error checking time slot availability:', error);
+            return false;
         }
     };
 
@@ -309,4 +338,4 @@ const AddAppointmentUser = () => {
     )
 }
 
-export default AddAppointmentUser;
+export default AddNeedleAppointmentUser;

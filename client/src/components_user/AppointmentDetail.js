@@ -73,9 +73,9 @@ const AppointmentDetail = () => {
                         <p className="textBody-big gap-4"> <img src={CalendarFlat_icon}/> {appointmentInfo.appointmentDate} </p>
                         {timeSlot && <p className="textBody-big gap-4"> <img src={ClockFlat_icon}/>  {timeSlot.start} - {timeSlot.end}</p>}
                         <h5>สาเหตุการนัดหมาย</h5>
-                        <p className="textBody-big">: ตรวจรักษาโรค</p>
+                        <p className="textBody-big">: {appointmentInfo.appointmentCasue}</p>
                         <h5>อาการเบื้องต้น</h5>
-                        <p className="textBody-big">: มีอาการปวดหัว อาเจียน</p>
+                        <p className="textBody-big">: {appointmentInfo.appointmentSymptom}</p>
                     </div>
                 </div>
 

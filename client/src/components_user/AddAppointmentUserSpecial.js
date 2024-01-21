@@ -6,17 +6,23 @@ import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import Swal from "sweetalert2";
 import { useUserAuth } from "../context/UserAuthContext";
-const AddAppointmentUser = () => {
+import { useNavigate } from 'react-router-dom';
+const AddSpecialAppointmentUser = () => {
     const [selectedDate, setSelectedDate] = useState();
     const handleDateSelect = (selectedDate) => {
         setAllAppointmentUsersData([]);
         setSelectedDate(selectedDate);
+        setState((prevState) => ({
+            ...prevState,
+            appointmentTime: "",
+          }));
     };
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
     };
+    
 
-
+    const navigate = useNavigate();
     const { user, userData } = useUserAuth();
     const [timeOptions, setTimeOptions] = useState([]);
     const [selectedCount, setSelectedCount] = useState(1);
@@ -37,7 +43,7 @@ const AddAppointmentUser = () => {
 
     const { appointmentDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, clinic, uid, timeablelist,userID } = state
     const isSubmitEnabled =
-         !appointmentTime;
+        !appointmentTime
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
     };
@@ -104,22 +110,21 @@ const AddAppointmentUser = () => {
                         const timeOptionsFromTimetable = [
                             { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
                             ...availableTimeSlots
-                              .sort((a, b) => {
-                                const timeA = new Date(`01/01/2000 ${a.start}`);
-                                const timeB = new Date(`01/01/2000 ${b.start}`);
-                                return timeA - timeB;
-                              })
-                              .map((timeSlot) => ({
-                                label: `${timeSlot.start} - ${timeSlot.end}`,
-                                value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
-                              })),
-                          ];
-                          
-                          console.log("Before setTimeOptions", timeOptionsFromTimetable);
-                          setTimeOptions(timeOptionsFromTimetable);
-                          console.log("After setTimeOptions", timeOptions);
-                          console.log(timeOptions);
-                          
+                                .sort((a, b) => {
+                                    const timeA = new Date(`01/01/2000 ${a.start}`);
+                                    const timeB = new Date(`01/01/2000 ${b.start}`);
+                                    return timeA - timeB;
+                                })
+                                .map((timeSlot) => ({
+                                    label: `${timeSlot.start} - ${timeSlot.end}`,
+                                    value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
+                                })),
+                        ];
+
+                        console.log("Before setTimeOptions", timeOptionsFromTimetable);
+                        setTimeOptions(timeOptionsFromTimetable);
+                        console.log("After setTimeOptions", timeOptions);
+                        console.log(timeOptions)
                     } else {
                         console.log("Time table not found for selected day and clinic");
                         const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
@@ -147,17 +152,28 @@ const AddAppointmentUser = () => {
               appointmentId: userData.id,
             }));
           }
+
+        
     }, [selectedDate,userData]);
 
     useEffect(() => {
         console.log("Updated timeOptions:", timeOptions);
+        console.log(appointmentTime)
     }, [timeOptions]);
 
     const submitForm = async (e) => {
         e.preventDefault();
         console.log(appointmentId)
         try {
-
+            const isTimeSlotAvailable = checkTimeSlotAvailability();
+            if (!isTimeSlotAvailable) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Time Slot Unavailable",
+                    text: "The selected appointment time is no longer available. Please choose another time.",
+                });
+                return;
+            }
             const appointmentInfo = {
                 appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
                 appointmentTime,
@@ -169,41 +185,45 @@ const AddAppointmentUser = () => {
             };
 
             const usersCollection = collection(db, 'users');
-
+            const appointmentsCollection = collection(db, 'appointment');
+            const existingAppointmentsQuerySnapshot = await getDocs(query(
+                appointmentsCollection,
+                where('appointmentDate', '==', appointmentInfo.appointmentDate),
+                where('appointmentTime.timetableId', '==', appointmentInfo.appointmentTime.timetableId),
+                where('appointmentTime.timeSlotIndex', '==', appointmentInfo.appointmentTime.timeSlotIndex)
+            ));
             const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
             const userDocuments = userQuerySnapshot.docs;
             console.log("userDocuments",userDocuments,appointmentId)
             const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
             const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
-            if (!userQuerySnapshot.empty) {
-
-            } else {
-
-            }
 
             if (foundUser) {
-                const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-
-                const userDocRef = doc(db, 'users', userId);
-
-                await updateDoc(userDocRef, {
-                    appointments: arrayUnion(appointmentRef.id),
-                });
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Appointment Successful!",
-                    text: "Your appointment has been successfully created!",
-                });
-                fetchTimeTableData();
-
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Something went wrong!",
-                    text: "Your Student ID Not Found!",
-                });
-                console.log("RIP",appointmentInfo)
+                if (!existingAppointmentsQuerySnapshot.empty) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Time Slot Already Taken!",
+                        text: "Someone has already booked this time slot. Please choose another time.",
+                    });
+                } else {
+                    const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+        
+                    const userDocRef = doc(db, 'users', userId);
+        
+                    await updateDoc(userDocRef, {
+                        appointments: arrayUnion(appointmentRef.id),
+                    });
+        
+                    Swal.fire({
+                        icon: "success",
+                        title: "Appointment Successful!",
+                        text: "Your appointment has been successfully created!",
+                    });
+                    await fetchTimeTableData();
+        
+                    const encodedInfo = encodeURIComponent(JSON.stringify(appointmentInfo));
+                    navigate(`/appointment/detail/${appointmentRef.id}?info=${encodedInfo}`);
+                }
             }
 
 
@@ -218,6 +238,31 @@ const AddAppointmentUser = () => {
             });
         }
     };
+
+    const checkTimeSlotAvailability = () => {
+        try {
+            if (timeOptions.length === 0) {
+                return false;
+            }
+    
+            const selectedTimeSlot = appointmentTime;
+            const existingAppointments = AllAppointmentUsersData.map(appointment => appointment.appointmentTime);
+    
+            const isSlotAvailable = timeOptions.some(timeSlot => {
+                if (JSON.stringify(timeSlot.value) === JSON.stringify(selectedTimeSlot)) {
+                    return !existingAppointments.includes(JSON.stringify(selectedTimeSlot));
+                }
+                return false;
+            });
+    
+            return isSlotAvailable;
+        } catch (error) {
+            console.error('Error checking time slot availability:', error);
+            return false;
+        }
+    };
+    
+    
 
     return (
         <div className="user">
@@ -247,48 +292,44 @@ const AddAppointmentUser = () => {
                             <h4>ช่วงเวลา</h4>
                         </div>
                         <select
-                        name="time"
-                        value={JSON.stringify(appointmentTime)}
-                        onChange={(e) => {
-                            handleSelectChange();
-                            const selectedValue = JSON.parse(e.target.value);
+                            name="time"
+                            value={JSON.stringify(appointmentTime)}
+                            onChange={(e) => {
+                                handleSelectChange();
+                                const selectedValue = JSON.parse(e.target.value);
 
-                            if (selectedValue && typeof selectedValue === 'object') {
-                            const { timetableId, timeSlotIndex } = selectedValue;
-                            inputValue("appointmentTime")({
-                                target: {
-                                value: { timetableId, timeSlotIndex },
-                                },
-                            });
+                                if (selectedValue && typeof selectedValue === 'object') {
+                                    const { timetableId, timeSlotIndex } = selectedValue;
+                                    inputValue("appointmentTime")({
+                                        target: {
+                                            value: { timetableId, timeSlotIndex },
+                                        },
+                                    });
 
-                            handleSelectChange();
-                            } else if (e.target.value === "") {
-                            inputValue("appointmentTime")({
-                                target: {
-                                value: {},
-                                },
-                            });
+                                    handleSelectChange();
+                                } else if (e.target.value === "") {
+                                    inputValue("appointmentTime")({
+                                        target: {
+                                            value: {},
+                                        },
+                                    });
 
-                            handleSelectChange();
-                            } else {
-                            console.error("Invalid selected value:", selectedValue);
-                            }
-                        }}
-                        className={selectedCount >= 2 ? 'selected' : ''}
+                                    handleSelectChange();
+                                } else {
+                                    console.error("Invalid selected value:", selectedValue);
+                                }
+                            }}
+                            className={selectedCount >= 2 ? 'selected' : ''}
                         >
-                        {timeOptions.map((timeOption, index) => (
-                            index === 0 ? 
-                            <option disabled key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={index === 0 ? 0 : JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                            {timeOption.label}
-                            </option>
-                            :
-                            <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={index === 0 ? 0 : JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                            {timeOption.label}
-                            </option>
-                        ))}
+                            {timeOptions.map((timeOption, index) => (
+                                <option
+                                    key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`}
+                                    value={index === 0 ? 0 : JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}
+                                >
+                                    {timeOption.label}
+                                </option>
+                            ))}
                         </select>
-
-
 
                     </div>
 
@@ -311,4 +352,4 @@ const AddAppointmentUser = () => {
     )
 }
 
-export default AddAppointmentUser;
+export default AddSpecialAppointmentUser;

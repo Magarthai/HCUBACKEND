@@ -165,7 +165,15 @@ const AddAppointmentUser = () => {
         e.preventDefault();
         console.log(appointmentId)
         try {
-
+            const isTimeSlotAvailable = checkTimeSlotAvailability();
+            if (!isTimeSlotAvailable) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Time Slot Unavailable",
+                    text: "The selected appointment time is no longer available. Please choose another time.",
+                });
+                return;
+            }
             const appointmentInfo = {
                 appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
                 appointmentTime,
@@ -177,44 +185,45 @@ const AddAppointmentUser = () => {
             };
 
             const usersCollection = collection(db, 'users');
-
+            const appointmentsCollection = collection(db, 'appointment');
+            const existingAppointmentsQuerySnapshot = await getDocs(query(
+                appointmentsCollection,
+                where('appointmentDate', '==', appointmentInfo.appointmentDate),
+                where('appointmentTime.timetableId', '==', appointmentInfo.appointmentTime.timetableId),
+                where('appointmentTime.timeSlotIndex', '==', appointmentInfo.appointmentTime.timeSlotIndex)
+            ));
             const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
             const userDocuments = userQuerySnapshot.docs;
             console.log("userDocuments",userDocuments,appointmentId)
             const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
             const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
-            if (!userQuerySnapshot.empty) {
-
-            } else {
-
-            }
 
             if (foundUser) {
-                const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-
-                const userDocRef = doc(db, 'users', userId);
-
-                await updateDoc(userDocRef, {
-                    appointments: arrayUnion(appointmentRef.id),
-                });
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Appointment Successful!",
-                    text: "Your appointment has been successfully created!",
-                });
-                await fetchTimeTableData();
-                
-
-                const encodedInfo = encodeURIComponent(JSON.stringify(appointmentInfo));
-            navigate(`/appointment/detail/${appointmentRef.id}?info=${encodedInfo}`);
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Something went wrong!",
-                    text: "Your Student ID Not Found!",
-                });
-                console.log("RIP",appointmentInfo)
+                if (!existingAppointmentsQuerySnapshot.empty) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Time Slot Already Taken!",
+                        text: "Someone has already booked this time slot. Please choose another time.",
+                    });
+                } else {
+                    const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+        
+                    const userDocRef = doc(db, 'users', userId);
+        
+                    await updateDoc(userDocRef, {
+                        appointments: arrayUnion(appointmentRef.id),
+                    });
+        
+                    Swal.fire({
+                        icon: "success",
+                        title: "Appointment Successful!",
+                        text: "Your appointment has been successfully created!",
+                    });
+                    await fetchTimeTableData();
+        
+                    const encodedInfo = encodeURIComponent(JSON.stringify(appointmentInfo));
+                    navigate(`/appointment/detail/${appointmentRef.id}?info=${encodedInfo}`);
+                }
             }
 
 
@@ -229,6 +238,31 @@ const AddAppointmentUser = () => {
             });
         }
     };
+
+    const checkTimeSlotAvailability = () => {
+        try {
+            if (timeOptions.length === 0) {
+                return false;
+            }
+    
+            const selectedTimeSlot = appointmentTime;
+            const existingAppointments = AllAppointmentUsersData.map(appointment => appointment.appointmentTime);
+    
+            const isSlotAvailable = timeOptions.some(timeSlot => {
+                if (JSON.stringify(timeSlot.value) === JSON.stringify(selectedTimeSlot)) {
+                    return !existingAppointments.includes(JSON.stringify(selectedTimeSlot));
+                }
+                return false;
+            });
+    
+            return isSlotAvailable;
+        } catch (error) {
+            console.error('Error checking time slot availability:', error);
+            return false;
+        }
+    };
+    
+    
 
     return (
         <div className="user">
