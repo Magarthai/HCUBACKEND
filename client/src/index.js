@@ -10,11 +10,12 @@ import SpecialTimetableComponent from "./components_hcu/TimetableSpecialComponen
 import PhysicalTimetableComponent from "./components_hcu/TimetablePhysicalComponent"
 import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
 import AppointmentManagerComponent from './components_hcu/AppointmentManagerComponent.js';
+import AdminActivityAddComponent from './components_hcu/ActivityAddComponent.js';
+import AdminActivityTodayComponent from './components_hcu/ActivityTodayComponent.js';
 import AppointmentDetail from './components_user/AppointmentDetail.js';
 import UserChooseClinic from './components_user/UserChooseClinic.js';
 import ExampleComponent from './components_user/ExampleComponent.js';
 import UserAllAppointment from './components_user/UserAllAppointment.js';
-
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
 import AdminAppointmentManagerPhysicalComponent from './components_hcu/AppointmentManagerPhysicalComponent.js';
 import UserDateateAppointment from './components_user/DateAppointment.js';
@@ -118,6 +119,14 @@ const router = createBrowserRouter([
   {
     path: "/adminQueueManagementSystemComponentPhysic",
     element: <ProtectAdminRoute><QueueManagementSystemComponentPhysic/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityAddComponent",
+    element: <ProtectAdminRoute><AdminActivityAddComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityTodayComponent",
+    element: <ProtectAdminRoute><AdminActivityTodayComponent/></ProtectAdminRoute>
   },
 
 

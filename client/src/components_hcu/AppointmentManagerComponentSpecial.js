@@ -751,12 +751,12 @@ const AppointmentManagerComponentSpecial = (props) => {
       ) : (
             <div className="admin">
             <div className="admin-header">
-            <div className="admin-hearder-item">
+                <div className="admin-hearder-item">
                         <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
                         <a href="/AppointmentManagerComponentSpecial" target="_parent" id="select">คลินิกเฉพาะทาง</a>
                         <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent">คลินิกกายภาพ</a>
                         <a href="/adminAppointmentManagerNeedleComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
-                    </div>
+                </div>
                 <div className="admin-hearder-item admin-right">
                     <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
                 </div>
