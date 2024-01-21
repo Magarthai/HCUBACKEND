@@ -90,11 +90,25 @@ const selectedDateFromLocation = location.state?.selectedDate || null;
     } else {
       if(!isLoading && selectedDateFromLocation) {
         handleDateClick(selectedDateFromLocation.day)
+        setCurrentMonth(selectedDateFromLocation.month)
+        console.log("currentMonth",currentMonth,selectedDateFromLocation.month)
         renderCalendar();
         setIsLoading(true)
-      }
+        setCurrentMonth(selectedDateFromLocation.month)
+      } 
     }
-  }, [selectedDate]);
+  }, [selectedDate,currentMonth]);
+
+  useEffect(() => {
+    if (!isLoading && selectedDateFromLocation) {
+      handleDateClick(selectedDateFromLocation.day);
+      setCurrentMonth(selectedDateFromLocation.month);
+      setCurrentYear(selectedDateFromLocation.year);
+      console.log("currentMonth", currentMonth);
+      renderCalendar();
+      setIsLoading(true);
+    }
+  }, [selectedDateFromLocation]);
 
   useEffect(() => {
     console.log("Updated selectedDate:", selectedDate);
