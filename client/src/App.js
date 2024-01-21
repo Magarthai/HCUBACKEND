@@ -5,10 +5,10 @@ function App() {
     <div className="center">
         <h2>HCU - Health Care Unit Kmutt</h2>
         <br></br>
-        <a class="btn btn-primary" href="/login" role="button" target="_parent">User</a>
+        <a class="btn btn-primary" href="/" role="button" target="_parent">User</a>
         <br></br>
         <br></br>
-        <a class="btn btn-primary" href="/login" role="button"  target="_parent">HCU</a>
+        <a class="btn btn-primary" href="/" role="button"  target="_parent">HCU</a>
     </div>
   );
 }

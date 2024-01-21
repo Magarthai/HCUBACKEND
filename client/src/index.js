@@ -5,21 +5,21 @@ import LoginComponent from "./components_all/LoginComponent"
 import SignupComponent from "./components_all/SignupComponent";
 import AdminHomeComponent from "./components_hcu/HomeComponent"
 import ProtectAdminRoute from './auth/protectAdminRoute.jsx';
-import AdminAppointmentComponent from "./components_hcu/AppointmentComponent"
 import GeneralTimetableComponent from "./components_hcu/TimetableGeneralComponent.js"
 import SpecialTimetableComponent from "./components_hcu/TimetableSpecialComponent"
 import PhysicalTimetableComponent from "./components_hcu/TimetablePhysicalComponent"
 import NeedleTimetableComponent from "./components_hcu/TimetableNeedleComponent"
 import AppointmentManagerComponent from './components_hcu/AppointmentManagerComponent.js';
+import AdminActivityAddComponent from './components_hcu/ActivityAddComponent.js';
+import AdminActivityTodayComponent from './components_hcu/ActivityTodayComponent.js';
 import AppointmentDetail from './components_user/AppointmentDetail.js';
 import UserChooseClinic from './components_user/UserChooseClinic.js';
 import ExampleComponent from './components_user/ExampleComponent.js';
 import UserAllAppointment from './components_user/UserAllAppointment.js';
-import SelectDateAppointmentUser from './components_user/SelectDateAppointmentUser.js';
 import ListAppointmentUser from './components_user/ListAppointmentUser.js';
 import AdminAppointmentManagerPhysicalComponent from './components_hcu/AppointmentManagerPhysicalComponent.js';
 import UserDateateAppointment from './components_user/DateAppointment.js';
-import AddAppointmentUser from './components_user/AddAppointmentUser.js';
+import AddAppointmentUserGeneral from './components_user/AddAppointmentUserGeneral.js';
 import AdminAppointmentRequestManagementComponent from './components_hcu/AppointmentRequestManagementComponent.js';
 import AdminAppointmentRequestManagementHistoryComponent from './components_hcu/AppointmentRequestManagementHistoryComponent.js';
 import AdminQueueManagementSystemComponent from './components_hcu/QueueManagementSystemComponent.js';
@@ -31,6 +31,9 @@ import UserTimetableComponet from './components_user/TimetableComponet.js';
 import UserProfileComponent from './components_user/ProfileComponent.js';
 import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
 import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManagerNeedleComponent.js';
+import UserEditAppointmentPhysic from './components_user/UserEditAppointmentPhysic.js';
+
+
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -38,14 +41,15 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import ProtectRoute from './auth/protectRoute.jsx';
-
+import QueueManagementSystemComponentPhysic from './components_hcu/QueueManagementSystemComponentPhysic.js';
+import QueueManagementSystemComponentSpecial from './components_hcu/QueueManagementSystemComponentSpecial.js';
+import QueueManagementSystemComponentNeedle from './components_hcu/QueueManagementSystemComponentNeedle.js'
+import AddAppointmentUserNeedle from './components_user/AddAppointmentUserNeedle.js';
+import AddAppointmentUserPhysic from './components_user/AddAppointmentUserPhysics.js';
+import AddAppointmentUserSpecial from './components_user/AddAppointmentUserSpecial.js';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-  },
-  {
-    path: "/login",
     element: <LoginComponent />
   },
   {
@@ -105,8 +109,31 @@ const router = createBrowserRouter([
     element: <ProtectAdminRoute><AppointmentManagerComponentSpecial/></ProtectAdminRoute>
   },
   {
-    path: "/appointment/detail",
-    element: <ProtectRoute><AppointmentDetail/></ProtectRoute>
+    path: "/adminQueueManagementSystemComponentSpecial",
+    element: <ProtectAdminRoute><QueueManagementSystemComponentSpecial/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminQueueManagementSystemComponentNeedle",
+    element: <ProtectAdminRoute><QueueManagementSystemComponentNeedle/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminQueueManagementSystemComponentPhysic",
+    element: <ProtectAdminRoute><QueueManagementSystemComponentPhysic/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityAddComponent",
+    element: <ProtectAdminRoute><AdminActivityAddComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityTodayComponent",
+    element: <ProtectAdminRoute><AdminActivityTodayComponent/></ProtectAdminRoute>
+  },
+
+
+
+  {
+    path: "/appointment/detail/:id",
+    element: <ProtectRoute><AppointmentDetail /></ProtectRoute>
   },
   {
     path: "/appointment",
@@ -130,23 +157,36 @@ const router = createBrowserRouter([
   },
   {
     path: "/appointment/add",
-    element: <ProtectRoute><AddAppointmentUser/></ProtectRoute>
+    element: <ProtectRoute><AddAppointmentUserGeneral/></ProtectRoute>
   },
+  {
+    path: "/appointment/addSpecial",
+    element: <ProtectRoute><AddAppointmentUserSpecial/></ProtectRoute>
+  },
+  {
+    path: "/appointment/addPhysic",
+    element: <ProtectRoute><AddAppointmentUserPhysic/></ProtectRoute>
+  },
+  {
+    path: "/appointment/addNeedle",
+    element: <ProtectRoute><AddAppointmentUserNeedle/></ProtectRoute>
+  },
+
   {
     path: "/home",
     element: <ProtectRoute><UserHomeComponent/></ProtectRoute>
   },
   {
-    path: "/apppointment/edit",
+    path: "/appointment/edit",
     element: <ProtectRoute><UserEditAppointment/></ProtectRoute>
   },
   {
-    path: "/apppointment/history",
-    element: <ProtectRoute><UserHistoryAppointment/></ProtectRoute>
+    path: "/appointment/editPhysic",
+    element: <ProtectRoute><UserEditAppointmentPhysic/></ProtectRoute>
   },
   {
-    path: "/appointment/selectDate",
-    element: <ProtectRoute><SelectDateAppointmentUser/></ProtectRoute>
+    path: "/appointment/history",
+    element: <ProtectRoute><UserHistoryAppointment/></ProtectRoute>
   },
   {
     path: "/timetable",

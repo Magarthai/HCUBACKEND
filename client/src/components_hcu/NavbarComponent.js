@@ -12,7 +12,7 @@ const NavbarComponent = (props) => {
   const handleLogout = async () => {
     try {
       await logOut();
-      navigate('/login'); // Use navigate instead of window.location.href
+      navigate('/'); // Use navigate instead of window.location.href
     } catch (err) {
       console.log(err.message);
     }

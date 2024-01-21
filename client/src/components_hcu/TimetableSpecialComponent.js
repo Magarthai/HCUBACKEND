@@ -7,16 +7,15 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import Swal from "sweetalert2";
 import { auth } from '../firebase/config';
-import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc,where,query, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-
+import { PulseLoader } from "react-spinners";
 const TimetableSpecialComponent = (props) => {
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
-    const { user } = useUserAuth();
+    const { user,userData } = useUserAuth();
     const [timetable, setTimetable] = useState([])
     const { id } = useParams();
     const [state, setState] = useState({
@@ -58,7 +57,10 @@ const TimetableSpecialComponent = (props) => {
         try {
             if (user) {
                 const timeTableCollection = collection(db, 'timeTable');
-                const timeTableSnapshot = await getDocs(timeTableCollection);
+                const timeTableSnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('clinic', '==', 'คลินิกเฉพาะทาง')
+                ));
 
                 const timeTableData = timeTableSnapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -215,37 +217,12 @@ const TimetableSpecialComponent = (props) => {
 
 
 
-
+    const [isLoading, setIsLoading] = useState(true);
 
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         fetchTimeTableData();
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const usersCollection = collection(db, 'users');
-                    const usersSnapshot = await getDocs(usersCollection);
-
-                    const usersData = usersSnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-
-                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-                    if (currentUserData) {
-                        setUserData(currentUserData);
-                        console.log(currentUserData);
-                    } else {
-                        console.log("User not found");
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-        fetchUserData();
 
         const updateShowTime = () => {
             const newTime = getShowTime();
@@ -266,12 +243,16 @@ const TimetableSpecialComponent = (props) => {
         responsivescreen();
 
         window.addEventListener("resize", responsivescreen);
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
 
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    }, [user]);
+    }, [user,userData]);
 
     const containerStyle = {
         zoom: zoomLevel,
@@ -502,7 +483,12 @@ const TimetableSpecialComponent = (props) => {
                 <a href="/timeTablePhysicalAdmin" target="_parent" >คลินิกกายภาพ</a>
                 <a href="/timeTableNeedleAdmin" target="_parent" >คลินิกฝั่งเข็ม</a>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
 
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin-timetable-system">
                 <div className="admin-timetable-system-item">
                     <div className="admin-timetable-system-top">
@@ -822,7 +808,7 @@ const TimetableSpecialComponent = (props) => {
 
             </div>
 
-
+      )}
 
         </div>
 

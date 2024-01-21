@@ -1,113 +1,167 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/UserListAppointmentUser.css";
 import { Link } from "react-router-dom";
 import NavbarUserComponent from "../components_user/NavbarUserComponent";
 import item1 from "../picture/calendar-dark.png";
 import item2 from "../picture/calen-search.png";
 import item3 from "../picture/clock-dark.png";
+import Popup from 'reactjs-popup';
+import item4 from "../picture/close.png";
 
-// {
-//     path: "/ListAppointmentUser",
-//     element: <ProtectRoute><ListAppointmentUser/></ProtectRoute>
-//   },
-// import ListAppointmentUser from './components_user/ListAppointmentUser.js';
     
 const ListAppointmentUser = () => {
+  const [isOpenPop, setIsOpenPop] = useState(false);
+
+  const handleOpenPopup = () => {
+      setIsOpenPop(true); // เปิด Popup 1
+  };
+  const handleClosePopup = () => {
+      setIsOpenPop(false); // ปิด Popup 1
+  };
   return (
     <div className="user">
       <header className="user-header">
-        <div className="AppointList-header-txt">
-          <h2 className="head-txt-List">รายการนัดหมาย</h2>
-          <h3 className="head-txt-All">นัดหมายทั้งหมด</h3>
-        </div>
+       
+          <h2>รายการนัดหมาย</h2>
+          <h3>นัดหมายทั้งหมด</h3>
+        
         <div className="AppointList-header-navbar">
           <NavbarUserComponent />
         </div>
       </header>
 
       <div className="user-body">
-        <div className="AppointList-body-search">
-          <p
-            className="search-txt"
-            style={{ marginLeft: 430, marginTop: 25, marginBottom: 20 }}
-          >
-            ค้นหา
-          </p>
-          <img className="mini-card-icon" src={item2} alt="icon-search" />
+        <div className="AppointList-body-searchItem">
+          {/* <p className="AppointList-body-searchItem-txt">ค้นหา</p>
+          <img className="mini-card-icon" src={item2} alt="icon-search" /> */}
+          <label className="textBody-huge colorPrimary-800">ค้นหา</label>
+          <input type="date" className="form-control" placeholder="dd/mm/yyyy" />
         </div>
 
         <div className="AppointList-body-card">
-          <div className="AppointList-body-card-ref">
-            <div className="card-of-appointment">
-              <p className="outer-card-ref">วัน/เดือน/ปี</p>
-              <div className="inner-card-ref">
-                <div className="inner-card-ref-items">
-                  <p className="inner-card-ref-items-ClinicName">
-                    คลินิกทั่วไป
-                  </p>
-                  <div className="inner-card-ref-items-Calendar">
-                    <img
-                      className="mini-card-icon"
-                      src={item1}
-                      alt="icon-calen"
-                    />
-                    <p className="inner-card-ref-items-Calendar-txt">
-                      วัน/เดือน/ปี
-                    </p>
+          <div className="AppointList-body-card-item">
+              <p className="AppointList-body-card-item-outDate">19/12/2023</p>
+              <div className="AppointList-body-card-item-innerCard">
+                  <p className="AppointList-body-card-item-innerCard-ClinicName">คลินิกทั่วไป</p>
+                  <div className="AppointList-body-card-item-innerCard-DescDate">
+                    <img className="mini-card-icon" src={item1} alt="icon-calen"/>
+                    <p className="AppointList-body-card-item-innerCard-DescDate-txt">19/12/2023</p>
                   </div>
 
-                  <div className="inner-card-ref-items-TimeClick">
-                    <div className="inner-card-ref-items-TimeClick-Time">
-                      <img
-                        className="mini-card-icon"
-                        src={item3}
-                        alt="icon-clock"
-                      />
-                      <p className="inner-card-ref-items-TimeClick-Time-txt">
-                        เวลา __:__:__
-                      </p>
+                  <div className="AppointList-body-card-item-innerCard-TimeAndClick">
+                    <div className="AppointList-body-card-item-innerCard-DescTime">
+                      <img className="mini-card-icon" src={item3} alt="icon-clock"/>
+                      <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
                     </div>
-                    <div className="inner-card-ref-items-TimeClick-Click-txt">
-                      <a href="#">คลิกเพื่อดูรายละเอียด</a>
+                    <div className="AppointList-body-card-item-innerCard-DescClick" onClick={handleOpenPopup}>
+                      คลิกเพื่อดูรายละเอียด
+                    </div>
+                    
+                    <Popup className="Popup-ListAppointment" open={isOpenPop} onClose={() => setIsOpenPop(false)} >
+                          <div className="BlackBackground">
+                                    <div className="Popup-ListAppointment-ref">
+                                      <div className="Popup-ListAppointment-ref-ClinicNameAndCloseBtn">
+                                        <p className="Popup-ListAppointment-ref-ClinicName">คลินิกทั่วไป</p>
+                                        <img className="PopupCloseBtn" src={item4} alt="icon-close" onClick={handleClosePopup}/>
+                                      </div>
+                                      <div className="Popup-ListAppointment-ref-DescDate">
+                                        <img className="mini-card-icon" src={item1} alt="icon-calen"/>
+                                        <p className="Popup-ListAppointment-ref-DescDate-txt">19/12/2023</p>
+                                      </div>
+                                      <div className="Popup-ListAppointment-ref-DescTime">
+                                        <img className="mini-card-icon" src={item3} alt="icon-clock"/>
+                                        <p className="Popup-ListAppointment-ref-DescTime-txt">10:00 - 16:00</p>
+                                      </div>
+                                      <div className="Popup-ListAppointment-ref-CauseSympt">
+                                        <p className="Popup-ListAppointment-ref-CauseSympt-Ques">สาเหตุการนัดหมาย</p>
+                                        <p className="Popup-ListAppointment-ref-CauseSympt-Ans">: ตรวจรักษาโรค</p>
+                                      </div>
+                                      <div className="Popup-ListAppointment-ref-BasicSympt">
+                                        <p className="Popup-ListAppointment-ref-BasicSympt-Ques">อาการเบื้องต้น</p>
+                                        <p className="Popup-ListAppointment-ref-BasicSympt-Ans">: มีอาการปวดหัว อาเจียน</p>
+                                      </div>
+                                    </div>
+                          </div>
+                      </Popup>
+                  </div>
+              </div>
+          </div>
+
+          <div className="AppointList-body-card-item">
+              <p className="AppointList-body-card-item-outDate">14/12/2023</p>
+              <div className="AppointList-body-card-item-innerCard">
+                  <p className="AppointList-body-card-item-innerCard-ClinicName">คลินิกทั่วไป</p>
+                  <div className="AppointList-body-card-item-innerCard-DescDate">
+                    <img className="mini-card-icon" src={item1} alt="icon-calen"/>
+                    <p className="AppointList-body-card-item-innerCard-DescDate-txt">14/12/2023</p>
+                  </div>
+
+                  <div className="AppointList-body-card-item-innerCard-TimeAndClick">
+                    <div className="AppointList-body-card-item-innerCard-DescTime">
+                      <img className="mini-card-icon" src={item3} alt="icon-clock"/>
+                      <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
+                    </div>
+                    <div className="AppointList-body-card-item-innerCard-DescClick" onClick={handleOpenPopup}>
+                      คลิกเพื่อดูรายละเอียด
                     </div>
                   </div>
+              </div>
+          </div>
+        </div>
+
+        <div className="AppointList-body-BetweenCard">
+          <p className="AppointList-body-BetweenCard-txt">------------- ดำเนินการนัดหมายสำเร็จ -------------</p>
+        </div>
+
+
+        <div className="AppointList-body-cardCommited">
+          <div className="AppointList-body-cardCommitted-item">
+              <p className="AppointList-body-cardCommitted-item-outDate">19/12/2023</p>
+              <div className="AppointList-body-cardCommitted-item-innerCard">
+                <div className="AppointList-body-cardCommitted-item-innerCard-ClinicAndStatus">
+                  <p className="AppointList-body-cardCommitted-item-innerCard-ClinicName">คลินิกทั่วไป</p>
+                  <p className="AppointList-body-cardCommitted-item-innerCard-StatusGreen">สำเร็จ</p>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-status-appointment">
-            <p>----------ดำเนินการนัดหมายสำเร็จ----------</p>
-          </div>
-
-          <div className="AppointList-body-card-fini">
-              <div className="AppointList-body-card-fini-ref">
-                  <div className="AppointList-body-card-fini-ref-clinic">
-                    <p className="AppointList-body-card-fini-ref-clinic-Name">คลินิกทั่วไป</p>
-                    <div className="AppointList-body-card-fini-ref-clinic-status">เสร็จสิ้น</div>
+                  <div className="AppointList-body-cardCommitted-item-innerCard-DescDate">
+                    <img className="mini-card-icon" src={item1} alt="icon-calen"/>
+                    <p className="AppointList-body-cardCommitted-item-innerCard-DescDate-txt">19/12/2023</p>
                   </div>
 
-                  <div className="AppointList-body-card-fini-ref-Date">
-                    <img className="mini-card-icon" src={item1} alt="icon-calen" />
-                    <p className="AppointList-body-card-fini-ref-Date-txt">
-                      วัน/เดือน/ปี
-                    </p>
-                  </div>
-
-                  <div className="AppointList-body-card-fini-ref-Time">
-                    <img className="mini-card-icon" src={item3} alt="icon-clock" />
-                    <p className="AppointList-body-card-fini-ref-Time-txt">
-                      เวลา __:__:__
-                    </p>
+                  <div className="AppointList-body-cardCommitted-item-innerCard-TimeAndClick">
+                    <div className="AppointList-body-cardCommitted-item-innerCard-DescTime">
+                      <img className="mini-card-icon" src={item3} alt="icon-clock"/>
+                      <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
+                    </div>
                   </div>
               </div>
           </div>
+
+          <div className="AppointList-body-cardCommitted-item">
+              <p className="AppointList-body-cardCommitted-item-outDate">19/12/2023</p>
+              <div className="AppointList-body-cardCommitted-item-innerCard">
+                <div className="AppointList-body-cardCommitted-item-innerCard-ClinicAndStatus">
+                  <p className="AppointList-body-cardCommitted-item-innerCard-ClinicName">คลินิกทั่วไป</p>
+                  <p className="AppointList-body-cardCommitted-item-innerCard-StatusRed">ยกเลิกแล้ว</p>
+                </div>
+                  <div className="AppointList-body-cardCommitted-item-innerCard-DescDate">
+                    <img className="mini-card-icon" src={item1} alt="icon-calen"/>
+                    <p className="AppointList-body-cardCommitted-item-innerCard-DescDate-txt">19/12/2023</p>
+                  </div>
+
+                  <div className="AppointList-body-cardCommitted-item-innerCard-TimeAndClick">
+                    <div className="AppointList-body-cardCommitted-item-innerCard-DescTime">
+                      <img className="mini-card-icon" src={item3} alt="icon-clock"/>
+                      <p className="AppointList-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
+                    </div>
+                  </div>
+              </div>
+          </div>
+
         </div>
-        <footer className="AppointList-footer">
-        <div className="AppointList-footer-btn">
-          <button className="return-btn">ย้อนกลับ</button>
+
+        <div className="AppointList-body-returnButton">
+          <button className="return-btn" style={{width:'94%', marginTop:20}}>ย้อนกลับ</button>
         </div>
-      </footer>
       </div>
       
     </div>

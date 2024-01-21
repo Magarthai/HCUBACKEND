@@ -11,6 +11,9 @@ const CalendarUserComponent = (props) => {
     "July", "August", "September", "October", "November", "December"
   ];
   const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const [selectedDateIndex, setSelectedDateIndex] = useState(null);
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(null);
+  const [selectedYearIndex, setSelectedYearIndex] = useState(null);
 
   const handleDateClick = (day) => {
     const selectedDate = new Date(currentYear, currentMonth - 1, day);
@@ -21,10 +24,12 @@ const CalendarUserComponent = (props) => {
       month: currentMonth,
       year: currentYear,
       dayName: dayName,
-  };
-
-  setSelectedDate(formattedSelectedDate);
-  props.onDateSelect(formattedSelectedDate);
+    };
+    setSelectedDateIndex(day);
+    setSelectedMonthIndex(currentMonth)
+    setSelectedYearIndex(currentYear)
+    setSelectedDate(formattedSelectedDate);
+    props.onDateSelect(formattedSelectedDate);
 };
 
   const renderCalendar = () => {
@@ -39,25 +44,17 @@ const CalendarUserComponent = (props) => {
     }
 
     for (let i = 1; i <= lastDateofMonth; i++) {
-      const isToday =
-        i === new Date().getDate() &&
-        currentMonth === new Date().getMonth() + 1 &&
-        currentYear === new Date().getFullYear()
-          ? "active"
-          : "";
-
+      const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "active": "";
+      
+      const isSelected = i === selectedDateIndex && currentMonth === selectedMonthIndex && currentYear === selectedYearIndex? "focused" : "";
       const handleClick = () => handleDateClick(i);
 
-      if (
-        (i >= new Date().getDate() &&
-          currentMonth === new Date().getMonth() + 1 &&
-          currentYear === new Date().getFullYear()) ||
-        (currentMonth > new Date().getMonth() + 1 &&
-          currentYear === new Date().getFullYear()) ||
-        (currentYear > new Date().getFullYear())
+      if ((i >= new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear()) ||
+        (currentMonth > new Date().getMonth() + 1 && currentMonth < new Date().getMonth() + 4 && currentYear === new Date().getFullYear() ) ||
+        (currentYear > new Date().getFullYear()) 
       ) {
         days.push(
-          <li key={`active-${i}`} className={isToday} onClick={handleClick}>
+          <li key={`active-${i}`} className={`${isToday} ${isSelected}`} onClick={handleClick}>
             {i}
           </li>
         );

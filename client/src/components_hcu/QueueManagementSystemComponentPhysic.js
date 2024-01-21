@@ -8,7 +8,8 @@ import "../css/AdminQueueManagementSystemComponent.css";
 import verify_rights_icon from "../picture/verify_rights_icon.png";
 import Swal from "sweetalert2";
 import { ScaleLoader } from "react-spinners";
-const QueueManagementSystemComponent = (props) => {
+
+const QueueManagementSystemComponentSpecial = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -48,16 +49,16 @@ const QueueManagementSystemComponent = (props) => {
                 const currentDate = new Date();
                 const [hoursEnd, minutesEnd] = timeslot.end.split(':').map(Number);
                 const [hoursStart, minutesStart] = timeslot.start.split(':').map(Number);
-        
+
                 const timeslotEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), hoursEnd, minutesEnd, 0);
                 const timeslotStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), hoursStart, minutesStart, 0);
-        
-                const currentFormattedTime2 = new Date(timeslotStart.getTime() - 15 * 60000);
-        
-                console.log(";-;", currentFormattedTime, currentFormattedTime2, timeslotEnd, timeslotStart);
+
+
+                console.log(";-;", currentFormattedTime, timeslotEnd,timeslotStart);
         
                 if (
                     appointment.status == 'ลงทะเบียนแล้ว' &&
+                    currentFormattedTime >= timeslotStart &&
                     currentFormattedTime >= timeslotEnd
                 ) {
                     try {
@@ -78,47 +79,19 @@ const QueueManagementSystemComponent = (props) => {
                     } catch (error) {
                         console.error('Error updating appointment status:', error);
                     }
-                } else if (currentFormattedTime >= currentFormattedTime2 && appointment.status == 'ลงทะเบียนแล้ว' && currentFormattedTime2 <= timeslotEnd) {
-                    try {
-                        const docRef = doc(db, 'appointment', appointment.appointmentuid);
-                        await updateDoc(docRef, { status: "รอยืนยันสิทธิ์" });
-        
-                        setAllAppointmentUsersData((prevData) => {
-                            const updatedData = prevData.map((data) => {
-                                if (data.appointment.appointmentuid === appointment.appointmentuid) {
-                                    return { ...data, appointment: { ...data.appointment, status: "รอยืนยันสิทธิ์" } };
-                                }
-                                return data;
-                            });
-                            return updatedData;
-                        });
-        
-                        console.log(`Updated status for appointment ${appointment.appointmentuid} to "รอยืนยันสิทธิ์"`);
-                    } catch (error) {
-                        console.error('Error updating appointment status:', error);
-                    }
                 }
             });
         };
-
-
-
         
-        
-        const updateAppointments = async () => {
+        const intervalId = setInterval(() => {
             updateAppointmentsStatus();
-        };
-    
-        updateAppointments();
-    
-        const intervalId = setInterval(updateAppointments, 6000);
-    
+            fetchUserDataWithAppointments();
+        }, 60000);
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
             clearInterval(intervalId);
         };
-        
 
         
 
@@ -167,7 +140,7 @@ const QueueManagementSystemComponent = (props) => {
     const handleToggle = async (id, AppointmentUserData) => {
         Swal.fire({
             title: 'Confirm',
-            text: `ยืนยันคิว ${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`,
+            text: `ยินยันคิว ${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'เสร็จสิ้น',
@@ -269,7 +242,7 @@ const QueueManagementSystemComponent = (props) => {
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
                     `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                    where('clinic', '==', 'คลินิกทั่วไป')));
+                    where('clinic', '==', 'คลินิกกายภาพ')));
 
                 const timeTableCollection = collection(db, 'timeTable');
                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -283,41 +256,35 @@ const QueueManagementSystemComponent = (props) => {
 
 
                 if (existingAppointments.length > 0) {
-                    console.log("existingAppointments", existingAppointments);
-                    console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
-    
-                    const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
+                    const AppointmentUsersDataArray = [];
+
+                    for (const appointment of existingAppointments) {
                         const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
                         const timeTableId = appointment.appointmentTime.timetableId;
-    
+
                         try {
                             const timetableDocRef = doc(timeTableCollection, timeTableId);
                             const timetableDocSnapshot = await getDoc(timetableDocRef);
-    
+
                             if (timetableDocSnapshot.exists()) {
                                 const timetableData = timetableDocSnapshot.data();
-                                console.log("Timetable Data:", timetableData);
                                 const timeslot = timetableData.timeablelist[timeSlotIndex];
-                                console.log("Timeslot info", timeslot);
-    
+
                                 const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
-    
+
                                 if (userDetails) {
-                                    console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
-                                    return userDetails;
+                                    AppointmentUsersDataArray.push(userDetails);
+                                
                                 } else {
-                                    console.log("No user details found for appointmentId", appointment.appointmentId);
-                                    return null;
+                                  
                                 }
                             } else {
-                                console.log("No such document with ID:", timeTableId);
-                                return null;
+
                             }
                         } catch (error) {
                             console.error('Error fetching timetable data:', error);
-                            return null;
                         }
-                    }));
+                    }
 
                     if (AppointmentUsersDataArray.length > 0) {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
@@ -428,10 +395,10 @@ const QueueManagementSystemComponent = (props) => {
             </div>
             <div className="admin">
                 <div className="admin-header">
-                    <div className="admin-hearder-item">
-                        <a href="/adminQueueManagementSystemComponent" target="_parent" id="select">คลินิกทั่วไป</a>
-                        <a href="/adminQueueManagementSystemComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
-                        <a href="/adminQueueManagementSystemComponentPhysic" target="_parent" >คลินิกกายภาพ</a>
+                <div className="admin-hearder-item">
+                        <a href="/adminQueueManagementSystemComponent" target="_parent" >คลินิกทั่วไป</a>
+                        <a href="/adminQueueManagementSystemComponentSpecial" target="_parent">คลินิกเฉพาะทาง</a>
+                        <a href="/adminQueueManagementSystemComponentPhysic" target="_parent" id="select">คลินิกกายภาพ</a>
                         <a href="/adminQueueManagementSystemComponentNeedle" target="_parent" >คลินิกฝั่งเข็ม</a>
                     </div>
                 </div>
@@ -439,7 +406,7 @@ const QueueManagementSystemComponent = (props) => {
                 <div className="admin-body">
                     <div className="admin-queue-flexbox">
                         <div className="admin-queue-box">
-                            <h2 className="colorPrimary-800">นัดหมายคลินิกทั่วไป</h2>
+                            <h2 className="colorPrimary-800">นัดหมายคลินิกกายภาพ</h2>
                             {AppointmentUsersData && AppointmentUsersData.length > 0 ? (
                                 AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
                                     <div className="admin-queue-card" onClick={() => openDetailAppointment(AppointmentUserData)} key={index}>
@@ -502,4 +469,4 @@ const QueueManagementSystemComponent = (props) => {
     );
 }
 
-export default QueueManagementSystemComponent;
+export default QueueManagementSystemComponentSpecial;

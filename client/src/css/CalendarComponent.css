@@ -106,18 +106,32 @@ header .icons span:last-child{
     transform:translate(-50%,-50%);
 }
 .days li:hover::before{
+    background-color: #365372;
+}
+.days li:hover{
+    color: #ffffff;
+}
+.days li.focused::before{
     background-color: #54B2B0;
+}
+.days li.focused{
     color: #ffffff;
 }
 .days li.active::before{
-    border: 1.5px solid #365372;
+    border: 1.5px solid #54B2B0;
 }
 .days li.inactive{
     pointer-events: none;
     color: #A1A1A1;
 }
 .days li.active{
-    color: #365372;
+    color: #54B2B0;
+}
+.days li.active:hover{
+    color: #ffffff;
+}
+.days li.active.focused{
+    color: #ffffff;
 }
 #userCalendar{
     border-radius: 20px 20px 20px 20px ;

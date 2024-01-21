@@ -7,16 +7,16 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import Swal from "sweetalert2";
 import { auth } from '../firebase/config';
-import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc,where,query, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-
+import { PulseLoader } from "react-spinners";
 const TimetablePhysicalComponent = (props) => {
+    const [isLoading, setIsLoading] = useState(true);
     const [showTime, setShowTime] = useState(getShowTime);
-    const [userData, setUserData] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1); 
     const animationFrameRef = useRef();
-    const { user } = useUserAuth();
+    const { user , userData} = useUserAuth();
     const [timetable, setTimetable] = useState([])
     const { id } = useParams();
     const [state, setState] = useState({
@@ -26,15 +26,18 @@ const TimetablePhysicalComponent = (props) => {
         timeAppointmentStart: "",
         timeAppointmentEnd: "",
         numberAppointment: "",
+        timeAppointmentMainStart: "",
+        timeAppointmentMainEnd: "",
+        numberMainAppointment: "",
         clinic: "",
         timetableId: id || "", 
     })
 
 
-    const { addDay, timeStart, timeEnd, timeAppointmentStart, timeAppointmentEnd, numberAppointment, clinic ,timetableId} = state
+    const { addDay, timeStart, timeEnd, timeAppointmentStart, timeAppointmentEnd, numberAppointment, clinic ,timetableId,timeAppointmentMainStart,timeAppointmentMainEnd,numberMainAppointment} = state
 
     const isSubmitEnabled =
-        !addDay || !timeStart || !timeEnd || !timeAppointmentStart || !timeAppointmentEnd || !numberAppointment;
+        !addDay || !timeStart || !timeEnd || !timeAppointmentStart || !timeAppointmentEnd || !numberAppointment || !timeAppointmentMainStart || ! timeAppointmentMainEnd || !numberMainAppointment;
 
 
     const [isChecked, setIsChecked] = useState({});
@@ -58,7 +61,10 @@ const TimetablePhysicalComponent = (props) => {
         try {
             if (user) {
                 const timeTableCollection = collection(db, 'timeTable');
-                const timeTableSnapshot = await getDocs(timeTableCollection);
+                const timeTableSnapshot = await getDocs(query(
+                    timeTableCollection,
+                    where('clinic', '==', 'คลินิกกายภาพ')
+                ));
 
                 const timeTableData = timeTableSnapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -115,7 +121,33 @@ const TimetablePhysicalComponent = (props) => {
         
             timeablelist.push({
                 start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                type:"talk"
+            });
+        }
+
+        const start2 = new Date(`2000-01-01T${timeAppointmentMainStart}`);
+        const end2 = new Date(`2000-01-01T${timeAppointmentMainEnd}`);
+        const duration2 = (end2 - start2) / 60000;
+
+        const interval2 = Math.floor(duration2 / numberMainAppointment);
+
+        for (let i = 0; i < numberMainAppointment; i++) {
+            const slotStart = new Date(start2.getTime() + i * interval2 * 60000);
+            const slotEnd = new Date(slotStart.getTime() + interval2 * 60000);
+        
+            if (slotEnd.getTime() > end2.getTime()) {
+                timeablelist.push({
+                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                    end: end2.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+                });
+                break;
+            }
+        
+            timeablelist.push({
+                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                type:"main"
             });
         }
 
@@ -127,7 +159,10 @@ const TimetablePhysicalComponent = (props) => {
                 timeEnd: timeEnd,
                 timeAppointmentStart: timeAppointmentStart,
                 timeAppointmentEnd: timeAppointmentEnd,
+                timeAppointmentMainStart:timeAppointmentMainStart,
+                timeAppointmentMainEnd:timeAppointmentMainEnd,
                 numberAppointment: numberAppointment,
+                numberMainAppointment: numberMainAppointment,
                 clinic: "คลินิกกายภาพ",
                 timeablelist: timeablelist,
                 status: "Enabled",
@@ -185,7 +220,7 @@ const TimetablePhysicalComponent = (props) => {
     
         try {
             const timetableRef = doc(db, 'timeTable', timetableId);
-            console.log(timetableId);  // Corrected from console.log(timetable.id)
+            console.log(timetableId);
     
             const updatedTimetable = {
                 addDay: addDay,
@@ -219,31 +254,6 @@ const TimetablePhysicalComponent = (props) => {
     useEffect(() => {
         document.title = 'Health Care Unit';
         fetchTimeTableData();
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const usersCollection = collection(db, 'users');
-                    const usersSnapshot = await getDocs(usersCollection);
-
-                    const usersData = usersSnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-
-                    const currentUserData = usersData.find((userData) => userData.uid === user.uid);
-
-                    if (currentUserData) {
-                        setUserData(currentUserData);
-                        console.log(currentUserData);
-                    } else {
-                        console.log("User not found");
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-        fetchUserData();
 
         const updateShowTime = () => {
             const newTime = getShowTime();
@@ -260,16 +270,21 @@ const TimetablePhysicalComponent = (props) => {
             setZoomLevel(newZoomLevel);
         };
 
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
+
         updateShowTime();
         responsivescreen();
 
         window.addEventListener("resize", responsivescreen);
 
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    }, [user]);
+    }, [user,userData]);
 
     const containerStyle = {
         zoom: zoomLevel,
@@ -406,6 +421,7 @@ const TimetablePhysicalComponent = (props) => {
             setsaveDetailId(timetable.id)
             let detailDay = timetable.addDay;
             let listtimetable = ""
+            
             if (detailDay === "monday") {
                 document.getElementById("Detailday").innerHTML = `<b>วัน</b> : วันจันทร์`
             } else if (detailDay === "tuesday") {
@@ -421,11 +437,33 @@ const TimetablePhysicalComponent = (props) => {
             document.getElementById("Detailtime").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมาย</b> : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
             document.getElementById("Detailqueue").innerHTML = `<b>จำนวนคิวนัดหมาย</b> : ${timetable.numberAppointment} `
             console.log(timetable.timeablelist.length)
+            
+            let TimeArrayTalk = [];
+            let TimeArrayMain = [];
+            let listmaintable = ""
             for (let i = 0; i < timetable.timeablelist.length; i++) {
-                listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
-                console.log(timetable.timeablelist[i])
+                if (timetable.timeablelist[i].type === "talk") {
+                    TimeArrayTalk.push(timetable.timeablelist[i]);
+                } else {
+                    TimeArrayMain.push(timetable.timeablelist[i]);
+                }
             }
-            document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
+
+            console.log(TimeArrayTalk)
+            console.log("XD")
+            console.log(TimeArrayMain)
+            for (let i = 0; i < TimeArrayTalk.length; i++) {
+                listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${TimeArrayTalk[i].start} - ${TimeArrayTalk[i].end}</p>`
+                console.log(TimeArrayTalk[i])
+            }
+
+            for (let i = 0; i < TimeArrayMain.length; i++) {
+                listmaintable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${TimeArrayMain[i].start} - ${TimeArrayMain[i].end}</p>`
+                console.log(TimeArrayMain[i])
+            }
+        
+            document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมายพูดคุย</b> : ${listtimetable}`
+            document.getElementById("Detail2").innerHTML = `<b>ช่วงเวลาทํากายภาพ</b> : ${listmaintable}`
             // window.history.replaceState({}, null, `/timeTablePhysicalAdmin/${timetable.id}`);
         } else {
             if(saveDetailId === timetable.id){
@@ -451,11 +489,32 @@ const TimetablePhysicalComponent = (props) => {
                 document.getElementById("Detailtime").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมาย</b> : ${timetable.timeAppointmentStart} - ${timetable.timeAppointmentEnd} `
                 document.getElementById("Detailqueue").innerHTML = `<b>จำนวนคิวนัดหมาย</b> : ${timetable.numberAppointment} `
                 console.log(timetable.timeablelist.length)
+                let TimeArrayTalk = [];
+                let TimeArrayMain = [];
+                let listmaintable = ""
                 for (let i = 0; i < timetable.timeablelist.length; i++) {
-                    listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${timetable.timeablelist[i].start} - ${timetable.timeablelist[i].end}</p>`
-                    console.log(timetable.timeablelist[i])
+                    if (timetable.timeablelist[i].type === "talk") {
+                        TimeArrayTalk.push(timetable.timeablelist[i]);
+                    } else {
+                        TimeArrayMain.push(timetable.timeablelist[i]);
+                    }
                 }
-                document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
+    
+                console.log(TimeArrayTalk)
+                console.log("XD")
+                console.log(TimeArrayMain)
+                for (let i = 0; i < TimeArrayTalk.length; i++) {
+                    listtimetable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${TimeArrayTalk[i].start} - ${TimeArrayTalk[i].end}</p>`
+                    console.log(TimeArrayTalk[i])
+                }
+    
+                for (let i = 0; i < TimeArrayMain.length; i++) {
+                    listmaintable += `<p class="textBody-big">คิวลำดับที่ ${i + 1} : ${TimeArrayMain[i].start} - ${TimeArrayMain[i].end}</p>`
+                    console.log(TimeArrayMain[i])
+                }
+            
+                document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาเปิดให้นัดหมายพูดคุย</b> : ${listtimetable}`
+                document.getElementById("Detail2").innerHTML = `<b>ช่วงเวลาทํากายภาพ</b> : ${listmaintable}`
             }
         }
 
@@ -563,7 +622,12 @@ const TimetablePhysicalComponent = (props) => {
                 <a href="/timeTablePhysicalAdmin" target="_parent" id="select">คลินิกกายภาพ</a>
                 <a href="/timeTableNeedleAdmin" target="_parent" >คลินิกฝั่งเข็ม</a>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
 
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin-timetable-system">
                 <div className="admin-timetable-system-item">
                     <div className="admin-timetable-system-top">
@@ -578,7 +642,7 @@ const TimetablePhysicalComponent = (props) => {
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="admin-textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                        <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
                                         <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
@@ -611,7 +675,7 @@ const TimetablePhysicalComponent = (props) => {
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="admin-textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                        <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
                                         <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
@@ -639,7 +703,7 @@ const TimetablePhysicalComponent = (props) => {
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="admin-textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                        <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
                                         <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
@@ -667,7 +731,7 @@ const TimetablePhysicalComponent = (props) => {
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="admin-textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                        <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
                                         <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
@@ -695,7 +759,7 @@ const TimetablePhysicalComponent = (props) => {
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
-                                        <p className="admin-textBody-big">จำนวน {timetable.numberAppointment} คิว</p>
+                                        <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
                                     </a>
                                     <div className="card-funtion">
                                         <label className={`toggle-switch ${isChecked[timetable.id] ? 'checked' : ''}`}>
@@ -726,9 +790,11 @@ const TimetablePhysicalComponent = (props) => {
                             <div >
                                 <button type="button" onClick={openAddtimetable} className="colorPrimary-800" id="backTopic">❮ เพิ่มเวลาเข้าทำการแพทย์</button>
                             </div>
+                            <div className="admin-timetable-system-detail">
                             <h2 className=" colorPrimary-800">คลินิกกายภาพ</h2>
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                <label className="admin-textBody-large colorPrimary-800" >วัน</label>
+                                <div className="custom-admin-addtimetable">
                                 <select
                                     name="Day"
                                     value={addDay}
@@ -742,6 +808,7 @@ const TimetablePhysicalComponent = (props) => {
                                     <option value="thursday">วันพฤหัสบดี</option>
                                     <option value="friday">วันศุกร์</option>
                                 </select>
+                                </div>
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">ช่วงเวลาเปิดให้บริการ</label><br />
@@ -763,7 +830,7 @@ const TimetablePhysicalComponent = (props) => {
                             </div>
 
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลาเปิดให้นัดหมาย</label><br />
+                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลาเปิดให้นัดหมายพูดคุย</label><br />
                                 <input
                                     type="text"
                                     className="form-control timeable"
@@ -786,9 +853,35 @@ const TimetablePhysicalComponent = (props) => {
                                 <span> คิว</span>
 
                             </div>
-                            <div className="admin-timetable-btn">
+                            <div className="custome-admin-underline"></div>
+                            <div>
+                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลาทํากายภาพ</label><br />
+                                <input
+                                    type="text"
+                                    className="form-control timeable"
+                                    value={timeAppointmentMainStart}
+                                    onChange={inputValue("timeAppointmentMainStart")}
+                                    placeholder="00:00"
+                                />
+                                <span> ถึง </span>
+                                <input
+                                    type="text"
+                                    className="form-control timeable"
+                                    value={timeAppointmentMainEnd}
+                                    onChange={inputValue("timeAppointmentMainEnd")}
+                                    placeholder="00:00"
+                                />
+                            </div>
+                            <div>
+                                <label className="textBody-big2 colorPrimary-800">จำนวคิว</label><br></br>
+                                <input type="text" className="form-control timeable" value={numberMainAppointment} onChange={inputValue("numberMainAppointment")} placeholder="5" />
+                                <span> คิว</span>
+
+                            </div>
+                            <div className="admin-timetable-btn custom-admin-addtimetable">
                                 <button type="button" onClick={openAddtimetable} className="btn-secondary btn-systrm">กลับ</button>
                                 <input type="submit" value="เพิ่มช่วงเวลา" className="btn-primary btn-systrm" target="_parent" disabled={isSubmitEnabled} />
+                            </div>
                             </div>
                         </form>
                     </div>
@@ -870,7 +963,8 @@ const TimetablePhysicalComponent = (props) => {
                         <p id="Detailtimeall" className="admin-textBody-big">ช่วงเวลาเปิดให้บริการ :</p>
                         <p id="Detailtime" className="admin-textBody-big">ช่วงเวลาเปิดให้นัดหมาย :</p>
                         <p id="Detailqueue" className="admin-textBody-big">จำนวนคิวนัดหมาย :</p>
-                        <p id="Detail" className="admin-textBody-big">ช่วงเวลาคิวนัดหมาย :</p>
+                        <p id="Detail" className="admin-textBody-big">ช่วงเวลาเปิดให้นัดหมายพูดคุย :</p>
+                        <p id="Detail2" className="admin-textBody-big">ช่วงเวลาทํากายภาพ :</p>
 
 
                     </div>
@@ -882,7 +976,7 @@ const TimetablePhysicalComponent = (props) => {
 
             </div>
 
-
+      )}
 
         </div>
 

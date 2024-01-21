@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../css/CalendarComponent.css";
 
-const CalendarAdminComponent = (props) => {
+const CalendarAddUserComponent = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // Adjusted to start from 1
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -44,7 +44,7 @@ const CalendarAdminComponent = (props) => {
     }
 
     for (let i = 1; i <= lastDateofMonth; i++) {
-      const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "active": "";
+      const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() + 1 && currentYear === new Date().getFullYear() ? "inactive active grey-cantselect": "";
       
       const isSelected = i === selectedDateIndex && currentMonth === selectedMonthIndex && currentYear === selectedYearIndex? "focused" : "";
       const handleClick = () => handleDateClick(i);
@@ -76,14 +76,15 @@ const CalendarAdminComponent = (props) => {
   }, [currentMonth, currentYear, selectedDate]);
 
   useEffect(() => {
-    // Set selectedDate to the current date if it's initially null
+    // Set selectedDate to the next day if it's initially null
     if (!selectedDate) {
       const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + 1); // Increment by 1 to get the next day
       handleDateClick(currentDate.getDate());
     }
   }, [selectedDate]);
   return (
-    <div className="wrapper">
+    <div className="wrapper" id="userCalendar">
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       <header>
         <div className="icons">
@@ -124,4 +125,4 @@ const CalendarAdminComponent = (props) => {
   );
 };
 
-export default CalendarAdminComponent;
+export default CalendarAddUserComponent;

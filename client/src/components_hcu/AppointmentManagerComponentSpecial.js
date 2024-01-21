@@ -8,6 +8,7 @@ import { db, getDocs, collection, doc, getDoc ,firestore} from "../firebase/conf
 import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
+import { PulseLoader } from "react-spinners";
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 
@@ -285,7 +286,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 appointmentSymptom,
                 appointmentNotation,
                 clinic: "คลินิกเฉพาะทาง",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
 
             const usersCollection = collection(db, 'users');
@@ -360,7 +361,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 appointmentSymptom: appointmentSymptom,
                 appointmentNotation: appointmentNotation,
                 clinic: "คลินิกเฉพาะทาง",
-                status: "รอยืนยันสิทธิ์",
+                status: "ลงทะเบียนแล้ว",
             };
     
             await updateDoc(timetableRef, updatedTimetable);
@@ -405,6 +406,10 @@ const AppointmentManagerComponentSpecial = (props) => {
             y.style.display = "none";
             z.style.display = "none";
             console.log(AppointmentUsersData.timeslot.start)
+            const statusElement = document.getElementById("detail-appointment-status");
+            if (statusElement) {
+                statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
+            }
             document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
             document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
             document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -420,6 +425,10 @@ const AppointmentManagerComponentSpecial = (props) => {
             }else{
                 setsaveEditId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
+                const statusElement = document.getElementById("detail-appointment-status");
+                if (statusElement) {
+                    statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
+                }
                 document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
                 document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
                 document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
@@ -588,6 +597,8 @@ const AppointmentManagerComponentSpecial = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
+        let x = document.getElementById("detail-appointment");
+        x.style.display = "none";
     };
 
     const formatDateForDisplay = (isoDate) => {
@@ -617,6 +628,7 @@ const AppointmentManagerComponentSpecial = (props) => {
         }
         return isoDate;
     }
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         document.title = 'Health Care Unit';
@@ -645,8 +657,12 @@ const AppointmentManagerComponentSpecial = (props) => {
 
 
             fetchUserDataWithAppointments();
+            const timeout = setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
         console.log("AppointmentUsersData XD", AppointmentUsersData)
         return () => {
+            clearTimeout(timeout);
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
@@ -667,6 +683,52 @@ const AppointmentManagerComponentSpecial = (props) => {
         card.addEventListener('click', handleCardClick);
     });
 
+    const statusElements = document.querySelectorAll('.admin-appointment-status');
+    
+    function changeStatusTextColor(element) {
+        if (element.textContent.trim() === 'เสร็จสิ้น') {
+            element.style.color = '#098B66';
+            
+        }
+        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
+            element.style.color = '#C11F1F'; 
+        }
+        else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
+            element.style.color = '#D88C09'; 
+        }
+        else if(element.textContent.trim() === 'ลงทะเบียนแล้ว') {
+            element.style.color = '#A1A1A1'; 
+        }
+        else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
+            element.style.color = '#A1A1A1'; 
+        }
+    }
+
+    statusElements.forEach(changeStatusTextColor);
+
+    let statusElementDetail = document.getElementById("detail-appointment-status");
+
+        if (statusElementDetail) {
+            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                console.log("Adding Class...");
+                
+                statusElementDetail.classList.add("confirmed-background");
+            }
+            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                statusElementDetail.classList.add("completed-background");
+            }
+            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                statusElementDetail.classList.add("failed-background");
+            }
+            else if (statusElementDetail.textContent.trim() === 'ลงทะเบียนแล้ว') {
+                statusElementDetail.classList.remove(...statusElementDetail.classList);
+                statusElementDetail.classList.add("pending-confirmation-background");
+            }
+        }
+
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -681,14 +743,20 @@ const AppointmentManagerComponentSpecial = (props) => {
                     <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
+            {isLoading ? (
+        <div className="loading-spinner">
+
+          <PulseLoader size={15} color={"#54B2B0"} loading={isLoading} />
+        </div>
+      ) : (
             <div className="admin">
             <div className="admin-header">
-            <div className="admin-hearder-item">
+                <div className="admin-hearder-item">
                         <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
                         <a href="/AppointmentManagerComponentSpecial" target="_parent" id="select">คลินิกเฉพาะทาง</a>
                         <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent">คลินิกกายภาพ</a>
                         <a href="/adminAppointmentManagerNeedleComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
-                    </div>
+                </div>
                 <div className="admin-hearder-item admin-right">
                     <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
                 </div>
@@ -725,7 +793,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                                 </div>
                                 <div className="admin-appointment-functon">
                                     {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                        <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}}>{`${AppointmentUserData.appointment.status}`}</p>
+                                        <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
                                     ) : (
                                         <>
                                             <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
@@ -741,7 +809,13 @@ const AppointmentManagerComponentSpecial = (props) => {
                 </div>
                 <div className="admin-appointment-box">
                     <div id="detail-appointment" className="colorPrimary-800">
-                        <h2 className="center">รายละเอียดนัดหมาย</h2>
+                        {selectedDate && `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
+                            <div className="admin-appointment-detail-header">
+                                <div className="admin-appointment-detail-header-items2"></div>
+                                <h2 className="admin-appointment-detail-header-items1 center">รายละเอียดนัดหมาย</h2>
+                                <div className="admin-appointment-detail-header-items2 admin-right" ><span id="detail-appointment-status">ยืนยันสิทธ์แล้ว</span></div>
+                            </div>
+                            ) : (<h2 className="center">รายละเอียดนัดหมาย</h2>)}
                         <p id="detail-appointment-date" className="admin-textBody-big"></p>
                         <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
                         <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
@@ -832,7 +906,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                         <form onSubmit={submitEditForm}>
                             <h2 className="center">แก้ไขนัดหมาย</h2>
                             <div className="center-container">
-                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
+                                <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                 <input
                                     type="date"
                                     className="form-control"
@@ -845,7 +919,7 @@ const AppointmentManagerComponentSpecial = (props) => {
 
                             </div>
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                 <select
                                     name="time"
                                     value={JSON.stringify(appointmentTime)}
@@ -915,6 +989,7 @@ const AppointmentManagerComponentSpecial = (props) => {
 
             </div>
             </div>
+      )}
 
 
 

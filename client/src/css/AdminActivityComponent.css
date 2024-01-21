@@ -1,0 +1,68 @@
+.admin-activity-today{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 15px;
+    padding: 2%;
+}
+.admin-activity-today-hearder-flexbox{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+}
+.admin-activity-today-hearder-box{
+    box-sizing: border-box;
+    width: 50%;
+}
+.icon-activity{
+    width: 26px;
+    margin-top: -3px;
+}
+.btn-activity{
+    padding: 10px 50px;
+    background-color: #263A50;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 18px;
+}
+.admin-activity-add{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 15px;
+    padding: 2%;
+}
+.admin-activity-add-hearder-flexbox{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+}
+.admin-activity-today-hearder-box{
+    box-sizing: border-box;
+    width: 50%;
+   
+}
+.admin-img-activity{
+    width: 100%;
+}
+.admin-activity-form{
+    padding: 0px 30px ;
+}
+.acivity-detail{
+    display: block;
+    width: 100%; 
+    border-radius: 5px;
+    color: #263A50;
+}
+.input-activity-img{
+    border: 1px solid #0a0f157a;
+    height: 40px;
+    margin-bottom: 10px;
+    width: 30%;
+    color: #263A50 !important;
+    margin-left: 70%;
+}

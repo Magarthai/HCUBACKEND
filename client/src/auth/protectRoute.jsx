@@ -20,7 +20,7 @@ function ProtectRoute({ children }) {
     }, [navigate,userData]);
 
     if (!user) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/" />;
     }
 
     return children;
