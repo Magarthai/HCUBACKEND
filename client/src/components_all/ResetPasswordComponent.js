@@ -9,68 +9,62 @@ import HCU from "../picture/HCU.jpg";
 import "../css/Login&SignupComponent.css";
 import "../css/Component.css";
 import { useUserAuth } from "../context/UserAuthContext";
+import { useLocation } from 'react-router-dom';
 
-const LoginComponent = () => {
-    const [error, setError] = useState("");
-    const { user,logIn } = useUserAuth();
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
-    const [state, setState] = useState({
-        email: "",
-        password: "",
+const ForgetPasswordComponent = () => {
+  const [error, setError] = useState("");
+  const { user, resetPassword2 } = useUserAuth();
+  
+  const query = useQuery();
+  console.log(query.get('mode'), query.get('oobCode'));
+
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+  });
+
+  const {
+    email,
+    password,
+  } = state;
+
+  const inputValue = (name) => (event) => {
+    setState({ ...state, [name]: event.target.value });
+  };
+
+  const isSubmitEnabled = !password;
+
+  let navigate = useNavigate();
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+    console.log({ email });
+    setError("");
+    try {
+      await resetPassword2(query.get('oobCode'), password);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Your password has been reset!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/home');
+        }
       });
-    
-      const {
-        email,
-        password,
-      } = state;
-    
-      const inputValue = (name) => (event) => {
-        setState({ ...state, [name]: event.target.value });
-      };
-    
-      const isSubmitEnabled =
-        !email ||!password;
-
-    let navigate = useNavigate()
-
-    useEffect(() => {
-        document.title = 'Health Care Unit';
-        if (user) {
-            navigate('/Home');
-        }
-    }, [navigate])
-
-    const submitForm = async (e) => {
-        e.preventDefault();
-        console.log({ email, password })
-        setError("");
-        try{
-            await logIn(email, password);
-            Swal.fire({
-                icon: "success",
-                title: "Alret",
-                text: "Login Success!",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate('/home');
-                }
-              });
-            
-
-        } catch (err) {
-            setError(err.message);
-            console.log(err);
-            Swal.fire({
-                icon: "error",
-                title: "Alret",
-                text: "Invalid Email or Password",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate('/');
-                }
-              });
-        }
-    };
+    } catch (err) {
+      setError(err.message);
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "Alert",
+        text: "This email does not exist",
+      });
+    }
+  };
 
     return (
         <div>
@@ -84,20 +78,7 @@ const LoginComponent = () => {
                     </header>
 
                     <form onSubmit={submitForm}>
-                        <h2 className="colorPrimary-800">Log in</h2>
-
-
-                        <div>
-                            <label className="textBody-big colorPrimary-800">E-mail</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                value={email}
-                                onChange={inputValue("email")}
-                                placeholder="karapagos@mail.kmutt.ac.th"
-                            />
-                        </div>
-
+                        <h2 className="colorPrimary-800">Reset Password</h2>
 
 
                         <div>
@@ -114,7 +95,7 @@ const LoginComponent = () => {
                         <br />
                         <input
                             type="submit"
-                            value="Login"
+                            value="Reset password"
                             className="btn-primary "
                             target="_parent"
                             disabled={isSubmitEnabled}
@@ -124,11 +105,7 @@ const LoginComponent = () => {
                     </form>
 
                     <div className="center">
-                        <div style={{display:"flex",justifyContent:"space-between"}}>
-                        <a href="/resetPassword" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ลืมรหัสผ่าน</a>
                         <a href="/signup" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ยังไม่มีบัญชี? Sign up</a>
-                        </div>
-                        
                         <p className="textBody-small login-kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 
@@ -143,4 +120,4 @@ const LoginComponent = () => {
     );
 }
 
-export default LoginComponent;
+export default ForgetPasswordComponent;

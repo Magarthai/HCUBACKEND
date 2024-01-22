@@ -10,9 +10,9 @@ import "../css/Login&SignupComponent.css";
 import "../css/Component.css";
 import { useUserAuth } from "../context/UserAuthContext";
 
-const LoginComponent = () => {
+const ForgetPasswordComponent = () => {
     const [error, setError] = useState("");
-    const { user,logIn } = useUserAuth();
+    const { user,logIn,resetPassword } = useUserAuth();
 
     const [state, setState] = useState({
         email: "",
@@ -29,27 +29,21 @@ const LoginComponent = () => {
       };
     
       const isSubmitEnabled =
-        !email ||!password;
+        !email;
 
     let navigate = useNavigate()
 
-    useEffect(() => {
-        document.title = 'Health Care Unit';
-        if (user) {
-            navigate('/Home');
-        }
-    }, [navigate])
 
     const submitForm = async (e) => {
         e.preventDefault();
-        console.log({ email, password })
+        console.log({ email })
         setError("");
         try{
-            await logIn(email, password);
+            await resetPassword(email);
             Swal.fire({
                 icon: "success",
                 title: "Alret",
-                text: "Login Success!",
+                text: "Check message on your email!",
               }).then((result) => {
                 if (result.isConfirmed) {
                     navigate('/home');
@@ -63,11 +57,7 @@ const LoginComponent = () => {
             Swal.fire({
                 icon: "error",
                 title: "Alret",
-                text: "Invalid Email or Password",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate('/');
-                }
+                text: "This email not exists",
               });
         }
     };
@@ -84,11 +74,11 @@ const LoginComponent = () => {
                     </header>
 
                     <form onSubmit={submitForm}>
-                        <h2 className="colorPrimary-800">Log in</h2>
+                        <h2 className="colorPrimary-800">Reset Password</h2>
 
 
                         <div>
-                            <label className="textBody-big colorPrimary-800">E-mail</label>
+                            <label className="textBody-big colorPrimary-800">กรอก E-mail</label>
                             <input
                                 type="email"
                                 className="form-control"
@@ -98,23 +88,10 @@ const LoginComponent = () => {
                             />
                         </div>
 
-
-
-                        <div>
-                            <label className="textBody-big colorPrimary-800">Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                value={password}
-                                onChange={inputValue("password")}
-                                placeholder="password"
-                            />
-                        </div>
-
                         <br />
                         <input
                             type="submit"
-                            value="Login"
+                            value="Reset password"
                             className="btn-primary "
                             target="_parent"
                             disabled={isSubmitEnabled}
@@ -124,11 +101,7 @@ const LoginComponent = () => {
                     </form>
 
                     <div className="center">
-                        <div style={{display:"flex",justifyContent:"space-between"}}>
-                        <a href="/resetPassword" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ลืมรหัสผ่าน</a>
                         <a href="/signup" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ยังไม่มีบัญชี? Sign up</a>
-                        </div>
-                        
                         <p className="textBody-small login-kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 
@@ -143,4 +116,4 @@ const LoginComponent = () => {
     );
 }
 
-export default LoginComponent;
+export default ForgetPasswordComponent;
