@@ -28,8 +28,10 @@ const CalendarAddUserComponent = (props) => {
     };
     setSelectedDateIndex(day);
     setSelectedMonthIndex(currentMonth)
+    console.log("currentMonth",currentMonth)
     setSelectedYearIndex(currentYear)
     setSelectedDate(formattedSelectedDate);
+    renderCalendar();
     props.onDateSelect(formattedSelectedDate);
 };
 
@@ -70,68 +72,76 @@ const renderCalendar = () => {
 
   setDaysArray(days);
 };
-
+const [isLoading, setIsLoading] = useState(false);
 const selectedDateFromLocation = location.state?.selectedDate || null;
-  useEffect(() => {
-    console.log("Selected DateXX:", selectedDate);
-    renderCalendar();
-  }, [currentMonth, currentYear, selectedDate]);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    if (!selectedDate) {
+const handleSelectedDate = (dateData) => {
+  if (dateData) {
+      handleDateClick(dateData.day);
+      setCurrentMonth(dateData.month);
+      setCurrentYear(dateData.year);
+      setSelectedMonthIndex(dateData.month);
+      setSelectedYearIndex(dateData.year);
+      renderCalendar();
+      setIsLoading(true);
+  }
+};
+
+// First useEffect
+useEffect(() => {
+  console.log("Selected DateXX:", selectedDate);
+  renderCalendar();
+}, [currentMonth, currentYear, selectedDate]);
+
+// Second useEffect
+useEffect(() => {
+  if (!selectedDate) {
       const currentDate = new Date();
       currentDate.setDate(currentDate.getDate() + 1);
       handleDateClick(currentDate.getDate());
       if (props.selectedDate) {
-        setSelectedDate(props.selectedDate);
-        renderCalendar();
+          setSelectedDate(props.selectedDate);
+          renderCalendar();
       }
-      
-    } else {
-      if(!isLoading && selectedDateFromLocation) {
-        handleDateClick(selectedDateFromLocation.day)
-        setCurrentMonth(selectedDateFromLocation.month)
-        console.log("currentMonth",currentMonth,selectedDateFromLocation.month)
-        renderCalendar();
-        setIsLoading(true)
-        setCurrentMonth(selectedDateFromLocation.month)
-      } 
-    }
-  }, [selectedDate,currentMonth]);
+  } else {
+      if (!isLoading && selectedDateFromLocation) {
+          handleSelectedDate(selectedDateFromLocation);
+      }
+  }
+}, [selectedDate, currentMonth]);
 
-  useEffect(() => {
-    if (!isLoading && selectedDateFromLocation) {
-      handleDateClick(selectedDateFromLocation.day);
-      setCurrentMonth(selectedDateFromLocation.month);
-      setCurrentYear(selectedDateFromLocation.year);
-      console.log("currentMonth", currentMonth);
-      renderCalendar();
-      setIsLoading(true);
-    }
-  }, [selectedDateFromLocation]);
+// Third useEffect
+useEffect(() => {
+  if (!isLoading && selectedDateFromLocation) {
+      handleSelectedDate(selectedDateFromLocation);
+  }
+}, [selectedDateFromLocation]);
 
-  useEffect(() => {
-    console.log("Updated selectedDate:", selectedDate);
-    console.log(selectedDate);
+// Fourth useEffect
+useEffect(() => {
+  console.log("Updated selectedDate:", selectedDate);
+  console.log(selectedDate);
 
-    setCalendarSelectedDate(selectedDate);
-  }, [selectedDate]);
+  setCalendarSelectedDate(selectedDate);
+}, [selectedDate]);
 
-  useEffect(() => {
-    if (!selectedDateFromLocation) {
+// Fifth useEffect
+useEffect(() => {
+  if (!selectedDateFromLocation) {
       console.log("check");
-    } else if (!isInitialRender) {
+  } else if (!isInitialRender) {
       console.log("hello world");
-    } else {
-      if(selectedDateFromLocation){
-        setSelectedDate(selectedDateFromLocation);
-        console.log("date checkss", selectedDate);
-        setIsInitialRender(false);
-        renderCalendar();
+  } else {
+      if (selectedDateFromLocation) {
+          setSelectedDate(selectedDateFromLocation);
+          setSelectedMonthIndex(selectedDateFromLocation.month);
+          setSelectedYearIndex(selectedDateFromLocation.year);
+          console.log("date checkss", selectedDate);
+          setIsInitialRender(false);
+          handleSelectedDate(selectedDateFromLocation); // Using the new function
       }
-    }
-    
-  }, [selectedDate]);
+  }
+}, [selectedDate]);
+
   const [isInitialRender, setIsInitialRender] = useState(true);
   const [calendarSelectedDate, setCalendarSelectedDate] = useState(null);
   return (

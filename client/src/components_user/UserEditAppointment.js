@@ -238,7 +238,7 @@ const UserEditAppointment = (props) => {
                 status: "ลงทะเบียนแล้ว",
             };
 
-            await updateDoc(timetableRef, updatedTimetable);
+            
 
             Swal.fire({
                 title: "ขอแก้ไขนัดหมาย",
@@ -254,8 +254,9 @@ const UserEditAppointment = (props) => {
                     confirmButton: 'custom-confirm-button',
                     cancelButton: 'custom-cancel-button',
                 }
-            }).then((result) => {
+            }).then(async(result) => {
                 if (result.isConfirmed) {
+                    await updateDoc(timetableRef, updatedTimetable);
                 Swal.fire({
                     title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
                     icon: "success",

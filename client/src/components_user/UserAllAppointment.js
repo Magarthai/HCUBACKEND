@@ -42,6 +42,7 @@ const handleDateSelect = (selectedDate) => {
     setSelectedDate(selectedDate);
     
     if (!isInitialRender) {
+    console.log("location",selectedDate)
       navigate('/appointment/date', { state: { selectedDate } });
     }
   };
@@ -57,7 +58,6 @@ const handleDateSelect = (selectedDate) => {
   
     const timeout = setTimeout(() => {
       setIsLoading(false);
-    
     }, 500);
     setIsInitialRender(false); 
     console.log("AppointmentUsersData", AppointmentUsersData);
@@ -279,9 +279,7 @@ const handleDateSelect = (selectedDate) => {
     
                             if (timetableDocSnapshot.exists()) {
                                 const timetableData = timetableDocSnapshot.data();
-                                console.log("Timetable Data:", timetableData);
                                 const timeslot = timetableData.timeablelist[timeSlotIndex];
-                                console.log("Timeslot info", timeslot);
     
                                 const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
     
@@ -306,11 +304,9 @@ const handleDateSelect = (selectedDate) => {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
 
                     } else {
-                        console.log("SAD LA")
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
                     }
 
-                    console.log("SAD LA")
                     setAllAppointmentUsersData(AppointmentUsersDataArray);
 
                 } else {

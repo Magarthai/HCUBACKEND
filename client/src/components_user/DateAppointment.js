@@ -366,27 +366,31 @@ const formatDateForDisplay = (isoDate) => {
     if (dateParts.length === 3) {
         setAllAppointmentUsersData([]);
         const [year, month, day] = dateParts;
-        const formattedMonth = parseInt(month, 10).toString();
-        const formattedDate = `${day}/${formattedMonth}/${year}`;
+        const formattedMonth = parseInt(month, 10);
+        const formattedDay = parseInt(day, 10);
+        const formattedYear = parseInt(year, 10);
+        const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
 
-        const dayName = getDayName(new Date(isoDate)).toLowerCase();;
+        const dayName = getDayName(new Date(isoDate)).toLowerCase();
         const formattedSelectedDate = {
-            day: day,
+            day: formattedDay,
             month: formattedMonth,
-            year: year,
+            year: formattedYear,
             dayName: dayName,
         };
         setAllAppointmentUsersData([]);
         setSelectedDate(formattedSelectedDate);
         setState({
             ...state,
-            appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+            appointmentDate: `${formattedSelectedDate.day}/${formattedSelectedDate.month}/${formattedSelectedDate.year}`,
             appointmentTimes: "",
         });
+        console.log("formattedSelectedDate", formattedSelectedDate);
         return formattedDate;
     }
     return isoDate;
-}
+};
+
     const deleteAppointment = () => {
         Swal.fire({
             title: "ยกเลิกนัดหมาย",
