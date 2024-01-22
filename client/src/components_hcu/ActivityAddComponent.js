@@ -84,7 +84,6 @@ const ActivityAddComponent = (props) => {
     }
 
     return (
-        
         <div style={containerStyle}>
         <NavbarComponent />
         <div className="admin-topicBox colorPrimary-800">
