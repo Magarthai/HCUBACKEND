@@ -45,16 +45,25 @@ export function UserAuthContextProvider({ children }) {
       if (user && !userData) {
         const usersCollection = collection(db, 'users');
   
-        // Create a query to get the document with the specified UID
         const q = query(usersCollection, where('uid', '==', user.uid));
   
         const usersSnapshot = await getDocs(q);
   
         if (!usersSnapshot.empty) {
           const currentUserData = usersSnapshot.docs[0].data();
-          setUserData(currentUserData);
-          console.log('User Data:', currentUserData);
-          console.log(user.uid)
+          
+          // Access the document ID
+          const documentId = usersSnapshot.docs[0].id;
+  
+          // Include the uid and document ID in the userData object
+          const updatedUserData = {
+            ...currentUserData,
+            userID: documentId,
+          };
+  
+          setUserData(updatedUserData);
+          console.log('User Data:', updatedUserData);
+          console.log('Document ID:', documentId);
         } else {
           console.log('User not found');
         }
@@ -63,7 +72,8 @@ export function UserAuthContextProvider({ children }) {
       console.error('Error fetching user data:', error);
     }
   };
-
+  
+  
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {

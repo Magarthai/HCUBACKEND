@@ -268,6 +268,8 @@ const AppointmentRequestManagementComponent = (props) => {
                 appointmentTime: AppointmentUserData.appointment.appointmentTime,
                 appointmentSymptom: "โปรดทําการนัดหมายใหม่",
                 status: "ไม่สำเร็จ",
+                status2: "ไม่สำเร็จ",
+                subject: "ขอเลื่อนนัดหมาย",
             };
     
             Swal.fire({
@@ -295,7 +297,7 @@ const AppointmentRequestManagementComponent = (props) => {
                             confirmButton: 'custom-confirm-button',
                         }
                     });
-                    navigate('/appointment');
+                    window.location.reload();
                 }
                 if (result.isDenied) {
                     Swal.fire({

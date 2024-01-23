@@ -486,7 +486,13 @@ const formatDateForDisplay = (isoDate) => {
                     
                     <div className="user-DateAppointment-cardList_container">
                     {AppointmentUsersData.length > 0 ?
-                        AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
+                    AppointmentUsersData
+                        .filter(AppointmentUserData => 
+                            (AppointmentUserData.appointment.status !== "เสร็จสิ้น" && AppointmentUserData.appointment.status !== "ไม่สำเร็จ") &&
+                            AppointmentUserData.appointment.status2 !== "กำลังดำเนินการ"
+                        )
+                        .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                        .map((AppointmentUserData, index) => (
                             <div className="user-DateAppointment-card gap-16" style={{ marginTop: 25 }}>
                                 <div className="user-DateAppointment-card_header">
                                     <h4 className="user-DateAppointment-clinic">{AppointmentUserData.appointment.clinic}</h4>

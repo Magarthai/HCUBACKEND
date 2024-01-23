@@ -3,14 +3,15 @@ import "../css/Login&SignupComponent.css";
 import NavbarUserComponent from './NavbarUserComponent';
 import "../css/Component.css";
 import "../css/UserProfileCompoment.css";
-import { db, getDocs, collection } from "../firebase/config";
-import { query, where,  } from 'firebase/firestore';
 import { useUserAuth } from "../context/UserAuthContext";
 import male from "../picture/male.png";
 import female from "../picture/female.png";
-
-
+import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
+import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 const ProfileEditComponent = (props) => {
+    const { user, userData } = useUserAuth();
     const [state, setState] = useState({
         firstName: "",
         lastName: "",
@@ -18,7 +19,6 @@ const ProfileEditComponent = (props) => {
         id: "",
         tel: "",
         gender: "",
-        password: "",
       });
     
       const {
@@ -28,15 +28,89 @@ const ProfileEditComponent = (props) => {
         id,
         tel,
         gender,
-        password,
       } = state;
     
       const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
       };
-
+      const navigate = useNavigate();
     const submitForm = async (e) => {
-    }
+        e.preventDefault();
+        try {
+            const timetableRef = doc(db, 'users', userData.userID);
+            const updatedTimetable = {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                id: id ,
+                tel: tel,
+                gender: gender,
+            };
+
+            
+
+            Swal.fire({
+                title: "แก้ไขโปรไฟล์",
+                html:  `ตรวจสอบก่อนยืนยัน<br/> ชื่อ-นามกสุล ${firstName} ${lastName} <br/> เบอร์โทรศัพท์ ${tel}`,
+                showConfirmButton: true,
+                showCancelButton: true,
+                icon: 'warning',
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: '#263A50',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                    cancelButton: 'custom-cancel-button',
+                }
+            }).then(async(result) => {
+                if (result.isConfirmed) {
+                    await updateDoc(timetableRef, updatedTimetable);
+                Swal.fire({
+                    title: "แก้ไข้โปรไฟล์",
+                    icon: "success",
+                    confirmButtonText: "ตกลง",
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
+
+                });  
+                window.location.href = '/profile';
+                }
+                if (result.isDenied){
+                    Swal.fire({
+                        title: "แก้ไข้ไม่สําเร็จ",
+                        icon: "error",
+                        confirmButtonText: "ตกลง",
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    });
+                }
+            });
+            
+        } catch (firebaseError) {
+            console.error('Firebase update error:', firebaseError);
+        }
+    };
+    const [isInitialRender, setIsInitialRender] = useState(false);
+    useEffect(() => {
+        if (!userData && !isInitialRender) {
+            console.log("no userData")
+        } else {
+            setState({
+                firstName: userData.firstName || "",
+                lastName: userData.lastName || "",
+                email: user.email || "",
+                id: userData.id || "",
+                tel: userData.tel || "",
+                gender: userData.gender || "",
+            });
+            setIsInitialRender(true)
+        }
+    },[userData])
+
+
     return (
         
         <div className="user">
@@ -50,7 +124,7 @@ const ProfileEditComponent = (props) => {
             </header>
             <div className="user-body">
                 <div className="user-profile">
-                    <div className="user-profile-info">
+                    <div className="user-profile-info" style={{borderTopLeftRadius:15,borderTopRightRadius:15}}>
                         <form onSubmit={submitForm}>
                             <br></br>
                             <h2 className="colorPrimary-800">แก้ไขโปรไฟล์</h2>
@@ -76,16 +150,7 @@ const ProfileEditComponent = (props) => {
                                 />
                             </div>
 
-                            <div>
-                                <label className="textBody-big colorPrimary-800">E-mail</label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    value={email}
-                                    onChange={inputValue("email")}
-                                    placeholder="karapagos@mail.kmutt.ac.th"
-                                />
-                            </div>
+                            
 
         
                             <div>
@@ -97,6 +162,17 @@ const ProfileEditComponent = (props) => {
                                     onChange={inputValue("tel")}
                                     placeholder="0900000000"
                                     pattern="[0-9]*"
+                                />
+                            </div>
+                            <div>
+                                <label className="textBody-big colorPrimary-800">E-mail</label>
+                                <input
+                                    disabled
+                                    type="email"
+                                    className="form-control"
+                                    value={email}
+                                    onChange={inputValue("email")}
+                                    placeholder="karapagos@mail.kmutt.ac.th"
                                 />
                             </div>
 

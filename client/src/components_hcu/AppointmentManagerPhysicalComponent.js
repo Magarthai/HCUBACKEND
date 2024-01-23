@@ -26,16 +26,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
     const [timeOptionss, setTimeOptionss] = useState([]);
-    // const [timeOptions1, setTimeOptions1] = useState([]);
-    // const [timeOptions2, setTimeOptions2] = useState([]);
-    // const [timeOptions3, setTimeOptions3] = useState([]);
-    // const [timeOptions4, setTimeOptions4] = useState([]);
-    // const [timeOptions5, setTimeOptions5] = useState([]);
-    // const [timeOptions6, setTimeOptions6] = useState([]);
-    // const [timeOptions7, setTimeOptions7] = useState([]);
-    // const [timeOptions8, setTimeOptions8] = useState([]);
-    // const [timeOptions9, setTimeOptions9] = useState([]);
-    // const [timeOptions10, setTimeOptions10] = useState([]);
 
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
@@ -446,38 +436,36 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 if (existingAppointments.length > 0) {
                     console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
 
-                    const AppointmentUsersDataArray = [];
-
-                    for (const appointment of existingAppointments) {
+                    const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
                         const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
                         const timeTableId = appointment.appointmentTime.timetableId;
-
+    
                         try {
                             const timetableDocRef = doc(timeTableCollection, timeTableId);
                             const timetableDocSnapshot = await getDoc(timetableDocRef);
-
+    
                             if (timetableDocSnapshot.exists()) {
                                 const timetableData = timetableDocSnapshot.data();
-                                console.log("Timetable Data:", timetableData);
                                 const timeslot = timetableData.timeablelist[timeSlotIndex];
-                                console.log("Timeslot info", timeslot);
-
+    
                                 const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
-
+    
                                 if (userDetails) {
-                                    AppointmentUsersDataArray.push(userDetails);
                                     console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
+                                    return userDetails;
                                 } else {
                                     console.log("No user details found for appointmentId", appointment.appointmentId);
+                                    return null;
                                 }
                             } else {
                                 console.log("No such document with ID:", timeTableId);
+                                return null;
                             }
                         } catch (error) {
                             console.error('Error fetching timetable data:', error);
+                            return null;
                         }
-                    }
-
+                    }));
                     if (AppointmentUsersDataArray.length > 0) {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
                         console.log("AppointmentUsersData", AppointmentUsersDataArray);
@@ -637,9 +625,11 @@ const AppointmentManagerPhysicalComponent = (props) => {
                     icon: "success",
                     title: "Appointment Successful!",
                     text: "Your appointment has been successfully created!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
                 });
-                fetchUserDataWithAppointments();
-                fetchTimeTableData();
 
             } else {
                 Swal.fire({
@@ -689,7 +679,7 @@ const AppointmentManagerPhysicalComponent = (props) => {
                 text: "Appointment Updated!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetchUserDataWithAppointments();
+                    window.location.reload();
                 }
             });
         } catch (firebaseError) {

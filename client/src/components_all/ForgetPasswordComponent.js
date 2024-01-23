@@ -12,53 +12,46 @@ import { useUserAuth } from "../context/UserAuthContext";
 
 const ForgetPasswordComponent = () => {
     const [error, setError] = useState("");
-    const { user,logIn,resetPassword } = useUserAuth();
+    const { resetPassword } = useUserAuth();
 
     const [state, setState] = useState({
         email: "",
-        password: "",
-      });
-    
-      const {
-        email,
-        password,
-      } = state;
-    
-      const inputValue = (name) => (event) => {
+    });
+
+    const { email } = state;
+
+    const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
-      };
-    
-      const isSubmitEnabled =
-        !email;
+    };
 
-    let navigate = useNavigate()
+    const isSubmitEnabled = !email;
 
+    let navigate = useNavigate();
 
     const submitForm = async (e) => {
         e.preventDefault();
-        console.log({ email })
         setError("");
-        try{
+        try {
+            console.log("Attempting to reset password for email:", email);
             await resetPassword(email);
+            console.log("Password reset successful");
             Swal.fire({
                 icon: "success",
-                title: "Alret",
-                text: "Check message on your email!",
-              }).then((result) => {
+                title: "Alert",
+                text: "Check your email for password reset instructions!",
+            }).then((result) => {
                 if (result.isConfirmed) {
                     navigate('/home');
                 }
-              });
-            
-
+            });
         } catch (err) {
             setError(err.message);
-            console.log(err);
+            console.log("Password reset failed:", err);
             Swal.fire({
                 icon: "error",
-                title: "Alret",
-                text: "This email not exists",
-              });
+                title: "Alert",
+                text: err.code === "auth/user-not-found" ? "This email does not exist" : "Error resetting password",
+            });
         }
     };
 

@@ -42,7 +42,7 @@ const handleDateSelect = (selectedDate) => {
     setSelectedDate(selectedDate);
     
     if (!isInitialRender) {
-    console.log("location",selectedDate)
+        console.log("location",selectedDate)
       navigate('/appointment/date', { state: { selectedDate } });
     }
   };
@@ -139,6 +139,10 @@ const handleDateSelect = (selectedDate) => {
                 return 'user-appointment-status1';
             case 'ลงทะเบียนแล้ว':
                 return 'user-appointment-status3';
+            case 'ลงทะเบียนแล้ว':
+                return 'user-appointment-status3';
+            case 'ยื่นแก้ไข้':
+            return 'user-appointment-status2';
             default:
                 return 'user-appointment-status3 ';
         }
@@ -160,6 +164,9 @@ const handleDateSelect = (selectedDate) => {
         }
         else if (element.textContent.trim() === 'รอยืนยันสิทธ์') {
             element.style.color = '#A1A1A1';
+        }
+        else if (element.textContent.trim() === 'ยื่นแก้ไข้') {
+            element.style.color = '#D88C09';
         }
     }
 
@@ -360,7 +367,9 @@ const handleDateSelect = (selectedDate) => {
                         onDateSelect={handleDateSelect}
                     />
                 </div>
-
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:""}}>
+                <p style={{marginTop:10,marginBottom:-10}} className="user-appointment-warn">*คลิกเลือกวันที่ต้องการแก้ไข้*</p>
+                </div>
                 <div className="user-appointment-bar-btn">
                     <h3 className='User-appointmentmenu-headbar'>นัดหมายสัปดาห์นี้</h3>
                     <button className="user-appointment-btn-add"><Link to="/appointment/clinic"><x>เพิ่มนัดหมาย +</x></Link></button>
@@ -378,13 +387,22 @@ const handleDateSelect = (selectedDate) => {
                         <>
                             {AppointmentUsersData
                                 .filter(AppointmentUserData => AppointmentUserData.appointment.status === "รอยืนยันสิทธิ์")
-                                .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                                .sort((a, b) => { const dateA = new Date(a.appointment.appointmentDate.split('/').reverse().join('-'));
+                                const dateB = new Date(b.appointment.appointmentDate.split('/').reverse().join('-'));
+                            
+                            
+                                if (dateA < dateB) return -1;
+                                if (dateA > dateB) return 1;
+                            
+                            
+                                const timeA = new Date(`2000-01-01T${a.timeslot.start}`);
+                                const timeB = new Date(`2000-01-01T${b.timeslot.start}`);
+                                return timeA - timeB;})
                                 .map((AppointmentUserData, index) => (
                                     <div key={index}>
                                         <div className="user-appointment-card">
                                             <label><b className='user-appointment-Bold-letter'>{AppointmentUserData.appointment.clinic}</b></label>
 
-                                            {/* ข้อมูลการนัดหมาย */}
                                             <div className="user-appointment-description1">
                                                 <img className="user-appointment-icon-card" src={icon1} alt="icon-calendar" />
                                                 <label>{AppointmentUserData.appointment.appointmentDate}</label>
@@ -415,8 +433,20 @@ const handleDateSelect = (selectedDate) => {
                                         </div>
                                     </div>
                                 ))
-                            }  {AppointmentUsersData
-                                .filter(AppointmentUserData => AppointmentUserData.appointment.status !== "รอยืนยันสิทธิ์")
+                            } 
+                            {AppointmentUsersData
+                                .filter(AppointmentUserData => AppointmentUserData.appointment.status == "เสร็จสิ้น")
+                                .sort((a, b) => { const dateA = new Date(a.appointment.appointmentDate.split('/').reverse().join('-'));
+                                const dateB = new Date(b.appointment.appointmentDate.split('/').reverse().join('-'));
+                            
+                            
+                                if (dateA < dateB) return -1;
+                                if (dateA > dateB) return 1;
+                            
+                            
+                                const timeA = new Date(`2000-01-01T${a.timeslot.start}`);
+                                const timeB = new Date(`2000-01-01T${b.timeslot.start}`);
+                                return timeA - timeB;})
                                 .map((AppointmentUserData, index) => (
                                     <div key={index}>
                                         <div className="user-appointment-card">
@@ -450,11 +480,60 @@ const handleDateSelect = (selectedDate) => {
                                             </div>
 
                                             <label className="user-appointment-warn">หมายเหตุ</label> <br></br>
-                                            <label className="user-appointment-warn">: กรุณายืนยันสิทธิ์ก่อน 15 นาที</label>
+                                            <label className="user-appointment-warn">: กรุณามาก่อนเวลา 10 นาที</label>
                                         </div>
                                         </div>
                                         ))
                                     }
+                                     {AppointmentUsersData
+                               .filter(AppointmentUserData => AppointmentUserData.appointment.status !== "รอยืนยันสิทธิ์" && AppointmentUserData.appointment.status !== "เสร็จสิ้น")
+                                .sort((a, b) => { const dateA = new Date(a.appointment.appointmentDate.split('/').reverse().join('-'));
+                                const dateB = new Date(b.appointment.appointmentDate.split('/').reverse().join('-'));
+                            
+                            
+                                if (dateA < dateB) return -1;
+                                if (dateA > dateB) return 1;
+                            
+                            
+                                const timeA = new Date(`2000-01-01T${a.timeslot.start}`);
+                                const timeB = new Date(`2000-01-01T${b.timeslot.start}`);
+                                return timeA - timeB;})
+                                .map((AppointmentUserData, index) => (
+                                    <div key={index}>
+                                        <div className="user-appointment-card">
+
+                                            <div className="user-header-appointment-card">
+                                                <label><b className='user-appointment-Bold-letter'>{AppointmentUserData.appointment.clinic}</b></label>
+                                                <div className={`${renderStatusClass(AppointmentUserData.appointment.status)}`}>
+                                                    {AppointmentUserData.appointment.status}
+                                                </div>
+                                            </div>
+
+                                            {/* ข้อมูลการนัดหมาย */}
+                                            <div className="user-appointment-description1">
+                                                <img className="user-appointment-icon-card" src={icon1} alt="icon-calendar" />
+                                                <label>{AppointmentUserData.appointment.appointmentDate}</label>
+                                            </div>
+
+                                            <div className="user-appointment-description1">
+                                                <img className="user-appointment-icon-card" src={icon2} alt="icon-clock" />
+                                                <label>{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</label>
+                                            </div>
+
+                                            <div className="user-appointment-description2">
+                                                <label><b className='user-appointment-Bold-letter'>สาเหตุการนัดหมาย</b></label> <br></br>
+                                                <label>: {AppointmentUserData.appointment.appointmentCasue}</label>
+                                            </div>
+
+                                            <div className="user-appointment-description2">
+                                                <label><b className='user-appointment-Bold-letter'>อาการ</b></label> <br></br>
+                                                <label>: {AppointmentUserData.appointment.appointmentSymptom}</label>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        ))
+                                    }
+                                
                                 </>
                             ) : (
                                 <div className="user-non-appointment-card">

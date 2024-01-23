@@ -166,37 +166,36 @@ const AppointmentManagerComponentSpecial = (props) => {
                 if (existingAppointments.length > 0) {
                     console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
     
-                    const AppointmentUsersDataArray = [];
-    
-                    for (const appointment of existingAppointments) {
+                    const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
                         const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
                         const timeTableId = appointment.appointmentTime.timetableId;
-                        
+    
                         try {
                             const timetableDocRef = doc(timeTableCollection, timeTableId);
                             const timetableDocSnapshot = await getDoc(timetableDocRef);
     
                             if (timetableDocSnapshot.exists()) {
                                 const timetableData = timetableDocSnapshot.data();
-                                console.log("Timetable Data:", timetableData);
                                 const timeslot = timetableData.timeablelist[timeSlotIndex];
-                                console.log("Timeslot info", timeslot);
     
-                                const userDetails = await getUserDataFromUserId(appointment,appointment.appointmentId, timeslot,appointment.appointmentuid);
+                                const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
     
                                 if (userDetails) {
-                                    AppointmentUsersDataArray.push(userDetails);
                                     console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
+                                    return userDetails;
                                 } else {
                                     console.log("No user details found for appointmentId", appointment.appointmentId);
+                                    return null;
                                 }
                             } else {
                                 console.log("No such document with ID:", timeTableId);
+                                return null;
                             }
                         } catch (error) {
                             console.error('Error fetching timetable data:', error);
+                            return null;
                         }
-                    }
+                    }));
     
                     if (AppointmentUsersDataArray.length > 0) {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
@@ -320,9 +319,11 @@ const AppointmentManagerComponentSpecial = (props) => {
                     icon: "success",
                     title: "Appointment Successful!",
                     text: "Your appointment has been successfully created!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
                 });
-                fetchUserDataWithAppointments();
-                fetchTimeTableData();
 
             } else {
                 Swal.fire({
@@ -372,7 +373,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 text: "Appointment Updated!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetchUserDataWithAppointments();
+                    window.location.reload();
                 }
             });
         } catch (firebaseError) {

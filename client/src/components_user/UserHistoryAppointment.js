@@ -343,10 +343,13 @@ const UserHistoryAppointment = (prop) => {
             return 'user-appointment-status1';
         case 'ลงทะเบียนแล้ว':
             return 'user-appointment-status3';
+        case 'กำลังดำเนินการ':
+          return 'user-appointment-status2';
         default:
-            return 'user-appointment-status3 ';
+            return 'user-appointment-status3';
     }
 };
+
 const getDayName = (date) => {
   const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const dayIndex = date.getDay();
@@ -414,14 +417,28 @@ const formatDateForDisplay = (isoDate) => {
         <div className="HistoryAppointment-body-card">
 
         {AppointmentUsersData.length > 0 ?
-                        AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => ( 
+
+AppointmentUsersData.sort((a, b) => {
+
+  const dateA = new Date(a.appointment.appointmentDate.split('/').reverse().join('-'));
+  const dateB = new Date(b.appointment.appointmentDate.split('/').reverse().join('-'));
+
+
+  if (dateA < dateB) return -1;
+  if (dateA > dateB) return 1;
+
+
+  const timeA = new Date(`2000-01-01T${a.timeslot.start}`);
+  const timeB = new Date(`2000-01-01T${b.timeslot.start}`);
+  return timeA - timeB;
+}).map((AppointmentUserData, index) => (
           <div className="HistoryAppointment-body-card-item">
             <p className="HistoryAppointment-body-card-item-outDate colorPrimary-800">{AppointmentUserData.appointment.appointmentDate} </p>
             <div className="HistoryAppointment-body-card-item-innerCard">
               <div className="HistoryAppointment-body-card-item-innerCard-TypeAppAndStatus">
-                <h1 className="HistoryAppointment-body-card-item-innerCard-Typeappointment">ยกเลิกนัดหมาย</h1>
-                <div className={`${renderStatusClass(AppointmentUserData.appointment.status)}`}>
-                                                    {AppointmentUserData.appointment.status}
+                <h1 className="HistoryAppointment-body-card-item-innerCard-Typeappointment">{AppointmentUserData.appointment.subject}</h1>
+                <div className={`${renderStatusClass(AppointmentUserData.appointment.status2)}`}>
+                                                    {AppointmentUserData.appointment.status2}
                                                 </div>
               </div>
 
@@ -435,7 +452,7 @@ const formatDateForDisplay = (isoDate) => {
 
               <div className="HistoryAppointment-body-card-item-innerCard-DescTime">
                 <img className="mini-card-icon" src={item3} alt="icon-clock" />
-                <p className="HistoryAppointment-body-card-item-innerCard-DescTime-txt">10:00 - 16:00</p>
+                <p className="HistoryAppointment-body-card-item-innerCard-DescTime-txt">{AppointmentUserData.timeslot.start} - {AppointmentUserData.timeslot.end}</p>
               </div>
 
             </div>
@@ -444,7 +461,7 @@ const formatDateForDisplay = (isoDate) => {
             <div className="user-DateAppointment-card_noAppointment gap-16">
                             <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
                         </div>
-          )};             
+          )}         
           
 
         </div>
@@ -453,7 +470,7 @@ const formatDateForDisplay = (isoDate) => {
       </div>
 
       <div className="HistoryAppointment-body-returnButton">
-        <button className="return-btn">ย้อนกลับ</button>
+        <Link className="return-btn" to={"/appointment"}><button className="return-btn">ย้อนกลับ</button></Link>
       </div>
     </div>
 
