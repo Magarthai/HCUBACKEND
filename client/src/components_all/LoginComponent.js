@@ -48,8 +48,13 @@ const LoginComponent = () => {
             await logIn(email, password);
             Swal.fire({
                 icon: "success",
-                title: "Alret",
-                text: "Login Success!",
+                title: "ล็อคอินสําเร็จ",
+                text: "ยินดีต้อนรับเข้าสู่เว็ปไซต์ HCU!",
+                confirmButtonText: "ตกลง",
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    cancelButton: 'custom-cancel-button',
+                }
               }).then((result) => {
                 if (result.isConfirmed) {
                     navigate('/home');

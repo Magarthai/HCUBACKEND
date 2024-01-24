@@ -9,7 +9,6 @@ import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } f
 import { useSearchParams } from 'react-router-dom';
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 const AppointmentDetail = () => {
     const navigate = useNavigate();
     const { userData } = useUserAuth();
@@ -38,10 +37,6 @@ const AppointmentDetail = () => {
         console.error('Firebase submit error:', firebaseError);
 
         console.error('Firebase error response:', firebaseError);
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-        });
     }
 };
 

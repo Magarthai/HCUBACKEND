@@ -148,7 +148,7 @@ useEffect(() => {
     if (!selectedDateFromLocation) {
         Swal.fire({
             icon: 'error',
-            title: 'Oops...',
+            title: 'เกิดข้อผิดพลาด',
             text: 'กรุณาเลือกวันก่อน!',
         }).then(() => {
             navigate('/appointment');

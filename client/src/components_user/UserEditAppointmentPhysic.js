@@ -149,8 +149,13 @@ const UserEditAppointmentPhysic = (props) => {
         if (!AppointmentUserData) {
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Appointment data is missing!',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่มีข้อมูลการนัดหมาย',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    
+                    confirmButton: 'custom-confirm-button',
+                }
             }).then(() => {
                 navigate('/appointment');
             });
@@ -217,6 +222,7 @@ const UserEditAppointmentPhysic = (props) => {
                     title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
                     icon: "success",
                     confirmButtonText: "ตกลง",
+                    confirmButtonColor: '#263A50',
                     customClass: {
                         confirmButton: 'custom-confirm-button',
                     }
@@ -261,9 +267,10 @@ const UserEditAppointmentPhysic = (props) => {
                     title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
                     icon: "success",
                     confirmButtonText: "ตกลง",
-                    customClass: {
-                        confirmButton: 'custom-confirm-button',
-                    }
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            cancelButton: 'custom-cancel-button',
+                        }
 
                 });  
                 navigate('/appointment');
@@ -273,8 +280,9 @@ const UserEditAppointmentPhysic = (props) => {
                         title: "แก้ไข้ไม่สําเร็จ",
                         icon: "error",
                         confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
                         customClass: {
-                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
                         }
                     });
                 }

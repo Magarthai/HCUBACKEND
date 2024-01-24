@@ -146,8 +146,13 @@ const UserEditAppointment = (props) => {
         if (!AppointmentUserData) {
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Appointment data is missing!',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่มีข้อมูลการนัดหมาย',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    
+                    confirmButton: 'custom-confirm-button',
+                }
             }).then(() => {
                 navigate('/appointment');
             });
@@ -233,20 +238,23 @@ const UserEditAppointment = (props) => {
                     title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
                     icon: "success",
                     confirmButtonText: "ตกลง",
+                    confirmButtonColor: '#263A50',
                     customClass: {
                         confirmButton: 'custom-confirm-button',
                     }
+                
 
                 });  
                 navigate('/appointment');
                 }
-                if (result.isDenied){
+                else{
                     Swal.fire({
                         title: "แก้ไข้ไม่สําเร็จ",
                         icon: "error",
                         confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
                         customClass: {
-                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
                         }
                     });
                 }
