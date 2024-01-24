@@ -218,7 +218,7 @@ const UserEditAppointment = (props) => {
                 showConfirmButton: true,
                 showCancelButton: true,
                 icon: 'warning',
-                confirmButtonText: "ยืนยัน",
+                confirmButtonText: "ยืนยันแก้ไข้",
                 cancelButtonText: "ยกเลิก",
                 confirmButtonColor: '#263A50',
                 reverseButtons: true,
