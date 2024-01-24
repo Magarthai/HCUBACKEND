@@ -171,8 +171,13 @@ const TimetablePhysicalComponent = (props) => {
 
             Swal.fire({
                 icon: "success",
-                title: "Alert",
-                text: "Added Time!",
+                title: "เพิ่มช่วงเวลาสำเร็จ!",
+                text: "ช่วงเวลาถูกสร้างเรียบร้อยแล้ว!",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetchTimeTableData();
@@ -237,8 +242,13 @@ const TimetablePhysicalComponent = (props) => {
     
             Swal.fire({
                 icon: "success",
-                title: "Alert",
-                text: "Time Updated!",
+                title: "การอัปเดตช่วงเวลาสำเร็จ!",
+                text: "ช่วงเวลาถูกอัปเดตเรียบร้อยแล้ว!",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetchTimeTableData();
@@ -553,8 +563,8 @@ const TimetablePhysicalComponent = (props) => {
                     console.log(`${timetable.id}`);
                     Swal.fire(
                         {
-                            title: 'Deleted!',
-                            text: `ลบนัดหมายสำเร็จ`,
+                            title: 'การลบการนัดหมายสำเร็จ!',
+                            text: `การนัดหมายถูกลบเรียบร้อยแล้ว!`,
                             icon: 'success',
                             confirmButtonText: 'ตกลง',
                             confirmButtonColor: '#263A50',
@@ -576,8 +586,8 @@ const TimetablePhysicalComponent = (props) => {
             ) {
                 Swal.fire(
                     {
-                        title: 'Deleted!',
-                        text: `ลบนัดหมายไม่สำเร็จ`,
+                        title: 'ลบช่วงเวลาไม่สำเร็จ!',
+                        text: `ไม่สามารถลบช่วงเวลาได้ กรุณาลองอีกครั้งในภายหลัง`,
                         icon: 'error',
                         confirmButtonText: 'ตกลง',
                         confirmButtonColor: '#263A50',

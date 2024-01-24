@@ -188,8 +188,8 @@ const QueueManagementSystemComponent = (props) => {
 
                     Swal.fire(
                         {
-                            title: 'Updated!',
-                            text: `อัพเดตคิวเสร็จสิ้น`,
+                            title: 'การอัปเดตคิวสำเร็จ!',
+                            text: `คิวถูกอัปเดตเรียบร้อยแล้ว!`,
                             icon: 'success',
                             confirmButtonText: 'ตกลง',
                             confirmButtonColor: '#263A50',
@@ -211,8 +211,8 @@ const QueueManagementSystemComponent = (props) => {
             ) {
                 Swal.fire(
                     {
-                        title: 'Deleted!',
-                        text: `อัพเดตคิวไม่สำเร็จ`,
+                        title: 'การอัปเดตคิวไม่สำเร็จ!',
+                        text: `ไม่สามารถอัปเดตคิวได้ กรุณาลองอีกครั้งในภายหลัง`,
                         icon: 'error',
                         confirmButtonText: 'ตกลง',
                         confirmButtonColor: '#263A50',

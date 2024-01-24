@@ -208,8 +208,13 @@ const AppointmentManagerComponent = (props) => {
 
                 Swal.fire({
                     icon: "success",
-                    title: "Appointment Successful!",
-                    text: "Your appointment has been successfully created!",
+                    title: "การนัดหมายสำเร็จ!",
+                    text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
                 });
                 fetchUserDataWithAppointmentsWrapper();
                 fetchTimeTableData();
@@ -217,8 +222,13 @@ const AppointmentManagerComponent = (props) => {
             } else {
                 Swal.fire({
                     icon: "error",
-                    title: "Something went wrong!",
-                    text: "Your Student ID Not Found!",
+                    title: "เกิดข้อผิดพลาด!",
+                    text: "ไม่พบรหัสนักศึกษา!",
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
                 });
             }
 
@@ -229,8 +239,13 @@ const AppointmentManagerComponent = (props) => {
             console.error('Firebase error response:', firebaseError);
             Swal.fire({
                 icon: "error",
-                title: "Error",
-                text: "Failed to create user account. Please try again later.",
+                title: "เกิดข้อผิดพลาด!",
+                text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง.",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
             });
         }
     };
@@ -255,8 +270,13 @@ const AppointmentManagerComponent = (props) => {
 
             Swal.fire({
                 icon: "success",
-                title: "Alert",
-                text: "Appointment Updated!",
+                title: "การอัปเดตการนัดหมายสำเร็จ!",
+                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetchUserDataWithAppointmentsWrapper();
