@@ -432,8 +432,11 @@ AppointmentUsersData.sort((a, b) => {
   const timeB = new Date(`2000-01-01T${b.timeslot.start}`);
   return timeA - timeB;
 }).map((AppointmentUserData, index) => (
-          <div className="HistoryAppointment-body-card-item">
-            <p className="HistoryAppointment-body-card-item-outDate colorPrimary-800">{AppointmentUserData.appointment.appointmentDate} </p>
+  <div className="AppointList-body-card-item" key={index}>
+
+    {index === 0 || AppointmentUserData.appointment.appointmentDate !== AppointmentUsersData[index - 1].appointment.appointmentDate ? (
+      <p className="AppointList-body-card-item-outDate">{AppointmentUserData.appointment.appointmentDate}</p>
+    ) : null}
             <div className="HistoryAppointment-body-card-item-innerCard">
               <div className="HistoryAppointment-body-card-item-innerCard-TypeAppAndStatus">
                 <h1 className="HistoryAppointment-body-card-item-innerCard-Typeappointment">{AppointmentUserData.appointment.subject}</h1>
@@ -458,8 +461,10 @@ AppointmentUsersData.sort((a, b) => {
             </div>
           </div>
           )) : (
-            <div className="user-DateAppointment-card_noAppointment gap-16">
+            <div style={{width:"100%",display:"flex",justifyContent:"center"}}>
+            <div className="user-DateAppointment-card_noAppointment gap-16" style={{width:"90%"}}>
                             <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
+                        </div>
                         </div>
           )}         
           
