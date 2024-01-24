@@ -120,7 +120,6 @@ const ActivityAddComponent = (props) => {
                                     <textarea value={activityDetail} onChange={inputValue("activityDetail")} className="acivity-detail" rows="18"></textarea>
                                 </div>
                             </div>
-
                             <div>
                                     <label className="admin-textBody-large colorPrimary-800">รูปแบบกิจกรรม</label>
                                     <input type="text" className="form-control" value={activityName} onChange={inputValue("activityName")} placeholder="Activity" />
