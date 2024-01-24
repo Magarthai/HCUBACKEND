@@ -100,7 +100,6 @@ const ActivityTodayComponent = (props) => {
                     <a href="/adminActivityAddComponent" target="_parent">เพิ่มกิจกรรม </a>
                 </div>
             </div>
-            
             <div className="admin-body">
                 <div className="admin-activity-today">
                     <div className="admin-activity-today-hearder-flexbox">
