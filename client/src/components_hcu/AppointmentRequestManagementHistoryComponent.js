@@ -93,15 +93,15 @@ const AppointmentRequestManagementHistoryComponent = (props) => {
                 <table class="table table-striped">
                     <thead>
                         <tr className="center colorPrimary-800">
-                            <th className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา/รหัสบุคลากร</th>
-                            <th className="admin-textBody-large colorPrimary-800">ชื่อ</th>
-                            <th className="admin-textBody-large colorPrimary-800">เบอร์โทร</th>
-                            <th className="admin-textBody-large colorPrimary-800">คลินิก</th>
-                            <th className="admin-textBody-large colorPrimary-800">วันนัดหมายเดิม</th>
-                            <th className="admin-textBody-large colorPrimary-800">วันนัดหมายที่ขอเปลี่ยน</th>
-                            <th className="admin-textBody-large colorPrimary-800">อาการ</th>
-                            <th className="admin-textBody-large colorPrimary-800">หมายเหตุ</th>
-                            <th className="admin-textBody-large colorPrimary-800">การอนุมัติ</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_id">รหัสนักศึกษา/รหัสบุคลากร</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_name">ชื่อ</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_tel">เบอร์โทร</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_clinic">คลินิก</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_dateOld">วันนัดหมายเดิม</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_dateNew">วันนัดหมายที่ขอเปลี่ยน</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_symptom">อาการ</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_notation">หมายเหตุ</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_approve">การอนุมัติ</th>
                         </tr>
                     </thead>
                     <tbody >

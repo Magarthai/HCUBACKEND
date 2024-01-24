@@ -317,8 +317,13 @@ const AppointmentManagerComponentSpecial = (props) => {
                 console.log("User document updated with new appointment.");
                 Swal.fire({
                     icon: "success",
-                    title: "Appointment Successful!",
-                    text: "Your appointment has been successfully created!",
+                    title: "การนัดหมายสำเร็จ!",
+                    text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.reload();
@@ -328,8 +333,13 @@ const AppointmentManagerComponentSpecial = (props) => {
             } else {
                 Swal.fire({
                     icon: "error",
-                    title: "Something went wrong!",
-                    text: "Your Student ID Not Found!",
+                    title: "เกิดข้อผิดพลาด!",
+                    text: "ไม่พบรหัสนักศึกษา!",
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
                 });
                 console.log("User not found in alluserdata");
             }
@@ -341,8 +351,13 @@ const AppointmentManagerComponentSpecial = (props) => {
             console.error('Firebase error response:', firebaseError);
             Swal.fire({
                 icon: "error",
-                title: "Error",
-                text: "Failed to create user account. Please try again later.",
+                title: "เกิดข้อผิดพลาด!",
+                text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
             });
         }
     };
@@ -369,8 +384,13 @@ const AppointmentManagerComponentSpecial = (props) => {
     
             Swal.fire({
                 icon: "success",
-                title: "Alert",
-                text: "Appointment Updated!",
+                title: "การอัปเดตการนัดหมายสำเร็จ!",
+                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.reload();
@@ -549,8 +569,8 @@ const AppointmentManagerComponentSpecial = (props) => {
                     Swal.fire(
                         {
                             
-                            title: 'Deleted!',
-                            text: `ลบนัดหมายสำเร็จ`,
+                            title: 'การลบการนัดหมายสำเร็จ!',
+                            text: `การนัดหมายถูกลบเรียบร้อยแล้ว!`,
                             icon: 'success',
                             confirmButtonText: 'ตกลง',
                             confirmButtonColor: '#263A50',
@@ -573,8 +593,8 @@ const AppointmentManagerComponentSpecial = (props) => {
             ) {
                 Swal.fire(
                     {
-                        title: 'Deleted!',
-                        text: `ลบนัดหมายไม่สำเร็จ`,
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: `ไม่สามารถลบการนัดหมายได้ กรุณาลองอีกครั้งในภายหลัง`,
                         icon: 'error',
                         confirmButtonText: 'ตกลง',
                         confirmButtonColor: '#263A50',
