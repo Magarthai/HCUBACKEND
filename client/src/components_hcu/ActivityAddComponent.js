@@ -109,8 +109,6 @@ const ActivityAddComponent = (props) => {
                                 <div className="admin-right">
                                     <input type="file" className="form-control input-activity-img" accept="image/png, image/jpeg" />
                                 </div>
-                                
-
                             </div>
                             <div className="admin-activity-today-hearder-box admin-activity-form">
                                 <div>
