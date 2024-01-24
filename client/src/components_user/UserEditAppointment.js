@@ -193,36 +193,6 @@ const UserEditAppointment = (props) => {
     
     const [calendarSelectedDate, setCalendarSelectedDate] = useState(null);
     
-    const editAppointment = () => {
-        Swal.fire({
-            title: "ขอแก้ไขนัดหมาย",
-            html: "วันที่ 14 ธันวาคม 2023 <br>เวลา 10:01-10:06<br>เป็น<br>วันที่ 25 ธันวาคม 2023<br>เวลา 10:07-10:12",
-            showConfirmButton: true,
-            showCancelButton: true,
-            icon: 'warning',
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก",
-            confirmButtonColor: '#263A50',
-            reverseButtons: true,
-            customClass: {
-                confirmButton: 'custom-confirm-button',
-                cancelButton: 'custom-cancel-button',
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
-                    icon: "success",
-                    confirmButtonText: "ตกลง",
-                    customClass: {
-                        confirmButton: 'custom-confirm-button',
-                    }
-
-                });
-            }
-        });
-    }
-
     const submitEditForm = async (e) => {
         e.preventDefault();
         try {
@@ -236,9 +206,11 @@ const UserEditAppointment = (props) => {
                 appointmentNotation: appointmentNotation,
                 clinic: clinic,
                 status: "ลงทะเบียนแล้ว",
+                status2: "เสร็จสิ้น",
+                subject: "ขอเลื่อนนัดหมาย",
             };
 
-            await updateDoc(timetableRef, updatedTimetable);
+            
 
             Swal.fire({
                 title: "ขอแก้ไขนัดหมาย",
@@ -254,8 +226,9 @@ const UserEditAppointment = (props) => {
                     confirmButton: 'custom-confirm-button',
                     cancelButton: 'custom-cancel-button',
                 }
-            }).then((result) => {
+            }).then(async(result) => {
                 if (result.isConfirmed) {
+                    await updateDoc(timetableRef, updatedTimetable);
                 Swal.fire({
                     title: "ส่งคำขอแก้ไขนัดหมายสำเร็จ",
                     icon: "success",

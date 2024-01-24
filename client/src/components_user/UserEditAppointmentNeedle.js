@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/UserEditAppointment.css";
 import "../css/Component.css";
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from './NavbarUserComponent';
 import CalendarUserComponentDate from "./CalendarUserComponentDate";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import { useUserAuth } from "../context/UserAuthContext";
-const UserEditAppointmentPhysic = (props) => {
+const UserEditAppointmentNeedle = (props) => {
     const [selectedDate, setSelectedDate] = useState();
     const { user, userData } = useUserAuth();
     const [isChecked, setIsChecked] = useState({});
@@ -37,7 +37,7 @@ const UserEditAppointmentPhysic = (props) => {
                 const querySnapshot = await getDocs(query(
                     timeTableCollection,
                     where('addDay', '==', selectedDate.dayName),
-                    where('clinic', '==', 'คลินิกกายภาพ')
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
                 ));
 
                 const timeTableData = querySnapshot.docs.map((doc) => ({
@@ -397,4 +397,4 @@ const UserEditAppointmentPhysic = (props) => {
     )
 }
 
-export default UserEditAppointmentPhysic;
+export default UserEditAppointmentNeedle;

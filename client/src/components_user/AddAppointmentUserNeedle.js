@@ -224,29 +224,6 @@ const AddNeedleAppointmentUser = () => {
         }
     };
 
-    const checkTimeSlotAvailability = () => {
-        try {
-            if (timeOptions.length === 0) {
-                return false;
-            }
-    
-            const selectedTimeSlot = appointmentTime;
-            const existingAppointments = AllAppointmentUsersData.map(appointment => appointment.appointmentTime);
-    
-            const isSlotAvailable = timeOptions.some(timeSlot => {
-                if (JSON.stringify(timeSlot.value) === JSON.stringify(selectedTimeSlot)) {
-                    return !existingAppointments.includes(JSON.stringify(selectedTimeSlot));
-                }
-                return false;
-            });
-    
-            return isSlotAvailable;
-        } catch (error) {
-            console.error('Error checking time slot availability:', error);
-            return false;
-        }
-    };
-
     return (
         <div className="user">
             <header className="user-header">

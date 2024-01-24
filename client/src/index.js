@@ -32,7 +32,8 @@ import UserProfileComponent from './components_user/ProfileComponent.js';
 import UserProfileEditComponent from './components_user/ProfileEditComponent.js';
 import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManagerNeedleComponent.js';
 import UserEditAppointmentPhysic from './components_user/UserEditAppointmentPhysic.js';
-
+import ForgetPasswordComponent from "./components_all/ForgetPasswordComponent.js"
+import ConfirmResetPassowrd from "./components_all/ResetPasswordComponent.js"
 
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
@@ -41,13 +42,19 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import ProtectRoute from './auth/protectRoute.jsx';
+
 import QueueManagementSystemComponentPhysic from './components_hcu/QueueManagementSystemComponentPhysic.js';
 import QueueManagementSystemComponentSpecial from './components_hcu/QueueManagementSystemComponentSpecial.js';
 import QueueManagementSystemComponentNeedle from './components_hcu/QueueManagementSystemComponentNeedle.js'
 import AddAppointmentUserNeedle from './components_user/AddAppointmentUserNeedle.js';
 import AddAppointmentUserPhysic from './components_user/AddAppointmentUserPhysics.js';
 import AddAppointmentUserSpecial from './components_user/AddAppointmentUserSpecial.js';
+
 const router = createBrowserRouter([
+  {
+    path: "/resetPassword",
+    element: <ForgetPasswordComponent />
+  },
   {
     path: "/",
     element: <LoginComponent />
@@ -55,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignupComponent />
+  },
+  {
+    path: "/confirmResetPassword",
+    element: <ConfirmResetPassowrd />
   },
   {
     path: "/homeUser",
@@ -128,9 +139,6 @@ const router = createBrowserRouter([
     path: "/adminActivityTodayComponent",
     element: <ProtectAdminRoute><AdminActivityTodayComponent/></ProtectAdminRoute>
   },
-
-
-
   {
     path: "/appointment/detail/:id",
     element: <ProtectRoute><AppointmentDetail /></ProtectRoute>
@@ -200,8 +208,6 @@ const router = createBrowserRouter([
     path: "/profile/edit",
     element: <ProtectRoute><UserProfileEditComponent/></ProtectRoute>
   },
-
-
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

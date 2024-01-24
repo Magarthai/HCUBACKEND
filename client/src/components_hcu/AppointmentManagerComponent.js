@@ -210,9 +210,11 @@ const AppointmentManagerComponent = (props) => {
                     icon: "success",
                     title: "Appointment Successful!",
                     text: "Your appointment has been successfully created!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
                 });
-                fetchUserDataWithAppointmentsWrapper();
-                fetchTimeTableData();
 
             } else {
                 Swal.fire({
@@ -259,7 +261,7 @@ const AppointmentManagerComponent = (props) => {
                 text: "Appointment Updated!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetchUserDataWithAppointmentsWrapper();
+                    window.location.reload();
                 }
             });
         } catch (firebaseError) {
@@ -276,11 +278,6 @@ const AppointmentManagerComponent = (props) => {
     const [saveDetailId, setsaveDetailId] = useState([])
     const [saveEditId, setsaveEditId] = useState([])
 
-    const currentDateShow = () => {
-        if (currentDate) {
-
-        }
-    }
 
     const openDetailAppointment = (AppointmentUsersData) => {
         let x = document.getElementById("detail-appointment");

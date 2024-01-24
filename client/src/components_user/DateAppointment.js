@@ -366,27 +366,31 @@ const formatDateForDisplay = (isoDate) => {
     if (dateParts.length === 3) {
         setAllAppointmentUsersData([]);
         const [year, month, day] = dateParts;
-        const formattedMonth = parseInt(month, 10).toString();
-        const formattedDate = `${day}/${formattedMonth}/${year}`;
+        const formattedMonth = parseInt(month, 10);
+        const formattedDay = parseInt(day, 10);
+        const formattedYear = parseInt(year, 10);
+        const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
 
-        const dayName = getDayName(new Date(isoDate)).toLowerCase();;
+        const dayName = getDayName(new Date(isoDate)).toLowerCase();
         const formattedSelectedDate = {
-            day: day,
+            day: formattedDay,
             month: formattedMonth,
-            year: year,
+            year: formattedYear,
             dayName: dayName,
         };
         setAllAppointmentUsersData([]);
         setSelectedDate(formattedSelectedDate);
         setState({
             ...state,
-            appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+            appointmentDate: `${formattedSelectedDate.day}/${formattedSelectedDate.month}/${formattedSelectedDate.year}`,
             appointmentTimes: "",
         });
+        console.log("formattedSelectedDate", formattedSelectedDate);
         return formattedDate;
     }
     return isoDate;
-}
+};
+
     const deleteAppointment = () => {
         Swal.fire({
             title: "ยกเลิกนัดหมาย",
@@ -482,7 +486,13 @@ const formatDateForDisplay = (isoDate) => {
                     
                     <div className="user-DateAppointment-cardList_container">
                     {AppointmentUsersData.length > 0 ?
-                        AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
+                    AppointmentUsersData
+                        .filter(AppointmentUserData => 
+                            (AppointmentUserData.appointment.status !== "เสร็จสิ้น" && AppointmentUserData.appointment.status !== "ไม่สำเร็จ") &&
+                            AppointmentUserData.appointment.status2 !== "กำลังดำเนินการ"
+                        )
+                        .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                        .map((AppointmentUserData, index) => (
                             <div className="user-DateAppointment-card gap-16" style={{ marginTop: 25 }}>
                                 <div className="user-DateAppointment-card_header">
                                     <h4 className="user-DateAppointment-clinic">{AppointmentUserData.appointment.clinic}</h4>

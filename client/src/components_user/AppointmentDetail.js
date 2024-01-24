@@ -69,7 +69,7 @@ const AppointmentDetail = () => {
                         <h2 className="user-AppointmenDetail-Card_title" style={{marginTop:10}}>นัดหมาย</h2>
                        <p className="textBody-big gap-4">ID : {appointmentInfo.appointmentId}</p>
                         {userData &&<p className="textBody-big gap-4">ชื่อ-นามสกุล : {userData.firstName} {userData.lastName}</p>}
-                        <p className="textBody-big gap-4">คลินิก : คลินิกทั่วไป</p>
+                        <p className="textBody-big gap-4">คลินิก : {appointmentInfo.clinic}</p>
                         <p className="textBody-big gap-4"> <img src={CalendarFlat_icon}/> {appointmentInfo.appointmentDate} </p>
                         {timeSlot && <p className="textBody-big gap-4"> <img src={ClockFlat_icon}/>  {timeSlot.start} - {timeSlot.end}</p>}
                         <h5>สาเหตุการนัดหมาย</h5>
