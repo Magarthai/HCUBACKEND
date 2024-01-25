@@ -10,7 +10,6 @@ import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } f
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
 const UserHistoryAppointment = (prop) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,81 +29,7 @@ const UserHistoryAppointment = (prop) => {
   };
   const { user, userData } = useUserAuth();
 
-  const DeleteAppointment = async (AppointmentUserData, appointmentuid, uid) => {
-    const timetableRef = doc(db, 'appointment', appointmentuid);
 
-    Swal.fire({
-      title: 'ยกเลิกสิทธิ์',
-      html: `วันที่ ${AppointmentUserData.appointment.appointmentDate} </br>` + `เวลา ${AppointmentUserData.timeslot.start} - ${AppointmentUserData.timeslot.end}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'ยกเลิกสิทธิ์',
-      cancelButtonText: '<span style="color: #444444;">ยกเลิก</span>',
-      confirmButtonColor: '#DC2626',
-      cancelButtonColor: `rgba(68, 68, 68, 0.13)`,
-      reverseButtons: true,
-      customClass: {
-        confirmButton: 'custom-confirm-button',
-        cancelButton: 'custom-cancel-button',
-      }
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deleteDoc(timetableRef);
-
-          console.log("Appointment deleted:", appointmentuid);
-
-          const userRef = doc(db, "users", uid);
-
-          await updateDoc(userRef, {
-            "appointments": arrayRemove("appointments", appointmentuid)
-          });
-
-
-
-
-          console.log(appointmentuid);
-          setAllAppointmentUsersData([])
-          fetchUserDataWithAppointments();
-          Swal.fire(
-            {
-
-              title: 'ยกเลิกสิทธิ์สำเร็จ',
-              icon: 'success',
-              confirmButtonText: 'ตกลง',
-              confirmButtonColor: '#263A50',
-              customClass: {
-                confirmButton: 'custom-confirm-button',
-              }
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-
-              }
-
-            });
-        } catch {
-
-        }
-
-      } else if (
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        Swal.fire(
-          {
-            title: 'ยกเลิกสิทธิ์ไม่สำเร็จ',
-            icon: 'error',
-            confirmButtonText: 'ตกลง',
-            confirmButtonColor: '#263A50',
-            customClass: {
-              confirmButton: 'custom-confirm-button',
-            }
-          }
-        )
-      }
-    })
-
-  }
 
   const inputValue = (name) => (event) => {
     setState({ ...state, [name]: event.target.value });
@@ -432,8 +357,11 @@ AppointmentUsersData.sort((a, b) => {
   const timeB = new Date(`2000-01-01T${b.timeslot.start}`);
   return timeA - timeB;
 }).map((AppointmentUserData, index) => (
-          <div className="HistoryAppointment-body-card-item">
-            <p className="HistoryAppointment-body-card-item-outDate colorPrimary-800">{AppointmentUserData.appointment.appointmentDate} </p>
+  <div className="AppointList-body-card-item" key={index}>
+
+    {index === 0 || AppointmentUserData.appointment.appointmentDate !== AppointmentUsersData[index - 1].appointment.appointmentDate ? (
+      <p className="AppointList-body-card-item-outDate">{AppointmentUserData.appointment.appointmentDate}</p>
+    ) : null}
             <div className="HistoryAppointment-body-card-item-innerCard">
               <div className="HistoryAppointment-body-card-item-innerCard-TypeAppAndStatus">
                 <h1 className="HistoryAppointment-body-card-item-innerCard-Typeappointment">{AppointmentUserData.appointment.subject}</h1>
@@ -458,8 +386,10 @@ AppointmentUsersData.sort((a, b) => {
             </div>
           </div>
           )) : (
-            <div className="user-DateAppointment-card_noAppointment gap-16">
+            <div style={{width:"100%",display:"flex",justifyContent:"center"}}>
+            <div className="user-DateAppointment-card_noAppointment gap-16" style={{width:"90%"}}>
                             <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
+                        </div>
                         </div>
           )}         
           

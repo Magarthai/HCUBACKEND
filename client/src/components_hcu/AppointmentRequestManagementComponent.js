@@ -213,7 +213,8 @@ const AppointmentRequestManagementComponent = (props) => {
                 appointmentDate: AppointmentUserData.appointment.appointmentDate2,
                 appointmentTime: AppointmentUserData.appointment.appointmentTime2,
                 appointmentSymptom: AppointmentUserData.appointment.appointmentSymptom2 || null,
-                status: "ลงทะเบียนแล้วมั้ง",
+                status: "ลงทะเบียนแล้ว",
+                status2: "เสร็จสิ้น",
             };
     
             Swal.fire({

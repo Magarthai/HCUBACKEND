@@ -114,6 +114,8 @@
         width: 110px;
         background-color: #0CB686;
         color: #FBFFFF;
+        height: 28px;
+        font-size: 15px;
     }
 
     .user-appointment-status1 {
@@ -124,6 +126,8 @@
         width: 110px;
         background-color: #C11F1F;
         color: #FBFFFF;
+        height: 28px;
+        font-size: 15px;
     }
 
     .user-appointment-status2 {
@@ -134,6 +138,8 @@
         width: 110px;
         background-color: #D88C09;
         color: #FBFFFF;
+        height: 28px;
+        font-size: 15px;
     }
 
     .user-appointment-status3 {

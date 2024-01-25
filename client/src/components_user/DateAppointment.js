@@ -148,7 +148,7 @@ useEffect(() => {
     if (!selectedDateFromLocation) {
         Swal.fire({
             icon: 'error',
-            title: 'Oops...',
+            title: 'เกิดข้อผิดพลาด',
             text: 'กรุณาเลือกวันก่อน!',
         }).then(() => {
             navigate('/appointment');
@@ -366,31 +366,27 @@ const formatDateForDisplay = (isoDate) => {
     if (dateParts.length === 3) {
         setAllAppointmentUsersData([]);
         const [year, month, day] = dateParts;
-        const formattedMonth = parseInt(month, 10);
-        const formattedDay = parseInt(day, 10);
-        const formattedYear = parseInt(year, 10);
-        const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
+        const formattedMonth = parseInt(month, 10).toString();
+        const formattedDate = `${day}/${formattedMonth}/${year}`;
 
-        const dayName = getDayName(new Date(isoDate)).toLowerCase();
+        const dayName = getDayName(new Date(isoDate)).toLowerCase();;
         const formattedSelectedDate = {
-            day: formattedDay,
+            day: day,
             month: formattedMonth,
-            year: formattedYear,
+            year: year,
             dayName: dayName,
         };
         setAllAppointmentUsersData([]);
         setSelectedDate(formattedSelectedDate);
         setState({
             ...state,
-            appointmentDate: `${formattedSelectedDate.day}/${formattedSelectedDate.month}/${formattedSelectedDate.year}`,
+            appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTimes: "",
         });
-        console.log("formattedSelectedDate", formattedSelectedDate);
         return formattedDate;
     }
     return isoDate;
-};
-
+}
     const deleteAppointment = () => {
         Swal.fire({
             title: "ยกเลิกนัดหมาย",
@@ -486,13 +482,7 @@ const formatDateForDisplay = (isoDate) => {
                     
                     <div className="user-DateAppointment-cardList_container">
                     {AppointmentUsersData.length > 0 ?
-                    AppointmentUsersData
-                        .filter(AppointmentUserData => 
-                            (AppointmentUserData.appointment.status !== "เสร็จสิ้น" && AppointmentUserData.appointment.status !== "ไม่สำเร็จ") &&
-                            AppointmentUserData.appointment.status2 !== "กำลังดำเนินการ"
-                        )
-                        .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
-                        .map((AppointmentUserData, index) => (
+                        AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
                             <div className="user-DateAppointment-card gap-16" style={{ marginTop: 25 }}>
                                 <div className="user-DateAppointment-card_header">
                                     <h4 className="user-DateAppointment-clinic">{AppointmentUserData.appointment.clinic}</h4>
@@ -503,6 +493,15 @@ const formatDateForDisplay = (isoDate) => {
                                 </div>
                                 <p className="textBody-big" style={{ marginBottom: 8, marginTop: 5 }}> <img src={CalendarFlat_icon} alt="" /> {AppointmentUserData.appointment.appointmentDate} </p>
                                 <p className="textBody-big" style={{ marginBottom: 0 }}> <img src={ClockFlat_icon} alt="" /> {AppointmentUserData.timeslot.start} - {AppointmentUserData.timeslot.end}</p>
+                                <div className="user-appointment-description2" style={{marginTop:5}}>
+                                                <label style={{marginTop:5}}><b className='user-appointment-Bold-letter' >สาเหตุการนัดหมาย</b></label> <br></br>
+                                                <label style={{marginTop:5}}>: {AppointmentUserData.appointment.appointmentCasue}</label>
+                                            </div>
+
+                                            <div className="user-appointment-description2">
+                                                <label style={{marginTop:5}}><b className='user-appointment-Bold-letter'>อาการ</b></label> <br></br>
+                                                <label style={{marginTop:5}}>: {AppointmentUserData.appointment.appointmentSymptom}</label>
+                                            </div>
                             </div>
                         )) :
                         <div className="user-DateAppointment-card_noAppointment gap-16">

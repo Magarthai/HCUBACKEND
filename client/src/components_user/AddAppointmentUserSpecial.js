@@ -169,8 +169,13 @@ const AddSpecialAppointmentUser = () => {
             if (!isTimeSlotAvailable) {
                 Swal.fire({
                     icon: "error",
-                    title: "Time Slot Unavailable",
-                    text: "The selected appointment time is no longer available. Please choose another time.",
+                    title: "เกิดข้อผิดพลาด",
+                    text: "มีคนเลือกเวลานี้แล้วโปรดเลือกเวลาใหม่!",
+                    confirmButtonText: "ตกลง",
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        cancelButton: 'custom-cancel-button',
+                    }
                 });
                 return;
             }

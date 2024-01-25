@@ -169,8 +169,13 @@ const AddAppointmentUser = () => {
             if (!isTimeSlotAvailable) {
                 Swal.fire({
                     icon: "error",
-                    title: "Time Slot Unavailable",
-                    text: "The selected appointment time is no longer available. Please choose another time.",
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ไม่เหลือช่วงเวลาว่างสําหรับวันนี้ โปรดเลือกวันอื่น",
+                    confirmButtonText: "ตกลง",
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        cancelButton: 'custom-cancel-button',
+                    }
                 });
                 return;
             }
@@ -204,8 +209,13 @@ const AddAppointmentUser = () => {
                 if (!existingAppointmentsQuerySnapshot.empty) {
                     Swal.fire({
                         icon: "error",
-                        title: "Time Slot Already Taken!",
-                        text: "Someone has already booked this time slot. Please choose another time.",
+                        title: "เกิดข้อผิดพลาด",
+                        text: "มีคนเลือกเวลานี้แล้วโปรดเลือกเวลาใหม่!",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            cancelButton: 'custom-cancel-button',
+                        }
                     });
                 } else {
                     const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
@@ -218,8 +228,13 @@ const AddAppointmentUser = () => {
         
                     Swal.fire({
                         icon: "success",
-                        title: "Appointment Successful!",
-                        text: "Your appointment has been successfully created!",
+                        title: "การนัดหมายสําเร็จ!",
+                        text: "การนัดหมายของคุณถูกสร้างเรียบร้อยแล้ว!",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            cancelButton: 'custom-cancel-button',
+                        }
                     });
                     await fetchTimeTableData();
         
@@ -233,11 +248,6 @@ const AddAppointmentUser = () => {
             console.error('Firebase submit error:', firebaseError);
 
             console.error('Firebase error response:', firebaseError);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Failed to create user account. Please try again later.",
-            });
         }
     };
 
