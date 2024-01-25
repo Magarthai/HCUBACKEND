@@ -84,7 +84,6 @@ const ActivityAddComponent = (props) => {
     }
 
     return (
-        
         <div style={containerStyle}>
         <NavbarComponent />
         <div className="admin-topicBox colorPrimary-800">
@@ -110,8 +109,6 @@ const ActivityAddComponent = (props) => {
                                 <div className="admin-right">
                                     <input type="file" className="form-control input-activity-img" accept="image/png, image/jpeg" />
                                 </div>
-                                
-
                             </div>
                             <div className="admin-activity-today-hearder-box admin-activity-form">
                                 <div>
@@ -123,7 +120,6 @@ const ActivityAddComponent = (props) => {
                                     <textarea value={activityDetail} onChange={inputValue("activityDetail")} className="acivity-detail" rows="18"></textarea>
                                 </div>
                             </div>
-
                             <div>
                                     <label className="admin-textBody-large colorPrimary-800">รูปแบบกิจกรรม</label>
                                     <input type="text" className="form-control" value={activityName} onChange={inputValue("activityName")} placeholder="Activity" />
