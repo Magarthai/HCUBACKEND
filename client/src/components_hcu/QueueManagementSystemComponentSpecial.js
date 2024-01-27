@@ -7,6 +7,7 @@ import NavbarComponent from "./NavbarComponent";
 import "../css/AdminQueueManagementSystemComponent.css";
 import verify_rights_icon from "../picture/verify_rights_icon.png";
 import Swal from "sweetalert2";
+import { getUserDataFromUserId } from '../backend/getDataFromUserId'
 import { ScaleLoader } from "react-spinners";
 const QueueManagementSystemComponentSpecial = (props) => {
     const { user, userData } = useUserAuth();
@@ -304,26 +305,6 @@ const QueueManagementSystemComponentSpecial = (props) => {
         }
     };
 
-    const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
-        const usersCollection = collection(db, 'users');
-        const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
-
-        if (userQuerySnapshot.empty) {
-            console.log("No user found with id:", userId);
-            return null;
-        }
-
-        const userUid = userQuerySnapshot.docs[0].id;
-        const userDatas = userQuerySnapshot.docs[0].data();
-        userDatas.timeslot = timeslot;
-        userDatas.appointment = appointment;
-        userDatas.appointmentuid = appointmentuid;
-        userDatas.userUid = userUid;
-        console.log("User Data for userId", userId, ":", userDatas);
-        console.log("userDatas", userDatas)
-        console.log("testxd", userDatas.timeslot.start)
-        return userDatas;
-    };
 
     const [saveDetailId, setsaveDetailId] = useState([])
     const [saveEditId, setsaveEditId] = useState([])

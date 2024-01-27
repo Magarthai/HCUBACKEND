@@ -25,8 +25,6 @@ export const fetchTimeTableDataFromBackend = async (user, selectedDate) => {
     }
 };
 
-
-
 export const fetchUserDataWithAppointments = async (user, selectedDate, setAllAppointmentUsersData) => {
   try {
     if (user && selectedDate && selectedDate.dayName) {

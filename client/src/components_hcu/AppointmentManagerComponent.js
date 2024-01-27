@@ -167,8 +167,6 @@ const AppointmentManagerComponent = (props) => {
         setSelectedCount(selectedCount + 1);
     };
 
-
-
     const submitForm = async (e) => {
         e.preventDefault();
 
@@ -365,7 +363,17 @@ const AppointmentManagerComponent = (props) => {
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
-
+        setState((prevState) => ({
+            ...prevState,
+            appointmentDate: appointmentUserData.appointmentDate,
+            appointmentTime: null,
+            appointmentId: appointmentUserData.appointmentId,
+            appointmentCasue: appointmentUserData.appointmentCasue,
+            appointmentSymptom: appointmentUserData.appointmentSymptom,
+            appointmentNotation: appointmentUserData.appointmentNotation,
+            clinic: appointmentUserData.clinic,
+            uid: appointmentUserData.appointmentuid
+        }));
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
@@ -373,17 +381,7 @@ const AppointmentManagerComponent = (props) => {
             setsaveDetailId("")
             setsaveEditId(appointmentUserData.appointmentuid)
 
-            setState((prevState) => ({
-                ...prevState,
-                appointmentDate: appointmentUserData.appointmentDate,
-                appointmentTime: null,
-                appointmentId: appointmentUserData.appointmentId,
-                appointmentCasue: appointmentUserData.appointmentCasue,
-                appointmentSymptom: appointmentUserData.appointmentSymptom,
-                appointmentNotation: appointmentUserData.appointmentNotation,
-                clinic: appointmentUserData.clinic,
-                uid: appointmentUserData.appointmentuid
-            }));
+            
 
         } else {
             if (saveEditId === appointmentUserData.appointmentuid) {
@@ -391,17 +389,6 @@ const AppointmentManagerComponent = (props) => {
                 setsaveEditId("")
             } else {
                 setsaveEditId(appointmentUserData.appointmentuid)
-                setState((prevState) => ({
-                    ...prevState,
-                    appointmentDate: appointmentUserData.appointmentDate,
-                    appointmentTime: null,
-                    appointmentId: appointmentUserData.appointmentId,
-                    appointmentCasue: appointmentUserData.appointmentCasue,
-                    appointmentSymptom: appointmentUserData.appointmentSymptom,
-                    appointmentNotation: appointmentUserData.appointmentNotation,
-                    clinic: appointmentUserData.clinic,
-                    uid: appointmentUserData.appointmentuid
-                }));
             }
         }
     }

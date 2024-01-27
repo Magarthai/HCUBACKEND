@@ -4,19 +4,17 @@ import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
-import { db, getDocs, collection, doc, getDoc ,firestore} from "../firebase/config";
+import { db, getDocs, collection, doc} from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
-import { useParams } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
 import { PulseLoader } from "react-spinners";
+import { GetTimeOptionsFromTimetable } from "../backend/timeOptions";
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
-
+import { availableTimeSlotsSpecial, fetchAppointmentUsersDataSpecial, fetchTimeTableDataSpecial, fetchUserDataWithAppointmentsSpecial } from "../backend/backendSpecial";
+import ClockComponent from "../utils/ClockComponent";
 
 const AppointmentManagerComponentSpecial = (props) => {
-
     const [selectedDate, setSelectedDate] = useState(null);
-    const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
     const [AppointmentUsersData, setAllAppointmentUsersData] = useState([]);
@@ -24,7 +22,6 @@ const AppointmentManagerComponentSpecial = (props) => {
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
     
-
     const [state, setState] = useState({
         appointmentDate: "",
         appointmentTime: "",
@@ -44,98 +41,32 @@ const AppointmentManagerComponentSpecial = (props) => {
         setState({ ...state, [name]: event.target.value });
     };
 
-
-
     const fetchTimeTableData = async () => {
         try {
-            if (user && selectedDate && selectedDate.dayName) {
-                const timeTableCollection = collection(db, 'timeTable');
-                const querySnapshot = await getDocs(query(
-                    timeTableCollection,
-                    where('addDay', '==', selectedDate.dayName),
-                    where('clinic', '==', 'คลินิกเฉพาะทาง')
-                ));
 
-                const timeTableData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                console.log("timeTableData selectedDate",selectedDate)
-                console.log("timeTableData",timeTableData)
+            const timeTableData = await fetchTimeTableDataSpecial(user, selectedDate);
+            if (timeTableData.length > 0) {
+                const filteredTimeTableData = timeTableData
+                if (filteredTimeTableData.length > 0) {
+                    const availableTimeSlots = availableTimeSlotsSpecial(filteredTimeTableData, selectedDate, db);
+                    console.log("availableTimeSlots",availableTimeSlots)
 
-                if (timeTableData.length > 0) {
-                    const filteredTimeTableData = timeTableData
-                    if (filteredTimeTableData.length > 0) {
-                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
-                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                acc.push(
-                                    ...item.timeablelist.map((timeSlot, index) => ({
-                                        ...timeSlot,
-                                        timeTableId: item.id,
-                                        timeSlotIndex: index
-                                    }))
-                                );
-                            }
-                            return acc;
-                        }, []);
+                    const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
+                        acc[timetableItem.id] = timetableItem.status === "Enabled";
+                        return acc;
+                    }, {});
 
-                        const appointmentsCollection = collection(db, 'appointment');
-                        const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
+                    setIsChecked(initialIsChecked);
 
-                        const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
-
-                        if (existingAppointments.length > 0) {
-                            console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
-                        } else {
-                            console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
-                        }
-
-                        const availableTimeSlots = allTimeableLists.filter((timeSlot) =>
-                            !existingAppointments.some(existingSlot =>
-                                existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
-                            )
-                        );
-
-
-
-                        console.log("availableTimeSlots", availableTimeSlots)
-                        const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
-                            acc[timetableItem.id] = timetableItem.status === "Enabled";
-                            return acc;
-                        }, {});
-
-                        setIsChecked(initialIsChecked);
-
-                        const timeOptionsFromTimetable = [
-                            { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
-                            ...availableTimeSlots
-                                .sort((a, b) => {
-                                    const timeA = new Date(`01/01/2000 ${a.start}`);
-                                    const timeB = new Date(`01/01/2000 ${b.start}`);
-                                    return timeA - timeB;
-                                })
-                                .map((timeSlot) => ({
-                                    label: `${timeSlot.start} - ${timeSlot.end}`,
-                                    value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
-                                })),
-                        ];
-
-                        console.log("Before setTimeOptions", timeOptionsFromTimetable);
-                        setTimeOptions(timeOptionsFromTimetable);
-                        console.log("After setTimeOptions", timeOptionsFromTimetable);
-                        console.log(timeOptions)
-                    } else {
-                        console.log("Time table not found for selected day and clinic");
-                        const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                        setTimeOptions([noTimeSlotsAvailableOption]);
-                        console.log(timeOptions)
-                    }
-
+                    const timeOptionsFromTimetable = GetTimeOptionsFromTimetable(availableTimeSlots);
+                    setTimeOptions(timeOptionsFromTimetable);
                 } else {
                     const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                     setTimeOptions([noTimeSlotsAvailableOption]);
-                    console.log("Time table not found",timeOptions);
                 }
+            } else {
+                const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                setTimeOptions([noTimeSlotsAvailableOption]);
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -145,65 +76,17 @@ const AppointmentManagerComponentSpecial = (props) => {
     const fetchUserDataWithAppointments = async () => {
         try {
             if (user && selectedDate && selectedDate.dayName) {
-                const appointmentsCollection = collection(db, 'appointment');
-                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', 
-                `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                where('clinic', '==', 'คลินิกเฉพาะทาง')));
-    
-                const timeTableCollection = collection(db, 'timeTable');
-                const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
-                    const appointmentData = doc.data();
-                    return {
-                        appointmentId: doc.id,
-                        appointmentuid: doc.id,
-                        ...appointmentData,
-                    };
-                });
-                
-    
+                const existingAppointments = await fetchUserDataWithAppointmentsSpecial(user, selectedDate);
                 console.log("existingAppointments", existingAppointments);
-    
                 if (existingAppointments.length > 0) {
-                    console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
-    
-                    const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
-                        const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
-                        const timeTableId = appointment.appointmentTime.timetableId;
-    
-                        try {
-                            const timetableDocRef = doc(timeTableCollection, timeTableId);
-                            const timetableDocSnapshot = await getDoc(timetableDocRef);
-    
-                            if (timetableDocSnapshot.exists()) {
-                                const timetableData = timetableDocSnapshot.data();
-                                const timeslot = timetableData.timeablelist[timeSlotIndex];
-    
-                                const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
-    
-                                if (userDetails) {
-                                    console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
-                                    return userDetails;
-                                } else {
-                                    console.log("No user details found for appointmentId", appointment.appointmentId);
-                                    return null;
-                                }
-                            } else {
-                                console.log("No such document with ID:", timeTableId);
-                                return null;
-                            }
-                        } catch (error) {
-                            console.error('Error fetching timetable data:', error);
-                            return null;
-                        }
-                    }));
-    
+                    const AppointmentUsersDataArray = await fetchAppointmentUsersDataSpecial(existingAppointments);
+                    console.log("AppointmentUsersDataArray",AppointmentUsersDataArray)
                     if (AppointmentUsersDataArray.length > 0) {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
                         console.log("AppointmentUsersData", AppointmentUsersDataArray);
                     } else {
                         console.log("No user details found for any appointmentId");
                     }
-    
                     console.log("AppointmentUsersDataArray", AppointmentUsersDataArray);
                     setAllAppointmentUsersData(AppointmentUsersDataArray);
                     console.log("AppointmentUsersData", AppointmentUsersDataArray);
@@ -215,45 +98,6 @@ const AppointmentManagerComponentSpecial = (props) => {
             console.error('Error fetching user data with appointments:', error);
         }
     };
-
-
-
-    
-
-    const getUserDataFromUserId = async (appointment,userId,timeslot,appointmentuid) => {
-        const usersCollection = collection(db, 'users');
-        const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
-
-        if (userQuerySnapshot.empty) {
-            console.log("No user found with id:", userId);
-            return null;
-        }
-        const userUid = userQuerySnapshot.docs[0].id;
-        const userDatas = userQuerySnapshot.docs[0].data();
-        userDatas.timeslot = timeslot;
-        userDatas.appointment = appointment;
-        userDatas.appointmentuid = appointmentuid;
-        userDatas.userUid = userUid;
-        console.log("User Data for userId", userId, ":", userDatas);
-        console.log("userDatas",userDatas)
-        console.log("testxd",userDatas.timeslot.start)
-        return userDatas;
-    };
-
-    
-
-
-    function getShowTime() {
-        const today = new Date();
-        const hours = today.getHours();
-        const minutes = today.getMinutes();
-        const seconds = today.getSeconds();
-        return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
-    }
-
-    function formatNumber(num) {
-        return num < 10 ? "0" + num : num.toString();
-    }
 
     const locale = 'en';
     const today = new Date();
@@ -270,13 +114,9 @@ const AppointmentManagerComponentSpecial = (props) => {
         console.log(selectedCount)
     };
 
-
-
     const submitForm = async (e) => {
         e.preventDefault();
-
         try {
-
             const appointmentInfo = {
                 appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
                 appointmentTime,
@@ -410,12 +250,6 @@ const AppointmentManagerComponentSpecial = (props) => {
     const [saveDetailId, setsaveDetailId] = useState([])
     const [saveEditId, setsaveEditId] = useState([])
 
-    const currentDateShow = () => {
-        if (currentDate) {
-            
-        }
-    }
-
     const openDetailAppointment = (AppointmentUsersData) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
@@ -487,7 +321,17 @@ const AppointmentManagerComponentSpecial = (props) => {
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
-    
+        setState((prevState) => ({
+            ...prevState,
+            appointmentDate: appointmentUserData.appointmentDate,
+            appointmentTime: null,
+            appointmentId: appointmentUserData.appointmentId,
+            appointmentCasue: appointmentUserData.appointmentCasue,
+            appointmentSymptom: appointmentUserData.appointmentSymptom,
+            appointmentNotation: appointmentUserData.appointmentNotation,
+            clinic: appointmentUserData.clinic,
+            uid:appointmentUserData.appointmentuid
+        }));
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
@@ -495,17 +339,6 @@ const AppointmentManagerComponentSpecial = (props) => {
             setsaveDetailId("")
             setsaveEditId(appointmentUserData.appointmentuid)
             
-            setState((prevState) => ({
-                ...prevState,
-                appointmentDate: appointmentUserData.appointmentDate,
-                appointmentTime: null,
-                appointmentId: appointmentUserData.appointmentId,
-                appointmentCasue: appointmentUserData.appointmentCasue,
-                appointmentSymptom: appointmentUserData.appointmentSymptom,
-                appointmentNotation: appointmentUserData.appointmentNotation,
-                clinic: appointmentUserData.clinic,
-                uid:appointmentUserData.appointmentuid
-            }));
 
         } else {
             if(saveEditId === appointmentUserData.appointmentuid){
@@ -513,23 +346,9 @@ const AppointmentManagerComponentSpecial = (props) => {
                 setsaveEditId("")
             }else{
                 setsaveEditId(appointmentUserData.appointmentuid)
-                setState((prevState) => ({
-                    ...prevState,
-                    appointmentDate: appointmentUserData.appointmentDate,
-                    appointmentTime: null,
-                    appointmentId: appointmentUserData.appointmentId,
-                    appointmentCasue: appointmentUserData.appointmentCasue,
-                    appointmentSymptom: appointmentUserData.appointmentSymptom,
-                    appointmentNotation: appointmentUserData.appointmentNotation,
-                    clinic: appointmentUserData.clinic,
-                    uid:appointmentUserData.appointmentuid
-                }));
             }
         }
     }
-    
-
-
 
     const DeleteAppointment = async (appointmentuid, uid) => {
         const timetableRef = doc(db, 'appointment', appointmentuid);
@@ -587,7 +406,6 @@ const AppointmentManagerComponentSpecial = (props) => {
                 } catch {
 
                 }
-
             } else if (
                 result.dismiss === Swal.DismissReason.cancel
             ) {
@@ -607,7 +425,6 @@ const AppointmentManagerComponentSpecial = (props) => {
         })
 
     }
-
 
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
@@ -664,15 +481,7 @@ const AppointmentManagerComponentSpecial = (props) => {
         console.log(selectedDate)
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
-        const updateShowTime = () => {
-            const newTime = getShowTime();
-            if (newTime !== showTime) {
-                setShowTime(newTime);
-            }
-            animationFrameRef.current = requestAnimationFrame(updateShowTime);
-        };
 
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
 
 
 
@@ -704,52 +513,43 @@ const AppointmentManagerComponentSpecial = (props) => {
         card.addEventListener('click', handleCardClick);
     });
 
-    const statusElements = document.querySelectorAll('.admin-appointment-status');
-    
-    function changeStatusTextColor(element) {
-        if (element.textContent.trim() === 'เสร็จสิ้น') {
-            element.style.color = '#098B66';
-            
-        }
-        else if(element.textContent.trim() === 'ไม่สำเร็จ') {
-            element.style.color = '#C11F1F'; 
-        }
-        else if(element.textContent.trim() === 'ยืนยันสิทธิ์แล้ว') {
-            element.style.color = '#D88C09'; 
-        }
-        else if(element.textContent.trim() === 'ลงทะเบียนแล้ว') {
-            element.style.color = '#A1A1A1'; 
-        }
-        else if(element.textContent.trim() === 'รอยืนยันสิทธิ์') {
-            element.style.color = '#A1A1A1'; 
-        }
+const statusClassMap = {
+    'ยืนยันสิทธิ์แล้ว': 'confirmed-background',
+    'เสร็จสิ้น': 'completed-background',
+    'ไม่สำเร็จ': 'failed-background',
+    'ลงทะเบียนแล้ว': 'pending-confirmation-background',
+    'รอยืนยันสิทธิ์': 'pending-confirmation-background'
+};
+
+function changeStatusTextColor(element) {
+    const trimmedStatusText = element.textContent.trim();
+    const colorMap = {
+        'เสร็จสิ้น': '#098B66',
+        'ไม่สำเร็จ': '#C11F1F',
+        'ยืนยันสิทธิ์แล้ว': '#D88C09',
+        'ลงทะเบียนแล้ว': '#A1A1A1',
+        'รอยืนยันสิทธิ์': '#A1A1A1'
+    };
+
+    if (colorMap.hasOwnProperty(trimmedStatusText)) {
+        element.style.color = colorMap[trimmedStatusText];
     }
+}
 
-    statusElements.forEach(changeStatusTextColor);
+const statusElements = document.querySelectorAll('.admin-appointment-status');
+statusElements.forEach(changeStatusTextColor);
 
-    let statusElementDetail = document.getElementById("detail-appointment-status");
+const statusElementDetail = document.getElementById("detail-appointment-status");
 
-        if (statusElementDetail) {
-            if (statusElementDetail.textContent.trim() === 'ยืนยันสิทธ์แล้ว') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                console.log("Adding Class...");
-                
-                statusElementDetail.classList.add("confirmed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'เสร็จสิ้น') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("completed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'ไม่สำเร็จ') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("failed-background");
-            }
-            else if (statusElementDetail.textContent.trim() === 'ลงทะเบียนแล้ว') {
-                statusElementDetail.classList.remove(...statusElementDetail.classList);
-                statusElementDetail.classList.add("pending-confirmation-background");
-            }
-        }
+if (statusElementDetail) {
+    const trimmedStatusTextDetail = statusElementDetail.textContent.trim();
+    const statusClassDetail = statusClassMap[trimmedStatusTextDetail];
 
+    if (statusClassDetail) {
+        statusElementDetail.classList.remove(...statusElementDetail.classList);
+        statusElementDetail.classList.add(statusClassDetail);
+    }
+}
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -761,7 +561,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                 </div>
                 <div className="dateTime">
                     <p className="admin-textBody-large">Date : {currentDate}</p>
-                    <p className="admin-textBody-large">Time : {showTime}</p>
+                    <p className="admin-textBody-large admin-time">Time : <ClockComponent/></p>
                 </div>
             </div>
             {isLoading ? (
@@ -898,8 +698,6 @@ const AppointmentManagerComponentSpecial = (props) => {
                                     ))}
 
                                 </select>
-
-
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
@@ -937,7 +735,6 @@ const AppointmentManagerComponentSpecial = (props) => {
                                         console.log("Formatted Date:", formattedDate);
                                     }}
                                 />
-
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
@@ -981,8 +778,6 @@ const AppointmentManagerComponentSpecial = (props) => {
                                     ))}
 
                                 </select>
-
-
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
@@ -1011,11 +806,6 @@ const AppointmentManagerComponentSpecial = (props) => {
             </div>
             </div>
       )}
-
-
-
-
-
         </div>
     );
 }

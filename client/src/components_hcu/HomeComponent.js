@@ -14,7 +14,7 @@ import logo from "../picture/LogoHCU.png";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import "../css/Component.css";
-import ClockComponent from "./ClockComponent";
+import ClockComponent from "../utils/ClockComponent";
 import ResponsiveComponent from "./ResponsiveComponent";
 
 const HomeComponent = () => {

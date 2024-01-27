@@ -257,6 +257,10 @@
         font-size: 20px;
         font-weight: 300;
     }
+    .admin-time{
+        display: flex;
+        justify-content: right;
+    }
     .admin-textBody-large{
         font-size: 21px;
         font-weight: 400;

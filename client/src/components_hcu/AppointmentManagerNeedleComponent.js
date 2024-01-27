@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
 import "../css/AdminAppointmentComponent.css";
 import { PulseLoader } from "react-spinners";
-
+import { getUserDataFromUserId } from '../backend/getDataFromUserId'
 
 const AppointmentManagerPhysicalComponent = (props) => {
 
@@ -496,27 +496,6 @@ const AppointmentManagerPhysicalComponent = (props) => {
         }
     };
 
-    const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
-        const usersCollection = collection(db, 'users');
-        const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
-
-        if (userQuerySnapshot.empty) {
-            console.log("No user found with id:", userId);
-            return null;
-        }
-
-        <u></u>
-        const userUid = userQuerySnapshot.docs[0].id;
-        const userDatas = userQuerySnapshot.docs[0].data();
-        userDatas.timeslot = timeslot;
-        userDatas.appointment = appointment;
-        userDatas.appointmentuid = appointmentuid;
-        userDatas.userUid = userUid;
-        console.log("User Data for userId", userId, ":", userDatas);
-        console.log("userDatas", userDatas)
-        console.log("testxd", userDatas.timeslot.start)
-        return userDatas;
-    };
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         document.title = 'Health Care Unit';
