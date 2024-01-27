@@ -187,6 +187,8 @@ const AddSpecialAppointmentUser = () => {
                 appointmentSymptom: appointmentSymptom,
                 clinic: "คลินิกเฉพาะทาง",
                 status: "ลงทะเบียนแล้ว",
+                status2: "เสร็จสิ้น",
+                subject: "เพิ่มนัดหมาย",
             };
 
             const usersCollection = collection(db, 'users');
