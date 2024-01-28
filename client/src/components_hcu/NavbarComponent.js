@@ -87,7 +87,7 @@ const NavbarComponent = (props) => {
           </Link>
         </li>
         <li className="nav-item pr-3 pb-3">
-          <Link to="#" className="nav-link" target="_parent">
+          <Link to="/adminActivityTodayComponent" className="nav-link" target="_parent">
             กิจกรรม
           </Link>
         </li>

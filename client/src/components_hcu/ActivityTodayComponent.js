@@ -91,10 +91,10 @@ const ActivityTodayComponent = (props) => {
         <div className="admin">
             <div className="admin-header">
                 <div className="admin-hearder-item">
-                    <a href="/" target="_parent" id="select">กิจกรรมวันนี้</a>
-                    <a href="/" target="_parent" >เปิดลงทะเบียน</a>
-                    <a href="/" target="_parent" >ยังไม่เปิดลงทะเบียน</a>
-                    <a href="/" target="_parent" >ทั้งหมด</a>
+                    <a href="#" target="_parent" id="select">กิจกรรมวันนี้</a>
+                    <a href="/adminActivityOpenRegisterComponent" target="_parent" >เปิดลงทะเบียน</a>
+                    <a href="/adminActivityNoOpenRegisterComponent" target="_parent" >ยังไม่เปิดลงทะเบียน</a>
+                    <a href="/adminActivityAllComponent" target="_parent" >ทั้งหมด</a>
                 </div>
                 <div className="admin-hearder-item admin-right">
                     <a href="/adminActivityAddComponent" target="_parent">เพิ่มกิจกรรม </a>

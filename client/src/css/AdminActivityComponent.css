@@ -3,6 +3,24 @@
     border-radius: 15px;
     padding: 2%;
 }
+.admin-activity{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+    gap: 1%;
+
+}
+.admin-activity-item{
+    box-sizing: border-box;
+    width: 49.5%;
+    border-radius: 15px;
+    padding: 2%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
 .admin-activity-today-hearder-flexbox{
     display: flex;
     flex-direction: row;
@@ -63,6 +81,85 @@
     height: 40px;
     margin-bottom: 10px;
     width: 30%;
-    color: #263A50 !important;
     margin-left: 70%;
+    
+    color: #263A50 !important;
+    
+    
+}
+.admin-activity-queue{
+    border-radius: 8px;
+    border: 2px solid #263A50;
+    text-align: center;
+    padding: 7px 20px;
+    font-size: 18px;
+    margin: 0px 5px;
+    width: 200px;
+}
+.admin-activity-queue.focus{
+    background-color: #263A50 !important;
+    color: #ffffff !important;
+}
+.admin-activity-form-register{
+    margin-top: 30px;
+    background-color: #eef2f7;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+.admin-activity-form-register-box{
+    box-sizing: border-box;
+    width: 50%;
+    padding: 2%;
+}
+.admin-activity-input{
+    display: inline;
+    border: 1px solid #0a0f157a;
+    height: 38px;
+    width: 200px;
+    margin-bottom: 10px;
+    color: #263A50;
+}
+
+.admin-activity-label{
+    margin-right: 20px;
+    width: 5%;
+    margin-top: -15px;
+
+}
+.admin-activity-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+.admin-activity-container-item{
+    box-sizing: border-box;
+    width: 50%;
+}
+.admin-activity-container-btn{
+    height: 40px;
+    background-color: #263A50;
+    color: #FBFFFF;
+    padding: 0px 20px;
+    border-radius: 5px;
+    border: 0px solid #12121200;
+    margin-left: 110px;
+    font-size: 18px;
+}
+.admin-activity-preview{
+    text-decoration: none;
+    color: #263A50;
+    cursor: pointer;
+}
+.icon_preview{
+    margin-top: -3px;
 }

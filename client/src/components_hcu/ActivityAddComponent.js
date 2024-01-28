@@ -4,6 +4,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "./NavbarComponent";
 import img_activity from "../picture/img-activity.png";
+import calendarFlat_icon from "../picture/calendar-flat.png";
 
 
 const ActivityAddComponent = (props) => {
@@ -83,6 +84,19 @@ const ActivityAddComponent = (props) => {
 
     }
 
+    let adminActivityQueueElements = document.querySelectorAll('.admin-activity-queue');
+
+    function handleCardClick(event) {
+        adminActivityQueueElements.forEach(btn => btn.classList.remove('focus'));
+        event.currentTarget.classList.add('focus');
+    }
+
+    adminActivityQueueElements.forEach(btn => {
+        btn.addEventListener('click', handleCardClick);
+    });
+
+
+
     return (
         
         <div style={containerStyle}>
@@ -109,6 +123,7 @@ const ActivityAddComponent = (props) => {
                                 <br></br>
                                 <div className="admin-right">
                                     <input type="file" className="form-control input-activity-img" accept="image/png, image/jpeg" />
+                                    
                                 </div>
                                 
 
@@ -126,9 +141,81 @@ const ActivityAddComponent = (props) => {
 
                             <div>
                                     <label className="admin-textBody-large colorPrimary-800">รูปแบบกิจกรรม</label>
-                                    <input type="text" className="form-control" value={activityName} onChange={inputValue("activityName")} placeholder="Activity" />
+                                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off"/>
+                                    <label class="admin-activity-queue focus" for="option1">มีระบบคิว</label>
+                                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" />
+                                    <label class="admin-activity-queue" for="option2">ไม่มีระบบคิว</label>
+                            </div>
+                            <div className="admin-activity-form-register">
+                                <div className="admin-activity-form-register-box">
+                                    <h2 className="colorPrimary-800">ช่วงเวลาลงทะเบียน</h2>
+                                    <br></br>
+                                    <div>
+                                        <label className="admin-textBody-large colorPrimary-800">ช่วงวันที่</label><br />
+                                        <input
+                                            type="date"
+                                            className="form-control admin-activity-input"
+                                            placeholder="dd/mm/yyyy"
+                                        />
+                                        <span className="admin-textBody-large"> ถึง </span>
+                                        <input
+                                            type="date"
+                                            className="form-control admin-activity-input"
+                                            placeholder="dd/mm/yyyy"
+                                            
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="admin-textBody-large colorPrimary-800">จำนวนผู้ลงทะเบียน</label><br></br>
+                                        <input type="text" className="form-control timeable" placeholder="40" />
+                                        <span className="admin-textBody-large"> คน</span>
+                                    </div>    
                                 </div>
-                            
+                                <div className="admin-activity-form-register-box">
+                                    <div className="admin-activity-container">
+                                        <h2 className="colorPrimary-800 admin-activity-container-item">ช่วงเวลาจัดกิจกรรม</h2>
+                                        <div className="admin-activity-container-item admin-right">
+                                            <button className="admin-activity-container-btn" >เพิ่มช่วงเวลา +</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <br></br>
+                                    
+                                    <div>
+                                    <div>
+                                        <label className="admin-textBody-large colorPrimary-800">วันที่</label>
+                                        <input type="date" className="form-control" placeholder="dd/mm/yyyy" />
+                                    </div>
+                                    <div>
+                                        <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label><br />
+                                        <input
+                                            type="text"
+                                            className="form-control timeable"
+                                            placeholder="00:00"
+                                            pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+                                        />
+                                        <span className="admin-textBody-large"> ถึง </span>
+                                        <input
+                                            type="text"
+                                            className="form-control timeable"
+                                            placeholder="00:00"
+                                            pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="admin-textBody-large colorPrimary-800">จำนวนผู้ลงทะเบียน</label><br></br>
+                                        <input type="text" className="form-control timeable" placeholder="40" />
+                                        <span className="admin-textBody-large"> คน</span>
+                                    </div>
+                                    </div>
+                                  
+                                </div>
+
+                            </div>
+                        </div>
+                        <div className="admin-timetable-btn">
+                            <button type="button" className="btn-secondary btn-systrm" onClick={() => window.history.back()} >กลับ</button>
+                            <input type="submit" value="เพิ่มกิจกรรม" className="btn-primary btn-systrm" target="_parent" />
                         </div>
                     </div>
                 </form>

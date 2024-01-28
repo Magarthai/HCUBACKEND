@@ -34,6 +34,9 @@ import AppointmentManagerNeedleComponent from './components_hcu/AppointmentManag
 import UserEditAppointmentPhysic from './components_user/UserEditAppointmentPhysic.js';
 import ForgetPasswordComponent from "./components_all/ForgetPasswordComponent.js"
 import ConfirmResetPassowrd from "./components_all/ResetPasswordComponent.js"
+import AdminActivityOpenRegisterComponent from './components_hcu/ActivityOpenRegisterComponent.js';
+import AdminActivityNoOpenRegisterComponent from './components_hcu/ActivityNoOpenRegisterComponent.js';
+import AdminActivityAllComponent from './components_hcu/ActivityAllComponent.js';
 
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
@@ -138,6 +141,18 @@ const router = createBrowserRouter([
   {
     path: "/adminActivityTodayComponent",
     element: <ProtectAdminRoute><AdminActivityTodayComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityOpenRegisterComponent",
+    element: <ProtectAdminRoute><AdminActivityOpenRegisterComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityNoOpenRegisterComponent",
+    element: <ProtectAdminRoute><AdminActivityNoOpenRegisterComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityAllComponent",
+    element: <ProtectAdminRoute><AdminActivityAllComponent/></ProtectAdminRoute>
   },
   {
     path: "/appointment/detail/:id",
