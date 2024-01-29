@@ -10,6 +10,7 @@ import person_icon from "../picture/person-dark.png";
 import annotaion_icon from "../picture/annotation-dark.png";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
+import Swal from "sweetalert2";
 
 const ActivityNoOpenRegisterComponent = (props) => {
     const { user, userData } = useUserAuth();
@@ -76,6 +77,64 @@ const ActivityNoOpenRegisterComponent = (props) => {
         setIsChecked(!isChecked);
     };
 
+    const DeleteActivity = async () => {
+        Swal.fire({
+            title: 'ลบกิจกรรม',
+            text: `ชื่อกิจกรรม`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#DC2626',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'custom-confirm-button',
+                cancelButton: 'custom-cancel-button',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    Swal.fire(
+                        {
+                            title: 'การลบกิจกรรมสำเร็จ!',
+                            text: `กิจกรรม....ถูกลบเรียบร้อยแล้ว!`,
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        }
+                    ).then((result) => {
+                        if (result.isConfirmed) {
+                            
+                        }
+                    });
+                } catch {
+
+                }
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                Swal.fire(
+                    {
+                        title: 'ลบกิจกรรมไม่สำเร็จ!',
+                        text: `ไม่สามารถลบกิจกรรมได้ กรุณาลองอีกครั้งในภายหลัง`,
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    }
+                )
+            }
+        })
+
+    }
+
+
     return (
         
         <div style={containerStyle}>
@@ -111,11 +170,11 @@ const ActivityNoOpenRegisterComponent = (props) => {
                                 <h2 className="colorPrimary-800">กิจกรรม</h2>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></p>
+                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
-                                <img src={edit} className="icon"/>
-                                <img src={icon_delete} className="icon"/>
+                                <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
+                                <img src={icon_delete} className="icon" onClick={DeleteActivity}/>
                             </div>
                         </div>
                         <h3 className="colorPrimary-800">รายละเอียด</h3>
@@ -131,11 +190,11 @@ const ActivityNoOpenRegisterComponent = (props) => {
                                 <h2 className="colorPrimary-800">กิจกรรม</h2>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></p>
+                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
-                                <img src={edit} className="icon"/>
-                                <img src={icon_delete} className="icon"/>
+                                <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
+                                <img src={icon_delete} className="icon" onClick={DeleteActivity}/>
                             </div>
                         </div>
                         <h3 className="colorPrimary-800">รายละเอียด</h3>
