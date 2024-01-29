@@ -166,7 +166,7 @@ export const DeleteAppointment = async (appointmentuid, uid, setAllAppointmentUs
             },
           }).then((result) => {
             if (result.isConfirmed) {
-              // ต้องการทำอะไรหลังจากการยืนยัน
+              window.location.reload();
             }
           });
         } catch (error) {

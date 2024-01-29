@@ -1,15 +1,15 @@
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-import { getUserDataFromUserId } from '../backend/getDataFromUserId'
-export const fetchTimeTableDataSpecial = async (user, selectedDate) => {
+import { getUserDataFromUserId } from './getDataFromUserId'
+export const fetchTimeTableDataNeedle = async (user, selectedDate) => {
     try {
         if (user && selectedDate && selectedDate.dayName) {
             const timeTableCollection = collection(db, 'timeTable');
             const querySnapshot = await getDocs(query(
                 timeTableCollection,
                 where('addDay', '==', selectedDate.dayName),
-                where('clinic', '==', 'คลินิกเฉพาะทาง')
+                where('clinic', '==', 'คลินิกฝั่งเข็ม')
             ));
 
             const timeTableData = querySnapshot.docs.map((doc) => ({
@@ -23,13 +23,13 @@ export const fetchTimeTableDataSpecial = async (user, selectedDate) => {
     }
 }
 
-export const fetchUserDataWithAppointmentsSpecial = async (user, selectedDate) => {
+export const fetchUserDataWithAppointmentsNeedle = async (user, selectedDate) => {
     try {
         if (user && selectedDate && selectedDate.dayName) {
             const appointmentsCollection = collection(db, 'appointment');
             const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', 
             `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-            where('clinic', '==', 'คลินิกเฉพาะทาง')));
+            where('clinic', '==', 'คลินิกฝั่งเข็ม')));
 
            
             const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -49,7 +49,7 @@ export const fetchUserDataWithAppointmentsSpecial = async (user, selectedDate) =
         console.error('Error fetching user data:', error);
     }
 }
-export const fetchAppointmentUsersDataSpecial = async (existingAppointments) => {
+export const fetchAppointmentUsersDataNeedle = async (existingAppointments) => {
     const timeTableCollection = collection(db, 'timeTable');
     console.log(existingAppointments,"test1")
     const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
@@ -87,7 +87,7 @@ export const fetchAppointmentUsersDataSpecial = async (existingAppointments) => 
     return AppointmentUsersDataArray;
 }
 
-export const availableTimeSlotsSpecial = async (filteredTimeTableData, selectedDate, db) => {
+export const availableTimeSlotsNeedle = async (filteredTimeTableData, selectedDate, db) => {
     const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
         if (item.timeablelist && Array.isArray(item.timeablelist)) {
             acc.push(
@@ -114,3 +114,65 @@ export const availableTimeSlotsSpecial = async (filteredTimeTableData, selectedD
 
     return availableTimeSlots;
 };
+
+const DeleteAppointmentNeedle = async (appointmentuid, uid) => {
+    const timetableRef = doc(db, 'appointment', appointmentuid);
+
+    Swal.fire({
+        title: 'ลบนัดหมาย',
+        text: `วันที่ 15/12/2023 เวลา 13:01 - 13:10`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#DC2626',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'custom-confirm-button',
+            cancelButton: 'custom-cancel-button',
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await deleteDoc(timetableRef);
+
+                console.log("Appointment deleted:", appointmentuid);
+
+                const userRef = doc(db, "users", uid);
+
+                await updateDoc(userRef, {
+                    "appointments": arrayRemove("appointments", appointmentuid)
+                });
+                window.location.reload();
+                Swal.fire(
+                    {
+                        title: 'การลบการนัดหมายสำเร็จ!',
+                        text: `การนัดหมายถูกลบเรียบร้อยแล้ว!`,
+                        icon: 'success',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    })
+            } catch (firebaseError) {
+                console.error('DeleteAppointment :', firebaseError);
+            }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+                {
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: `ไม่สามารถลบการนัดหมายได้ กรุณาลองอีกครั้งในภายหลัง`,
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
+                }
+            );
+        }
+    });
+};
+
+export default DeleteAppointmentNeedle;

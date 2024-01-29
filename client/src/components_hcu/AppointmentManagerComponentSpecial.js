@@ -48,7 +48,7 @@ const AppointmentManagerComponentSpecial = (props) => {
             if (timeTableData.length > 0) {
                 const filteredTimeTableData = timeTableData
                 if (filteredTimeTableData.length > 0) {
-                    const availableTimeSlots = availableTimeSlotsSpecial(filteredTimeTableData, selectedDate, db);
+                    const availableTimeSlots = await availableTimeSlotsSpecial(filteredTimeTableData, selectedDate, db);
                     console.log("availableTimeSlots",availableTimeSlots)
 
                     const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
