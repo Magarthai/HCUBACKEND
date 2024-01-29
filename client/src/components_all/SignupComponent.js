@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import logo from "../picture/LogoHCU.png";
 import "../css/Login&SignupComponent.css";
 import Swal from "sweetalert2";
-import { auth } from '../firebase/config';
+import { auth,db } from '../firebase/config';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { getFirestore, addDoc, collection } from 'firebase/firestore';
 import HCU from "../picture/HCU.jpg";
@@ -40,7 +40,7 @@ const SignupComponent = (props) => {
       !firstName || !lastName || !email || !id || !tel || !gender || !password;
   
     const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
-    const db = getFirestore();
+
   
     const validateInput = () => {
       if (!email.includes('@')) {

@@ -2,14 +2,14 @@ import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import { getUserDataFromUserId } from './getDataFromUserId'
-export const fetchTimeTableDataNeedle = async (user, selectedDate) => {
+export const fetchTimeTableDataPhysic = async (user, selectedDate) => {
     try {
         if (user && selectedDate && selectedDate.dayName) {
             const timeTableCollection = collection(db, 'timeTable');
             const querySnapshot = await getDocs(query(
                 timeTableCollection,
                 where('addDay', '==', selectedDate.dayName),
-                where('clinic', '==', 'คลินิกฝั่งเข็ม')
+                where('clinic', '==', 'คลินิกกายภาพ')
             ));
 
             const timeTableData = querySnapshot.docs.map((doc) => ({
@@ -23,14 +23,14 @@ export const fetchTimeTableDataNeedle = async (user, selectedDate) => {
     }
 }
 
-export const fetchTimeTableMainDataNeedle = async (user, selectedDates) => {
+export const fetchTimeTableMainDataPhysic = async (user, selectedDates) => {
     try {
         if (user && selectedDates && selectedDates.dayName) {
             const timeTableCollection = collection(db, 'timeTable');
                 const querySnapshot = await getDocs(query(
                     timeTableCollection,
                     where('addDay', '==', selectedDates.dayName),
-                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
+                    where('clinic', '==', 'คลินิกกายภาพ')
                 ));
                 const timeTableData = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -43,7 +43,7 @@ export const fetchTimeTableMainDataNeedle = async (user, selectedDates) => {
     }
 }
 
-export const submitFormNeedle = async (selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation) => {
+export const submitFormPhysic = async (selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation) => {
     try {
         const appointmentInfo = {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
@@ -52,7 +52,7 @@ export const submitFormNeedle = async (selectedDate, appointmentTime, appointmen
             appointmentCasue,
             appointmentSymptom,
             appointmentNotation,
-            clinic: "คลินิกฝั่งเข็ม",
+            clinic: "คลินิกกายภาพ",
             type: "talk",
             status: "ลงทะเบียนแล้ว",
         };
@@ -119,7 +119,7 @@ export const submitFormNeedle = async (selectedDate, appointmentTime, appointmen
     }
 }
 
-export const editFormNeedle = async (selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation,uid) => {
+export const editFormPhysic = async (selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation,uid) => {
     try {
         const timetableRef = doc(db, 'appointment', uid);
         console.log(uid);
@@ -131,7 +131,7 @@ export const editFormNeedle = async (selectedDate, appointmentTime, appointmentI
             appointmentCasue: appointmentCasue,
             appointmentSymptom: appointmentSymptom,
             appointmentNotation: appointmentNotation,
-            clinic: "คลินิกฝั่งเข็ม",
+            clinic: "คลินิกกายภาพ",
             status: "ลงทะเบียนแล้ว",
         };
 
@@ -157,13 +157,13 @@ export const editFormNeedle = async (selectedDate, appointmentTime, appointmentI
 }
 
 
-export const fetchUserDataWithAppointmentsNeedle = async (user, selectedDate) => {
+export const fetchUserDataWithAppointmentsPhysic = async (user, selectedDate) => {
     try {
         if (user && selectedDate && selectedDate.dayName) {
             const appointmentsCollection = collection(db, 'appointment');
             const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
                 `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                where('clinic', '==', 'คลินิกฝั่งเข็ม')));
+                where('clinic', '==', 'คลินิกกายภาพ')));
 
 
             const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
@@ -185,16 +185,16 @@ export const fetchUserDataWithAppointmentsNeedle = async (user, selectedDate) =>
 }
 
 
-export const existingAppointmentsNeedle = async (xd) => {
+export const existingAppointmentsPhysic = async (xd) => {
     const appointmentsCollection = collection(db, 'appointment');
     const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
-        where('clinic', '==', 'คลินิกฝั่งเข็ม')));
+        where('clinic', '==', 'คลินิกกายภาพ')));
 
     const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
     return existingAppointments
 }
 
-export const fetchAppointmentUsersDataNeedle = async (existingAppointments) => {
+export const fetchAppointmentUsersDataPhysic = async (existingAppointments) => {
     const timeTableCollection = collection(db, 'timeTable');
     console.log(existingAppointments, "test1")
     const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
@@ -232,7 +232,7 @@ export const fetchAppointmentUsersDataNeedle = async (existingAppointments) => {
     return AppointmentUsersDataArray;
 }
 
-export const availableTimeSlotsNeedle = async (filteredTimeTableData, selectedDate, db) => {
+export const availableTimeSlotsPhysic = async (filteredTimeTableData, selectedDate, db) => {
     const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
         if (item.timeablelist && Array.isArray(item.timeablelist)) {
             acc.push(
@@ -260,7 +260,7 @@ export const availableTimeSlotsNeedle = async (filteredTimeTableData, selectedDa
     return availableTimeSlots;
 };
 
-export const submitFormAddContinue2Needle = async (appointmentId, time, state, appointmentCasue, appointmentSymptom, appointmentNotation, resetForm) => {
+export const submitFormAddContinue2Physic = async (appointmentId, time, state, appointmentCasue, appointmentSymptom, appointmentNotation, resetForm) => {
     try {
         const usersCollection = collection(db, 'users'); // Assuming db is your Firestore instance
         const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
@@ -283,7 +283,7 @@ export const submitFormAddContinue2Needle = async (appointmentId, time, state, a
                     appointmentCasue: appointmentCasue,
                     appointmentSymptom: appointmentSymptom,
                     appointmentNotation: appointmentNotation,
-                    clinic: "คลินิกฝั่งเข็ม",
+                    clinic: "คลินิกกายภาพ",
                     status: "ลงทะเบียนแล้ว",
                     type: "main",
                 };
@@ -345,7 +345,7 @@ export const submitFormAddContinue2Needle = async (appointmentId, time, state, a
     }
 };
 
-const DeleteAppointmentNeedle = async (appointmentuid, uid) => {
+const DeleteAppointmentPhysic = async (appointmentuid, uid) => {
     const timetableRef = doc(db, 'appointment', appointmentuid);
 
     Swal.fire({
@@ -405,7 +405,7 @@ const DeleteAppointmentNeedle = async (appointmentuid, uid) => {
     });
 };
 
-export default DeleteAppointmentNeedle;
+export default DeleteAppointmentPhysic;
 
 
 

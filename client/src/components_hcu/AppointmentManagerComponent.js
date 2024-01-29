@@ -412,24 +412,28 @@ const AppointmentManagerComponent = (props) => {
         if (dateParts.length === 3) {
             setAllAppointmentUsersData([]);
             const [year, month, day] = dateParts;
+    
             const formattedMonth = parseInt(month, 10).toString();
-            const formattedDate = `${day}/${formattedMonth}/${year}`;
-
-            const dayName = getDayName(new Date(isoDate)).toLowerCase();;
+            const formattedDay = parseInt(day, 10).toString();
+    
+            const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
+    
+            const dayName = getDayName(new Date(isoDate)).toLowerCase();
             const formattedSelectedDate = {
-                day: day,
+                day: formattedDay,
                 month: formattedMonth,
                 year: year,
                 dayName: dayName,
             };
-
+    
             setAllAppointmentUsersData([]);
             setSelectedDate(formattedSelectedDate);
             setState({
                 ...state,
-                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentDate: `${formattedDay}/${formattedMonth}/${year}`,
                 appointmentTime: "",
             });
+    
             return formattedDate;
         }
         return isoDate;
@@ -715,6 +719,7 @@ const AppointmentManagerComponent = (props) => {
                                         onChange={(e) => {
                                             inputValue("appointmentDate")(e);
                                             const formattedDate = formatDateForDisplay(e.target.value);
+                                            console.log("formattedDate",formattedDate)
                                         }}
                                     />
 
