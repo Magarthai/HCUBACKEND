@@ -109,7 +109,7 @@ const ActivityAllComponent = (props) => {
                                 <h2 className="colorPrimary-800">กิจกรรม</h2>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></p>
+                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
                                 <a className="admin-activity-preview">Preview <img src={preview} className="icon icon_preview"/></a>
@@ -126,7 +126,7 @@ const ActivityAllComponent = (props) => {
                                 <h2 className="colorPrimary-800">กิจกรรม</h2>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
                                 <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></p>
+                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
                             <a className="admin-activity-preview">Preview <img src={preview} className="icon icon_preview"/></a>

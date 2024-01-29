@@ -7,7 +7,7 @@ import img_activity from "../picture/img-activity.png";
 import calendarFlat_icon from "../picture/calendar-flat.png";
 
 
-const ActivityAddComponent = (props) => {
+const ActivityEditComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -275,4 +275,4 @@ const ActivityAddComponent = (props) => {
     );
 }
 
-export default ActivityAddComponent;
+export default ActivityEditComponent;

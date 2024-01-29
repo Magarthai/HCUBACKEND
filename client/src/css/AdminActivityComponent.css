@@ -163,3 +163,16 @@
 .icon_preview{
     margin-top: -3px;
 }
+.admin-activity-remove-btn{
+    height: 40px;
+    background-color: #DC2626;
+    color: #FBFFFF;
+    padding: 0px 30px;
+    border-radius: 5px;
+    border: 0px solid #12121200;
+    margin-left: 110px;
+    font-size: 18px;
+}
+#th_id_acticity, #th_name_acticity, #th_tel_acticity, #th_email_acticity{
+    width: 25%;
+}

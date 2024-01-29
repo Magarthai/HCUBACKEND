@@ -37,6 +37,8 @@ import ConfirmResetPassowrd from "./components_all/ResetPasswordComponent.js"
 import AdminActivityOpenRegisterComponent from './components_hcu/ActivityOpenRegisterComponent.js';
 import AdminActivityNoOpenRegisterComponent from './components_hcu/ActivityNoOpenRegisterComponent.js';
 import AdminActivityAllComponent from './components_hcu/ActivityAllComponent.js';
+import AdminActivityEditComponent from './components_hcu/ActivityEditComponent.js';
+import AdminActivityListOfPeopleComponent from './components_hcu/ActivityListOfPeopleComponent.js';
 
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
@@ -153,6 +155,14 @@ const router = createBrowserRouter([
   {
     path: "/adminActivityAllComponent",
     element: <ProtectAdminRoute><AdminActivityAllComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityEditComponent",
+    element: <ProtectAdminRoute><AdminActivityEditComponent/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityListOfPeopleComponent",
+    element: <ProtectAdminRoute><AdminActivityListOfPeopleComponent/></ProtectAdminRoute>
   },
   {
     path: "/appointment/detail/:id",

@@ -108,7 +108,7 @@ const ActivityTodayComponent = (props) => {
                             <h2 className="colorPrimary-800">กิจกรรม</h2>
                             <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
                             <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                            <p className="admin-textBody-big colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></p>
+                            <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                         </div>
                         <div className="admin-activity-today-hearder-box admin-right">
                             <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
@@ -122,7 +122,7 @@ const ActivityTodayComponent = (props) => {
                     <h3 className="colorPrimary-800">รายละเอียด</h3>
                     <p className="admin-textBody-huge2 colorPrimary-800">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie a iaculis at erat pellentesque adipiscing commodo. Diam quis enim lobortis scelerisque. Orci dapibus ultrices in iaculis nunc sed augue lacus. Velit euismod in pellentesque massa placerat. At augue eget arcu dictum varius duis at. Nisl rhoncus mattis rhoncus urna neque viverra justo nec. Quis ipsum suspendisse ultrices gravida. Sed felis eget velit aliquet sagittis. Leo integer malesuada nunc vel risus commodo. Lacus sed viverra tellus in hac habitasse platea dictumst. Eros donec ac odio tempor orci dapibus. Lacus vel facilisis volutpat est velit egestas dui id. Odio tempor orci dapibus ultrices. Fermentum leo vel orci porta non pulvinar. Id diam vel quam elementum pulvinar etiam. Libero id faucibus nisl tincidunt eget nullam non nisi. Ornare suspendisse sed nisi lacus. Etiam erat velit scelerisque in dictum non consectetur a erat. Ac auctor augue mauris augue.</p>
                     <div className="admin-right">
-                        <a href="/" target="_parent" className="btn-activity ">จัดการคิว</a>
+                        <a href="/adminActivityListOfPeopleComponent" target="_parent" className="btn-activity ">จัดการคิว</a>
                     </div>
                     
                 </div>
