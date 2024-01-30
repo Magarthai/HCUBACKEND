@@ -11,8 +11,9 @@ import "../css/AdminAppointmentComponent.css";
 import { PulseLoader } from "react-spinners";
 import ClockComponent from "../utils/ClockComponent";
 import { GetTimeOptionsFilterdFromTimetable, GetTimeOptionsFromTimetable } from "../backend/timeOptions";
-import { availableTimeSlotsPhysic, editFormPhysic, existingAppointmentsPhysic, fetchAppointmentUsersDataPhysic, fetchTimeTableDataPhysic, fetchTimeTableMainDataPhysic, fetchUserDataWithAppointmentsPhysic, submitForm, submitFormAddContinue2Physic, submitFormPhysic } from "../backend/backendPhysic";
+import { availableTimeSlotsPhysic, editFormPhysic, fetchAppointmentUsersDataPhysic, fetchTimeTableDataPhysic, fetchTimeTableMainDataPhysic, fetchUserDataWithAppointmentsPhysic, submitForm, submitFormAddContinue2Physic, submitFormPhysic } from "../backend/backendPhysic";
 import DeleteAppointmentPhysic from "../backend/backendPhysic";
+import Swal from "sweetalert2";
 const AppointmentManagerPhysicComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
@@ -35,6 +36,7 @@ const AppointmentManagerPhysicComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
+
     };
 
     const [state, setState] = useState({
@@ -116,37 +118,36 @@ const AppointmentManagerPhysicComponent = (props) => {
         }
         return isoDate;
     }
-const formatDatesForDisplay = (isoDate) => {
-    const dateParts = isoDate.split("-");
-    if (dateParts.length === 3) {
-        setAllAppointmentUsersData([]);
-        const [year, month, day] = dateParts;
-        const formattedMonth = parseInt(month, 10).toString();
-        const formattedDay = parseInt(day, 10).toString();
-        const formattedYear = parseInt(year, 10).toString();
+    const formatDatesForDisplay = (isoDate) => {
+        const dateParts = isoDate.split("-");
+        if (dateParts.length === 3) {
+            setAllAppointmentUsersData([]);
+            const [year, month, day] = dateParts;
+            const formattedMonth = parseInt(month, 10).toString();
+            const formattedDay = parseInt(day, 10).toString();
+            const formattedYear = parseInt(year, 10).toString();
 
-        const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
+            const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
 
-        const dayName = getDayName(new Date(isoDate)).toLowerCase();
-        const formattedSelectedDate = {
-            day: parseInt(formattedDay, 10),
-            month: parseInt(formattedMonth, 10),
-            year: parseInt(formattedYear, 10),
-            dayName: dayName,
-        };
-
-        setAllAppointmentUsersData([]);
-        setSelectedDates(formattedSelectedDate);
-        setState({
-            ...state,
-            appointmentDates: `${formattedDay}/${formattedMonth}/${formattedYear}`,
-            appointmentTimes: "",
-        });
-        console.log(formattedSelectedDate, "formattedDate");
-        return formattedDate;
-    }
-    return isoDate;
-};
+            const dayName = getDayName(new Date(isoDate)).toLowerCase();
+            const formattedSelectedDate = {
+                day: parseInt(formattedDay, 10),
+                month: parseInt(formattedMonth, 10),
+                year: parseInt(formattedYear, 10),
+                dayName: dayName,
+            };
+            setAllAppointmentUsersData([]);
+            setSelectedDates(formattedSelectedDate);
+            setState({
+                ...state,
+                appointmentDates: `${formattedDay}/${formattedMonth}/${formattedYear}`,
+                appointmentTimes: "",
+            });
+            console.log(formattedSelectedDate, "formattedDate");
+            return formattedDate;
+        }
+        return isoDate;
+    };
     const fetchMainTimeTableData = async () => {
         try {
             if (user && selectedDates && selectedDates.dayName) {
@@ -191,19 +192,6 @@ const formatDatesForDisplay = (isoDate) => {
                 if (timeTableData.length > 0) {
                     const filteredTimeTableData = timeTableData
                     if (filteredTimeTableData.length > 0) {
-                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
-                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                acc.push(
-                                    ...item.timeablelist.map((timeSlot, index) => ({
-                                        ...timeSlot,
-                                        timeTableId: item.id,
-                                        timeSlotIndex: index
-                                    }))
-                                );
-                            }
-                            return acc;
-                        }, []);
-
                         const availableTimeSlots = await availableTimeSlotsPhysic(filteredTimeTableData, selectedDate, db);
                         console.log("availableTimeSlots", availableTimeSlots)
                         const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
@@ -459,20 +447,7 @@ const formatDatesForDisplay = (isoDate) => {
             x.style.display = "none";
         }
     };
-    const formatDmy = (dateString) => {
-        const [day, month, year] = dateString.split('/').map(Number);
-        const formattedMonth = month < 10 ? `${month}` : `${month}`;
-        const dateObject = new Date(year, month - 1, day);
-        const dayName = getDayName(new Date(dateObject)).toLowerCase();;
-        const formattedSelectedDate = {
-            day: day,
-            month: formattedMonth,
-            year: year,
-            dayName: dayName,
-        };
 
-        return formattedSelectedDate;
-    };
     const submitFormAddContinue = async () => {
         let x = document.getElementById("admin-add-appointment-connected2");
         let y = document.getElementById("admin-add-appointment-connected");
@@ -501,6 +476,21 @@ const formatDatesForDisplay = (isoDate) => {
                 console.log(selectedCount)
 
             };
+            if (Number(time) > 10) {
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด',
+                    text: `จํากัดการสร้างแค่ 10 ครั้งเท่านั่น!`,
+                    icon: 'warning',
+                    confirmButtonText: 'ย้อนกลับ',
+                    confirmButtonColor: '#DC2626',
+                    reverseButtons: true,
+                    customClass: {
+                      confirmButton: 'custom-confirm-button',
+                      cancelButton: 'custom-cancel-button',
+                    },
+                  }) 
+                  x.style.display = "none";
+            } else {
             for (let i = 1; i <= time; i++) {
                 const instanceDate = new Date(formattedAppointmentDate);
                 instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
@@ -662,8 +652,9 @@ const formatDatesForDisplay = (isoDate) => {
                 }
             }
 
-        }
+        }}
     };
+
     function cleanUpOldPopups() {
         const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
 
@@ -692,7 +683,6 @@ const formatDatesForDisplay = (isoDate) => {
     e.preventDefault();
     submitFormAddContinue2Physic(appointmentId, time, state, appointmentCasue, appointmentSymptom, appointmentNotation, resetForm);
 };
-
 
     const resetForm = () => {
         window.location.reload();

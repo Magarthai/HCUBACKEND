@@ -13,6 +13,7 @@ import ClockComponent from "../utils/ClockComponent";
 import { GetTimeOptionsFilterdFromTimetable, GetTimeOptionsFromTimetable } from "../backend/timeOptions";
 import { availableTimeSlotsNeedle, editFormNeedle, existingAppointmentsNeedle, fetchAppointmentUsersDataNeedle, fetchTimeTableDataNeedle, fetchTimeTableMainDataNeedle, fetchUserDataWithAppointmentsNeedle, submitForm, submitFormAddContinue2Needle, submitFormNeedle } from "../backend/backendNeedle";
 import DeleteAppointmentNeedle from "../backend/backendNeedle";
+import Swal from "sweetalert2";
 const AppointmentManagerNeedleComponent = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
@@ -521,6 +522,21 @@ const formatDatesForDisplay = (isoDate) => {
                 console.log(selectedCount)
 
             };
+            if (Number(time) > 10) {
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด',
+                    text: `จํากัดการสร้างแค่ 10 ครั้งเท่านั่น!`,
+                    icon: 'warning',
+                    confirmButtonText: 'ย้อนกลับ',
+                    confirmButtonColor: '#DC2626',
+                    reverseButtons: true,
+                    customClass: {
+                      confirmButton: 'custom-confirm-button',
+                      cancelButton: 'custom-cancel-button',
+                    },
+                  }) 
+                  x.style.display = "none";
+            } else {
             for (let i = 1; i <= time; i++) {
                 const instanceDate = new Date(formattedAppointmentDate);
                 instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
@@ -682,9 +698,7 @@ const formatDatesForDisplay = (isoDate) => {
                 }
             }
 
-        } else if (time > 10) {
-            
-        }
+        }}
     };
     function cleanUpOldPopups() {
         const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
