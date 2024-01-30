@@ -579,7 +579,7 @@ const formatDatesForDisplay = (isoDate) => {
 
                         const appointmentsCollection = collection(db, 'appointment');
                         const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
-                            where('clinic', '==', 'คลินิกกายภาพ')));
+                            where('clinic', '==', 'คลินิกฝั่งเข็ม')));
                         const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
                         const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDate, db);
                         console.log("availableTimeSlots", availableTimeSlots)
@@ -682,6 +682,8 @@ const formatDatesForDisplay = (isoDate) => {
                 }
             }
 
+        } else if (time > 10) {
+            
         }
     };
     function cleanUpOldPopups() {

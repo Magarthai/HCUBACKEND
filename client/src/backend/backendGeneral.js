@@ -25,6 +25,49 @@ export const fetchTimeTableDataFromBackend = async (user, selectedDate) => {
     }
 };
 
+export const getTimeablelist = (duration,numberAppointment,start,end) => {
+    const timeablelist = [];
+        const interval = Math.floor(duration / numberAppointment);
+
+        for (let i = 0; i < numberAppointment; i++) {
+            const slotStart = new Date(start.getTime() + i * interval * 60000);
+            const slotEnd = new Date(slotStart.getTime() + interval * 60000);
+
+            if (slotEnd.getTime() > end.getTime()) {
+                timeablelist.push({
+                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+                });
+                break;
+            }
+
+            timeablelist.push({
+                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+            });
+        }
+        return timeablelist
+};
+
+export const fetchTimeTableDataGeneral = async () => {
+  try {
+      const timeTableCollection = collection(db, 'timeTable');
+      const timeTableSnapshot = await getDocs(timeTableCollection);
+
+      const timeTableData = timeTableSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+      }));
+
+          return timeTableData;
+      
+  } catch (error) {
+      console.error('Error fetching time table data:', error);
+      throw error;
+  }
+};
+
+
 export const fetchUserDataWithAppointments = async (user, selectedDate, setAllAppointmentUsersData) => {
   try {
     if (user && selectedDate && selectedDate.dayName) {

@@ -12,8 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import "../css/Component.css";
 import { PulseLoader } from "react-spinners";
+import { fetchTimeTableDataGeneral, getTimeablelist } from "../backend/backendGeneral";
+import ClockComponent from "../utils/ClockComponent";
 const TimetableGeneralComponent = (props) => {
-    const [showTime, setShowTime] = useState(getShowTime);
     const animationFrameRef = useRef();
     const { user, userData } = useUserAuth();
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -46,8 +47,6 @@ const TimetableGeneralComponent = (props) => {
         }
     };
 
-
-
     const [selectedCount, setSelectedCount] = useState(1);
 
     const handleSelectChange = () => {
@@ -58,26 +57,14 @@ const TimetableGeneralComponent = (props) => {
     const fetchTimeTableData = async () => {
         try {
             if (user) {
-                const timeTableCollection = collection(db, 'timeTable');
-                const timeTableSnapshot = await getDocs(timeTableCollection);
-
-                const timeTableData = timeTableSnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-
-
-
+                const timeTableData = await fetchTimeTableDataGeneral();
                 if (timeTableData) {
                     setTimetable(timeTableData);
                     const initialIsChecked = timeTableData.reduce((acc, timetableItem) => {
                         acc[timetableItem.id] = timetableItem.status === "Enabled";
                         return acc;
                     }, {});
-
                     setIsChecked(initialIsChecked);
-
                     console.log(timeTableData);
                 } else {
                     console.log("time table not found");
@@ -87,6 +74,7 @@ const TimetableGeneralComponent = (props) => {
             console.error('Error fetching user data:', error);
         }
     };
+
     const submitForm = async (e) => {
         e.preventDefault();
         console.log(timetableId)
@@ -98,32 +86,7 @@ const TimetableGeneralComponent = (props) => {
             return;
         }
 
-        const timeablelist = [];
-
-        const interval = Math.floor(duration / numberAppointment);
-
-        for (let i = 0; i < numberAppointment; i++) {
-            const slotStart = new Date(start.getTime() + i * interval * 60000);
-            const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-
-            if (slotEnd.getTime() > end.getTime()) {
-                timeablelist.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
-                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-                });
-                break;
-            }
-
-            timeablelist.push({
-                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-            });
-        }
-
-
-
-
-
+        const timeablelist = getTimeablelist(duration,numberAppointment,start,end);
         try {
             const additionalTImeTable = {
                 addDay: addDay,
@@ -138,7 +101,6 @@ const TimetableGeneralComponent = (props) => {
             };
 
             await addDoc(collection(db, 'timeTable'), additionalTImeTable);
-
             Swal.fire({
                 icon: "success",
                 title: "เพิ่มช่วงเวลาสำเร็จ!",
@@ -170,28 +132,7 @@ const TimetableGeneralComponent = (props) => {
             return;
         }
 
-        const timeablelist = [];
-
-        const interval = Math.floor(duration / numberAppointment);
-
-        for (let i = 0; i < numberAppointment; i++) {
-            const slotStart = new Date(start.getTime() + i * interval * 60000);
-            const slotEnd = new Date(slotStart.getTime() + interval * 60000);
-
-            if (slotEnd.getTime() > end.getTime()) {
-                timeablelist.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    end: end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-                break;
-            }
-
-            timeablelist.push({
-                start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                end: slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-        }
-
+        const timeablelist = getTimeablelist(duration,numberAppointment,start,end);
         try {
             const timetableRef = doc(db, 'timeTable', timetableId);
             console.log(timetableId);  // Corrected from console.log(timetable.id)
@@ -229,22 +170,11 @@ const TimetableGeneralComponent = (props) => {
         }
     };
 
-
-
-
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         document.title = 'Health Care Unit';
         fetchTimeTableData();
-
-        const updateShowTime = () => {
-            const newTime = getShowTime();
-            if (newTime !== showTime) {
-                setShowTime(newTime);
-            }
-            animationFrameRef.current = requestAnimationFrame(updateShowTime);
-        };
 
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
@@ -253,7 +183,6 @@ const TimetableGeneralComponent = (props) => {
             setZoomLevel(newZoomLevel);
         };
 
-        updateShowTime();
         responsivescreen();
 
         window.addEventListener("resize", responsivescreen);
@@ -271,23 +200,6 @@ const TimetableGeneralComponent = (props) => {
     const containerStyle = {
         zoom: zoomLevel,
     };
-
-
-
-
-
-
-    function getShowTime() {
-        const today = new Date();
-        const hours = today.getHours();
-        const minutes = today.getMinutes();
-        const seconds = today.getSeconds();
-        return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
-    }
-
-    function formatNumber(num) {
-        return num < 10 ? "0" + num : num.toString();
-    }
     const locale = 'en'
     const today = new Date();
     const month = today.getMonth() + 1;
@@ -301,8 +213,6 @@ const TimetableGeneralComponent = (props) => {
     const handleToggle = async (id) => {
         setIsChecked(prevState => {
             const updatedStatus = !prevState[id];
-
-            // อัพเดต status จาก toggle
             const docRef = doc(db, 'timeTable', id);
             updateDoc(docRef, { status: updatedStatus ? "Enabled" : "Disabled" }).catch(error => {
                 console.error('Error updating timetable status:', error);
@@ -327,8 +237,6 @@ const TimetableGeneralComponent = (props) => {
             setsaveEditId("")
         } else {
             x.style.display = "none";
-
-
         }
     }
 
@@ -339,51 +247,31 @@ const TimetableGeneralComponent = (props) => {
         let y = document.getElementById("Addtimetable");
         let z = document.getElementById("Detailtimetable");
         console.log(timetable)
+        setState((prevState) => ({
+            ...prevState,
+            addDay: timetable.addDay,
+            timeStart: timetable.timeStart,
+            timeEnd: timetable.timeEnd,
+            timeAppointmentStart: timetable.timeAppointmentStart,
+            timeAppointmentEnd: timetable.timeAppointmentEnd,
+            numberAppointment: timetable.numberAppointment,
+            clinic: "คลินิก",
+            timeablelist: timetable.timeablelist,
+            status: "Enabled",
+            timetableId: timetable.id,
+        }));
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
             setsaveDetailId("")
             setsaveEditId(timetable.id)
-
-            setState((prevState) => ({
-                ...prevState,
-                addDay: timetable.addDay,
-                timeStart: timetable.timeStart,
-                timeEnd: timetable.timeEnd,
-                timeAppointmentStart: timetable.timeAppointmentStart,
-                timeAppointmentEnd: timetable.timeAppointmentEnd,
-                numberAppointment: timetable.numberAppointment,
-                clinic: "คลินิก",
-                timeablelist: timetable.timeablelist,
-                status: "Enabled",
-                timetableId: timetable.id,
-            }));
-
-            //   console.log(timetable.id)
-            //   window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
         } else {
             if (saveEditId === timetable.id) {
                 x.style.display = "none";
                 setsaveEditId("")
             } else {
                 setsaveEditId(timetable.id)
-
-                setState((prevState) => ({
-                    ...prevState,
-                    addDay: timetable.addDay,
-                    timeStart: timetable.timeStart,
-                    timeEnd: timetable.timeEnd,
-                    timeAppointmentStart: timetable.timeAppointmentStart,
-                    timeAppointmentEnd: timetable.timeAppointmentEnd,
-                    numberAppointment: timetable.numberAppointment,
-                    clinic: "คลินิก",
-                    timeablelist: timetable.timeablelist,
-                    status: "Enabled",
-                    timetableId: timetable.id,
-                }));
-
-                // console.log(timetable.id)
             }
 
         }
@@ -545,8 +433,6 @@ const TimetableGeneralComponent = (props) => {
         card.addEventListener('click', handleCardClick);
     });
 
-
-
     return (
         <div style={containerStyle}>
             <NavbarComponent />
@@ -557,7 +443,7 @@ const TimetableGeneralComponent = (props) => {
                 </div>
                 <div className="dateTime">
                     <p className="admin-textBody-large">Date : {currentDate}</p>
-                    <p className="admin-textBody-large">Time : {showTime}</p>
+                    <p className="admin-textBody-large admin-time">Time : <ClockComponent/></p>
                 </div>
             </div>
             
@@ -736,7 +622,6 @@ const TimetableGeneralComponent = (props) => {
                                 <button type="button" onClick={openAddtimetable} className="colorPrimary-800" id="backTopic">❮  เพิ่มช่วงเวลาเข้าทำการแพทย์</button>
                             </div>
                             <h2 className=" colorPrimary-800">คลินิกทั่วไป</h2>
-                            {/* <p className="admin-textBody-big"> : คลินิกทั่วไป</p> */}
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">วัน</label>
                                 <select
@@ -896,17 +781,9 @@ const TimetableGeneralComponent = (props) => {
                         <p id="Detailqueue" className="admin-textBody-big"></p>
                         <p id="Detail" className="admin-textBody-big"></p>
 
-
                     </div>
-
                 </div>
-
-
-
-
             </div>
-
-
       )}
         </div>
 
