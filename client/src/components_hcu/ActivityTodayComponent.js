@@ -8,48 +8,69 @@ import calendarFlat_icon from "../picture/calendar-flat.png";
 import clockFlat_icon from "../picture/clock-flat.png";
 import person_icon from "../picture/person-dark.png";
 import annotaion_icon from "../picture/annotation-dark.png";
-
+import { fetchTodayActivity } from "../backend/activity/getTodayActivity";
+import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
 const ActivityTodayComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
     const [isChecked, setIsChecked] = useState({});
-  
-    
+    const [isCheckedActivity, setIsCheckedActivity] = useState(false);
+    const [activities, setActivities] = useState([])
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        console.log(userData)
+        console.log(userData);
+
         const responsivescreen = () => {
-        const innerWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-        setZoomLevel(newZoomLevel);
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
+
+        if (!isCheckedActivity) {
+            fetchTodayActivityAndSetState();
+        }
 
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
+
         const updateShowTime = () => {
-        const newTime = getShowTime();
-        if (newTime !== showTime) {
-            setShowTime(newTime);
-        }
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
-  
+
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
-    
+
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    
-    }, [user]); 
+    }, [user, isCheckedActivity]);
     const containerStyle = {
         zoom: zoomLevel,
     };
+    useEffect(() => {
+        // This useEffect will run whenever 'activities' state changes
+        console.log("todayActivity", activities);
+    }, [activities]);
 
+    const fetchTodayActivityAndSetState = async () => {
+        if (!isCheckedActivity) {
+            try {
+                const todayActivity = await fetchTodayActivity(user, checkCurrentDate);
+                setActivities(todayActivity);
+                setIsCheckedActivity(true);
+            } catch (error) {
+                console.error('Error fetching today activity:', error);
+            }
+        }
+    };
     function getShowTime() {
         const today = new Date();
         const hours = today.getHours();
@@ -70,69 +91,118 @@ const ActivityTodayComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
+    function getCurrentDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+    const checkCurrentDate = getCurrentDate();
+
+    const handleToggle = async (id) => {
+        setIsChecked(prevState => {
+            const updatedStatus = !prevState[id];
+            const docRef = doc(db, 'activities', id);
+            updateDoc(docRef, { queenStatus: updatedStatus ? "open" : "close" }).catch(error => {
+                console.error('Error updating activity status:', error);
+            });
+
+            return { ...prevState, [id]: updatedStatus };
+        });
     };
 
+
+
     return (
-        
+
         <div style={containerStyle}>
-        <NavbarComponent />
-        <div className="admin-topicBox colorPrimary-800">
-            <div></div>
-            <div>
-                <h1 className="center">ระบบการจัดการกิจกรรม</h1>
-            </div>
-            <div className="dateTime">
-                <p className="admin-textBody-large">Date : {currentDate}</p>
-                <p className="admin-textBody-large">Time : {showTime}</p>
-            </div>
-        </div>
-        <div className="admin">
-            <div className="admin-header">
-                <div className="admin-hearder-item">
-                    <a href="#" target="_parent" id="select">กิจกรรมวันนี้</a>
-                    <a href="/adminActivityOpenRegisterComponent" target="_parent" >เปิดลงทะเบียน</a>
-                    <a href="/adminActivityNoOpenRegisterComponent" target="_parent" >ยังไม่เปิดลงทะเบียน</a>
-                    <a href="/adminActivityAllComponent" target="_parent" >ทั้งหมด</a>
+            <NavbarComponent />
+            <div className="admin-topicBox colorPrimary-800">
+                <div></div>
+                <div>
+                    <h1 className="center">ระบบการจัดการกิจกรรม</h1>
                 </div>
-                <div className="admin-hearder-item admin-right">
-                    <a href="/adminActivityAddComponent" target="_parent">เพิ่มกิจกรรม </a>
+                <div className="dateTime">
+                    <p className="admin-textBody-large">Date : {currentDate}</p>
+                    <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            
-            <div className="admin-body">
-                <div className="admin-activity-today">
-                    <div className="admin-activity-today-hearder-flexbox">
-                        <div className="admin-activity-today-hearder-box">
-                            <h2 className="colorPrimary-800">กิจกรรม</h2>
-                            <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
-                            <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                            <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
-                        </div>
-                        <div className="admin-activity-today-hearder-box admin-right">
-                            <label className={`toggle-switch ${isChecked ? 'checked' : ''}`}>
-                                <input type="checkbox"  
-                                checked={isChecked}
-                                onChange={handleToggle}/>
-                                <div className="slider"></div>
-                            </label>
-                        </div>
+            <div className="admin">
+                <div className="admin-header">
+                    <div className="admin-hearder-item">
+                        <a href="#" target="_parent" id="select">กิจกรรมวันนี้</a>
+                        <a href="/adminActivityOpenRegisterComponent" target="_parent" >เปิดลงทะเบียน</a>
+                        <a href="/adminActivityNoOpenRegisterComponent" target="_parent" >ยังไม่เปิดลงทะเบียน</a>
+                        <a href="/adminActivityAllComponent" target="_parent" >ทั้งหมด</a>
                     </div>
-                    <h3 className="colorPrimary-800">รายละเอียด</h3>
-                    <p className="admin-textBody-huge2 colorPrimary-800">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie a iaculis at erat pellentesque adipiscing commodo. Diam quis enim lobortis scelerisque. Orci dapibus ultrices in iaculis nunc sed augue lacus. Velit euismod in pellentesque massa placerat. At augue eget arcu dictum varius duis at. Nisl rhoncus mattis rhoncus urna neque viverra justo nec. Quis ipsum suspendisse ultrices gravida. Sed felis eget velit aliquet sagittis. Leo integer malesuada nunc vel risus commodo. Lacus sed viverra tellus in hac habitasse platea dictumst. Eros donec ac odio tempor orci dapibus. Lacus vel facilisis volutpat est velit egestas dui id. Odio tempor orci dapibus ultrices. Fermentum leo vel orci porta non pulvinar. Id diam vel quam elementum pulvinar etiam. Libero id faucibus nisl tincidunt eget nullam non nisi. Ornare suspendisse sed nisi lacus. Etiam erat velit scelerisque in dictum non consectetur a erat. Ac auctor augue mauris augue.</p>
-                    <div className="admin-right">
-                        <a href="/adminActivityListOfPeopleComponent" target="_parent" className="btn-activity ">จัดการคิว</a>
+                    <div className="admin-hearder-item admin-right">
+                        <a href="/adminActivityAddComponent" target="_parent">เพิ่มกิจกรรม </a>
                     </div>
-                    
                 </div>
-                
-                
+
+                <div className="admin-body">
+                    {activities && activities.length > 0 ? (
+                        activities.map((activities, index) => (
+                            <div className="admin-activity-today" key={index}>
+                                <div className="admin-activity-today-hearder-flexbox">
+                                    <div className="admin-activity-today-hearder-box">
+                                        <h2 className="colorPrimary-800">กิจกรรม : {activities.activityName}</h2>
+                                        <p className="admin-textBody-big colorPrimary-800">
+                                            <img src={calendarFlat_icon} className="icon-activity" /> : {checkCurrentDate}
+                                        </p>
+                                        {activities.timeSlots
+                                            .filter((timeSlot) => timeSlot.date === checkCurrentDate)
+                                            .map((timeSlot, slotIndex) => (
+                                                <div key={slotIndex}>
+                                                    <p className="admin-textBody-big colorPrimary-800">
+                                                        <img src={clockFlat_icon} className="icon-activity" /> : {timeSlot.startTime} - {timeSlot.endTime}
+                                                    </p>
+                                                </div>
+                                            ))}
+
+
+                                        <p className="admin-textBody-big colorPrimary-800">
+                                            <a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800">
+                                                <img src={person_icon} className="icon-activity" /> : {activities.timeSlots[0].registeredCount} คน <img src={annotaion_icon} className="icon-activity" />
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div className="admin-activity-today-hearder-box admin-right">
+                                    <label className={`toggle-switch ${isChecked[activities.id] ? 'checked' : ''}`}>
+                                        <input
+                                            type="checkbox"
+                                            checked={isChecked[activities.id]}
+                                            onChange={() => handleToggle(activities.id)}
+                                        />
+                                        <div className="slider"></div>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <h3 className="colorPrimary-800">รายละเอียด</h3>
+                                <p className="admin-textBody-huge2 colorPrimary-800">
+                                    {activities.activityDetail}
+                                </p>
+                                <div className="admin-right">
+                                    <a href="/adminActivityListOfPeopleComponent" target="_parent" className="btn-activity">จัดการคิว</a>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            {/* Content for the case when activities are not available */}
+                        </div>
+                    )}
+
+
+                </div>
+
             </div>
-           
+
         </div>
-        
-    </div>
 
     );
 }

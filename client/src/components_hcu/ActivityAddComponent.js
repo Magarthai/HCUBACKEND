@@ -103,7 +103,16 @@ const ActivityAddComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
+    function getCurrentDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
 
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+    const checkCurrentDate = getCurrentDate();
 const submitForm = async (e) => {
   e.preventDefault();
   try {
@@ -120,7 +129,9 @@ const submitForm = async (e) => {
       await uploadBytes(storageRef, file);
 
       const downloadURL = await getDownloadURL(storageRef);
-      const activityInfo = {
+      const hasTimeSlotForCurrentDate = timeSlots.some(slot => slot.date === checkCurrentDate);
+
+        const activityInfo = {
         activityName: activityName,
         activityDetail: activityDetail,
         activityType: activityType,
@@ -129,13 +140,14 @@ const submitForm = async (e) => {
         timeSlots: timeSlots,
         totalRegisteredCount: totalRegisteredCount,
         imageURL: downloadURL,
-      };
+        queenStatus: hasTimeSlotForCurrentDate ? "open" : "close",
+        };
 
       const newActivityRef = await addDoc(activitiesCollection, activityInfo);
 
       Swal.fire({
         title: 'ขอแก้ไขนัดหมาย',
-        html: `ตกลงที่จะสร้างกิจกรรม ${activityName}<br/> จำนวนผู้เข้าร่วมกิจกรรมทั้งหมด ${totalRegisteredCount}`,
+        html: `ตกลงที่จะสร้างกิจกรรม : ${activityName} <br/>จำนวนผู้เข้าร่วมกิจกรรมทั้งหมด : ${totalRegisteredCount}<br/>`,
         showConfirmButton: true,
         showCancelButton: true,
         icon: 'warning',
