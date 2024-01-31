@@ -273,6 +273,10 @@
         font-size: 16px;
         font-weight: 300;
     }
+    .admin-textBody-small2{
+        font-size: 14px;
+        font-weight: 300;
+    }
     .admin-textBody-huge{
         font-size: 18px;
         font-weight: 400;
@@ -359,14 +363,23 @@
         box-sizing: border-box;
         gap: 6%;
     }
+    /* .user-home-btn{
+        width: 100px;
+        height: 47%;
+        background-color: #263A50;
+        border-radius: 20px;
+    } */
     .user-home a{
         width: 47%;
+        
         box-sizing: border-box;
         margin-bottom: 6%;
 
     }
     .user-home a img{
         width: 100%;
+        
+
 
     }
     .loading-spinner{
@@ -384,8 +397,8 @@
     }
     .user-header {
         width: 48%;
-        /* max-width: 500px;
-        min-width: 500px; */
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
     }
    
 }

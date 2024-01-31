@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import CalendarUserComponent from "./CalendarUserComponent";
 import "../css/Login&SignupComponent.css";
 import NavbarUserComponent from './NavbarUserComponent';
+import NavbarComponent from '../components_user/NavbarComponent';
 import function1 from "../picture/functionUser1.png";
 import function2 from "../picture/functionUser2.png";
 import function3 from "../picture/functionUser3.png";
@@ -23,7 +24,7 @@ const HomeComponent = (props) => {
                         <h3>Home</h3>
                     </div>
 
-                    <NavbarUserComponent/>
+                    <NavbarComponent/>
             </header>
             <div className="user-body">
                 <div className="user-home">
@@ -41,7 +42,7 @@ const HomeComponent = (props) => {
                 <a href="/timetable" role="button"  target="_parent"><img src={function4} /></a>
                 <a href="#" role="button"  target="_parent"><img src={function5} /></a>
                 <a href="#" role="button"  target="_parent"><img src={function6}/></a>
-                <a href="#" role="button"  target="_parent"><img src={function7} /></a>
+                <a href="#" role="button"  target="_parent" ><img src={function7} /></a>
                 <a href="#" role="button"  target="_parent"><img src={function8} /></a>
 
                 </div>

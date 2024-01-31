@@ -1,4 +1,4 @@
-import "../css/UserNavbarComponent.css";
+import "../css/UserNavbarComponent1.css";
 import { Link, useNavigate } from "react-router-dom"; // นำเข้า useNavigate มาด้วย
 import Manface from "../picture/Manface.png";
 import { fetchUserById } from '../firebase/firebaseUtils';
