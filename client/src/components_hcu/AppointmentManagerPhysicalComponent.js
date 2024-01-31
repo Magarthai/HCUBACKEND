@@ -469,6 +469,7 @@ const AppointmentManagerPhysicComponent = (props) => {
             }));
             cleanUpOldPopups();
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
+        if (selectedDates){
             const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
 
             const handleSelectChanges = () => {
@@ -631,9 +632,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                             <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'}</p>
                             ${templateCommon}
                         `;
-
                         appointmentPopupItem.appendChild(divElement);
-
                     } else {
                         console.log("Time table not found for selected day and clinic");
                         const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
@@ -652,7 +651,22 @@ const AppointmentManagerPhysicComponent = (props) => {
                 }
             }
 
-        }}
+        }} else {
+            Swal.fire({
+                title: 'เกิดข้อผิดพลาด!',
+                text: 'เลือกวันก่อน',
+                icon: 'error',
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                  confirmButton: 'custom-confirm-button',
+                },
+              })
+              x.style.display = "none";
+        }
+    
+    
+    }
     };
 
     function cleanUpOldPopups() {
@@ -764,8 +778,8 @@ const AppointmentManagerPhysicComponent = (props) => {
                     <div className="admin-hearder-item">
                         <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
                         <a href="/AppointmentManagerComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
-                        <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" >คลินิกกายภาพ</a>
-                        <a href="/adminAppointmentManagerPhysicComponent" target="_parent" id="select">คลินิกฝั่งเข็ม</a>
+                        <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" id="select">คลินิกกายภาพ</a>
+                        <a href="/adminAppointmentManagerNeedleComponent" target="_parent">คลินิกฝั่งเข็ม</a>
                     </div>
                     <div className="admin-hearder-item admin-right">
                         <a target="_parent" onClick={() => {

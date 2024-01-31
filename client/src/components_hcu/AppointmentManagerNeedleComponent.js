@@ -495,9 +495,11 @@ const formatDatesForDisplay = (isoDate) => {
         return formattedSelectedDate;
     };
     const submitFormAddContinue = async () => {
+        
         let x = document.getElementById("admin-add-appointment-connected2");
         let y = document.getElementById("admin-add-appointment-connected");
         if (window.getComputedStyle(x).display === "none") {
+
             x.style.display = "block";
             y.style.display = "none";
             setState((prevState) => ({
@@ -515,6 +517,7 @@ const formatDatesForDisplay = (isoDate) => {
             }));
             cleanUpOldPopups();
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
+            if (selectedDates){
             const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
 
             const handleSelectChanges = () => {
@@ -536,7 +539,8 @@ const formatDatesForDisplay = (isoDate) => {
                     },
                   }) 
                   x.style.display = "none";
-            } else {
+            } 
+            else {
             for (let i = 1; i <= time; i++) {
                 const instanceDate = new Date(formattedAppointmentDate);
                 instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
@@ -698,6 +702,18 @@ const formatDatesForDisplay = (isoDate) => {
                 }
             }
 
+        }} else {
+            Swal.fire({
+                title: 'เกิดข้อผิดพลาด!',
+                text: 'เลือกวันก่อน',
+                icon: 'error',
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                  confirmButton: 'custom-confirm-button',
+                },
+              })
+              x.style.display = "none";
         }}
     };
     function cleanUpOldPopups() {

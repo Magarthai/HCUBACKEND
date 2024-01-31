@@ -5,8 +5,10 @@ import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "./NavbarComponent";
 import img_activity from "../picture/img-activity.png";
 import calendarFlat_icon from "../picture/calendar-flat.png";
-
-
+import Swal from "sweetalert2";
+import { addDoc,doc } from "firebase/firestore";
+import { setDoc } from 'firebase/firestore';
+import { ref, uploadBytes,getStorage, getDownloadURL } from 'firebase/storage';
 const ActivityAddComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
@@ -16,46 +18,67 @@ const ActivityAddComponent = (props) => {
     const [state, setState] = useState({
         activityName: "",
         activityDetail: "",
-        activityType: "",
-
-    })
-
-    const {activityName, activityDetail, activityType} = state
+        activityType: "yes",
+        openQueenDate: "",
+        endQueenDate: "",
+    });
     
     const inputValue = (name) => (event) => {
-        setState({ ...state, [name]: event.target.value });
-    };
+        if (name === 'activityDetail') {
+          const value = event.target.value;
+          if (value.length <= 10 * 1024 * 1024) {
+            setState({ ...state, [name]: value });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Limit Exceeded',
+              text: 'Activity detail should not exceed 10 MB',
+            });
+          }
+        } else {
+          setState({ ...state, [name]: event.target.value });
+        }
+      };
+    
+    
+    const { activityName, activityDetail, activityType, openQueenDate , endQueenDate } = state;
 
-  
+    const handleRadioChange = inputValue('activityType');
+
+    useEffect(() => {
+        console.log(openQueenDate);
+    }, [openQueenDate]);
+
+
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
         console.log(userData)
         const responsivescreen = () => {
-        const innerWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-        setZoomLevel(newZoomLevel);
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
 
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {
-        const newTime = getShowTime();
-        if (newTime !== showTime) {
-            setShowTime(newTime);
-        }
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
-  
+
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
-    
+
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    
-    }, [user]); 
+
+    }, [user]);
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -80,9 +103,101 @@ const ActivityAddComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
-    const submitForm = async (e) => {
 
+const submitForm = async (e) => {
+  e.preventDefault();
+  try {
+    const activitiesCollection = collection(db, 'activities');
+
+    const storage = getStorage();
+
+    const fileInput = document.querySelector('.input-activity-img');
+    const file = fileInput?.files[0];
+
+    if (file) {
+      const storageRef = ref(storage, `activity_images/${file.name}`);
+
+      await uploadBytes(storageRef, file);
+
+      const downloadURL = await getDownloadURL(storageRef);
+      const activityInfo = {
+        activityName: activityName,
+        activityDetail: activityDetail,
+        activityType: activityType,
+        openQueenDate: openQueenDate,
+        endQueenDate: endQueenDate,
+        timeSlots: timeSlots,
+        totalRegisteredCount: totalRegisteredCount,
+        imageURL: downloadURL,
+      };
+
+      const newActivityRef = await addDoc(activitiesCollection, activityInfo);
+
+      Swal.fire({
+        title: 'ขอแก้ไขนัดหมาย',
+        html: `ตกลงที่จะสร้างกิจกรรม ${activityName}<br/> จำนวนผู้เข้าร่วมกิจกรรมทั้งหมด ${totalRegisteredCount}`,
+        showConfirmButton: true,
+        showCancelButton: true,
+        icon: 'warning',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#263A50',
+        reverseButtons: true,
+        customClass: {
+          confirmButton: 'custom-confirm-button',
+          cancelButton: 'custom-cancel-button',
+        },
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await setDoc(doc(db, 'activities', newActivityRef.id), { imageURL: downloadURL }, { merge: true });
+
+          Swal.fire({
+            title: 'สร้างกิจกรรมสําเร็จ',
+            icon: 'success',
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#263A50',
+            customClass: {
+              confirmButton: 'custom-confirm-button',
+            },
+          });
+        } else {
+          Swal.fire({
+            title: 'สร้างไม่สําเร็จ',
+            icon: 'error',
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#263A50',
+            customClass: {
+              cancelButton: 'custom-cancel-button',
+            },
+          });
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'กรุณาเลือกรูปภาพ',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#263A50',
+        customClass: {
+          confirmButton: 'custom-confirm-button',
+        },
+      });
     }
+  } catch (firebaseError) {
+    Swal.fire({
+      icon: 'error',
+      title: 'เกิดข้อผิดพลาด!',
+      text: firebaseError,
+      confirmButtonText: 'ตกลง',
+      confirmButtonColor: '#263A50',
+      customClass: {
+        confirmButton: 'custom-confirm-button',
+      },
+    });
+    console.error('Firebase signup error:', firebaseError);
+  }
+};
+
 
     let adminActivityQueueElements = document.querySelectorAll('.admin-activity-queue');
 
@@ -94,14 +209,14 @@ const ActivityAddComponent = (props) => {
     adminActivityQueueElements.forEach(btn => {
         btn.addEventListener('click', handleCardClick);
     });
-    
+
 
     const [timeSlots, setTimeSlots] = useState([
         { date: "", startTime: "", endTime: "", registeredCount: "" }
     ]);
 
     const addNewData = (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
         setTimeSlots([...timeSlots, { date: "", startTime: "", endTime: "", registeredCount: "" }]);
     };
 
@@ -109,10 +224,11 @@ const ActivityAddComponent = (props) => {
         const newTimeSlots = [...timeSlots];
         newTimeSlots[index][name] = event.target.value;
         setTimeSlots(newTimeSlots);
+        console.log(timeSlots, "timeSlots")
     };
 
-    const removeData = (event,index) => {
-        event.preventDefault(); 
+    const removeData = (event, index) => {
+        event.preventDefault();
         const newTimeSlots = [...timeSlots];
         newTimeSlots.splice(index, 1);
         setTimeSlots(newTimeSlots);
@@ -158,119 +274,168 @@ const ActivityAddComponent = (props) => {
                 />
                 <span className="admin-textBody-large"> คน</span>
                 <div className="admin-right">
-                    <button onClick={(event) => removeData(event, index)}  className="admin-activity-remove-btn">ลบช่วงเวลา</button>
+                    <button onClick={(event) => removeData(event, index)} className="admin-activity-remove-btn">ลบช่วงเวลา</button>
                 </div>
-                
+
             </div>
         ));
     };
+    const totalRegisteredCount = timeSlots.reduce((sum, timeSlot) => {
+        return sum + (parseInt(timeSlot.registeredCount, 10) || 0);
+      }, 0);
+    const [imgSrc, setImgSrc] = useState(null);
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
 
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImgSrc(reader.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
 
     return (
-        
+
         <div style={containerStyle}>
-        <NavbarComponent />
-        <div className="admin-topicBox colorPrimary-800">
-            <div></div>
-            <div>
-                <h1 className="center">ระบบการจัดการกิจกรรม</h1>
+            <NavbarComponent />
+            <div className="admin-topicBox colorPrimary-800">
+                <div></div>
+                <div>
+                    <h1 className="center">ระบบการจัดการกิจกรรม</h1>
+                </div>
+                <div className="dateTime">
+                    <p className="admin-textBody-large">Date : {currentDate}</p>
+                    <p className="admin-textBody-large">Time : {showTime}</p>
+                </div>
             </div>
-            <div className="dateTime">
-                <p className="admin-textBody-large">Date : {currentDate}</p>
-                <p className="admin-textBody-large">Time : {showTime}</p>
-            </div>
-        </div>
-        <div className="admin">
-            
-            <div className="admin-body">
-                <form onSubmit={submitForm}>
-                    <div className="admin-activity-add">
-                        <div className="admin-activity-add-hearder-flexbox">
-                            <div className="admin-activity-today-hearder-box">
-                                <img src={img_activity} className="admin-img-activity"/>
-                                <br></br>
-                                <br></br>
-                                <div className="admin-right">
-                                    <input type="file" className="form-control input-activity-img" accept="image/png, image/jpeg" />
-                                    
-                                </div>
-                                
+            <div className="admin">
 
-                            </div>
-                            <div className="admin-activity-today-hearder-box admin-activity-form">
-                                <div>
-                                    <label className="admin-textBody-large colorPrimary-800">ชื่อกิจกรรม</label>
-                                    <input type="text" className="form-control" value={activityName} onChange={inputValue("activityName")} placeholder="Activity" />
-                                </div>
-                                <div>
-                                    <label className="admin-textBody-large colorPrimary-800 acivity-detail">รายละเอียด</label>
-                                    <textarea value={activityDetail} onChange={inputValue("activityDetail")} className="acivity-detail" rows="18"></textarea>
-                                </div>
-                            </div>
-
-                            <div>
-                                    <label className="admin-textBody-large colorPrimary-800">รูปแบบกิจกรรม</label>
-                                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off"/>
-                                    <label class="admin-activity-queue focus" for="option1">มีระบบคิว</label>
-                                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" />
-                                    <label class="admin-activity-queue" for="option2">ไม่มีระบบคิว</label>
-                            </div>
-                            <div className="admin-activity-form-register">
-                                <div className="admin-activity-form-register-box">
-                                    <h2 className="colorPrimary-800">ช่วงเวลาลงทะเบียน</h2>
-                                    <br></br>
-                                    <div>
-                                        <label className="admin-textBody-large colorPrimary-800">ช่วงวันที่</label><br />
+                <div className="admin-body">
+                    <form onSubmit={submitForm}>
+                        <div className="admin-activity-add">
+                            <div className="admin-activity-add-hearder-flexbox">
+                                <div className="admin-activity-today-hearder-box">
+                                    <img
+                                        src={imgSrc || img_activity}
+                                        className="admin-img-activity"
+                                        alt={imgSrc ? "Selected Activity Image" : img_activity}
+                                    />
+                                    <br />
+                                    <br />
+                                    <div className="admin-right">
                                         <input
-                                            type="date"
-                                            className="form-control admin-activity-input"
-                                            placeholder="dd/mm/yyyy"
-                                        />
-                                        <span className="admin-textBody-large"> ถึง </span>
-                                        <input
-                                            type="date"
-                                            className="form-control admin-activity-input"
-                                            placeholder="dd/mm/yyyy"
-                                            
+                                            type="file"
+                                            className="form-control input-activity-img"
+                                            accept="image/png, image/jpeg"
+                                            onChange={handleFileChange}
                                         />
                                     </div>
-                                    <div>
-                                        <label className="admin-textBody-large colorPrimary-800">จำนวนผู้ลงทะเบียน</label><br></br>
-                                        <input type="text" className="form-control timeable" placeholder="40" />
-                                        <span className="admin-textBody-large"> คน</span>
-                                    </div>    
                                 </div>
-                                <div className="admin-activity-form-register-box border-L">
-                                    <div className="admin-activity-container">
-                                        <h2 className="colorPrimary-800 admin-activity-container-item">ช่วงเวลาจัดกิจกรรม</h2>
-                                        <div className="admin-activity-container-item admin-right">
-                                            <button className="admin-activity-container-btn" onClick={addNewData}>เพิ่มช่วงเวลา +</button>
+                                <div className="admin-activity-today-hearder-box admin-activity-form">
+                                    <div>
+                                        <label className="admin-textBody-large colorPrimary-800">ชื่อกิจกรรม</label>
+                                        <input type="text" className="form-control" value={activityName} onChange={inputValue("activityName")} placeholder="Activity" />
+                                    </div>
+                                    <div>
+                                    <label className="admin-textBody-large colorPrimary-800 acivity-detail">รายละเอียด</label>
+                                    <textarea
+                                        value={activityDetail}
+                                        onChange={inputValue("activityDetail")}
+                                        className="acivity-detail"
+                                        rows="18"
+                                    ></textarea>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="admin-textBody-large colorPrimary-800">รูปแบบกิจกรรม</label>
+                                    <input
+                                        type="radio"
+                                        className="btn-check"
+                                        name="options"
+                                        id="option1"
+                                        autoComplete="off"
+                                        value="yes"
+                                        checked={activityType === 'yes'}
+                                        onChange={handleRadioChange}
+                                    />
+                                                        <label class="admin-activity-queue focus" for="option1">มีระบบคิว</label>
+                                                        <input
+                                        type="radio"
+                                        className="btn-check"
+                                        name="options"
+                                        id="option2"
+                                        autoComplete="off"
+                                        value="no"
+                                        checked={activityType === 'no'}
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label class="admin-activity-queue" for="option2">ไม่มีระบบคิว</label>
+                                </div>
+                                <div className="admin-activity-form-register">
+                                    <div className="admin-activity-form-register-box">
+                                        <h2 className="colorPrimary-800">ช่วงเวลาลงทะเบียน</h2>
+                                        <br></br>
+                                        <div>
+                                            <label className="admin-textBody-large colorPrimary-800">ช่วงวันที่</label><br />
+                                            <input
+                                                type="date"
+                                                className="form-control admin-activity-input"
+                                                placeholder="dd/mm/yyyy"
+                                                onChange={(e) => {
+                                                    inputValue("openQueenDate")(e);
+                                                }}
+                                            />
+                                            <span className="admin-textBody-large"> ถึง </span>
+                                            <input
+                                                type="date"
+                                                className="form-control admin-activity-input"
+                                                placeholder="dd/mm/yyyy"
+                                                onChange={(e) => {
+                                                    inputValue("endQueenDate")(e);
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="admin-textBody-large colorPrimary-800">จำนวนเปิดรับผู้ลงทะเบียนทั้งหมด</label><br></br>
+                                            <input type="text" className="form-control timeable" placeholder="40" disabled value={totalRegisteredCount}/>
+                                            <span className="admin-textBody-large"> คน</span>
                                         </div>
                                     </div>
-                                    
-                                    <br></br>
-                                    
-                                    <div id="container">
-                                        {renderTimeSlots()}
-                                    </div>
-                                  
-                                </div>
+                                    <div className="admin-activity-form-register-box border-L">
+                                        <div className="admin-activity-container">
+                                            <h2 className="colorPrimary-800 admin-activity-container-item">ช่วงเวลาจัดกิจกรรม</h2>
+                                            <div className="admin-activity-container-item admin-right">
+                                                <button className="admin-activity-container-btn" onClick={addNewData}>เพิ่มช่วงเวลา +</button>
+                                            </div>
+                                        </div>
 
+                                        <br></br>
+
+                                        <div id="container">
+                                            {renderTimeSlots()}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="admin-timetable-btn">
+                                <button type="button" className="btn-secondary btn-systrm" onClick={() => window.history.back()} >กลับ</button>
+                                <input type="submit" value="เพิ่มกิจกรรม" className="btn-primary btn-systrm" target="_parent" />
                             </div>
                         </div>
-                        <div className="admin-timetable-btn">
-                            <button type="button" className="btn-secondary btn-systrm" onClick={() => window.history.back()} >กลับ</button>
-                            <input type="submit" value="เพิ่มกิจกรรม" className="btn-primary btn-systrm" target="_parent" />
-                        </div>
-                    </div>
-                </form>
-                
+                    </form>
+
+                </div>
+
             </div>
-           
+
         </div>
-        
-    </div>
 
     );
 }

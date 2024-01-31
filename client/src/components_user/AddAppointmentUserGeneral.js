@@ -21,7 +21,6 @@ const AddAppointmentUser = () => {
         setSelectedCount(selectedCount + 1);
     };
     
-
     const navigate = useNavigate();
     const { user, userData } = useUserAuth();
     const [timeOptions, setTimeOptions] = useState([]);

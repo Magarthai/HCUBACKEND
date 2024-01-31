@@ -76,7 +76,6 @@ const CalendarUserComponent = (props) => {
   }, [currentMonth, currentYear, selectedDate]);
 
   useEffect(() => {
-    // Set selectedDate to the current date if it's initially null
     if (!selectedDate) {
       const currentDate = new Date();
       handleDateClick(currentDate.getDate());

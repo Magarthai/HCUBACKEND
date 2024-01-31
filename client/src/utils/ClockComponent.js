@@ -32,7 +32,7 @@ const ClockComponent = () => {
     return num < 10 ? "0" + num : num.toString();
   }
 
-  return <p>{showTime}</p>
+  return <p>&nbsp;{showTime}</p>
 };
 
 export default ClockComponent;
