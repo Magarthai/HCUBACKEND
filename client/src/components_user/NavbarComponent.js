@@ -27,7 +27,6 @@ const NavbarComponent = (props) => {
     }
   };
 
-  
   const openNavbar = () => {
     let x = document.getElementById("user-navbar");
     let y = document.getElementById("user-navbar-background");
@@ -44,8 +43,6 @@ const NavbarComponent = (props) => {
   useEffect(() => {
     document.title = 'Health Care Unit';
     console.log(user);
-
-
   }, [user]);
 
 
@@ -73,7 +70,7 @@ const NavbarComponent = (props) => {
               <a href="/" role="button"  target="_parent"><p>ประเมินความพึงพอใจ</p></a>
               <a href="/" role="button"  target="_parent"><p>คู่มือการใช้งาน</p></a>
             </div>
-            <p  className="colorPrimary-800"><img className="user-navbar-icon-logout"src={logout}/>ออกจากระบบ</p>
+            <p  className="colorPrimary-800" onClick={handleLogout}><img className="user-navbar-icon-logout"src={logout}/>ออกจากระบบ</p>
           </div>
 
 

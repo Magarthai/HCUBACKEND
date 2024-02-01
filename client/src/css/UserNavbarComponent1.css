@@ -13,6 +13,7 @@
     right: 30px;
 }
 #user-navbar{
+    display: none;
     position: absolute;
     right: 0vw;
     top: 0vh;
@@ -21,6 +22,7 @@
     width: 100%;
     background-color: #E8E8E8;
     border-radius:0px 0px 15px 15px;
+   
 }
 #user-navbar-background{
     display: none;

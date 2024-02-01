@@ -23,7 +23,6 @@ const HomeComponent = (props) => {
                         <h2>Health Care Unit</h2>
                         <h3>Home</h3>
                     </div>
-
                     <NavbarComponent/>
             </header>
             <div className="user-body">
