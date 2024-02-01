@@ -21,3 +21,47 @@ export const fetchTodayActivity = async (user, checkCurrentDate) => {
         console.error('Error fetching activities:', error);
     }
 }
+
+export const fetchOpenActivity = async (user, checkCurrentDate) => {
+    try {
+        if (user && checkCurrentDate) {
+            const activitiesCollection = collection(db, 'activities');
+
+            const querySnapshot = await getDocs(activitiesCollection,
+                where('queenStatus', '==', 'open'));
+
+            const activitiesData = querySnapshot.docs
+                .map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+                .filter((activity) => activity.timeSlots.some(slot => slot.date !== checkCurrentDate));
+
+            return activitiesData;
+        }
+    } catch (error) {
+        console.error('Error fetching activities:', error);
+    }
+}
+
+export const fetchCloseActivity = async (user, checkCurrentDate) => {
+    try {
+        if (user && checkCurrentDate) {
+            const activitiesCollection = collection(db, 'activities');
+
+            const querySnapshot = await getDocs(activitiesCollection,
+                where('queenStatus', '==', 'close'));
+
+            const activitiesData = querySnapshot.docs
+                .map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+                .filter((activity) => activity.timeSlots.some(slot => slot.date === checkCurrentDate));
+
+            return activitiesData;
+        }
+    } catch (error) {
+        console.error('Error fetching activities:', error);
+    }
+}

@@ -56,7 +56,6 @@ const ActivityTodayComponent = (props) => {
         zoom: zoomLevel,
     };
     useEffect(() => {
-        // This useEffect will run whenever 'activities' state changes
         console.log("todayActivity", activities);
     }, [activities]);
 
@@ -64,8 +63,15 @@ const ActivityTodayComponent = (props) => {
         if (!isCheckedActivity) {
             try {
                 const todayActivity = await fetchTodayActivity(user, checkCurrentDate);
+                if (todayActivity) {
                 setActivities(todayActivity);
                 setIsCheckedActivity(true);
+                const initialIsChecked = todayActivity.reduce((acc, activities) => {
+                    acc[activities.id] = activities.status === "open";
+                    return acc;
+                }, {});
+                setIsChecked(initialIsChecked);
+                }
             } catch (error) {
                 console.error('Error fetching today activity:', error);
             }

@@ -92,6 +92,7 @@
     font-weight: 300;
     line-height: normal;
     text-decoration-line: underline;
+    cursor: pointer;
 }
 
 .AppointList-body-BetweenCard{

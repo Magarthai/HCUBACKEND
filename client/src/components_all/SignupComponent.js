@@ -20,6 +20,7 @@ const SignupComponent = (props) => {
       tel: "",
       gender: "",
       password: "",
+      cpassword: "",
     });
   
     const {
@@ -30,6 +31,7 @@ const SignupComponent = (props) => {
       tel,
       gender,
       password,
+      cpassword
     } = state;
   
     const inputValue = (name) => (event) => {
@@ -37,7 +39,7 @@ const SignupComponent = (props) => {
     };
   
     const isSubmitEnabled =
-      !firstName || !lastName || !email || !id || !tel || !gender || !password;
+      !firstName || !lastName || !email || !id || !tel || !gender || !password || !cpassword;
   
     const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
 
@@ -67,6 +69,21 @@ const SignupComponent = (props) => {
         if (!validateInput()) {
           return;
         }
+
+        if (password != cpassword) {
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            text: "กรอกรหัสผ่านไม่ตรงกัน!",
+            confirmButtonText: "ตกลง",
+            confirmButtonColor: '#263A50',
+            customClass: {
+                cancelButton: 'custom-cancel-button',
+            }
+          }
+          )
+          return
+        }   
       
         try {
       
@@ -97,8 +114,13 @@ const SignupComponent = (props) => {
       
           Swal.fire({
             icon: "success",
-            title: "Account Created",
-            text: "Your account has been successfully created!",
+            title: "สําเร็จ",
+            text: "สร้างบัญชีสําเร็จ!",
+            confirmButtonText: "ตกลง",
+            confirmButtonColor: '#263A50',
+            customClass: {
+                cancelButton: 'custom-cancel-button',
+            }
           }).then((result) => {
             if (result.isConfirmed) {
               window.location.href = '/home';
@@ -248,6 +270,16 @@ const SignupComponent = (props) => {
           />
         </div>
 
+        <div>
+          <label className="textBody-big colorPrimary-800">Confirm Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={cpassword}
+            onChange={inputValue("cpassword")}
+            placeholder="password"
+          />
+        </div>
         <br />
         <input
           type="submit"
