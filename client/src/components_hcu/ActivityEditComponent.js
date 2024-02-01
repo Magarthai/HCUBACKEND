@@ -5,27 +5,32 @@ import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "./NavbarComponent";
 import img_activity from "../picture/img-activity.png";
 import calendarFlat_icon from "../picture/calendar-flat.png";
-
-
+import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const ActivityEditComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
-
+    const navigate = useNavigate();
     const [state, setState] = useState({
         activityName: "",
         activityDetail: "",
         activityType: "",
-
-    })
-
-    const {activityName, activityDetail, activityType} = state
+        endQueenDate: "",
+        id: "",
+        imageURL: "",
+        openQueenDate: "",
+        timeSlots: "",
+        totalRegisteredCount: "",
+    });
+    const location = useLocation();
+    const { activities } = location.state || {};
+    const {activityName, activityDetail, activityType, endQueenDate, id , imageURL ,openQueenDate,totalRegisteredCount} = state
     
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
     };
-
   
     useEffect(() => {
         document.title = 'Health Care Unit';
@@ -37,7 +42,34 @@ const ActivityEditComponent = (props) => {
         const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
         setZoomLevel(newZoomLevel);
         };
+        if (!activities) {
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่มีข้อมูลการนัดหมาย',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    
+                    confirmButton: 'custom-confirm-button',
+                }
+            }).then(() => {
+                navigate('/adminActivityOpenRegisterComponent');
+            });
+        } else {
+            setState({
+                activityName: activities.activityName || "",
+                activityDetail: activities.activityDetail || "",
+                activityType: activities.activityType || "",
+                endQueenDate: activities.endQueenDate || "",
+                id: activities.id || "",
+                imageURL: activities.imageURL || "",
+                openQueenDate: activities.openQueenDate || "",
+                totalRegisteredCount: activities.totalRegisteredCount || "",
+            });
+            setTimeSlots(activities.timeSlots)
 
+            console.log(activities,"activities")
+        }
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
         const updateShowTime = () => {

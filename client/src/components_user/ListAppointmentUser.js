@@ -417,7 +417,15 @@ const ListAppointmentUser = () => {
       <div className="user-body">
         <div className="AppointList-body-searchItem">
           <label className="textBody-huge colorPrimary-800">ค้นหา</label>
-          <input type="date" className="form-control" placeholder="dd/mm/yyyy" />
+          <input
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                    inputValue("appointmentDate")(e);
+                                    const formattedDate = formatDateForDisplay(e.target.value);
+                                    console.log("Formatted Date:", formattedDate);
+                                }}
+                            />
         </div>
 
         <div className="AppointList-body-card">

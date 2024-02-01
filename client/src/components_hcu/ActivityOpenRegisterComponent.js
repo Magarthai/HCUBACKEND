@@ -11,9 +11,10 @@ import annotaion_icon from "../picture/annotation-dark.png";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { fetchOpenActivity } from "../backend/activity/getTodayActivity";
-
+import { useNavigate } from 'react-router-dom';
 const ActivityOpenRegisterComponent = (props) => {
     const { user, userData } = useUserAuth();
+    const navigate = useNavigate();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
@@ -113,6 +114,11 @@ const ActivityOpenRegisterComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
+    const EditActivity = (activities) => {
+        if (activities){
+            navigate('/adminActivityEditComponent', { state: { activities: activities } });
+        }
+      }
     return (
         
         <div style={containerStyle}>
@@ -153,7 +159,7 @@ const ActivityOpenRegisterComponent = (props) => {
                                 <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : {activities.totalRegisteredCount} คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
-                                <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
+                                <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon" onClick={() => EditActivity(activities)} /></a>
                             </div>
                         </div>
                         <h3 className="colorPrimary-800">รายละเอียด</h3>

@@ -10,12 +10,14 @@ import person_icon from "../picture/person-dark.png";
 import annotaion_icon from "../picture/annotation-dark.png";
 import { fetchTodayActivity } from "../backend/activity/getTodayActivity";
 import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 const ActivityTodayComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
     const [isChecked, setIsChecked] = useState({});
+    const navigate = useNavigate();
     const [isCheckedActivity, setIsCheckedActivity] = useState(false);
     const [activities, setActivities] = useState([])
     useEffect(() => {
@@ -120,6 +122,7 @@ const ActivityTodayComponent = (props) => {
         });
     };
 
+    
 
 
     return (
