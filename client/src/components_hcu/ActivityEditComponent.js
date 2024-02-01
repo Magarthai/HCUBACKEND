@@ -6,6 +6,7 @@ import NavbarComponent from "./NavbarComponent";
 import img_activity from "../picture/img-activity.png";
 import calendarFlat_icon from "../picture/calendar-flat.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 import Swal from "sweetalert2";
 import { addDoc,doc, updateDoc } from "firebase/firestore";
 import { setDoc } from 'firebase/firestore';
@@ -70,6 +71,7 @@ const ActivityEditComponent = (props) => {
                 id: activities.id || "",
                 imageURL: activities.imageURL || "",
                 openQueenDate: activities.openQueenDate || "",
+                queenStatus: activities.queenStatus || "",
             });
             setTimeSlots(activities.timeSlots)
             setImgSrc(activities.imageURL)
@@ -133,17 +135,37 @@ const ActivityEditComponent = (props) => {
         try {
             const activitiesCollection = doc(db, 'activities', id);
     
+
             const storage = getStorage();
           
             const fileInput = document.querySelector('.input-activity-img');
             const file = fileInput?.files[0];
           
             if (file) {
-                const storageRef = ref(storage, `activity_images/${file.name}`);
-              
+                
+                const fileType = file.type.split("/")[0];
+                if (fileType !== "image") {
+                  throw new Error("ไฟล์ที่อัปโหลดไม่ใช่รูปภาพ");
+                }
+                const allowedExtensions = ["jpg", "jpeg", "png"];
+                const fileExtension = file.name.split(".").pop().toLowerCase();
+                if (!allowedExtensions.includes(fileExtension)) {
+                    throw new Error("ไฟล์ที่อัปโหลดมีนามสกุลไม่ถูกต้อง");
+                }
+    
+                const maxSize = 3145728;
+                if (file.size > maxSize) {
+                    throw new Error("ไฟล์ที่อัปโหลดมีขนาดใหญ่เกินไป");
+                }
+                
+    
+                const newFileName = `${uuidv4()}.${fileExtension}`;
+                const storageRef = ref(storage, `activity_images/${newFileName}`);
                 await uploadBytes(storageRef, file);
-              
                 const downloadURL = await getDownloadURL(storageRef);
+                if (!downloadURL.startsWith("https://firebasestorage.googleapis.com/")) {
+                    throw new Error("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+                }
                 const hasTimeSlotForCurrentDate = timeSlots.some(slot => slot.date === checkCurrentDate);
               
                 const activityInfo = {
@@ -213,8 +235,6 @@ const ActivityEditComponent = (props) => {
                     imageURL: imageURL,
                     queenStatus: hasTimeSlotForCurrentDate ? "open" : "close",
                 };
-
-                await updateDoc(activitiesCollection, activityInfo);
 
                 Swal.fire({
                     title: 'ขอแก้ไขนัดหมาย',

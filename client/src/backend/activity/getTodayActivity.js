@@ -27,15 +27,17 @@ export const fetchOpenActivity = async (user, checkCurrentDate) => {
         if (user && checkCurrentDate) {
             const activitiesCollection = collection(db, 'activities');
 
-            const querySnapshot = await getDocs(activitiesCollection,
-                where('queenStatus', '==', 'open'));
+            const querySnapshot = await getDocs(query(
+                activitiesCollection,
+                where('queenStatus', '==', 'open'),
+            ));
 
             const activitiesData = querySnapshot.docs
                 .map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }))
-                .filter((activity) => activity.timeSlots.some(slot => slot.date !== checkCurrentDate));
+            
 
             return activitiesData;
         }
@@ -44,20 +46,23 @@ export const fetchOpenActivity = async (user, checkCurrentDate) => {
     }
 }
 
+
 export const fetchCloseActivity = async (user, checkCurrentDate) => {
     try {
         if (user && checkCurrentDate) {
             const activitiesCollection = collection(db, 'activities');
 
-            const querySnapshot = await getDocs(activitiesCollection,
-                where('queenStatus', '==', 'close'));
+            const querySnapshot = await getDocs(query(
+                activitiesCollection,
+                where('queenStatus', '==', "close"),
+            ));
 
             const activitiesData = querySnapshot.docs
                 .map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }))
-                .filter((activity) => activity.timeSlots.some(slot => slot.date === checkCurrentDate));
+
 
             return activitiesData;
         }

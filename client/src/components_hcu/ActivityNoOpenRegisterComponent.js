@@ -10,45 +10,87 @@ import person_icon from "../picture/person-dark.png";
 import annotaion_icon from "../picture/annotation-dark.png";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
-import Swal from "sweetalert2";
+import { fetchCloseActivity, fetchOpenActivity } from "../backend/activity/getTodayActivity";
+import { useNavigate } from 'react-router-dom';
 
 const ActivityNoOpenRegisterComponent = (props) => {
     const { user, userData } = useUserAuth();
+    const navigate = useNavigate();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
     const [isChecked, setIsChecked] = useState({});
+    const [isCheckedActivity, setIsCheckedActivity] = useState(false);
+    const [activities, setActivities] = useState([])
   
+    function getCurrentDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+    const checkCurrentDate = getCurrentDate();
+
+    const fetchOpenActivityAndSetState = async () => {
+        if (!isCheckedActivity) {
+            try {
+                const openActivity = await fetchCloseActivity(user, checkCurrentDate);
+                if (openActivity) {
+                setActivities(openActivity);
+                setIsCheckedActivity(true);
+                const initialIsChecked = openActivity.reduce((acc, activities) => {
+                    acc[activities.id] = activities.status === "open";
+                    return acc;
+                }, {});
+                setIsChecked(initialIsChecked);
+                }
+            } catch (error) {
+                console.error('Error fetching today activity:', error);
+            }
+        }
+    };
     
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        console.log(userData)
+        console.log(userData);
+
         const responsivescreen = () => {
-        const innerWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-        setZoomLevel(newZoomLevel);
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
+
+        if (!isCheckedActivity) {
+            fetchOpenActivityAndSetState();
+        }
 
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
+
         const updateShowTime = () => {
-        const newTime = getShowTime();
-        if (newTime !== showTime) {
-            setShowTime(newTime);
-        }
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
-  
+
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
-    
+
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    
-    }, [user]); 
+    }, [user, isCheckedActivity]);
+    useEffect(() => {
+        console.log("todayActivity", activities);
+    }, [activities]);
+
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -73,66 +115,11 @@ const ActivityNoOpenRegisterComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
-    };
-
-    const DeleteActivity = async () => {
-        Swal.fire({
-            title: 'ลบกิจกรรม',
-            text: `ชื่อกิจกรรม`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'ลบ',
-            cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#DC2626',
-            reverseButtons: true,
-            customClass: {
-                confirmButton: 'custom-confirm-button',
-                cancelButton: 'custom-cancel-button',
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                try {
-                    Swal.fire(
-                        {
-                            title: 'การลบกิจกรรมสำเร็จ!',
-                            text: `กิจกรรม....ถูกลบเรียบร้อยแล้ว!`,
-                            icon: 'success',
-                            confirmButtonText: 'ตกลง',
-                            confirmButtonColor: '#263A50',
-                            customClass: {
-                                confirmButton: 'custom-confirm-button',
-                            }
-                        }
-                    ).then((result) => {
-                        if (result.isConfirmed) {
-                            
-                        }
-                    });
-                } catch {
-
-                }
-
-            } else if (
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                Swal.fire(
-                    {
-                        title: 'ลบกิจกรรมไม่สำเร็จ!',
-                        text: `ไม่สามารถลบกิจกรรมได้ กรุณาลองอีกครั้งในภายหลัง`,
-                        icon: 'error',
-                        confirmButtonText: 'ตกลง',
-                        confirmButtonColor: '#263A50',
-                        customClass: {
-                            confirmButton: 'custom-confirm-button',
-                        }
-                    }
-                )
-            }
-        })
-
-    }
+    const EditActivity = (activities) => {
+        if (activities){
+            navigate('/adminActivityEditComponent', { state: { activities: activities } });
+        }
+      }
 
 
     return (
@@ -174,7 +161,7 @@ const ActivityNoOpenRegisterComponent = (props) => {
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
                                 <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
-                                <img src={icon_delete} className="icon" onClick={DeleteActivity}/>
+                                <img src={icon_delete} className="icon"/>
                             </div>
                         </div>
                         <h3 className="colorPrimary-800">รายละเอียด</h3>
@@ -194,7 +181,7 @@ const ActivityNoOpenRegisterComponent = (props) => {
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
                                 <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
-                                <img src={icon_delete} className="icon" onClick={DeleteActivity}/>
+                                <img src={icon_delete} className="icon" />
                             </div>
                         </div>
                         <h3 className="colorPrimary-800">รายละเอียด</h3>
