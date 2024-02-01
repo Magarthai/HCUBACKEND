@@ -10,14 +10,12 @@ import person_icon from "../picture/person-dark.png";
 import annotaion_icon from "../picture/annotation-dark.png";
 import { fetchTodayActivity } from "../backend/activity/getTodayActivity";
 import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
 const ActivityTodayComponent = (props) => {
     const { user, userData } = useUserAuth();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
     const [isChecked, setIsChecked] = useState({});
-    const navigate = useNavigate();
     const [isCheckedActivity, setIsCheckedActivity] = useState(false);
     const [activities, setActivities] = useState([])
     useEffect(() => {
@@ -58,6 +56,7 @@ const ActivityTodayComponent = (props) => {
         zoom: zoomLevel,
     };
     useEffect(() => {
+        // This useEffect will run whenever 'activities' state changes
         console.log("todayActivity", activities);
     }, [activities]);
 
@@ -65,15 +64,8 @@ const ActivityTodayComponent = (props) => {
         if (!isCheckedActivity) {
             try {
                 const todayActivity = await fetchTodayActivity(user, checkCurrentDate);
-                if (todayActivity) {
                 setActivities(todayActivity);
                 setIsCheckedActivity(true);
-                const initialIsChecked = todayActivity.reduce((acc, activities) => {
-                    acc[activities.id] = activities.status === "open";
-                    return acc;
-                }, {});
-                setIsChecked(initialIsChecked);
-                }
             } catch (error) {
                 console.error('Error fetching today activity:', error);
             }
@@ -122,7 +114,6 @@ const ActivityTodayComponent = (props) => {
         });
     };
 
-    
 
 
     return (
