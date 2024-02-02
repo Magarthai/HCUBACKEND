@@ -9,43 +9,78 @@ import clockFlat_icon from "../picture/clock-flat.png";
 import person_icon from "../picture/person-dark.png";
 import annotaion_icon from "../picture/annotation-dark.png";
 import preview from "../picture/preview.png";
+import { useNavigate } from "react-router-dom";
+import { fetchAllActivity } from "../backend/activity/getTodayActivity";
 const ActivityAllComponent = (props) => {
     const { user, userData } = useUserAuth();
+    const navigate = useNavigate();
     const [showTime, setShowTime] = useState(getShowTime);
     const [zoomLevel, setZoomLevel] = useState(1);
     const animationFrameRef = useRef();
-    const [isChecked, setIsChecked] = useState({});
-  
-    
+    const [isCheckedActivity, setIsCheckedActivity] = useState(false);
+    const [activities, setActivities] = useState([])
+
+    function getCurrentDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+    const checkCurrentDate = getCurrentDate();
+
+    const fetchOpenActivityAndSetState = async () => {
+        try {
+            const openActivity = await fetchAllActivity(user, checkCurrentDate);
+            if (openActivity) {
+                setActivities(openActivity);
+                setIsCheckedActivity(true);
+            }
+        } catch (error) {
+            console.error('Error fetching today activity:', error);
+        }
+    };
+
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        console.log(userData)
+        console.log(userData);
+
         const responsivescreen = () => {
-        const innerWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
-        setZoomLevel(newZoomLevel);
+            const innerWidth = window.innerWidth;
+            const baseWidth = 1920;
+            const newZoomLevel = (innerWidth / baseWidth) * 100 / 100;
+            setZoomLevel(newZoomLevel);
         };
+
+        if (!isCheckedActivity) {
+            fetchOpenActivityAndSetState();
+        }
 
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
+
         const updateShowTime = () => {
-        const newTime = getShowTime();
-        if (newTime !== showTime) {
-            setShowTime(newTime);
-        }
-        animationFrameRef.current = requestAnimationFrame(updateShowTime);
+            const newTime = getShowTime();
+            if (newTime !== showTime) {
+                setShowTime(newTime);
+            }
+            animationFrameRef.current = requestAnimationFrame(updateShowTime);
         };
-  
+
         animationFrameRef.current = requestAnimationFrame(updateShowTime);
-    
+
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
             window.removeEventListener("resize", responsivescreen);
         };
-    
-    }, [user]); 
+    }, [user, isCheckedActivity]);
+    useEffect(() => {
+        console.log("todayActivity", activities);
+    }, [activities]);
+
     const containerStyle = {
         zoom: zoomLevel,
     };
@@ -70,82 +105,91 @@ const ActivityAllComponent = (props) => {
     const day = today.toLocaleDateString(locale, { weekday: 'long' });
     const currentDate = `${day} ${month}/${date}/${year}`;
 
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        const formattedDate = new Date(dateString).toLocaleDateString('en-GB', options);
+        return formattedDate;
     };
 
     return (
-        
+
         <div style={containerStyle}>
-        <NavbarComponent />
-        <div className="admin-topicBox colorPrimary-800">
-            <div></div>
-            <div>
-                <h1 className="center">ระบบการจัดการกิจกรรม</h1>
-            </div>
-            <div className="dateTime">
-                <p className="admin-textBody-large">Date : {currentDate}</p>
-                <p className="admin-textBody-large">Time : {showTime}</p>
-            </div>
-        </div>
-        <div className="admin">
-            <div className="admin-header">
-                <div className="admin-hearder-item">
-                    <a href="/adminActivityTodayComponent" target="_parent">กิจกรรมวันนี้</a>
-                    <a href="/adminActivityOpenRegisterComponent" target="_parent">เปิดลงทะเบียน</a>
-                    <a href="/adminActivityNoOpenRegisterComponent" target="_parent">ยังไม่เปิดลงทะเบียน</a>
-                    <a href="#" target="_parent" id="select" >ทั้งหมด</a>
+            <NavbarComponent />
+            <div className="admin-topicBox colorPrimary-800">
+                <div></div>
+                <div>
+                    <h1 className="center">ระบบการจัดการกิจกรรม</h1>
                 </div>
-                <div className="admin-hearder-item admin-right">
-                    <a href="/adminActivityAddComponent" target="_parent">เพิ่มกิจกรรม </a>
+                <div className="dateTime">
+                    <p className="admin-textBody-large">Date : {currentDate}</p>
+                    <p className="admin-textBody-large">Time : {showTime}</p>
                 </div>
             </div>
-            
-            <div className="admin-body">
-                <div className="admin-activity">
-                    <div className="admin-activity-item">
-                        <div className="admin-activity-today-hearder-flexbox">
-                            <div className="admin-activity-today-hearder-box">
-                                <h2 className="colorPrimary-800">กิจกรรม</h2>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
-                            </div>
-                            <div className="admin-activity-today-hearder-box admin-right">
-                                <a className="admin-activity-preview">Preview <img src={preview} className="icon icon_preview"/></a>
-                                
-                            </div>
-                        </div>
-                        <h3 className="colorPrimary-800">รายละเอียด</h3>
-                        <p className="admin-textBody-huge2 colorPrimary-800">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie a iaculis at erat pellentesque adipiscing commodo. Diam quis enim lobortis scelerisque. Orci dapibus ultrices in iaculis nunc sed augue lacus. Velit euismod in pellentesque massa placerat. At augue eget arcu dictum varius duis at. Nisl rhoncus mattis rhoncus urna neque viverra justo nec. Quis ipsum suspendisse ultrices gravida. Sed felis eget velit aliquet sagittis. Leo integer malesuada nunc vel risus commodo. Lacus sed viverra tellus in hac habitasse platea dictumst. Eros donec ac odio tempor orci dapibus. Lacus vel facilisis volutpat est velit egestas dui id. Odio tempor orci dapibus ultrices. Fermentum leo vel orci porta non pulvinar. Id diam vel quam elementum pulvinar etiam. Libero id faucibus nisl tincidunt eget nullam non nisi. Ornare suspendisse sed nisi lacus. Etiam erat velit scelerisque in dictum non consectetur a erat. Ac auctor augue mauris augue.</p>
+            <div className="admin">
+                <div className="admin-header">
+                    <div className="admin-hearder-item">
+                        <a href="/adminActivityTodayComponent" target="_parent">กิจกรรมวันนี้</a>
+                        <a href="/adminActivityOpenRegisterComponent" target="_parent">เปิดลงทะเบียน</a>
+                        <a href="/adminActivityNoOpenRegisterComponent" target="_parent">ยังไม่เปิดลงทะเบียน</a>
+                        <a href="#" target="_parent" id="select" >ทั้งหมด</a>
                     </div>
-
-                    <div className="admin-activity-item">
-                        <div className="admin-activity-today-hearder-flexbox">
-                            <div className="admin-activity-today-hearder-box">
-                                <h2 className="colorPrimary-800">กิจกรรม</h2>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
-                            </div>
-                            <div className="admin-activity-today-hearder-box admin-right">
-                            <a className="admin-activity-preview">Preview <img src={preview} className="icon icon_preview"/></a>
-                            
-                            </div>
-                        </div>
-                        <h3 className="colorPrimary-800">รายละเอียด</h3>
-                        <p className="admin-textBody-huge2 colorPrimary-800">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie a iaculis at erat pellentesque adipiscing commodo. Diam quis enim lobortis scelerisque. Orci dapibus ultrices in iaculis nunc sed augue lacus. Velit euismod in pellentesque massa placerat. At augue eget arcu dictum varius duis at. Nisl rhoncus mattis rhoncus urna neque viverra justo nec. Quis ipsum suspendisse ultrices gravida. Sed felis eget velit aliquet sagittis. Leo integer malesuada nunc vel risus commodo. Lacus sed viverra tellus in hac habitasse platea dictumst. Eros donec ac odio tempor orci dapibus. Lacus vel facilisis volutpat est velit egestas dui id. Odio tempor orci dapibus ultrices. Fermentum leo vel orci porta non pulvinar. Id diam vel quam elementum pulvinar etiam. Libero id faucibus nisl tincidunt eget nullam non nisi. Ornare suspendisse sed nisi lacus. Etiam erat velit scelerisque in dictum non consectetur a erat. Ac auctor augue mauris augue.</p>
+                    <div className="admin-hearder-item admin-right">
+                        <a href="/adminActivityAddComponent" target="_parent">เพิ่มกิจกรรม </a>
                     </div>
-                    
                 </div>
 
-                
-                
+                <div className="admin-body">
+                    <div className="admin-activity">
+                        {activities && activities.length > 0 ? (
+                            activities.map((activities, index) => (
+                                <div className="admin-activity-item">
+                                    <div className="admin-activity-today-hearder-flexbox">
+                                        <div className="admin-activity-today-hearder-box">
+                                            <h2 className="colorPrimary-800">กิจกรรม : {activities.activityName}</h2>
+                                            <p className="admin-textBody-big colorPrimary-800">
+                                                <img src={calendarFlat_icon} className="icon-activity" /> : {formatDate(activities.openQueenDate)}
+                                            </p>
+                                            <p className="admin-textBody-big colorPrimary-800">
+                                                {activities.timeSlots
+                                                    .map((timeSlot, slotIndex) => (
+                                                        <div>
+                                                            <img src={clockFlat_icon} className="icon-activity" /> : {timeSlot.startTime} - {timeSlot.endTime}
+                                                        </div>
+                                                    ))}
+                                            </p>
+                                            <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity" /> : {activities.totalRegisteredCount} คน <img src={annotaion_icon} className="icon-activity" /></a></p>
+                                        </div>
+                                        <div className="admin-activity-today-hearder-box admin-right">
+                                            <a className="admin-activity-preview">Preview <img src={preview} className="icon icon_preview" /></a>
+
+                                        </div>
+                                    </div>
+                                    <h3 className="colorPrimary-800">รายละเอียด</h3>
+                                    <p style={{
+                                        maxWidth: '794.91px',
+                                        overflow: 'hidden',
+                                        whiteSpace: 'pre-wrap',
+                                        wordWrap: 'break-word'
+                                    }} className="admin-textBody-huge2 colorPrimary-800">
+                                        {activities.activityDetail}
+                                    </p>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                {/* Content for the case when activities are not available */}
+                            </div>
+                        )}
+
+                    </div>
+
+
+
+                </div>
+
             </div>
-           
+
         </div>
-        
-    </div>
 
     );
 }

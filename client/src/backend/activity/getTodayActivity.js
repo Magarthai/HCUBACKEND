@@ -70,3 +70,26 @@ export const fetchCloseActivity = async (user, checkCurrentDate) => {
         console.error('Error fetching activities:', error);
     }
 }
+
+export const fetchAllActivity = async (user, checkCurrentDate) => {
+    try {
+        if (user && checkCurrentDate) {
+            const activitiesCollection = collection(db, 'activities');
+
+            const querySnapshot = await getDocs(query(
+                activitiesCollection,
+            ));
+
+            const activitiesData = querySnapshot.docs
+                .map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+
+
+            return activitiesData;
+        }
+    } catch (error) {
+        console.error('Error fetching activities:', error);
+    }
+}
