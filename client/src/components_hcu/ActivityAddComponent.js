@@ -35,11 +35,29 @@ const ActivityAddComponent = (props) => {
               text: 'Activity detail should not exceed 10 MB',
             });
           }
+        } else if (name === 'openQueenDate') {
+            // Handle openQueenDate
+            setState({ ...state, [name]: event.target.value });
+        } else if (name === 'endQueenDate') {
+            // Handle endQueenDate
+            const openQueenDate = state.openQueenDate;
+    
+            if (event.target.value < openQueenDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Date',
+                    text: 'End date should be greater than or equal to start date',
+                });
+            } else {
+                setState({ ...state, [name]: event.target.value });
+            }
+        
         } else {
           setState({ ...state, [name]: event.target.value });
         }
       };
     
+
     
     const { activityName, activityDetail, activityType, openQueenDate , endQueenDate } = state;
 

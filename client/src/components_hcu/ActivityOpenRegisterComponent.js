@@ -119,6 +119,13 @@ const ActivityOpenRegisterComponent = (props) => {
             navigate('/adminActivityEditComponent', { state: { activities: activities } });
         }
       }
+      const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        const formattedDate = new Date(dateString).toLocaleDateString('en-GB', options);
+        return formattedDate;
+      };
+    
+
     return (
         
         <div style={containerStyle}>
@@ -154,8 +161,19 @@ const ActivityOpenRegisterComponent = (props) => {
                         <div className="admin-activity-today-hearder-flexbox">
                             <div className="admin-activity-today-hearder-box">
                                 <h2 className="colorPrimary-800">กิจกรรม : {activities.activityName}</h2>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
+                                <p className="admin-textBody-big colorPrimary-800">
+                                    <img src={calendarFlat_icon} className="icon-activity"/> : {formatDate(activities.openQueenDate)}
+                                    </p>
+                                <p className="admin-textBody-big colorPrimary-800">
+                                {activities.timeSlots
+                                            .map((timeSlot, slotIndex) => (
+                                                    <div>
+                                                        <img src={clockFlat_icon} className="icon-activity" /> : {timeSlot.startTime} - {timeSlot.endTime} 
+                                                        </div>
+                                                   
+
+                                            ))}
+                                             </p>
                                 <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : {activities.totalRegisteredCount} คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">

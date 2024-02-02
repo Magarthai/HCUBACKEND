@@ -114,7 +114,11 @@ const ActivityTodayComponent = (props) => {
         });
     };
 
-
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        const formattedDate = new Date(dateString).toLocaleDateString('en-GB', options);
+        return formattedDate;
+      };
 
     return (
 
@@ -151,17 +155,18 @@ const ActivityTodayComponent = (props) => {
                                     <div className="admin-activity-today-hearder-box">
                                         <h2 className="colorPrimary-800">กิจกรรม : {activities.activityName}</h2>
                                         <p className="admin-textBody-big colorPrimary-800">
-                                            <img src={calendarFlat_icon} className="icon-activity" /> : {checkCurrentDate}
-                                        </p>
-                                        {activities.timeSlots
-                                            .filter((timeSlot) => timeSlot.date === checkCurrentDate)
+                                <img src={calendarFlat_icon} className="icon-activity"/> : {formatDate(activities.openQueenDate)}
+                                </p>
+                                        <p className="admin-textBody-big colorPrimary-800">
+                                {activities.timeSlots
                                             .map((timeSlot, slotIndex) => (
-                                                <div key={slotIndex}>
-                                                    <p className="admin-textBody-big colorPrimary-800">
-                                                        <img src={clockFlat_icon} className="icon-activity" /> : {timeSlot.startTime} - {timeSlot.endTime}
-                                                    </p>
-                                                </div>
+                                                    <div>
+                                                        <img src={clockFlat_icon} className="icon-activity" /> : {timeSlot.startTime} - {timeSlot.endTime} 
+                                                        </div>
+                                                   
+
                                             ))}
+                                             </p>
 
 
                                         <p className="admin-textBody-big colorPrimary-800">

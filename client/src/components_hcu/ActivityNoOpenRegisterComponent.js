@@ -4,6 +4,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import NavbarComponent from "./NavbarComponent";
 import "../css/AdminActivityComponent.css";
+import { doc, deleteDoc } from "firebase/firestore";
 import calendarFlat_icon from "../picture/calendar-flat.png";
 import clockFlat_icon from "../picture/clock-flat.png";
 import person_icon from "../picture/person-dark.png";
@@ -12,7 +13,7 @@ import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { fetchCloseActivity, fetchOpenActivity } from "../backend/activity/getTodayActivity";
 import { useNavigate } from 'react-router-dom';
-
+import Swal from "sweetalert2";
 const ActivityNoOpenRegisterComponent = (props) => {
     const { user, userData } = useUserAuth();
     const navigate = useNavigate();
@@ -35,7 +36,6 @@ const ActivityNoOpenRegisterComponent = (props) => {
     const checkCurrentDate = getCurrentDate();
 
     const fetchOpenActivityAndSetState = async () => {
-        if (!isCheckedActivity) {
             try {
                 const openActivity = await fetchCloseActivity(user, checkCurrentDate);
                 if (openActivity) {
@@ -50,7 +50,6 @@ const ActivityNoOpenRegisterComponent = (props) => {
             } catch (error) {
                 console.error('Error fetching today activity:', error);
             }
-        }
     };
     
     useEffect(() => {
@@ -121,7 +120,69 @@ const ActivityNoOpenRegisterComponent = (props) => {
         }
       }
 
-
+      const deletedActivity = (activities) => {
+        if (activities) {
+            Swal.fire({
+                title: 'ลบกิจกรรม',
+                text: `คุณแน่ใจว่าจะลบกิจกรรม : ${activities.activityName} ?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#DC2626',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                    cancelButton: 'custom-cancel-button',
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const activitiesRef = doc(db, 'activities', `${activities.id}`);
+                        deleteDoc(activitiesRef, `${activities.id}`)
+                        console.log(`${activities.id}`);
+                        Swal.fire(
+                            {
+                                title: 'การลบการนัดหมายสำเร็จ!',
+                                text: `การนัดหมายถูกลบเรียบร้อยแล้ว!`,
+                                icon: 'success',
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                        )
+                        fetchOpenActivityAndSetState();
+                    } catch(firebaseError) {
+                        throw new Error (firebaseError);
+                    }
+    
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    Swal.fire(
+                        {
+                            title: 'ลบช่วงเวลาไม่สำเร็จ!',
+                            text: `ไม่สามารถลบช่วงเวลาได้ กรุณาลองอีกครั้งในภายหลัง`,
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        }
+                    )
+                }
+            })
+    
+        }
+        }
+        const formatDate = (dateString) => {
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            const formattedDate = new Date(dateString).toLocaleDateString('en-GB', options);
+            return formattedDate;
+          };
     return (
         
         <div style={containerStyle}>
@@ -151,45 +212,52 @@ const ActivityNoOpenRegisterComponent = (props) => {
             
             <div className="admin-body">
                 <div className="admin-activity">
+                {activities && activities.length > 0 ? (
+                        activities.map((activities, index) => (
                     <div className="admin-activity-item">
                         <div className="admin-activity-today-hearder-flexbox">
                             <div className="admin-activity-today-hearder-box">
-                                <h2 className="colorPrimary-800">กิจกรรม</h2>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
+                            <h2 className="colorPrimary-800">กิจกรรม : {activities.activityName}</h2>
+                            <p className="admin-textBody-big colorPrimary-800">
+                                    <img src={calendarFlat_icon} className="icon-activity"/> : {formatDate(activities.openQueenDate)}
+                                    </p>
+                            <p className="admin-textBody-big colorPrimary-800">
+                                {activities.timeSlots
+                                            .map((timeSlot, slotIndex) => (
+                                                    <div>
+                                                        <img src={clockFlat_icon} className="icon-activity" /> : {timeSlot.startTime} - {timeSlot.endTime} 
+                                                        </div>
+                                                   
+
+                                            ))}
+                                             </p>
+                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : {activities.totalRegisteredCount} คน <img src={annotaion_icon} className="icon-activity"/></a></p>
                             </div>
                             <div className="admin-activity-today-hearder-box admin-right">
-                                <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
-                                <img src={icon_delete} className="icon"/>
+                            <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon" onClick={() => EditActivity(activities)} /></a>
+                                <img  onClick={() => deletedActivity(activities)} src={icon_delete} className="icon"/>
                             </div>
                         </div>
                         <h3 className="colorPrimary-800">รายละเอียด</h3>
-                        <p className="admin-textBody-huge2 colorPrimary-800">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie a iaculis at erat pellentesque adipiscing commodo. Diam quis enim lobortis scelerisque. Orci dapibus ultrices in iaculis nunc sed augue lacus. Velit euismod in pellentesque massa placerat. At augue eget arcu dictum varius duis at. Nisl rhoncus mattis rhoncus urna neque viverra justo nec. Quis ipsum suspendisse ultrices gravida. Sed felis eget velit aliquet sagittis. Leo integer malesuada nunc vel risus commodo. Lacus sed viverra tellus in hac habitasse platea dictumst. Eros donec ac odio tempor orci dapibus. Lacus vel facilisis volutpat est velit egestas dui id. Odio tempor orci dapibus ultrices. Fermentum leo vel orci porta non pulvinar. Id diam vel quam elementum pulvinar etiam. Libero id faucibus nisl tincidunt eget nullam non nisi. Ornare suspendisse sed nisi lacus. Etiam erat velit scelerisque in dictum non consectetur a erat. Ac auctor augue mauris augue.</p>
+                        <p style={{
+                                maxWidth: '794.91px',
+                                overflow: 'hidden',
+                                whiteSpace: 'pre-wrap',
+                                wordWrap: 'break-word'
+                            }} className="admin-textBody-huge2 colorPrimary-800">
+                                {activities.activityDetail}
+                            </p>
                         <div className="admin-right">
                             <a href="/" target="_parent" className="btn btn-primary">รายชื่อ</a>
                         </div>
                     </div>
 
-                    <div className="admin-activity-item">
-                        <div className="admin-activity-today-hearder-flexbox">
-                            <div className="admin-activity-today-hearder-box">
-                                <h2 className="colorPrimary-800">กิจกรรม</h2>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={calendarFlat_icon} className="icon-activity"/> : 14/10/2023</p>
-                                <p className="admin-textBody-big colorPrimary-800"><img src={clockFlat_icon} className="icon-activity"/> : 10:00 - 16:00</p>
-                                <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity"/> : 40 คน <img src={annotaion_icon} className="icon-activity"/></a></p>
-                            </div>
-                            <div className="admin-activity-today-hearder-box admin-right">
-                                <a href="/adminActivityEditComponent" target="_parent"><img src={edit} className="icon"/></a>
-                                <img src={icon_delete} className="icon" />
-                            </div>
+                    ))
+                    ) : (
+                        <div className="admin-queue-card" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            {/* Content for the case when activities are not available */}
                         </div>
-                        <h3 className="colorPrimary-800">รายละเอียด</h3>
-                        <p className="admin-textBody-huge2 colorPrimary-800">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie a iaculis at erat pellentesque adipiscing commodo. Diam quis enim lobortis scelerisque. Orci dapibus ultrices in iaculis nunc sed augue lacus. Velit euismod in pellentesque massa placerat. At augue eget arcu dictum varius duis at. Nisl rhoncus mattis rhoncus urna neque viverra justo nec. Quis ipsum suspendisse ultrices gravida. Sed felis eget velit aliquet sagittis. Leo integer malesuada nunc vel risus commodo. Lacus sed viverra tellus in hac habitasse platea dictumst. Eros donec ac odio tempor orci dapibus. Lacus vel facilisis volutpat est velit egestas dui id. Odio tempor orci dapibus ultrices. Fermentum leo vel orci porta non pulvinar. Id diam vel quam elementum pulvinar etiam. Libero id faucibus nisl tincidunt eget nullam non nisi. Ornare suspendisse sed nisi lacus. Etiam erat velit scelerisque in dictum non consectetur a erat. Ac auctor augue mauris augue.</p>
-                        <div className="admin-right">
-                            <a href="/" target="_parent" className="btn btn-primary">รายชื่อ</a>
-                        </div>
-                    </div>
+                    )}
                     
                 </div>
 
