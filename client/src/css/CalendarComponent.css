@@ -29,7 +29,7 @@ body{
 .wrapper header{
     display: flex;
     align-items: center;
-    padding: 2%;
+    /* padding: 2%; */
     justify-content: space-between;
     align-items: center;
     color: #263A50;
@@ -39,7 +39,7 @@ header .current-date{
     font-size: 22px;
     font-weight: 400;
     margin: 0 20px;  
-     
+    
 }
 header .icons span{
     height: 38px;
@@ -48,14 +48,19 @@ header .icons span{
     cursor: pointer;
     text-align: center;
     font-size: 1.9rem;
-    padding-top: -5px;
+    
+}
+.calandar-icon{
+    width: 26px;
+    margin-top: -15px;
 }
 header .icons{
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 header .icons span:last-child{
-    margin-right: -10px;  
+    /* margin-right: -10px;   */
 }
 .calendar{
     width: 100%;
@@ -75,7 +80,7 @@ header .icons span:last-child{
         
 }
 .calendar .days li{
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 300;
     cursor: pointer;
     margin-top: 50px;
@@ -85,9 +90,9 @@ header .icons span:last-child{
     padding-bottom: 100px;
     text-align: center;
     background-color: #F2F2F2;
-    margin-top: 30px;
-    max-height:  495px;
-    min-height:  495px;
+    margin-top: 20px;
+    max-height:  503px;
+    min-height:  503px;
 
 }
 .calendar ul li{
@@ -144,11 +149,13 @@ header .icons span:last-child{
     flex-direction: column;
     align-items: center; 
     background-color: #ABD9D8;
-    height: 456px; 
+    height: 433px; 
+    margin: 0% 5%;
 
 }
 #userCalendar .calendar .days li{
     margin-top: 25px;
+    font-size: 16px;
 
 }
 #userCalendar.wrapper header{
@@ -161,15 +168,15 @@ header .icons span:last-child{
     padding: 15px 0px;
 }
 #userCalendar .calendar .days{
-    max-height:  340px;
-    min-height:  340px;
-    margin-top: 0px;
+    max-height:  320px;
+    min-height:  320px;
+    margin-top: 10px;
     border-radius: 0px 0px 20px 20px ;
 
 
 }
-#userCalendarheader .current-date{
-    font-size: 16px;
+#userCalendar header .current-date{
+    font-size: 18px;
     font-weight: 400;
     margin: 0 20px;  
      
@@ -177,6 +184,13 @@ header .icons span:last-child{
 .calendar .weeks{
     margin: 10px;
 }
-#userCalendarheader.calendar .weeks{
+#userCalendar header.calendar .weeks{
     margin: 0px;
+}
+#userCalendar .calendar .weeks li{
+    font-size: 17px;
+    font-weight: 400;
+    text-align: center;
+    color: #263A50;
+        
 }

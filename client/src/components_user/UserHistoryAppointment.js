@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/UserHistoryAppointment.css";
 import { Link } from "react-router-dom";
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from '../components_user/NavbarComponent';
 import item1 from "../picture/calendar-dark.png";
 import item2 from "../picture/calen-search.png";
 import item3 from "../picture/clock-dark.png";

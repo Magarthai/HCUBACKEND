@@ -44,11 +44,11 @@ const SignupComponent = (props) => {
   
     const validateInput = () => {
       if (!email.includes('@')) {
-        alert('Please enter a valid email.');
+        alert('กรุณากรอกอีเมลที่ถูกต้อง');
         return false;
       }
       if (password.length < 8) {
-        alert('Password must be at least 8 characters.');
+        alert('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
         return false;
       }
       return true;
@@ -97,8 +97,8 @@ const SignupComponent = (props) => {
       
           Swal.fire({
             icon: "success",
-            title: "Account Created",
-            text: "Your account has been successfully created!",
+            title: "บัญชีถูกสร้างสำเร็จ!",
+            text: "บัญชีของคุณถูกสร้างเรียบร้อยแล้ว",
           }).then((result) => {
             if (result.isConfirmed) {
               window.location.href = '/home';
@@ -111,21 +111,21 @@ const SignupComponent = (props) => {
           if (firebaseError.message === "Failed to create user account.") {
             Swal.fire({
               icon: "error",
-              title: "Error",
-              text: "Invalid Email or Email already in use",
+              title: "เกิดข้อผิดพลาด!",
+              text: "อีเมลไม่ถูกต้องหรืออีเมลนี้ถูกใช้งานแล้ว",
             });
           } else if (firebaseError.message === "Student ID already in use") {
             Swal.fire({
               icon: "error",
-              title: "Error",
-              text: "Student ID already in use",
+              title: "เกิดข้อผิดพลาด!",
+              text: "รหัสนักศึกษาถูกใช้งานแล้ว",
             });
           } else {
             console.error('Firebase error response:', firebaseError);
             Swal.fire({
               icon: "error",
-              title: "Error",
-              text: "Failed to create user account. Please try again later.",
+              title: "เกิดข้อผิดพลาด!",
+              text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง",
             });
           }
         }

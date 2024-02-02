@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/UserListAppointmentUser.css";
 import { Link } from "react-router-dom";
-import NavbarUserComponent from "../components_user/NavbarUserComponent";
+import NavbarUserComponent from "../components_user/NavbarComponent";
 import item1 from "../picture/calendar-dark.png";
 import item2 from "../picture/calen-search.png";
 import item3 from "../picture/clock-dark.png";
@@ -514,14 +514,14 @@ const ListAppointmentUser = () => {
     </div>
   )) : (
               <div className="user-DateAppointment-card_noAppointment gap-16">
-                <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
+                <h3 className="user-DateAppointment-noAppointment center">No appointments available</h3>
               </div>
             )}
 
         </div>
 
         <div className="AppointList-body-BetweenCard">
-          <p className="AppointList-body-BetweenCard-txt">------------- ดำเนินการนัดหมายสำเร็จ -------------</p>
+          <p className="AppointList-body-BetweenCard-txt">---------- ดำเนินการนัดหมายสำเร็จ ----------</p>
         </div>
 
 
@@ -566,7 +566,7 @@ const ListAppointmentUser = () => {
     ) ): (
 
       <div className="user-DateAppointment-card_noAppointment gap-16">
-        <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
+        <h3 className="user-DateAppointment-noAppointment center">No appointments available</h3>
       </div>
     )
   }
@@ -574,7 +574,7 @@ const ListAppointmentUser = () => {
 
 
         <div className="AppointList-body-returnButton">
-        <Link className="return-btn" to={"/appointment"}><button className="return-btn">ย้อนกลับ</button></Link>
+          <Link className="return-btn" to={"/appointment"}><button className="return-btn">ย้อนกลับ</button></Link>
         </div>
       </div>
 

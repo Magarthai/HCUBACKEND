@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../css/CalendarComponent.css";
+import left from "../picture/left.png";
+import right from "../picture/right.png";
 
 const CalendarUserComponent = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -94,7 +96,7 @@ const CalendarUserComponent = (props) => {
               setCurrentYear((prevYear) => (currentMonth === 1 ? prevYear - 1 : prevYear));
             }}
           >
-            chevron_left
+            <img src={left} className="calandar-icon"/>
           </span>
           <p className="current-date">{months[currentMonth - 1]} {currentYear}</p>
           <span
@@ -105,7 +107,7 @@ const CalendarUserComponent = (props) => {
               setCurrentYear((prevYear) => (currentMonth === 12 ? prevYear + 1 : prevYear));
             }}
           >
-            chevron_right
+             <img src={right} className="calandar-icon"/>
           </span>
         </div>
       </header>

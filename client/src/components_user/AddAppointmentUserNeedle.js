@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/AddAppointmentUser.css";
-import NavbarUserComponent from './NavbarUserComponent';
+import NavbarUserComponent from './NavbarComponent';
 import CalendarAddUserComponent from "./CalendarAddUserComponent";
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';

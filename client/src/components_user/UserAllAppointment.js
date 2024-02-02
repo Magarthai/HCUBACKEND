@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/UserAllAppointment.css";
 import { Link } from "react-router-dom";
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from '../components_user/NavbarComponent';
 import CalendarUserComponent from "./CalendarUserComponent";
 import icon1 from '../picture/calendar-flat.png';
 import icon2 from '../picture/clock-flat.png';
@@ -359,7 +359,7 @@ const handleDateSelect = (selectedDate) => {
             </header>
 
             <body className="user-body">
-                <h3 className='User-appointmentmenu-headbar'>ปฏิทิน</h3>
+                <h3 className='User-appointmentmenu-headbar colorPrimary-800'>ปฏิทิน</h3>
                 <div className="CalendarUser-appointment">
                     <CalendarUserComponent
                         selectedDate={selectedDate}

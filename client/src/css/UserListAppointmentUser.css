@@ -97,7 +97,7 @@
 .AppointList-body-BetweenCard{
     text-align: center;
     flex-direction: row;
-    margin: 10px;
+    margin: 10px 5%;
 }
 
 .AppointList-body-BetweenCard-txt{
@@ -202,6 +202,7 @@
     text-align: center;
     align-items: center;
     justify-content: center;
+    margin-top: 20px;
 }
 .return-btn{
     display: flex;

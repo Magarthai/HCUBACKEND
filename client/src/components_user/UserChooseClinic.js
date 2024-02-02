@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/UserChooseClinic.css';
 import { Link } from 'react-router-dom';
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from '../components_user/NavbarComponent';
 import logo1 from '../picture/logo-clinic1.png';
 import logo2 from '../picture/logo-clinic2.png';
 import logo3 from '../picture/logo-clinic3.png';
