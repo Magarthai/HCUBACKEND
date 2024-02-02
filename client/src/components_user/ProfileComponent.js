@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Login&SignupComponent.css";
-import NavbarUserComponent from './NavbarUserComponent';
+import NavbarUserComponent from './NavbarComponent';
 import "../css/Component.css";
 import "../css/UserProfileCompoment.css";
 import { db, getDocs, collection } from "../firebase/config";
@@ -62,7 +62,7 @@ const ProfileUserComponent = (props) => {
             {userData && <p className="colorPrimary-800 user-profile-detail textBody-big">{userData.tel}</p>}
             <p className="textButton-Normal colorPrimary-800">เพศ</p>
             {userData && <p className="colorPrimary-800 user-profile-detail textBody-big">{userData.gender}</p>}
-            <a a className="btn btn-primary" href="/profile/edit" role="button" target="_parent">แก้ไข</a>
+            <a a className="btn btn-primary" href="/profile/edit" role="button" target="_parent">แก้ไขข้อมูลส่วนตัว</a>
           </div>
 
 

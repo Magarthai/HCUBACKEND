@@ -61,7 +61,7 @@ const NavbarComponent = (props) => {
               </div>
             </div>
             <div className="user-navbar-lists">
-              <a href="/appointment" role="button" target="_parent"><p>หน้าแรก</p></a>
+              <a href="/home" role="button" target="_parent"><p>หน้าแรก</p></a>
               <a href="/appointment" role="button" target="_parent"><p>นัดหมาย</p></a>
               <a href="/" role="button"  target="_parent"><p>กิจกรรม</p></a>
               <a href="/" role="button"  target="_parent"><p>สถานะคิว</p></a>

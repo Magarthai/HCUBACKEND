@@ -3,7 +3,7 @@ import "../css/UserAppointmentDetail.css";
 import '../css/Component.css';
 import CalendarFlat_icon from "../picture/calendar-flat.png";
 import ClockFlat_icon from "../picture/clock-flat.png";
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from '../components_user/NavbarComponent';
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import { useSearchParams } from 'react-router-dom';

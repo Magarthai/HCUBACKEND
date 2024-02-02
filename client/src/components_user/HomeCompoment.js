@@ -3,6 +3,7 @@ import CalendarUserComponent from "./CalendarUserComponent";
 import "../css/Login&SignupComponent.css";
 import NavbarUserComponent from './NavbarUserComponent';
 import NavbarComponent from '../components_user/NavbarComponent';
+import function0 from "../picture/functionUser0.png";
 import function1 from "../picture/functionUser1.png";
 import function2 from "../picture/functionUser2.png";
 import function3 from "../picture/functionUser3.png";
@@ -11,11 +12,12 @@ import function5 from "../picture/functionUser5.png";
 import function6 from "../picture/functionUser6.png";
 import function7 from "../picture/functionUser7.png";
 import function8 from "../picture/functionUser8.png";
+import right from "../picture/right.png";
 import home from "../picture/home-hcu.png";
 import male from "../picture/male.png";
 import female from "../picture/female.png";
 import { useUserAuth } from "../context/UserAuthContext";
-import {useNavigate } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
 
 const HomeComponent = (props) => {
     const { user,userData} = useUserAuth();
@@ -40,28 +42,42 @@ const HomeComponent = (props) => {
                 <div className="user-home">
                     <a href="#" role="button"  target="_parent" style={{width:"100%"}}><img src={home} className="user-home-hcu"/></a>
                     <h3 className="colorPrimary-800">Welcome to HCU</h3>
-                    <div className="user-home-proflie">
-                        <div className="user-home-proflie-box center" style={{width:"30%"}}>
+                    <a href="/profile" target="_parent">
+                    <div className="user-home-proflie" >
+                        
+                        <div className="user-home-proflie-box center" style={{width:"15%", paddingLeft:"4%"}}>
                             {userData &&<img className="user-home-profile-img" src={userData.gender === 'female' ? female : male} alt="logo health care unit" />}
                         </div>
                         
-                        <div className="user-home-proflie-box colorPrimary-800">
-                            {userData && <div className="admin-textBody-huge">{userData.firstName} {userData.lastName}</div>}
-                            {userData && <div className="admin-textBody-small2">{userData.id}</div>}
-
+                        <div className="user-home-proflie-box colorPrimary-800" style={{width:"70%", justifyContent:"flex-start", paddingLeft:"6%"}}>
+                            {userData && <div className="admin-textBody-huge">{userData.firstName} {userData.lastName} <br></br> <div className="admin-textBody-small2">{userData.id}</div></div> }
                         </div>
+                        <div className="user-home-proflie-box admin-right" style={{width:"15%"}}>
+                            <img src={right} style={{width:"40px", height:"40px"}} />
+                        </div>
+                        
  
                     </div>
-                    <a href="/appointment" role="button"  target="_parent"><img src={function1}/></a>
-                    <a href="/appointment" role="button"  target="_parent"><img src={function1}  /></a>
+                    </a>                 
+                    <div className="user-home-list">
+                    <a href="#" role="button"  target="_parent"><img src={function0}/><p>หน้าแรก</p></a>
+                    <a href="/appointment" role="button"  target="_parent"><img src={function1}/><p>นัดหมาย</p></a>
+                    <a href="#" role="button"  target="_parent"><img src={function2}/><p>กิจกรรม</p></a>
+                    <a href="#" role="button"  target="_parent"><img src={function3}/><p>สถานะคิว</p></a>
+                    <a href="/timetable" role="button"  target="_parent"><img src={function4}/><p>ช่วงเวลาเข้าทําการแพทย์</p></a>
+                    <a href="#" role="button"  target="_parent"><img src={function5}/><p>ตำแหน่งที่ตั้ง</p></a>
+                    <a href="#" role="button"  target="_parent"><img src={function6}/><p>ข้อมูลทั่วไป</p></a>
+                    <a href="#" role="button"  target="_parent"><img src={function7}/><p>ประเมินความพึงพอใจ</p></a>
+                    <a href="#" role="button"  target="_parent"><img src={function8}/><p>คู่มือการใช้งาน</p></a>
+                    {/* <a href="/appointment" role="button"  target="_parent"><img src={function1}/><p>นัดหมาย</p></a>
                     <a href="#" role="button"  target="_parent"><img src={function2} /></a>
                     <a href="#" role="button"  target="_parent"><img src={function3} /></a>
                     <a href="/timetable" role="button"  target="_parent"><img src={function4} /></a>
                     <a href="#" role="button"  target="_parent"><img src={function5} /></a>
                     <a href="#" role="button"  target="_parent"><img src={function6}/></a>
                     <a href="#" role="button"  target="_parent" ><img src={function7} /></a>
-                    <a href="#" role="button"  target="_parent"><img src={function8} /></a>
-
+                    <a href="#" role="button"  target="_parent"><img src={function8} /></a> */}
+                    </div>
                 </div>
             </div>
          

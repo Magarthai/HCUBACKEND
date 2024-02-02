@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/UserTimetableComponent.css";
 import "../css/Component.css";
-import NavbarUserComponent from './NavbarUserComponent';
+import NavbarUserComponent from './NavbarComponent';
 import { db, getDocs, collection } from "../firebase/config";
 import { useUserAuth } from "../context/UserAuthContext";
 

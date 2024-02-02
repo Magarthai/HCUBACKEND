@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Login&SignupComponent.css";
-import NavbarUserComponent from './NavbarUserComponent';
+import NavbarUserComponent from './NavbarComponent';
 import "../css/Component.css";
 import "../css/UserProfileCompoment.css";
 import { useUserAuth } from "../context/UserAuthContext";
@@ -184,6 +184,7 @@ const ProfileEditComponent = (props) => {
                                 target="_parent"
                                 id="edit"
                             />
+                            <a  href="/profile" role="button"  target="_parent" className="btn btn-secondary">ยกเลิก</a>
                             <br/>
                         </form>
                         <br></br>

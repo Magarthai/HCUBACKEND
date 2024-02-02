@@ -298,13 +298,15 @@
         background: #008080;
         border-radius: 0px 0px 20px 20px;
         padding: 8px;
-        padding-left: 40px;
+        padding-left: 6%;
         color: #FFF;
         width: 100%;
         height: 133px;
         position: fixed;
         z-index: 2;
-        top:0px
+        top:0px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        
         
     }
     .user-header h2,.user-header h3{
@@ -317,7 +319,7 @@
     }
     .user-body{
         margin-top: 160px;
-        padding: 5px;
+        /* padding: 5px; */
     }
     .admin-header{
         display: flex;
@@ -355,13 +357,13 @@
     }
     .user-home{
         padding: 0% 3%;
-        display: flex;
+        /* display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
         align-items: stretch;
         box-sizing: border-box;
-        gap: 3%;
+        gap: 3%; */
     }
     .user-home-proflie{
         display: flex;
@@ -371,29 +373,59 @@
         align-items: stretch;
         box-sizing: border-box;
         width: 100%;
-        height: 80px;
+        min-height: 80px;
         background-color: #F2F2F2;
         border-radius: 15px;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        box-shadow:  rgba(0, 0, 0, 0.24) 0px 3px 8px;
         margin: 5px 0px 20px 0px;
         padding: 10px;
 
     }
     .user-home-proflie-box{
         box-sizing: border-box;
-        padding: 0px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
 
     }
-    .user-home a{
-        width: 31.2%;
+    .user-home-list{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
         box-sizing: border-box;
-        margin-bottom: 3%;
+        gap: 3%;
+        width: 100%;
+        height: 90vw;
+        margin-bottom: 20px;
+    }
+    .user-home-list a{
+        width: 31.3%;
+        box-sizing: border-box;
+        margin-bottom: 0%;
+        background-color: #263A50;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        height: 31.3%;
+        color: #ffffff;
+        box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.3);
+        padding:5px;
 
     }
-    .user-home a img{
-        width: 100%;
-        filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
-
+    .user-home-list a p{
+        margin: 0;
+        font-size: 14px;
+    }
+    .user-home-list a img{
+        width: 35px;
+        margin-bottom: 8px;
+        
     }
     .loading-spinner{
         position: absolute;
@@ -411,7 +443,43 @@
         background-color: #ffffff;
         border-radius: 50px;
     }
+@media (max-width: 290px) {
+    .user-home-list a p{
+        margin: 0;
+        font-size: 10px;
+    }
+    .user-home-list a img{
+        width: 30px;
+        margin-bottom: 8px;
+    }
+    h2{
+        font-size: 1.3em;
+    }
+    h3{
+        font-size: 1.0em;
+    }
+    .admin-textBody-huge{
+        font-size: 14px;
+    }
+    .user-home-profile-img{
+        width: 45px;
+        height: 45px;
+    }
+}
+@media (min-width: 600px) {
+    .user-home-list a{
+        padding: 10px;
+    }
+    .user-home-list a p{
+        margin: 0;
+        font-size: 18px;
+    }
+    .user-home-list a img{
+        width: 45px;
+        margin-bottom: 8px;
+    }
 
+}
 @media (min-width: 1025px) {
     .user{
         width: 48%;
@@ -421,8 +489,17 @@
     }
     .user-header {
         width: 48%;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
+    }
+    .user-home-list{
+        height: 42vw;
+    }
+    .user-home-list a{
+        padding: 5px;
+    }
+    .user-home-list a p{
+        margin: 0;
+        font-size: 18px;
     }
    
 }
@@ -439,6 +516,16 @@
         width: 40%;
         /* max-width: 500px;
         min-width: 500px; */
+    }
+    .user-home-list{
+        height: 35vw;
+    }
+    .user-home-list a{
+        padding: 10px;
+    }
+    .user-home-list a p{
+        margin: 0;
+        font-size: 20px;
     }
     
 }

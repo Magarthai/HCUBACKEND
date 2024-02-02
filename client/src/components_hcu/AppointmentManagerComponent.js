@@ -205,7 +205,8 @@ const AppointmentManagerComponent = (props) => {
                 });
 
                 Swal.fire({
-                    icon: "success",                    title: "การนัดหมายสำเร็จ!",
+                    icon: "success",                    
+                    title: "การนัดหมายสำเร็จ!",
                     text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
                     confirmButtonText: 'ตกลง',
                     confirmButtonColor: '#263A50',

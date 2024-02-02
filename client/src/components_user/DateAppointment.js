@@ -7,7 +7,7 @@ import ClockFlat_icon from "../picture/clock-flat.png";
 import Delete_icon from "../picture/icon_delete.jpg";
 import Edit_icon from "../picture/icon_edit.jpg";
 import { useUserAuth } from "../context/UserAuthContext";
-import NavbarUserComponent from '../components_user/NavbarUserComponent';
+import NavbarUserComponent from '../components_user/NavbarComponent';
 import app, { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import Swal from "sweetalert2";
