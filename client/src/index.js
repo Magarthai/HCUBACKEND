@@ -44,6 +44,7 @@ import UserActivityDetail from './components_user/UserActivityDetail.js';
 import UserManual from './components_user/UserManual.js';
 import UserQueue from './components_user/UserQueue.js';
 import AdminActivityDetail from './components_hcu/ActivityDetailComponent.js';
+import AdminActivityQueueComponent from './components_hcu/ActivityQueueComponent.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -171,6 +172,10 @@ const router = createBrowserRouter([
   {
     path: "/adminActivityDetail",
     element: <ProtectAdminRoute><AdminActivityDetail/></ProtectAdminRoute>
+  },
+  {
+    path: "/adminActivityQueueComponent",
+    element: <ProtectAdminRoute><AdminActivityQueueComponent/></ProtectAdminRoute>
   },
   {
     path: "/appointment/detail/:id",

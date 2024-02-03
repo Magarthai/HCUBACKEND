@@ -192,7 +192,7 @@ const ActivityTodayComponent = (props) => {
                                     {activities.activityDetail}
                                 </p>
                                 <div className="admin-right">
-                                    <a href="/adminActivityListOfPeopleComponent" target="_parent" className="btn-activity">จัดการคิว</a>
+                                    <a href="/adminActivityQueueComponent" target="_parent" className="btn-activity">จัดการคิว</a>
                                 </div>
                             </div>
                         ))

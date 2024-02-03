@@ -22,7 +22,7 @@
     width: 100%;
     background-color: #E8E8E8;
     animation-name: example;
-    animation-duration: 0.5s;
+    animation-duration: 0.2s;
     font-size: 16px;
     border-radius: 0px 0px 20px 20px;
    
@@ -102,8 +102,8 @@
     padding: 0px;
     margin: 17px 0px;
     animation-name: example1;
-    animation-duration: 0.5s;
-
+    animation-duration: 0.2s;
+        
 }
 .user-navbar-icon-logout{
     width: 35px;

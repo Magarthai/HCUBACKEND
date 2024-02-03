@@ -67,8 +67,8 @@ const LoginComponent = () => {
             console.log(err);
             Swal.fire({
                 icon: "error",
-                title: "Alret",
-                text: "Invalid Email or Password",
+                title: "เกิดข้อพลาด!",
+                text: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
               }).then((result) => {
                 if (result.isConfirmed) {
                     navigate('/');
