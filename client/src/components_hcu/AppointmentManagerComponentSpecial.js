@@ -10,8 +10,9 @@ import { PulseLoader } from "react-spinners";
 import { GetTimeOptionsFromTimetable } from "../backend/timeOptions";
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from "sweetalert2";
-import { availableTimeSlotsSpecial, fetchAppointmentUsersDataSpecial, fetchTimeTableDataSpecial, fetchUserDataWithAppointmentsSpecial } from "../backend/backendSpecial";
+import { availableTimeSlotsSpecial, fetchAppointmentUsersDataSpecial, fetchTimeTableDataFromSpecial, fetchTimeTableDataSpecial, fetchUserDataWithAppointmentsSpecial } from "../backend/backendSpecial";
 import ClockComponent from "../utils/ClockComponent";
+import { fetchTimeTableDataFromBackend } from "../backend/backendGeneral";
 
 const AppointmentManagerComponentSpecial = (props) => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -44,12 +45,40 @@ const AppointmentManagerComponentSpecial = (props) => {
     const fetchTimeTableData = async () => {
         try {
 
-            const timeTableData = await fetchTimeTableDataSpecial(user, selectedDate);
+            const timeTableData = await fetchTimeTableDataFromSpecial(user, selectedDate);
             if (timeTableData.length > 0) {
                 const filteredTimeTableData = timeTableData
                 if (filteredTimeTableData.length > 0) {
-                    const availableTimeSlots = await availableTimeSlotsSpecial(filteredTimeTableData, selectedDate, db);
-                    console.log("availableTimeSlots",availableTimeSlots)
+                    const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                        if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                            acc.push(
+                                ...item.timeablelist.map((timeSlot, index) => ({
+                                    ...timeSlot,
+                                    timeTableId: item.id,
+                                    timeSlotIndex: index
+                                }))
+                            );
+                        }
+                        return acc;
+                    }, []);
+
+                    const appointmentsCollection = collection(db, 'appointment');
+                    const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`)));
+
+                    const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
+
+                    if (existingAppointments.length > 0) {
+                       
+                    } else {
+
+                    }
+
+                    const availableTimeSlots = allTimeableLists.filter((timeSlot) =>
+                        !existingAppointments.some(existingSlot =>
+                            existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
+                        )
+                    );
+
 
                     const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
                         acc[timetableItem.id] = timetableItem.status === "Enabled";
@@ -58,16 +87,32 @@ const AppointmentManagerComponentSpecial = (props) => {
 
                     setIsChecked(initialIsChecked);
 
-                    const timeOptionsFromTimetable = GetTimeOptionsFromTimetable(availableTimeSlots);
+                    const timeOptionsFromTimetable = [
+                        { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
+                        ...availableTimeSlots
+                            .sort((a, b) => {
+                                const timeA = new Date(`01/01/2000 ${a.start}`);
+                                const timeB = new Date(`01/01/2000 ${b.start}`);
+                                return timeA - timeB;
+                            })
+                            .map((timeSlot) => ({
+                                label: `${timeSlot.start} - ${timeSlot.end}`,
+                                value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
+                            })),
+                    ];
+
+
                     setTimeOptions(timeOptionsFromTimetable);
                 } else {
                     const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                     setTimeOptions([noTimeSlotsAvailableOption]);
                 }
+
             } else {
                 const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                 setTimeOptions([noTimeSlotsAvailableOption]);
             }
+
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -472,6 +517,7 @@ const AppointmentManagerComponentSpecial = (props) => {
         document.title = 'Health Care Unit';
         console.log(user);
         fetchTimeTableData();
+        console.log("timeoption", timeOptions)
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
             const baseWidth = 1920;
@@ -481,10 +527,6 @@ const AppointmentManagerComponentSpecial = (props) => {
         console.log(selectedDate)
         responsivescreen();
         window.addEventListener("resize", responsivescreen);
-
-
-
-
 
             fetchUserDataWithAppointments();
             const timeout = setTimeout(() => {

@@ -36,6 +36,8 @@ const AppointmentManagerPhysicComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
+        let x = document.getElementById("detail-appointment");
+        x.style.display = "none";
 
     };
 

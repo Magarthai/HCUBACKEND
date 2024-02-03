@@ -2,7 +2,7 @@ import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import { getUserDataFromUserId } from '../backend/getDataFromUserId'
-export const fetchTimeTableDataSpecial = async (user, selectedDate) => {
+export const fetchTimeTableDataFromSpecial = async (user, selectedDate) => {
     try {
         if (user && selectedDate && selectedDate.dayName) {
             const timeTableCollection = collection(db, 'timeTable');
@@ -16,12 +16,14 @@ export const fetchTimeTableDataSpecial = async (user, selectedDate) => {
                 id: doc.id,
                 ...doc.data(),
             }));
+
             return timeTableData;
         }
     } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching time table data:', error);
+        throw error;
     }
-}
+};
 
 export const fetchUserDataWithAppointmentsSpecial = async (user, selectedDate) => {
     try {

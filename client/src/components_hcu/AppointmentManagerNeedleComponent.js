@@ -27,7 +27,6 @@ const AppointmentManagerNeedleComponent = (props) => {
     const [timeOptionss, setTimeOptionss] = useState([]);
 
     const handleDateSelect = (selectedDate) => {
-        console.log("Selected Date in AppointmentManager:", selectedDate);
         setAllAppointmentUsersData([]);
         setSelectedDate(selectedDate);
         setState({
@@ -35,6 +34,8 @@ const AppointmentManagerNeedleComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
+        let x = document.getElementById("detail-appointment");
+        x.style.display = "none";
     };
 
     const [state, setState] = useState({
