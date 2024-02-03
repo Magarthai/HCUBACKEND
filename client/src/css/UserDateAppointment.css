@@ -110,3 +110,9 @@
     width: 32px;
     height: 32px;
     }
+
+@media (min-width: 1200px) {
+    .user-DateAppointment-card_noAppointment{
+       margin: 0% 5%;
+    }
+}

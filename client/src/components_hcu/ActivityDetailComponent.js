@@ -5,46 +5,16 @@ import activity1 from "../picture/activity1.png";
 import Swal from "sweetalert2";
 import NavbarUserComponent from './NavbarComponent';
 
-const UserActivityDetail = (props) =>{
-
-    const UserActivityRegister = () => {
-        Swal.fire({
-            title: "ลงทะเบียน",
-            html: "โครงการฉีดวัคซีนไข้หวัดใหญ่ตามฤดูกาล 2566<br>วันที่ 20/12/2023 (09.00-12.00)",
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonText: "ลงทะเบียน",
-            cancelButtonText: "ยกเลิก",
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-            Swal.fire({
-                title: "ลงทะเบียนสำเร็จ",
-                icon: "success",
-                confirmButtonText: "กลับ",
-            }).then(function() {
-                window.location = "http://localhost:3000/activity";
-            });
-            }
-        })
-    }
+const ActivityDetail = (props) =>{
 
     return (
 
         <div className="user">
-            <header className="user-header">
-                    <div>
-                        <h2>รายการกิจกรรม</h2>
-                       
-                    </div>
-                    <NavbarUserComponent/>
-            </header>
 
-            <div className="user-body" id="user-event-body">
+            <div >
                 <div>
-                    <img  className="user-activity-vaccine_image" alt="" src={activity1}/>
+                    <img  className="user-activity-vaccine_image1" alt="" src={activity1}/>
                 </div>
-
                 <div className="user-body-activity-detail">
                     <div className="user-activity-vaccine_title_container">
                         <h3>รายการกิจกรรม</h3>
@@ -66,9 +36,9 @@ const UserActivityDetail = (props) =>{
                         </select>
                     </div>
                     <div className="user-activity-vaccine_button_container">
-                        <button onClick={UserActivityRegister} className="user-activity-vaccine_button btn-primary">
-                            ลงทะเบียน
-                        </button>
+                        <a href="/adminActivityAllComponent" role="button"  target="_parent" className="btn btn-primary">
+                            ย้อนกลับ
+                        </a>
                     </div>
                         
                 </div>
@@ -78,4 +48,4 @@ const UserActivityDetail = (props) =>{
     )
 } 
 
-export default UserActivityDetail;
+export default ActivityDetail;

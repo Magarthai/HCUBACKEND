@@ -221,6 +221,12 @@
         font-weight: 500;
         margin-bottom: 15px;
     }
+    .btn-primary:hover{
+        background-color: #263A50;
+    }
+    .btn-primary:active{
+        background-color: #263A50;
+    }
     select{
         height: 40px;
         width: 100%;
@@ -354,6 +360,7 @@
         margin-right: 10px;
         border-radius: 50px;
         font-size: 18px;
+        cursor: pointer;
     }
     .user-home{
         padding: 0% 3%;

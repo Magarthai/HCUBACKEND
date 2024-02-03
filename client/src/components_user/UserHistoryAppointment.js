@@ -387,10 +387,10 @@ AppointmentUsersData.sort((a, b) => {
           </div>
           )) : (
             <div style={{width:"100%",display:"flex",justifyContent:"center"}}>
-            <div className="user-DateAppointment-card_noAppointment gap-16" style={{width:"90%"}}>
-                            <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
+                <div className="user-DateAppointment-card_noAppointment gap-16" style={{width:"90%"}}>
+                            <h3 className="user-DateAppointment-noAppointment center">No appointments available</h3>
                         </div>
-                        </div>
+            </div>
           )}         
           
 

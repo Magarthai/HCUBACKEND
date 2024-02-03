@@ -43,6 +43,7 @@ const UserActivity = (props) => {
             <header className="user-header">
                     <div>
                         <h2>กิจกรรม</h2>
+                        <h3>กิจกรรมทั้งหมด</h3>
                     </div>
 
                     <NavbarUserComponent/>

@@ -176,3 +176,110 @@
 #th_id_acticity, #th_name_acticity, #th_tel_acticity, #th_email_acticity{
     width: 25%;
 }
+.admin-activity-queue-flexbox{
+    /* background-color: #EEF2F7; */
+    width: 100%;
+    /* height: 640px;
+    border-radius: ; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:  center;
+    align-items: stretch;
+    box-sizing: border-box;
+    gap: 30px;
+    
+}
+.admin-activity-queue-flexbox-box{
+    box-sizing: border-box;
+    width: 35%;
+    background-color: #EEF2F7;
+    padding: 20px;
+    border:1px solid #263A50;
+    border-radius: 10px;
+    height: 640px;
+}
+.admin-activity-queue-flexbox-box p{
+    padding: 0px;
+    margin: 0;
+}
+.admin-activity-queue-btn{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+    gap: 2%;
+    width: 100%;
+}
+.admin-activity-queue-btn-box{
+    width: 49%;
+    box-sizing: border-box;
+}
+.admin-activity-queue-cards{
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+    height: 70px;
+    border-radius: 5px;
+    margin: 10px 0px;
+}
+.admin-activity-queue-card1{
+    box-sizing: border-box;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    border-right: 3px solid #263A50;
+}
+.admin-activity-queue-card2{
+    box-sizing: border-box;
+    padding: 5px;
+    display: flex;
+    justify-content:start;
+    align-items: center;
+    width: 80%;
+    padding-left: 20px;
+}
+.admin-activity-queue-cards-all{
+    overflow-y: scroll;
+    padding-right: 10px;
+    height: 280px;
+}
+.admin-activity-queue-cards-all1{
+    overflow-y: scroll;
+    padding-right: 10px;
+    height: 550px;
+}
+.admin-activity-queue-cards-all::-webkit-scrollbar {
+    width: 5px; 
+    margin: 5px;
+}
+.admin-activity-queue-cards-all::-webkit-scrollbar-thumb {
+    background-color: #263A50;
+    border-radius: 5px;
+}
+.admin-activity-queue-cards-all::-webkit-scrollbar-track {
+    background-color: #D1D1D1;
+    border-radius: 5px;
+}
+.admin-activity-queue-cards-all1::-webkit-scrollbar {
+    width: 5px; 
+    margin: 5px;
+}
+.admin-activity-queue-cards-all1::-webkit-scrollbar-thumb {
+    background-color: #263A50;
+    border-radius: 5px;
+}
+.admin-activity-queue-cards-all1::-webkit-scrollbar-track {
+    background-color: #D1D1D1;
+    border-radius: 5px;
+}
