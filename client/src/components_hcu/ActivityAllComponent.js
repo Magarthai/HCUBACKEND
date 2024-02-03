@@ -160,7 +160,7 @@ const ActivityAllComponent = (props) => {
                                             <p className="admin-textBody-big colorPrimary-800"><a href="/adminActivityListOfPeopleComponent" target="_parent" className="colorPrimary-800"><img src={person_icon} className="icon-activity" /> : {activities.totalRegisteredCount} คน <img src={annotaion_icon} className="icon-activity" /></a></p>
                                         </div>
                                         <div className="admin-activity-today-hearder-box admin-right">
-                                            <a className="admin-activity-preview">Preview <img src={preview} className="icon icon_preview" /></a>
+                                            <a className="admin-activity-preview" href="/adminActivityDetail" role="button"  target="_parent">Preview <img src={preview} className="icon icon_preview" /></a>
 
                                         </div>
                                     </div>

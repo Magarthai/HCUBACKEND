@@ -99,7 +99,7 @@ const LoginComponent = () => {
                                 className="form-control"
                                 value={email}
                                 onChange={inputValue("email")}
-                                placeholder="karapagos@mail.kmutt.ac.th"
+                                placeholder="karapagos@kmutt.ac.th"
                             />
                         </div>
 
