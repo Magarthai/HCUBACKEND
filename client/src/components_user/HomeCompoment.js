@@ -62,7 +62,7 @@ const HomeComponent = (props) => {
                     <div className="user-home-list">
                     <a href="#" role="button"  target="_parent"><img src={function0}/><p>หน้าแรก</p></a>
                     <a href="/appointment" role="button"  target="_parent"><img src={function1}/><p>นัดหมาย</p></a>
-                    <a href="#" role="button"  target="_parent"><img src={function2}/><p>กิจกรรม</p></a>
+                    <a href="/activitty" role="button"  target="_parent"><img src={function2}/><p>กิจกรรม</p></a>
                     <a href="#" role="button"  target="_parent"><img src={function3}/><p>สถานะคิว</p></a>
                     <a href="/timetable" role="button"  target="_parent"><img src={function4}/><p>ช่วงเวลาเข้าทําการแพทย์</p></a>
                     <a href="#" role="button"  target="_parent"><img src={function5}/><p>ตำแหน่งที่ตั้ง</p></a>

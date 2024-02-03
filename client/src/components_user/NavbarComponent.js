@@ -63,13 +63,13 @@ const NavbarComponent = (props) => {
             <div className="user-navbar-lists">
               <a href="/home" role="button" target="_parent"><p>หน้าแรก</p></a>
               <a href="/appointment" role="button" target="_parent"><p>นัดหมาย</p></a>
-              <a href="/" role="button"  target="_parent"><p>กิจกรรม</p></a>
-              <a href="/" role="button"  target="_parent"><p>สถานะคิว</p></a>
+              <a href="/activitty" role="button"  target="_parent"><p>กิจกรรม</p></a>
+              <a href="/queue" role="button"  target="_parent"><p>สถานะคิว</p></a>
               <a href="/timetable" role="button"  target="_parent"><p>ช่วงเวลาเข้าทําการแพทย์</p></a>
               <a href="/" role="button"  target="_parent"><p>ตำแหน่งที่ตั้ง</p></a>
               <a href="/" role="button"  target="_parent"><p>ข้อมูลทั่วไป</p></a>
               <a href="/" role="button"  target="_parent"><p>ประเมินความพึงพอใจ</p></a>
-              <a href="/" role="button"  target="_parent"><p>คู่มือการใช้งาน</p></a>
+              <a href="/manual" role="button"  target="_parent"><p>คู่มือการใช้งาน</p></a>
             </div>
             <p  className="colorPrimary-800" onClick={handleLogout} style={{cursor:"pointer"}}><img className="user-navbar-icon-logout"src={logout}/>ออกจากระบบ</p>
           </div>

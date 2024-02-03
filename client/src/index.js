@@ -39,7 +39,10 @@ import AdminActivityNoOpenRegisterComponent from './components_hcu/ActivityNoOpe
 import AdminActivityAllComponent from './components_hcu/ActivityAllComponent.js';
 import AdminActivityEditComponent from './components_hcu/ActivityEditComponent.js';
 import AdminActivityListOfPeopleComponent from './components_hcu/ActivityListOfPeopleComponent.js';
-
+import UserActivity from './components_user/UserActivity.js';
+import UserActivityDetail from './components_user/UserActivityDetail.js';
+import UserManual from './components_user/UserManual.js';
+import UserQueue from './components_user/UserQueue.js';
 import './index.css'
 import { UserAuthContextProvider } from './context/UserAuthContext.jsx'
 import {
@@ -232,6 +235,22 @@ const router = createBrowserRouter([
   {
     path: "/profile/edit",
     element: <ProtectRoute><UserProfileEditComponent/></ProtectRoute>
+  },
+  {
+    path: "/activitty",
+    element: <ProtectRoute><UserActivity/></ProtectRoute>
+  },
+  {
+    path: "/activitty/detail",
+    element: <ProtectRoute><UserActivityDetail/></ProtectRoute>
+  },
+  {
+    path: "/queue",
+    element: <ProtectRoute><UserQueue/></ProtectRoute>
+  },
+  {
+    path: "/manual",
+    element: <ProtectRoute><UserManual/></ProtectRoute>
   },
 ])
 

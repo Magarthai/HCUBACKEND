@@ -489,6 +489,7 @@
     }
     .user-header {
         width: 48%;
+        padding-left: 4%;
 
     }
     .user-home-list{
@@ -514,6 +515,7 @@
     }
     .user-header {
         width: 40%;
+        padding-left: 3%;
         /* max-width: 500px;
         min-width: 500px; */
     }
