@@ -66,15 +66,14 @@ const HomeComponent = (props) => {
         if (userData) {
             console.log("get user data ID")
             const userDocRef = doc(db, 'users', userData.userID);
-
             await updateDoc(userDocRef, {
                 userLineID: (userId),
             });
             console.log("update done",userData.userID)
           }
-
         
     }, [userData]);
+      
     return (
         
         <div className="user">
