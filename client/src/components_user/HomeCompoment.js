@@ -65,16 +65,19 @@ const HomeComponent = (props) => {
     useEffect(() => {
         if (userData) {
             console.log("get user data ID")
-            const userDocRef = doc(db, 'users', userData.userID);
-            updateDoc(userDocRef, {
-                userLineID: (userId),
-            });
-            console.log("update doneXD",userData.userID)
+            a();
+            console.log("update doneXDAC",userData.userID)
           }
         
     }, [userData]);
 
 
+    const a = async () => {
+        const userDocRef = doc(db, 'users', userData.userID);
+        await updateDoc(userDocRef, {
+            userLineID: (userId),
+        });
+    } 
     return (
         
         <div className="user">
@@ -101,7 +104,7 @@ const HomeComponent = (props) => {
                         </div>
                         <div className="user-home-proflie-box admin-right" style={{width:"15%"}}>
                             <img src={right} style={{width:"40px", height:"40px"}} />
-                        </div>
+                        </div>  
  
                     </div>
                     </a>                 
