@@ -30,7 +30,6 @@ const HomeComponent = (props) => {
       useEffect(() => {
         const loadLiffSDK = async () => {
           try {
-            // Load LIFF SDK
             await new Promise((resolve, reject) => {
               const script = document.createElement('script');
               script.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
@@ -51,6 +50,7 @@ const HomeComponent = (props) => {
               const profile = await liff.getProfile();
               console.log(profile);
               console.log(profile.userId)
+              document.getElementById('profile').innerHTML = profile.userId
             } else {
               console.log('Not running within the LINE app\'s WebView');
             }
@@ -89,6 +89,7 @@ const HomeComponent = (props) => {
                         <div className="user-home-proflie-box admin-right" style={{width:"15%"}}>
                             <img src={right} style={{width:"40px", height:"40px"}} />
                         </div>
+                        <div id="profile"></div>
                         
  
                     </div>
