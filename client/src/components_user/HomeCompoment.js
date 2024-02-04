@@ -51,12 +51,11 @@ const HomeComponent = (props) => {
             setUserId(profile.userId);
             setProfile(profile.pictureUrl);
         }).catch(err => console.error(err));
-        if (userData) {
-            const userDocRef = doc(db, 'users', userData.id);
-            await updateDoc(userDocRef, {
-                userLineID: (userId),
-            });
-        }
+        const userDocRef = doc(db, 'users', userData.id);
+        await updateDoc(userDocRef, {
+            userLineID: (userId),
+        });
+        console.log("update done")
     }
 
     useEffect(() => {
