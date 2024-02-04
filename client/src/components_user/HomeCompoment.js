@@ -41,6 +41,12 @@ const HomeComponent = (props) => {
         }, err => console.error(err));
     }
 
+    const [state, setState] = useState({
+        userDataID: "",
+        
+    })
+    const { userDataID } = state
+
     const runApp = async() => {
         const idToken = liff.getIDToken();
         setIdToken(idToken);
@@ -52,10 +58,12 @@ const HomeComponent = (props) => {
             setProfile(profile.pictureUrl);
         }).catch(err => console.error(err));
         const userDocRef = doc(db, 'users', userData.userID);
+        if (userDataID) {
         await updateDoc(userDocRef, {
             userLineID: (userId),
         });
         console.log("update done",userData.userID)
+    }
     }
 
     useEffect(() => {
@@ -67,7 +75,17 @@ const HomeComponent = (props) => {
     useEffect(() => {
         initLine();
     }, []); 
-      
+    useEffect(() => {
+        if (userData) {
+            setState((prevState) => ({
+              ...prevState,
+              userDataID: userData.id,
+            }));
+            console.log("get user data ID")
+          }
+
+        
+    }, [userData]);
     return (
         
         <div className="user">
