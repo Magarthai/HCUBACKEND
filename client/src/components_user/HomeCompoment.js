@@ -27,7 +27,7 @@ const HomeComponent = (props) => {
     const [displayName, setDisplayName] = useState("");
     const [statusMessage, setStatusMessage] = useState("");
     const [userId, setUserId] = useState("");
-    const [profile, setProfile] = useState(home);
+    const [profile, setProfile] = useState(male);
 
     const initLine = () => {
         liff.init({ liffId: '2002624288-QkgWM7yy' }, () => {
@@ -73,13 +73,13 @@ const HomeComponent = (props) => {
             </header>
             <div className="user-body">
                 <div className="user-home">
-                    <a href="#" role="button"  target="_parent" style={{width:"100%"}}><img src={profile} className="user-home-hcu"/></a>
+                    <a href="#" role="button"  target="_parent" style={{width:"100%"}}><img src={home} className="user-home-hcu"/></a>
                     <h3 className="colorPrimary-800">Welcome to HCU</h3>
                     <a href="/profile" target="_parent">
                     <div className="user-home-proflie" >
                         
                         <div className="user-home-proflie-box center" style={{width:"15%", paddingLeft:"4%"}}>
-                            {userData &&<img className="user-home-profile-img" src={userData.gender === 'female' ? female : male} alt="logo health care unit" />}
+                            {userData &&<img className="user-home-profile-img" src={profile} alt="logo health care unit" />}
                         </div>
                         
                         <div className="user-home-proflie-box colorPrimary-800" style={{width:"70%", justifyContent:"flex-start", paddingLeft:"6%"}}>
