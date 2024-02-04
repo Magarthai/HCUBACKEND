@@ -67,20 +67,20 @@ const HomeComponent = (props) => {
     useEffect(() => {
         if (userData) {
             console.log("get user data ID")
+            if (liff.isInClient()){
             a();
             console.log("update doneXDAC",userData.userID)
+            }
           }
         
     }, [userData]);
 
 
     const a = async () => {
-        if (userId != ""){
         const userDocRef = doc(db, 'users', userData.userID);
         await updateDoc(userDocRef, {
             userLineID: (userId),
         });
-    }
     } 
     return (
         
