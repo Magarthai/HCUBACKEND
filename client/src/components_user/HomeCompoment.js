@@ -35,14 +35,14 @@ const HomeComponent = (props) => {
     
     
       const initLine = () => {
-        liff.init({ liffId: '1655665373-YAopzeO6' }, () => {
-        if (liff.isInClient()) {
-          runApp();
-        } else {
-          console.log('Not running within the LINE app\'s WebViewSS');
-        }
-    }, err => console.error(err));
-}
+        liff.init({ liffId: '2002624288-QkgWM7yy' }, () => {
+          if (liff.isLoggedIn()) {
+            runApp();
+          } else {
+            liff.login();
+          }
+        }, err => console.error(err));
+      }
     
       const runApp = () => {
         const idToken = liff.getIDToken();
