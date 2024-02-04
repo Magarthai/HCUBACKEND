@@ -57,13 +57,6 @@ const HomeComponent = (props) => {
             setUserId(profile.userId);
             setProfile(profile.pictureUrl);
         }).catch(err => console.error(err));
-        const userDocRef = doc(db, 'users', userData.userID);
-        if (userDataID) {
-        await updateDoc(userDocRef, {
-            userLineID: (userId),
-        });
-        console.log("update done",userData.userID)
-    }
     }
 
     useEffect(() => {
@@ -75,13 +68,19 @@ const HomeComponent = (props) => {
     useEffect(() => {
         initLine();
     }, []); 
-    useEffect(() => {
+    useEffect(async() => {
         if (userData) {
             setState((prevState) => ({
               ...prevState,
               userDataID: userData.id,
             }));
             console.log("get user data ID")
+            const userDocRef = doc(db, 'users', userData.userID);
+
+            await updateDoc(userDocRef, {
+                userLineID: (userDataID),
+            });
+            console.log("update done",userData.userID)
           }
 
         
