@@ -16,9 +16,9 @@ import right from "../picture/right.png";
 import home from "../picture/home-hcu.png";
 import male from "../picture/male.png";
 import female from "../picture/female.png";
+import liff from '@line/liff';
 import { useUserAuth } from "../context/UserAuthContext";
 import {Link, useNavigate } from "react-router-dom";
-
 const HomeComponent = (props) => {
     const { user,userData} = useUserAuth();
     const navigate = useNavigate();
@@ -27,6 +27,40 @@ const HomeComponent = (props) => {
         console.log(user);
       }, [user]);
 
+      useEffect(() => {
+        const loadLiffSDK = async () => {
+          try {
+            // Load LIFF SDK
+            await new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              script.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
+              script.onload = resolve;
+              script.onerror = reject;
+              document.head.appendChild(script);
+            });
+    
+            await new Promise((resolve) => {
+              window.onload = () => {
+                liff.init({ liffId: '2002624288-QkgWM7yy' }).then(() => {
+                  resolve();
+                });
+              };
+            });
+    
+            if (liff.isInClient()) {
+              const profile = await liff.getProfile();
+              console.log(profile);
+              console.log(profile.userId)
+            } else {
+              console.log('Not running within the LINE app\'s WebView');
+            }
+          } catch (error) {
+            console.error('Error loading LIFF SDK:', error);
+          }
+        };
+    
+        loadLiffSDK();
+      }, []);
 
     return (
         
