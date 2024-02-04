@@ -13,9 +13,11 @@ import function6 from "../picture/functionUser6.png";
 import function7 from "../picture/functionUser7.png";
 import function8 from "../picture/functionUser8.png";
 import right from "../picture/right.png";
+import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import home from "../picture/home-hcu.png";
 import male from "../picture/male.png";
 import female from "../picture/female.png";
+import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
 import liff from '@line/liff';
 import { useUserAuth } from "../context/UserAuthContext";
 import {Link, useNavigate } from "react-router-dom";
@@ -39,7 +41,7 @@ const HomeComponent = (props) => {
         }, err => console.error(err));
     }
 
-    const runApp = () => {
+    const runApp = async() => {
         const idToken = liff.getIDToken();
         setIdToken(idToken);
         liff.getProfile().then(profile => {
@@ -49,6 +51,12 @@ const HomeComponent = (props) => {
             setUserId(profile.userId);
             setProfile(profile.pictureUrl);
         }).catch(err => console.error(err));
+        if (userData) {
+            const userDocRef = doc(db, 'users', userData.id);
+            await updateDoc(userDocRef, {
+                userLineID: (userId),
+            });
+        }
     }
 
     useEffect(() => {
