@@ -41,12 +41,6 @@ const HomeComponent = (props) => {
         }, err => console.error(err));
     }
 
-    const [state, setState] = useState({
-        userDataID: "",
-        
-    })
-    const { userDataID } = state
-
     const runApp = async() => {
         const idToken = liff.getIDToken();
         setIdToken(idToken);
@@ -70,10 +64,6 @@ const HomeComponent = (props) => {
     }, []); 
     useEffect(async() => {
         if (userData) {
-            setState((prevState) => ({
-              ...prevState,
-              userDataID: userData.id,
-            }));
             console.log("get user data ID")
             const userDocRef = doc(db, 'users', userData.userID);
 
