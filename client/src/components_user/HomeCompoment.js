@@ -80,7 +80,7 @@ const HomeComponent = (props) => {
         gender,
       } = state;
       const [isInitialRender, setIsInitialRender] = useState(false);
-    useEffect(async() => {
+    useEffect(() => {
         if (!userData && !isInitialRender) {
             console.log("no userData")
         } else {
@@ -95,10 +95,10 @@ const HomeComponent = (props) => {
             setIsInitialRender(true)
             console.log("get user data ID")
             const userDocRef = doc(db, 'users', userData.userID);
-            await updateDoc(userDocRef, {
+            updateDoc(userDocRef, {
                 userLineID: (userId),
             });
-            console.log("update doneXD",userData.userID)
+            console.log("update doneXDXD",userData.userID)
         }
     },[userData])
       
