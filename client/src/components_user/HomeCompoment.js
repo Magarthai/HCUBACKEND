@@ -25,33 +25,37 @@ const HomeComponent = (props) => {
     useEffect(() => {
         document.title = 'Health Care Unit';
         console.log(user);
-        const loadLiffSDK = async () => {
-            try {
-              await new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-              });
-      
-              await new Promise((resolve) => {
-                window.onload = () => {
-                  liff.init({ liffId: '2002624288-QkgWM7yy' }).then(() => {
-                    resolve();
-                  });
-                };
-              });
-      
-                const profile = await liff.getProfile();
-                document.getElementById('profile').innerHTML = profile.displayName;
-            } catch (error) {
-              console.error('Error loading LIFF SDK:', error);
-            }
-          };
-      
-          loadLiffSDK();
+        initLine();
       }, [user]);
+
+      const [idToken, setIdToken] = useState("");
+      const [displayName, setDisplayName] = useState("");
+      const [statusMessage, setStatusMessage] = useState("");
+      const [userId, setUserId] = useState("");
+    
+    
+      const initLine = () => {
+        if (liff.isInClient()) {
+          runApp();
+        } else {
+          console.log('Not running within the LINE app\'s WebView');
+        }
+      }
+    
+      const runApp = () => {
+        const idToken = liff.getIDToken();
+        setIdToken(idToken);
+        liff.getProfile().then(profile => {
+          console.log(profile);
+          setDisplayName(profile.displayName);
+          setStatusMessage(profile.statusMessage);
+          setUserId(profile.userId);
+        }).catch(err => console.error(err));
+      }
+    
+      useEffect(() => {
+        initLine();
+      }, []);
 
     return (
         
@@ -80,7 +84,7 @@ const HomeComponent = (props) => {
                         <div className="user-home-proflie-box admin-right" style={{width:"15%"}}>
                             <img src={right} style={{width:"40px", height:"40px"}} />
                         </div>
-                        <div id="profile"></div>
+                        <div id="profile">{userId}</div>
                         
  
                     </div>
