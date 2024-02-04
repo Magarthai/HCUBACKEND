@@ -39,7 +39,7 @@ const HomeComponent = (props) => {
         if (liff.isInClient()) {
           runApp();
         } else {
-          console.log('Not running within the LINE app\'s WebView');
+          console.log('Not running within the LINE app\'s WebViewSS');
         }
     }, err => console.error(err));
 }
