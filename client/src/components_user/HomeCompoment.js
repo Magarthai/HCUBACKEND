@@ -62,17 +62,45 @@ const HomeComponent = (props) => {
     useEffect(() => {
         initLine();
     }, []); 
+    const [state, setState] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        id: "",
+        tel: "",
+        gender: "",
+      });
+    
+      const {
+        firstName,
+        lastName,
+        email,
+        id,
+        tel,
+        gender,
+      } = state;
+      const [isInitialRender, setIsInitialRender] = useState(false);
     useEffect(async() => {
-        if (userData) {
+        if (!userData && !isInitialRender) {
+            console.log("no userData")
+        } else {
+            setState({
+                firstName: userData.firstName || "",
+                lastName: userData.lastName || "",
+                email: user.email || "",
+                id: userData.id || "",
+                tel: userData.tel || "",
+                gender: userData.gender || "",
+            });
+            setIsInitialRender(true)
             console.log("get user data ID")
             const userDocRef = doc(db, 'users', userData.userID);
             await updateDoc(userDocRef, {
                 userLineID: (userId),
             });
-            console.log("update done",userData.userID)
-          }
-        
-    }, [userData]);
+            console.log("update doneXD",userData.userID)
+        }
+    },[userData])
       
     return (
         
@@ -96,7 +124,7 @@ const HomeComponent = (props) => {
                         </div>
                         
                         <div className="user-home-proflie-box colorPrimary-800" style={{width:"70%", justifyContent:"flex-start", paddingLeft:"6%"}}>
-                            {userData && <div className="admin-textBody-huge">{userData.firstName} {userData.lastName} <br></br> <div className="admin-textBody-small2">{userData.id}</div></div> }
+<div className="admin-textBody-huge">{firstName} {lastName} <br></br> <div className="admin-textBody-small2">{id}</div></div> 
                         </div>
                         <div className="user-home-proflie-box admin-right" style={{width:"15%"}}>
                             <img src={right} style={{width:"40px", height:"40px"}} />
