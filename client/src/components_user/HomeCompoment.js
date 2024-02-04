@@ -33,11 +33,13 @@ const HomeComponent = (props) => {
 
     const initLine = () => {
         liff.init({ liffId: '2002624288-QkgWM7yy' }, () => {
+            if (liff.isInClient()){
             if (liff.isLoggedIn()) {
                 runApp();
             } else {
                 liff.login();
             }
+        }
         }, err => console.error(err));
     }
 
@@ -73,10 +75,12 @@ const HomeComponent = (props) => {
 
 
     const a = async () => {
+        if (userId != ""){
         const userDocRef = doc(db, 'users', userData.userID);
         await updateDoc(userDocRef, {
             userLineID: (userId),
         });
+    }
     } 
     return (
         
