@@ -78,7 +78,7 @@ const HomeComponent = (props) => {
             const userDocRef = doc(db, 'users', userData.userID);
 
             await updateDoc(userDocRef, {
-                userLineID: (userDataID),
+                userLineID: (userId),
             });
             console.log("update done",userData.userID)
           }
