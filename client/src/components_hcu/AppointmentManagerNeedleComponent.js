@@ -496,227 +496,280 @@ const formatDatesForDisplay = (isoDate) => {
         return formattedSelectedDate;
     };
     const submitFormAddContinue = async () => {
-        
         let x = document.getElementById("admin-add-appointment-connected2");
         let y = document.getElementById("admin-add-appointment-connected");
-        if (window.getComputedStyle(x).display === "none") {
 
+        if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
-            setState((prevState) => ({
-                ...prevState,
-                appointmentTime1: appointmentTime,
-                appointmentTime2: appointmentTime,
-                appointmentTime3: appointmentTime,
-                appointmentTime4: appointmentTime,
-                appointmentTime5: appointmentTime,
-                appointmentTime6: appointmentTime,
-                appointmentTime7: appointmentTime,
-                appointmentTime8: appointmentTime,
-                appointmentTime9: appointmentTime,
-                appointmentTime10: appointmentTime,
-            }));
+
             cleanUpOldPopups();
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
-            if (selectedDates){
-            const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
-
-            const handleSelectChanges = () => {
-                setSelectedCount(selectedCount + 1);
-                console.log(selectedCount)
-
-            };
-            if (Number(time) > 10) {
-                Swal.fire({
-                    title: 'เกิดข้อผิดพลาด',
-                    text: `จํากัดการสร้างแค่ 10 ครั้งเท่านั่น!`,
-                    icon: 'warning',
-                    confirmButtonText: 'ย้อนกลับ',
-                    confirmButtonColor: '#DC2626',
-                    reverseButtons: true,
-                    customClass: {
-                      confirmButton: 'custom-confirm-button',
-                      cancelButton: 'custom-cancel-button',
-                    },
-                  }) 
-                  x.style.display = "none";
-            } 
-            else {
-            for (let i = 1; i <= time; i++) {
-                const instanceDate = new Date(formattedAppointmentDate);
-                instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
-                const formatdate = covertToSubmitPopup(instanceDate)
-                setState((prevState) => ({
-                    ...prevState,
-                    [`appointmentDate${i}`]: formatdate,
-                }));
-                const formatDmy = (dateString) => {
-                    const [day, month, year] = dateString.split('/').map(Number);
-                    const formattedMonth = month < 10 ? `${month}` : `${month}`;
-                    const formattedDay = day < 10 ? `${day}` : `${day}`;
-                    const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
-                    const dateObject = new Date(year, month - 1, day);
-                    const dayName = getDayName(new Date(dateObject)).toLowerCase();;
-                    const formattedSelectedDate = {
-                        day: day,
-                        month: formattedMonth,
-                        year: year,
-                        dayName: dayName,
-                    };
-
-                    return formattedSelectedDate;
+            let count = parseInt(time);
+            if (selectedDates) {
+                const handleSelectChanges = () => {
+                    setSelectedCount(selectedCount + 1);
+                    console.log(selectedCount);
                 };
-                const xd = formatDmy(formatdate)
-                console.log("xdformat", xd)
-                const divElement = document.createElement('div');
-                const timeTableCollection = collection(db, 'timeTable');
-                const querySnapshot = await getDocs(query(
-                    timeTableCollection,
-                    where('addDay', '==', xd.dayName),
-                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
-                ));
-                const timeTableData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                console.log("timeTableData selectedDate", xd)
-                console.log("timeTableData", timeTableData)
+                if (Number(time) > 10) {
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `จํากัดการสร้างแค่ 10 ครั้งเท่านั่น!`,
+                        icon: 'warning',
+                        confirmButtonText: 'ย้อนกลับ',
+                        confirmButtonColor: '#DC2626',
+                        reverseButtons: true,
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
+                        },
 
-                if (timeTableData.length > 0) {
-                    const filteredTimeTableData = timeTableData
-                    if (filteredTimeTableData.length > 0) {
-                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
-                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                acc.push(
-                                    ...item.timeablelist.map((timeSlot, index) => ({
-                                        ...timeSlot,
-                                        timeTableId: item.id,
-                                        timeSlotIndex: index
-                                    }))
-                                );
-                            }
-                            return acc;
-                        }, []);
+                    })
+                    x.style.display = "none";
+                }
+                else if (appointmentId === "") {
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: 'กรุณาพิมรหัสนักศึกษา',
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        },
+                    })
+                    x.style.display = "none";
+                }
+                else if (time === "") {
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: 'กรุณาเลือกจํานวนครั้ง',
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        },
+                    })
+                    x.style.display = "none";
+                }
+                else if (timelength === "") {
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: 'กรุณาเลือกระยะห่าง',
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        },
+                    })
+                    x.style.display = "none";
+                } else {
+                    const usersCollection = collection(db, 'users');
+                    const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
+                    const userDocuments = userQuerySnapshot.docs;
+                    const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
+                    const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
+                    if (foundUser) {
+                    const processAppointment = async (i) => {
+                        console.log(count, "count");
+                        const instanceDate = new Date(selectedDates.year, selectedDates.month - 1, selectedDates.day);
+                        instanceDate.setDate(instanceDate.getDate() + i * timelength);
+                        const formatdate = covertToSubmitPopup(instanceDate);
 
-                        const appointmentsCollection = collection(db, 'appointment');
-                        const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
-                            where('clinic', '==', 'คลินิกฝั่งเข็ม')));
-                        const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
-                        const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDate, db);
-                        console.log("availableTimeSlots", availableTimeSlots)
-                        const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
-                            acc[timetableItem.id] = timetableItem.status === "Enabled";
-                            return acc;
-                        }, {});
-                        setIsChecked();
-                        setIsChecked(initialIsChecked);
-                        const timeOptionsFromTimetable = GetTimeOptionsFilterdFromTimetable(availableTimeSlots);
-                        console.log("Before setTimeOptions", timeOptionsFromTimetable);
-                        const a = timeOptionsFromTimetable
-                        const timeOptionsProperty = `timeOptions${i}`;
-                        const timeOptionsValue = state[timeOptionsProperty];
-                        divElement.id = `admin-add-appointment-connected2-${i}`;
-                        divElement.className = "auto-create";
-                        divElement.addEventListener("change", (e) => {
-                            handleSelectChanges();
-                            fetchTimeTableData();
-                            const selectedValue = JSON.parse(e.target.value);
+                        await setStateAsync((prevState) => ({
+                            ...prevState,
+                            [`appointmentDate${i + 1}`]: formatdate,
+                        }));
 
-                            if (selectedValue && typeof selectedValue === 'object') {
-                                const { timetableId, timeSlotIndex } = selectedValue;
-                                console.log("timetableId:", timetableId);
-                                console.log("timeSlotIndex:", timeSlotIndex);
-                                handleOuterChange(timeSlotIndex);
-                                setState((prevState) => ({
+                        const xd = formatDmy(formatdate);
+                        console.log("xdformat", xd);
+                        const divElement = document.createElement('div');
+                        const timeTableCollection = collection(db, 'timeTable');
+                        const querySnapshot = await getDocs(query(
+                            timeTableCollection,
+                            where('addDay', '==', xd.dayName),
+                            where('clinic', '==', 'คลินิกฝั่งเข็ม')
+                        ));
+                        const timeTableData = querySnapshot.docs.map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                        }));
+                        console.log("timeTableData selectedDate", xd)
+                        console.log("timeTableData", timeTableData)
+
+                        if (timeTableData.length > 0) {
+                            const filteredTimeTableData = timeTableData
+                            if (filteredTimeTableData.length > 0) {
+                                const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
+                                    if (item.timeablelist && Array.isArray(item.timeablelist)) {
+                                        acc.push(
+                                            ...item.timeablelist.map((timeSlot, index) => ({
+                                                ...timeSlot,
+                                                timeTableId: item.id,
+                                                timeSlotIndex: index
+                                            }))
+                                        );
+                                    }
+                                    return acc;
+                                }, []);
+
+                                const appointmentsCollection = collection(db, 'appointment');
+                                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
+                                    where('clinic', '==', 'คลินิกฝั่งเข็ม')));
+                                const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
+                                const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDate, db);
+                                console.log("availableTimeSlots", availableTimeSlots)
+                                const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
+                                    acc[timetableItem.id] = timetableItem.status === "Enabled";
+                                    return acc;
+                                }, {});
+                                setIsChecked();
+                                setIsChecked(initialIsChecked);
+                                const timeOptionsFromTimetable = GetTimeOptionsFilterdFromTimetable(availableTimeSlots);
+
+                                await setStateAsync((prevState) => ({
                                     ...prevState,
-                                    [`appointmentTime${i}`]: {
-                                        timetableId: timetableId,
-                                        timeSlotIndex: timeSlotIndex,
-                                    },
+                                    [`timeOptions${i + 1}`]: timeOptionsFromTimetable,
                                 }));
-                                setState(prevState => ({
-                                    ...prevState,
-                                    [`timeOptions${i}`]: a,
-                                }));
-                                console.log(state[`appointmentTime${i}`]);
-                                handleSelectChanges();
-                            } else if (e.target.value === "") {
-                                inputValue(`appointmentTime${i}`)({
-                                    target: {
-                                        value: {},
-                                    },
+                                console.log("Before setTimeOptions", timeOptionsFromTimetable);
+                                const a = timeOptionsFromTimetable
+                                const timeOptionsProperty = `timeOptions${i}`;
+                                const timeOptionsValue = state[timeOptionsProperty];
+                                divElement.id = `admin-add-appointment-connected2-${i}`;
+                                divElement.className = "auto-create";
+                                divElement.addEventListener("change", (e) => {
+                                    handleSelectChanges();
+                                    fetchTimeTableData();
+                                    const selectedValue = JSON.parse(e.target.value);
+
+                                    if (selectedValue && typeof selectedValue === 'object') {
+                                        const { timetableId, timeSlotIndex } = selectedValue;
+                                        console.log("timetableId:", timetableId);
+                                        console.log("timeSlotIndex:", timeSlotIndex);
+                                        handleOuterChange(timeSlotIndex);
+                                        setState((prevState) => ({
+                                            ...prevState,
+                                            [`appointmentTime${i}`]: {
+                                                timetableId: timetableId,
+                                                timeSlotIndex: timeSlotIndex,
+                                            },
+                                        }));
+                                        setState(prevState => ({
+                                            ...prevState,
+                                            [`timeOptions${i}`]: a,
+                                        }));
+                                        console.log(state[`appointmentTime${i}`]);
+                                        handleSelectChanges();
+                                    } else if (e.target.value === "") {
+                                        inputValue(`appointmentTime${i}`)({
+                                            target: {
+                                                value: {},
+                                            },
+                                        });
+
+                                        handleSelectChanges();
+                                    } else {
+                                        console.error("Invalid selected value:", selectedValue);
+                                    }
                                 });
 
-                                handleSelectChanges();
+                                const handleOuterChange = (timeSlotIndex) => {
+                                    console.log("Received timeSlotIndex from inner change:", timeSlotIndex);
+                                };
+
+                                const templateCommon = `
+                                <div class="center-container">
+                                    <label class="admin-textBody-large colorPrimary-800">วันที่</label>
+                                    <span> ${formatdate}</span>
+                                </div>
+                                <div class="center-container">
+                                    <select
+                                        name="time"
+                                        value=""
+                                        class=${selectedCount >= 2 ? 'selected' : ''}
+                                    >
+                                        ${timeOptionsFromTimetable.map((timeOption) =>
+                                    `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                                                ${timeOption.label}
+                                            </option>`
+                                )}
+                                    </select>
+                                </div>
+                                <br>
+                            `;
+
+                                divElement.innerHTML = `
+                                <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'}</p>
+                                ${templateCommon}
+                            `;
+
+                                appointmentPopupItem.appendChild(divElement);
+
                             } else {
-                                console.error("Invalid selected value:", selectedValue);
+                                console.log("Time table not found for selected day and clinic");
+                                const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+
+                                setState(prevState => ({
+                                    ...prevState,
+                                    [`timeOptions${i}`]: noTimeSlotsAvailableOption,
+                                }));
+                                const a = `timeOptions${i}`
+                                console.log("state", state[a]);
+                            }
+                        } else {
+                            const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                            setTimeOptions([noTimeSlotsAvailableOption]);
+                            count += 1
+                        }
+                    };
+
+                    for (let i = 0; i < Math.min(count, 10); i++) {
+                        await processAppointment(i);
+                    }}
+                    else {
+                        x.style.display = "none";
+                        y.style.display = "none";
+                        Swal.fire({
+                            icon: "error",
+                            title: "เกิดข้อผิดพลาด!",
+                            text: "ไม่พบรหัสนักศึกษา!",
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
                             }
                         });
-
-                        const handleOuterChange = (timeSlotIndex) => {
-                            console.log("Received timeSlotIndex from inner change:", timeSlotIndex);
-                        };
-
-                        const templateCommon = `
-                            <div class="center-container">
-                                <label class="admin-textBody-large colorPrimary-800">วันที่</label>
-                                <span> ${formatdate}</span>
-                            </div>
-                            <div class="center-container">
-                                <select
-                                    name="time"
-                                    value=""
-                                    class=${selectedCount >= 2 ? 'selected' : ''}
-                                >
-                                    ${timeOptionsFromTimetable.map((timeOption) =>
-                                        `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                                            ${timeOption.label}
-                                        </option>`
-                                    )}
-                                </select>
-                            </div>
-                            <br>
-                        `;
-
-                        divElement.innerHTML = `
-                            <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'}</p>
-                            ${templateCommon}
-                        `;
-
-                        appointmentPopupItem.appendChild(divElement);
-
-                    } else {
-                        console.log("Time table not found for selected day and clinic");
-                        const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-
-                        setState(prevState => ({
-                            ...prevState,
-                            [`timeOptions${i}`]: noTimeSlotsAvailableOption,
-                        }));
-                        const a = `timeOptions${i}`
-                        console.log("state", state[a]);
+                        
                     }
+                
+                }
                 } else {
-                    const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                    setTimeOptions([noTimeSlotsAvailableOption]);
-                    console.log("Time table not found", timeOptions);
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: 'เลือกวันก่อน',
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        },
+                    });
+                    
                 }
             }
+        };
 
-        }} else {
-            Swal.fire({
-                title: 'เกิดข้อผิดพลาด!',
-                text: 'เลือกวันก่อน',
-                icon: 'error',
-                confirmButtonText: 'ตกลง',
-                confirmButtonColor: '#263A50',
-                customClass: {
-                  confirmButton: 'custom-confirm-button',
-                },
-              })
-              x.style.display = "none";
-        }}
-    };
+        const setStateAsync = (stateUpdate) => {
+            return new Promise((resolve) => {
+                setState(stateUpdate);
+                resolve();
+            });
+        };
+        useEffect(() => {
+            console.log(state.time, "timeXD");
+        }, [state.time]);
     function cleanUpOldPopups() {
         const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
 
