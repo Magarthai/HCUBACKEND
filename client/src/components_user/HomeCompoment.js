@@ -102,8 +102,6 @@ const HomeComponent = (props) => {
                         <div className="user-home-proflie-box admin-right" style={{width:"15%"}}>
                             <img src={right} style={{width:"40px", height:"40px"}} />
                         </div>
-                        <div id="profile">{userId}</div>
-                        
  
                     </div>
                     </a>                 
