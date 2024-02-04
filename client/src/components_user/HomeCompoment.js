@@ -55,7 +55,7 @@ const HomeComponent = (props) => {
         await updateDoc(userDocRef, {
             userLineID: (userId),
         });
-        console.log("update done")
+        console.log("update done",userData.id)
     }
 
     useEffect(() => {
