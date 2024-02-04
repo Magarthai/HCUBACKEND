@@ -92,7 +92,7 @@ const HomeComponent = (props) => {
                     <div className="user-home-proflie" >
                         
                         <div className="user-home-proflie-box center" style={{width:"15%", paddingLeft:"4%"}}>
-                            {userData &&<img className="user-home-profile-img" src={profile} alt="logo health care unit" />}
+                           <img className="user-home-profile-img" src={profile} alt="logo health care unit" />
                         </div>
                         
                         <div className="user-home-proflie-box colorPrimary-800" style={{width:"70%", justifyContent:"flex-start", paddingLeft:"6%"}}>
