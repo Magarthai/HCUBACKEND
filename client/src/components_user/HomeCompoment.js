@@ -20,45 +20,47 @@ import liff from '@line/liff';
 import { useUserAuth } from "../context/UserAuthContext";
 import {Link, useNavigate } from "react-router-dom";
 const HomeComponent = (props) => {
-    const { user,userData} = useUserAuth();
+    const { user, userData } = useUserAuth();
     const navigate = useNavigate();
-    useEffect(() => {
-        document.title = 'Health Care Unit';
-        console.log(user);
-        initLine();
-      }, [user]);
 
-      const [idToken, setIdToken] = useState("");
-      const [displayName, setDisplayName] = useState("");
-      const [statusMessage, setStatusMessage] = useState("");
-      const [userId, setUserId] = useState("");
-    
-    
-      const initLine = () => {
+    const [idToken, setIdToken] = useState("");
+    const [displayName, setDisplayName] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
+    const [userId, setUserId] = useState("");
+    const [profile, setProfile] = useState(home);
+
+    const initLine = () => {
         liff.init({ liffId: '2002624288-QkgWM7yy' }, () => {
-          if (liff.isLoggedIn()) {
-            runApp();
-          } else {
-            liff.login();
-          }
+            if (liff.isLoggedIn()) {
+                runApp();
+            } else {
+                liff.login();
+            }
         }, err => console.error(err));
-      }
-    
-      const runApp = () => {
+    }
+
+    const runApp = () => {
         const idToken = liff.getIDToken();
         setIdToken(idToken);
         liff.getProfile().then(profile => {
-          console.log(profile);
-          setDisplayName(profile.displayName);
-          setStatusMessage(profile.statusMessage);
-          setUserId(profile.userId);
+            console.log(profile);
+            setDisplayName(profile.displayName);
+            setStatusMessage(profile.statusMessage);
+            setUserId(profile.userId);
+            setProfile(profile.pictureUrl);
         }).catch(err => console.error(err));
-      }
-    
-      useEffect(() => {
-        initLine();
-      }, []);
+    }
 
+    useEffect(() => {
+        document.title = 'Health Care Unit';
+        console.log(user);
+        initLine(); 
+    }, [user]);
+
+    useEffect(() => {
+        initLine();
+    }, []); 
+      
     return (
         
         <div className="user">
@@ -71,7 +73,7 @@ const HomeComponent = (props) => {
             </header>
             <div className="user-body">
                 <div className="user-home">
-                    <a href="#" role="button"  target="_parent" style={{width:"100%"}}><img src={home} className="user-home-hcu"/></a>
+                    <a href="#" role="button"  target="_parent" style={{width:"100%"}}><img src={profile} className="user-home-hcu"/></a>
                     <h3 className="colorPrimary-800">Welcome to HCU</h3>
                     <a href="/profile" target="_parent">
                     <div className="user-home-proflie" >
@@ -111,10 +113,7 @@ const HomeComponent = (props) => {
                     <a href="#" role="button"  target="_parent"><img src={function8} /></a> */}
                     </div>
                 </div>
-            </div>
-         
-           
-            
+            </div> 
         </div>
 
     );
