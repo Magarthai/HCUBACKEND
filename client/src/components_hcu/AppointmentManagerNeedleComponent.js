@@ -349,7 +349,7 @@ const AppointmentManagerNeedleComponent = (props) => {
         document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
         document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
         document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
-        document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
+        document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดหมาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
         document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
         document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
         setsaveEditId("")
@@ -893,7 +893,7 @@ const AppointmentManagerNeedleComponent = (props) => {
             Swal.fire({
                 icon: "error",
                 title: "เกิดข้อผิดพลาด!",
-                text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง",
+                text: "ไม่สามารถสร้างนัดหมายต่อเนื่องได้ กรุณาลองอีกครั้งในภายหลัง",
                 confirmButtonText: 'ตกลง',
                 confirmButtonColor: '#263A50',
                 customClass: {
@@ -1078,7 +1078,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                             <p id="detail-appointment-time" className="admin-textBody-big"><b>เวลา</b> : 13:01 - 13:06</p>
                             <p id="detail-appointment-id" className="admin-textBody-big"><b>รหัสนักศึกษา</b>: 64090500301</p>
                             <p id="detail-appointment-name" className="admin-textBody-big"><b>ชื่อ</b>: อรัญญา พุ่มสนธิ</p>
-                            <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดมหาย</b>: ตรวจรักษาโรค</p>
+                            <p id="detail-appointment-casue" className="admin-textBody-big"><b>สาเหตุการนัดหมาย</b>: ตรวจรักษาโรค</p>
                             <p id="detail-appointment-symptom" className="admin-textBody-big"><b>อาการเบื้องต้น</b>: มีอาการปวดหัว อาเจียน</p>
                             <p id="detail-appointment-notation" className="admin-textBody-big"><b>หมายเหตุ</b>: -</p>
                         </div>
@@ -1139,7 +1139,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     <input type="text" className="form-control appointment-input" value={appointmentId} onChange={(e) => { setState({ ...state, appointmentId: e.target.value, }); }} placeholder="64000000000" />
                                 </div>
                                 <div>
-                                    <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                    <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
                                     <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={(e) => { setState({ ...state, appointmentCasue: e.target.value, }); }} placeholder="เป็นไข้" />
                                 </div>
                                 <div>
@@ -1148,7 +1148,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 </div>
                                 <div>
                                     <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                    <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, }); }} placeholder="เป็นไข้หวักทั่วไป" />
+                                    <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, }); }} placeholder="เป็นไข้หวัดทั่วไป" />
                                 </div>
                                 <div className="admin-timetable-btn">
                                     <button type="button" onClick={openAddAppointment} className="btn-secondary btn-systrm">กลับ</button>
@@ -1228,7 +1228,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     <input type="text" className="form-control appointment-input" value={appointmentId} disabled onChange={inputValue("appointmentId")} placeholder="64000000000" />
                                 </div>
                                 <div>
-                                    <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                    <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
                                     <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
                                 </div>
                                 <div>
@@ -1268,7 +1268,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                             />
                         </div>
                         <div>
-                            <label className="admin-textBody-large colorPrimary-800">วัน</label>
+                            <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                             <select
                                 name="time"
                                 value={JSON.stringify(appointmentTime)}
@@ -1311,15 +1311,15 @@ const AppointmentManagerNeedleComponent = (props) => {
                             </select>
                         </div>
                         <div>
-                            <label className="admin-textBody-large colorPrimary-800">จำนวนครั้ง</label><br></br>
+                            <label className="admin-textBody-large colorPrimary-800">จำนวนครั้งนัดหมาย</label><br></br>
                             <input type="text" className="form-control appointment-input" onChange={(e) => { inputValue("time")(e); }} placeholder="5" />
                         </div>
                         <div>
-                            <label className="admin-textBody-large colorPrimary-800">ระยะห่าง(วัน)</label><br></br>
+                            <label className="admin-textBody-large colorPrimary-800">ระยะห่างวันนัดหมาย (จํานวนวัน)</label><br></br>
                             <input type="text" className="form-control appointment-input" onChange={(e) => { inputValue("timelength")(e); }} placeholder="7" />
                         </div>
                         <div>
-                            <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                            <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
                             <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={(e) => { setState({ ...state, appointmentCasue: e.target.value, }); }} placeholder="" />
                         </div>
                         <div>
@@ -1354,7 +1354,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     <input type="text" className="form-control appointment-input" value={time} onChange={(e) => { setState({ ...state, time: e.target.value, }); }} placeholder="5" />
                                 </div>
                                 <div>
-                                    <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดมหาย</label><br></br>
+                                    <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
                                     <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={(e) => { setState({ ...state, appointmentCasue: e.target.value, }); }} placeholder="" />
                                 </div>
                                 <div>
