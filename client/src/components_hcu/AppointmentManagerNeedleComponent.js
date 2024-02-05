@@ -3,9 +3,9 @@ import CalendarAdminComponent from "../components_hcu/CalendarAdminComponent";
 import edit from "../picture/icon_edit.jpg";
 import icon_delete from "../picture/icon_delete.jpg";
 import { useEffect, useState, useRef } from "react";
-import { query, where } from 'firebase/firestore';
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
+import { query, where, arrayUnion, addDoc, updateDoc, doc } from 'firebase/firestore';
 import 'react-datepicker/dist/react-datepicker.css';
 import "../css/AdminAppointmentComponent.css";
 import { PulseLoader } from "react-spinners";
@@ -25,8 +25,10 @@ const AppointmentManagerNeedleComponent = (props) => {
     const [isChecked, setIsChecked] = useState({});
     const [timeOptions, setTimeOptions] = useState([]);
     const [timeOptionss, setTimeOptionss] = useState([]);
+    const [timeOptionsss, setTimeOptionsss] = useState([]);
 
     const handleDateSelect = (selectedDate) => {
+        console.log("Selected Date in AppointmentManager:", selectedDate);
         setAllAppointmentUsersData([]);
         setSelectedDate(selectedDate);
         setState({
@@ -36,6 +38,7 @@ const AppointmentManagerNeedleComponent = (props) => {
         });
         let x = document.getElementById("detail-appointment");
         x.style.display = "none";
+
     };
 
     const [state, setState] = useState({
@@ -61,14 +64,14 @@ const AppointmentManagerNeedleComponent = (props) => {
     })
 
     const {
-        appointmentDate,appointmentDates,appointmentId,appointmentCasue,appointmentSymptom,
-        appointmentNotation,clinic,uid,timeablelist,time,timelength,appointmentTime,appointmentTime1,
-        appointmentTime2,appointmentTime3,appointmentTime4,appointmentTime5,appointmentTime6,
-        appointmentTime7,appointmentTime8,appointmentTime9,appointmentTime10,appointmentDate1,
-        appointmentDate2,appointmentDate3,appointmentDate4,appointmentDate5,selectedDate1,
-        selectedDate2,selectedDate3,selectedDate4,selectedDate5,selectedDate6,selectedDate7,selectedDate8,
-        selectedDate9,selectedDate10,timeOptions1,timeOptions2,timeOptions3,timeOptions4,
-        timeOptions5,timeOptions6,timeOptions7,timeOptions8,timeOptions9,timeOptions10,typecheck
+        appointmentDate, appointmentDates, appointmentId, appointmentCasue, appointmentSymptom,
+        appointmentNotation, clinic, uid, timeablelist, time, timelength, appointmentTime, appointmentTime1,
+        appointmentTime2, appointmentTime3, appointmentTime4, appointmentTime5, appointmentTime6,
+        appointmentTime7, appointmentTime8, appointmentTime9, appointmentTime10, appointmentDate1,
+        appointmentDate2, appointmentDate3, appointmentDate4, appointmentDate5, selectedDate1,
+        selectedDate2, selectedDate3, selectedDate4, selectedDate5, selectedDate6, selectedDate7, selectedDate8,
+        selectedDate9, selectedDate10, timeOptions1, timeOptions2, timeOptions3, timeOptions4,
+        timeOptions5, timeOptions6, timeOptions7, timeOptions8, timeOptions9, timeOptions10, typecheck
 
     } = state;
 
@@ -91,12 +94,12 @@ const AppointmentManagerNeedleComponent = (props) => {
         const dateParts = isoDate.split("-");
         if (dateParts.length === 3) {
             const [year, month, day] = dateParts;
-    
+
             const formattedMonth = parseInt(month, 10).toString();
             const formattedDay = parseInt(day, 10).toString();
-    
+
             const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
-    
+
             const dayName = getDayName(new Date(isoDate)).toLowerCase();
             const formattedSelectedDate = {
                 day: formattedDay,
@@ -104,7 +107,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                 year: year,
                 dayName: dayName,
             };
-    
+
             setAllAppointmentUsersData([]);
             setSelectedDate(formattedSelectedDate);
             setState({
@@ -112,63 +115,48 @@ const AppointmentManagerNeedleComponent = (props) => {
                 appointmentDate: `${formattedDay}/${formattedMonth}/${year}`,
                 appointmentTime: "",
             });
-    
+
             return formattedDate;
         }
         return isoDate;
     }
-const formatDatesForDisplay = (isoDate) => {
-    const dateParts = isoDate.split("-");
-    if (dateParts.length === 3) {
-        setAllAppointmentUsersData([]);
-        const [year, month, day] = dateParts;
-        const formattedMonth = parseInt(month, 10).toString();
-        const formattedDay = parseInt(day, 10).toString();
-        const formattedYear = parseInt(year, 10).toString();
+    const formatDatesForDisplay = (isoDate) => {
+        const dateParts = isoDate.split("-");
+        if (dateParts.length === 3) {
+            setAllAppointmentUsersData([]);
+            const [year, month, day] = dateParts;
+            const formattedMonth = parseInt(month, 10).toString();
+            const formattedDay = parseInt(day, 10).toString();
+            const formattedYear = parseInt(year, 10).toString();
 
-        const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
+            const formattedDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
 
-        const dayName = getDayName(new Date(isoDate)).toLowerCase();
-        const formattedSelectedDate = {
-            day: parseInt(formattedDay, 10),
-            month: parseInt(formattedMonth, 10),
-            year: parseInt(formattedYear, 10),
-            dayName: dayName,
-        };
-
-        setAllAppointmentUsersData([]);
-        setSelectedDates(formattedSelectedDate);
-        setState({
-            ...state,
-            appointmentDates: `${formattedDay}/${formattedMonth}/${formattedYear}`,
-            appointmentTimes: "",
-        });
-        console.log(formattedSelectedDate, "formattedDate");
-        return formattedDate;
-    }
-    return isoDate;
-};
+            const dayName = getDayName(new Date(isoDate)).toLowerCase();
+            const formattedSelectedDate = {
+                day: parseInt(formattedDay, 10),
+                month: parseInt(formattedMonth, 10),
+                year: parseInt(formattedYear, 10),
+                dayName: dayName,
+            };
+            setAllAppointmentUsersData([]);
+            setSelectedDates(formattedSelectedDate);
+            setState({
+                ...state,
+                appointmentDates: `${formattedDay}/${formattedMonth}/${formattedYear}`,
+                appointmentTimes: "",
+            });
+            console.log(formattedSelectedDate, "formattedDate");
+            return formattedDate;
+        }
+        return isoDate;
+    };
     const fetchMainTimeTableData = async () => {
         try {
             if (user && selectedDates && selectedDates.dayName) {
                 const timeTableData = await fetchTimeTableMainDataNeedle(user, selectedDates);
-
                 if (timeTableData.length > 0) {
                     const filteredTimeTableData = timeTableData
                     if (filteredTimeTableData.length > 0) {
-                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
-                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                acc.push(
-                                    ...item.timeablelist.map((timeSlot, index) => ({
-                                        ...timeSlot,
-                                        timeTableId: item.id,
-                                        timeSlotIndex: index
-                                    }))
-                                );
-                            }
-                            return acc;
-                        }, []);
-
                         const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDates, db);
                         console.log("availableTimeSlots", availableTimeSlots)
                         const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
@@ -206,19 +194,6 @@ const formatDatesForDisplay = (isoDate) => {
                 if (timeTableData.length > 0) {
                     const filteredTimeTableData = timeTableData
                     if (filteredTimeTableData.length > 0) {
-                        const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
-                            if (item.timeablelist && Array.isArray(item.timeablelist)) {
-                                acc.push(
-                                    ...item.timeablelist.map((timeSlot, index) => ({
-                                        ...timeSlot,
-                                        timeTableId: item.id,
-                                        timeSlotIndex: index
-                                    }))
-                                );
-                            }
-                            return acc;
-                        }, []);
-
                         const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDate, db);
                         console.log("availableTimeSlots", availableTimeSlots)
                         const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
@@ -227,19 +202,19 @@ const formatDatesForDisplay = (isoDate) => {
                         }, {});
                         setIsChecked(initialIsChecked);
                         const timeOptionsFromTimetable = GetTimeOptionsFilterdFromTimetable(availableTimeSlots);
-                        console.log("GetTimeOptionsFilterdFromTimetable",selectedDate,timeOptionsFromTimetable)
-                        setTimeOptionss(timeOptionsFromTimetable);
+                        console.log("GetTimeOptionsFilterdFromTimetable", selectedDate, timeOptionsFromTimetable)
+                        setTimeOptionsss(timeOptionsFromTimetable);
                         console.log(timeOptionss)
                     } else {
                         console.log("Time table not found for selected day and clinic");
                         const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                        setTimeOptionss([noTimeSlotsAvailableOption]);
+                        setTimeOptionsss([noTimeSlotsAvailableOption]);
                         console.log(timeOptionss)
                     }
 
                 } else {
                     const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                    setTimeOptionss([noTimeSlotsAvailableOption]);
+                    setTimeOptionsss([noTimeSlotsAvailableOption]);
                     console.log("Time table not found", timeOptionss);
                 }
             }
@@ -256,7 +231,7 @@ const formatDatesForDisplay = (isoDate) => {
                 const filteredTimeTableData = timeTableData
                 if (filteredTimeTableData.length > 0) {
                     const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDate, db);
-                    console.log("availableTimeSlots",availableTimeSlots)
+                    console.log("availableTimeSlots", availableTimeSlots)
                     const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
                         acc[timetableItem.id] = timetableItem.status === "Enabled";
                         return acc;
@@ -284,7 +259,7 @@ const formatDatesForDisplay = (isoDate) => {
                 console.log("existingAppointments", existingAppointments);
                 if (existingAppointments.length > 0) {
                     const AppointmentUsersDataArray = await fetchAppointmentUsersDataNeedle(existingAppointments);
-                    console.log("AppointmentUsersDataArray",AppointmentUsersDataArray)
+                    console.log("AppointmentUsersDataArray", AppointmentUsersDataArray)
                     if (AppointmentUsersDataArray.length > 0) {
                         setAllAppointmentUsersData(AppointmentUsersDataArray);
                         console.log("AppointmentUsersData", AppointmentUsersDataArray);
@@ -309,8 +284,8 @@ const formatDatesForDisplay = (isoDate) => {
         document.title = 'Health Care Unit';
         console.log(user);
         fetchTimeTableData();
-        fetchMainTimeTableDatas();
         fetchMainTimeTableData();
+        fetchMainTimeTableDatas();
         const responsivescreen = () => {
             const innerWidth = window.innerWidth;
             const baseWidth = 1920;
@@ -323,7 +298,6 @@ const formatDatesForDisplay = (isoDate) => {
         const timeout = setTimeout(() => {
             setIsLoading(false);
         }, 500);
-
 
         fetchUserDataWithAppointments();
         console.log("AppointmentUsersData XD", AppointmentUsersData)
@@ -362,7 +336,7 @@ const formatDatesForDisplay = (isoDate) => {
 
     const handleFormEdit = async (e) => {
         e.preventDefault();
-        await editFormNeedle(selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation,uid);
+        await editFormNeedle(selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
     };
 
     const [saveDetailId, setsaveDetailId] = useState([])
@@ -371,6 +345,13 @@ const formatDatesForDisplay = (isoDate) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("edit-appointment");
+        document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
+        document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
+        document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
+        document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
+        document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
+        document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
+        document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
         setsaveEditId("")
         setsaveDetailId(AppointmentUsersData.appointmentuid)
         if (window.getComputedStyle(x).display === "none") {
@@ -382,13 +363,7 @@ const formatDatesForDisplay = (isoDate) => {
             if (statusElement) {
                 statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
             }
-            document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
-            document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
-            document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
-            document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
-            document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
-            document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
-            document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
+
 
         } else {
             if (saveDetailId === AppointmentUsersData.appointmentuid) {
@@ -401,13 +376,6 @@ const formatDatesForDisplay = (isoDate) => {
                 if (statusElement) {
                     statusElement.innerHTML = `${AppointmentUsersData.appointment.status}`;
                 }
-                document.getElementById("detail-appointment-date").innerHTML = `<b>วันที่</b> : ${AppointmentUsersData.appointment.appointmentDate}`
-                document.getElementById("detail-appointment-time").innerHTML = `<b>เวลา</b> : ${AppointmentUsersData.timeslot.start}-${AppointmentUsersData.timeslot.end}`
-                document.getElementById("detail-appointment-id").innerHTML = `<b>รหัสนักศึกษา</b> : ${AppointmentUsersData.id}`
-                document.getElementById("detail-appointment-name").innerHTML = `<b>ชื่อ</b> :  ${AppointmentUsersData.firstName} ${AppointmentUsersData.lastName}`
-                document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดมหาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
-                document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
-                document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
             }
 
         }
@@ -432,7 +400,7 @@ const formatDatesForDisplay = (isoDate) => {
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
-       
+
         setState((prevState) => ({
             ...prevState,
             appointmentDate: appointmentUserData.appointmentDate,
@@ -450,7 +418,7 @@ const formatDatesForDisplay = (isoDate) => {
             y.style.display = "none";
             z.style.display = "none";
             setsaveDetailId("")
-            setsaveEditId(appointmentUserData.appointmentuid)    
+            setsaveEditId(appointmentUserData.appointmentuid)
         } else {
             if (saveEditId === appointmentUserData.appointmentuid) {
                 x.style.display = "none";
@@ -481,35 +449,36 @@ const formatDatesForDisplay = (isoDate) => {
             x.style.display = "none";
         }
     };
-    const formatDmy = (dateString) => {
-        const [day, month, year] = dateString.split('/').map(Number);
-        const formattedMonth = month < 10 ? `${month}` : `${month}`;
-        const dateObject = new Date(year, month - 1, day);
-        const dayName = getDayName(new Date(dateObject)).toLowerCase();;
-        const formattedSelectedDate = {
-            day: day,
-            month: formattedMonth,
-            year: year,
-            dayName: dayName,
-        };
+    let count = parseInt(time);
 
-        return formattedSelectedDate;
-    };
     const submitFormAddContinue = async () => {
         let x = document.getElementById("admin-add-appointment-connected2");
         let y = document.getElementById("admin-add-appointment-connected");
-
         if (window.getComputedStyle(x).display === "none") {
             x.style.display = "block";
             y.style.display = "none";
-
+            setState((prevState) => ({
+                ...prevState,
+                appointmentTime1: appointmentTime,
+                appointmentTime2: appointmentTime,
+                appointmentTime3: appointmentTime,
+                appointmentTime4: appointmentTime,
+                appointmentTime5: appointmentTime,
+                appointmentTime6: appointmentTime,
+                appointmentTime7: appointmentTime,
+                appointmentTime8: appointmentTime,
+                appointmentTime9: appointmentTime,
+                appointmentTime10: appointmentTime,
+            }));
             cleanUpOldPopups();
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
-            let count = parseInt(time);
             if (selectedDates) {
+                const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
+
                 const handleSelectChanges = () => {
                     setSelectedCount(selectedCount + 1);
-                    console.log(selectedCount);
+                    console.log(selectedCount)
+
                 };
                 if (Number(time) > 10) {
                     Swal.fire({
@@ -517,74 +486,116 @@ const formatDatesForDisplay = (isoDate) => {
                         text: `จํากัดการสร้างแค่ 10 ครั้งเท่านั่น!`,
                         icon: 'warning',
                         confirmButtonText: 'ย้อนกลับ',
-                        confirmButtonColor: '#DC2626',
+                        confirmButtonColor: '#263A50',
                         reverseButtons: true,
                         customClass: {
                             confirmButton: 'custom-confirm-button',
                             cancelButton: 'custom-cancel-button',
                         },
-
                     })
                     x.style.display = "none";
-                }
-                else if (appointmentId === "") {
+                } else if (timelength == ""){
                     Swal.fire({
-                        title: 'เกิดข้อผิดพลาด!',
-                        text: 'กรุณาพิมรหัสนักศึกษา',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `กรุณาใส่ระยะห่างวัน!`,
                         icon: 'error',
-                        confirmButtonText: 'ตกลง',
+                        confirmButtonText: 'ย้อนกลับ',
                         confirmButtonColor: '#263A50',
+                        reverseButtons: true,
                         customClass: {
                             confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
+                        },
+                    })
+                    x.style.display = "none";
+                } else if (time == ""){
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `กรุณาใส่จํานวนครั้ง!`,
+                        icon: 'error',
+                        confirmButtonText: 'ย้อนกลับ',
+                        confirmButtonColor: '#263A50',
+                        reverseButtons: true,
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
+                        },
+                    })
+                    x.style.display = "none";
+                } else if (selectedDate == ""){
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `กรุณาเลือกวัน!`,
+                        icon: 'error',
+                        confirmButtonText: 'ย้อนกลับ',
+                        confirmButtonColor: '#263A50',
+                        reverseButtons: true,
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
+                        },
+                    })
+                    x.style.display = "none";
+                } else if (appointmentTime == ""){
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `กรุณาเลือกช่วงเวลา!`,
+                        icon: 'error',
+                        confirmButtonText: 'ย้อนกลับ',
+                        confirmButtonColor: '#263A50',
+                        reverseButtons: true,
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
                         },
                     })
                     x.style.display = "none";
                 }
-                else if (time === "") {
+                else if (appointmentId == ""){
                     Swal.fire({
-                        title: 'เกิดข้อผิดพลาด!',
-                        text: 'กรุณาเลือกจํานวนครั้ง',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `กรุณากรอกเลขไอดี!`,
                         icon: 'error',
-                        confirmButtonText: 'ตกลง',
+                        confirmButtonText: 'ย้อนกลับ',
                         confirmButtonColor: '#263A50',
+                        reverseButtons: true,
                         customClass: {
                             confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
                         },
                     })
                     x.style.display = "none";
                 }
-                else if (timelength === "") {
-                    Swal.fire({
-                        title: 'เกิดข้อผิดพลาด!',
-                        text: 'กรุณาเลือกระยะห่าง',
-                        icon: 'error',
-                        confirmButtonText: 'ตกลง',
-                        confirmButtonColor: '#263A50',
-                        customClass: {
-                            confirmButton: 'custom-confirm-button',
-                        },
-                    })
-                    x.style.display = "none";
-                } else {
-                    const usersCollection = collection(db, 'users');
-                    const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
-                    const userDocuments = userQuerySnapshot.docs;
-                    const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
-                    const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
-                    if (foundUser) {
+                
+                else {
                     const processAppointment = async (i) => {
-                        console.log(count, "count");
-                        const instanceDate = new Date(selectedDates.year, selectedDates.month - 1, selectedDates.day);
-                        instanceDate.setDate(instanceDate.getDate() + i * timelength);
-                        const formatdate = covertToSubmitPopup(instanceDate);
+                        const instanceDate = new Date(formattedAppointmentDate);
 
-                        await setStateAsync((prevState) => ({
+                        instanceDate.setDate(instanceDate.getDate() + (i - 1) * timelength);
+                        const formatdate = covertToSubmitPopup(instanceDate)
+                        console.log("formatdatze", formatdate)
+                        setState((prevState) => ({
                             ...prevState,
-                            [`appointmentDate${i + 1}`]: formatdate,
+                            [`appointmentDate${i}`]: formatdate,
                         }));
+                        const formatDmy = (dateString) => {
+                            const [day, month, year] = dateString.split('/').map(Number);
+                            const formattedMonth = month < 10 ? `${month}` : `${month}`;
+                            const formattedDay = day < 10 ? `${day}` : `${day}`;
+                            const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
+                            const dateObject = new Date(year, month - 1, day);
+                            const dayName = getDayName(new Date(dateObject)).toLowerCase();;
+                            const formattedSelectedDate = {
+                                day: day,
+                                month: formattedMonth,
+                                year: year,
+                                dayName: dayName,
+                            };
 
-                        const xd = formatDmy(formatdate);
-                        console.log("xdformat", xd);
+                            return formattedSelectedDate;
+                        };
+                        const xd = formatDmy(formatdate)
+                        console.log("xdformat", xd)
                         const divElement = document.createElement('div');
                         const timeTableCollection = collection(db, 'timeTable');
                         const querySnapshot = await getDocs(query(
@@ -596,10 +607,11 @@ const formatDatesForDisplay = (isoDate) => {
                             id: doc.id,
                             ...doc.data(),
                         }));
-                        console.log("timeTableData selectedDate", xd)
-                        console.log("timeTableData", timeTableData)
+                        console.log("timeTableData selectedDatez", xd)
+                        console.log("timeTableDataz", timeTableData)
 
                         if (timeTableData.length > 0) {
+                            console.log("timeTableData.length", timeTableData.length)
                             const filteredTimeTableData = timeTableData
                             if (filteredTimeTableData.length > 0) {
                                 const allTimeableLists = filteredTimeTableData.reduce((acc, item) => {
@@ -614,12 +626,23 @@ const formatDatesForDisplay = (isoDate) => {
                                     }
                                     return acc;
                                 }, []);
-
                                 const appointmentsCollection = collection(db, 'appointment');
-                                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`),
-                                    where('clinic', '==', 'คลินิกฝั่งเข็ม')));
+                                const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==', `${xd.day}/${xd.month}/${xd.year}`)));
                                 const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => doc.data().appointmentTime);
-                                const availableTimeSlots = await availableTimeSlotsNeedle(filteredTimeTableData, selectedDate, db);
+                                if (existingAppointments.length > 0) {
+
+                                    console.log(`Appointments found for ${xd.day}/${xd.month}/${xd.year}:`, existingAppointments);
+                                } else {
+                                    console.log(`No appointments found for ${xd.day}/${xd.month}/${xd.year}`);
+                                }
+                                const availableTimeSlots = allTimeableLists.filter((timeSlot) =>
+                                    !existingAppointments.some(existingSlot =>
+                                        existingSlot.timetableId === timeSlot.timeTableId && existingSlot.timeSlotIndex === timeSlot.timeSlotIndex
+                                    )
+                                );
+
+
+
                                 console.log("availableTimeSlots", availableTimeSlots)
                                 const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
                                     acc[timetableItem.id] = timetableItem.status === "Enabled";
@@ -627,149 +650,151 @@ const formatDatesForDisplay = (isoDate) => {
                                 }, {});
                                 setIsChecked();
                                 setIsChecked(initialIsChecked);
-                                const timeOptionsFromTimetable = GetTimeOptionsFilterdFromTimetable(availableTimeSlots);
 
-                                await setStateAsync((prevState) => ({
-                                    ...prevState,
-                                    [`timeOptions${i + 1}`]: timeOptionsFromTimetable,
-                                }));
+                                const timeOptionsFromTimetable = [
+                                    { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
+                                    ...availableTimeSlots
+                                        .filter(timeSlot => timeSlot.type === 'main')
+                                        .sort((a, b) => {
+                                            const timeA = new Date(`01/01/2000 ${a.start}`);
+                                            const timeB = new Date(`01/01/2000 ${b.start}`);
+                                            return timeA - timeB;
+                                        })
+                                        .map((timeSlot) => ({
+                                            label: `${timeSlot.start} - ${timeSlot.end}`,
+                                            value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
+                                        })),
+                                ];
+
                                 console.log("Before setTimeOptions", timeOptionsFromTimetable);
-                                const a = timeOptionsFromTimetable
-                                const timeOptionsProperty = `timeOptions${i}`;
-                                const timeOptionsValue = state[timeOptionsProperty];
-                                divElement.id = `admin-add-appointment-connected2-${i}`;
-                                divElement.className = "auto-create";
-                                divElement.addEventListener("change", (e) => {
-                                    handleSelectChanges();
-                                    fetchTimeTableData();
-                                    const selectedValue = JSON.parse(e.target.value);
-
-                                    if (selectedValue && typeof selectedValue === 'object') {
-                                        const { timetableId, timeSlotIndex } = selectedValue;
-                                        console.log("timetableId:", timetableId);
-                                        console.log("timeSlotIndex:", timeSlotIndex);
-                                        handleOuterChange(timeSlotIndex);
-                                        setState((prevState) => ({
-                                            ...prevState,
-                                            [`appointmentTime${i}`]: {
-                                                timetableId: timetableId,
-                                                timeSlotIndex: timeSlotIndex,
-                                            },
-                                        }));
-                                        setState(prevState => ({
-                                            ...prevState,
-                                            [`timeOptions${i}`]: a,
-                                        }));
-                                        console.log(state[`appointmentTime${i}`]);
+                                if (timeOptionsFromTimetable.length > 1) {
+                                    const a = timeOptionsFromTimetable
+                                    const timeOptionsProperty = `timeOptions${i}`;
+                                    const timeOptionsValue = state[timeOptionsProperty];
+                                    divElement.id = `admin-add-appointment-connected2-${i}`;
+                                    divElement.className = "auto-create";
+                                    divElement.addEventListener("change", (e) => {
                                         handleSelectChanges();
-                                    } else if (e.target.value === "") {
-                                        inputValue(`appointmentTime${i}`)({
-                                            target: {
-                                                value: {},
-                                            },
-                                        });
+                                        fetchTimeTableData();
+                                        const selectedValue = JSON.parse(e.target.value);
 
-                                        handleSelectChanges();
-                                    } else {
-                                        console.error("Invalid selected value:", selectedValue);
-                                    }
-                                });
+                                        if (selectedValue && typeof selectedValue === 'object') {
+                                            const { timetableId, timeSlotIndex } = selectedValue;
+                                            console.log("timetableId:", timetableId);
+                                            console.log("timeSlotIndex:", timeSlotIndex);
+                                            handleOuterChange(timeSlotIndex);
+                                            setState((prevState) => ({
+                                                ...prevState,
+                                                [`appointmentTime${i}`]: {
+                                                    timetableId: timetableId,
+                                                    timeSlotIndex: timeSlotIndex,
+                                                },
+                                            }));
+                                            setState(prevState => ({
+                                                ...prevState,
+                                                [`timeOptions${i}`]: a,
+                                            }));
+                                            console.log(state[`appointmentTime${i}`]);
+                                            handleSelectChanges();
+                                        } else if (e.target.value === "") {
+                                            inputValue(`appointmentTime${i}`)({
+                                                target: {
+                                                    value: {},
+                                                },
+                                            });
 
-                                const handleOuterChange = (timeSlotIndex) => {
-                                    console.log("Received timeSlotIndex from inner change:", timeSlotIndex);
-                                };
+                                            handleSelectChanges();
+                                        } else {
+                                            console.error("Invalid selected value:", selectedValue);
+                                        }
+                                    });
 
-                                const templateCommon = `
-                                <div class="center-container">
-                                    <label class="admin-textBody-large colorPrimary-800">วันที่</label>
-                                    <span> ${formatdate}</span>
-                                </div>
-                                <div class="center-container">
-                                    <select
-                                        name="time"
-                                        value=""
-                                        class=${selectedCount >= 2 ? 'selected' : ''}
-                                    >
-                                        ${timeOptionsFromTimetable.map((timeOption) =>
-                                    `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                                                ${timeOption.label}
-                                            </option>`
-                                )}
-                                    </select>
-                                </div>
-                                <br>
-                            `;
+                                    const handleOuterChange = (timeSlotIndex) => {
+                                        console.log("Received timeSlotIndex from inner change:", timeSlotIndex);
+                                    };
 
-                                divElement.innerHTML = `
-                                <p class="admin-textBody-large">ครั้งที่ ${i} สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'}</p>
-                                ${templateCommon}
-                            `;
+                                    const templateCommon = `
+                            <div class="center-container">
+                                <label class="admin-textBody-large colorPrimary-800">วันที่</label>
+                                <span> ${formatdate}</span>
+                            </div>
+                            <div class="center-container">
+                                <select
+                                    name="time"
+                                    value=""
+                                    class=${selectedCount >= 2 ? 'selected' : ''}
+                                >
+                                    ${timeOptionsFromTimetable.map((timeOption) =>
+                                        `<option key="${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}" value=${JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
+                                            ${timeOption.label}
+                                        </option>`
+                                    )}
+                                </select>
+                            </div>
+                            <br>
+                        `;
 
-                                appointmentPopupItem.appendChild(divElement);
-
+                                    divElement.innerHTML = `
+                            <p class="admin-textBody-large">สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'}</p>
+                            ${templateCommon}
+                        `;
+                                    appointmentPopupItem.appendChild(divElement);
+                                } else {
+                                    count += 1;
+                                    setState((prevState) => ({
+                                        ...prevState,
+                                        [`time`]: count,
+                                    }));
+                                    setState((prevState) => ({
+                                        ...prevState,
+                                        [`appointmentDate${i}`]: "",
+                                    }));
+                                    setState((prevState) => ({
+                                        ...prevState,
+                                        [`appointmentTime${i}`]: "",
+                                    }));
+                                }
                             } else {
                                 console.log("Time table not found for selected day and clinic");
-                                const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-
-                                setState(prevState => ({
-                                    ...prevState,
-                                    [`timeOptions${i}`]: noTimeSlotsAvailableOption,
-                                }));
-                                const a = `timeOptions${i}`
-                                console.log("state", state[a]);
                             }
                         } else {
-                            const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
-                            setTimeOptions([noTimeSlotsAvailableOption]);
-                            count += 1
+                            console.log("Time table not found");
+                            count += 1;
+                            console.log("origi count", count)
+                            setState((prevState) => ({
+                                ...prevState,
+                                [`time`]: count,
+                            }));
+                            setState((prevState) => ({
+                                ...prevState,
+                                [`appointmentDate${i}`]: "",
+                            }));
+                            setState((prevState) => ({
+                                ...prevState,
+                                [`appointmentTime${i}`]: "",
+                            }));
                         }
                     };
-
-                    for (let i = 0; i < Math.min(count, 10); i++) {
+                    for (let i = 1; i <= Math.min(count, 10); i++) {
                         await processAppointment(i);
-                    }}
-                    else {
-                        x.style.display = "none";
-                        y.style.display = "none";
-                        Swal.fire({
-                            icon: "error",
-                            title: "เกิดข้อผิดพลาด!",
-                            text: "ไม่พบรหัสนักศึกษา!",
-                            confirmButtonText: 'ตกลง',
-                            confirmButtonColor: '#263A50',
-                            customClass: {
-                                confirmButton: 'custom-confirm-button',
-                            }
-                        });
-                        
                     }
-                
                 }
-                } else {
-                    Swal.fire({
-                        title: 'เกิดข้อผิดพลาด!',
-                        text: 'เลือกวันก่อน',
-                        icon: 'error',
-                        confirmButtonText: 'ตกลง',
-                        confirmButtonColor: '#263A50',
-                        customClass: {
-                            confirmButton: 'custom-confirm-button',
-                        },
-                    });
-                    
-                }
+            } else {
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: 'เลือกวันก่อน',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    },
+                })
+                x.style.display = "none";
             }
-        };
+        }
+    };
 
-        const setStateAsync = (stateUpdate) => {
-            return new Promise((resolve) => {
-                setState(stateUpdate);
-                resolve();
-            });
-        };
-        useEffect(() => {
-            console.log(state.time, "timeXD");
-        }, [state.time]);
     function cleanUpOldPopups() {
         const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
 
@@ -791,16 +816,92 @@ const formatDatesForDisplay = (isoDate) => {
         const day = inputDate.getDate();
         const month = inputDate.getMonth() + 1;
         const year = inputDate.getFullYear();
-
         const formattedDate = `${day}/${month}/${year}`;
-
         return formattedDate;
     };
-    const submitFormAddContinue2 = (e) => {
-    e.preventDefault();
-    submitFormAddContinue2Needle(appointmentId, time, state, appointmentCasue, appointmentSymptom, appointmentNotation, resetForm);
-};
 
+    const submitFormAddContinue2 = async (e) => {
+        e.preventDefault();
+        try {
+            const usersCollection = collection(db, 'users');
+            const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
+            const userDocuments = userQuerySnapshot.docs;
+            const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
+            const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
+
+            if (!userQuerySnapshot.empty) {
+                console.log("User's collection ID:", userId);
+            } else {
+                console.log("No user found with the specified appointmentId");
+            }
+
+            if (foundUser) {
+                for (let i = 1; i <= time; i++) {
+                    console.log(time, "timesubmitFormAddContinue2")
+                    const updatedTimetable = {
+                        appointmentDate: state[`appointmentDate${i}`],
+                        appointmentTime: state[`appointmentTime${i}`],
+                        appointmentId: appointmentId,
+                        appointmentCasue: appointmentCasue,
+                        appointmentSymptom: appointmentSymptom,
+                        appointmentNotation: appointmentNotation,
+                        clinic: "คลินิกฝั่งเข็ม",
+                        status: "ลงทะเบียนแล้ว",
+                        type: "main",
+                    };
+
+                    const appointmentRef = await addDoc(collection(db, 'appointment'), updatedTimetable);
+
+                    const userDocRef = doc(db, 'users', userId);
+
+                    await updateDoc(userDocRef, {
+                        appointments: arrayUnion(appointmentRef.id),
+                    });
+                }
+
+                Swal.fire({
+                    icon: "success",
+                    title: "การนัดหมายสำเร็จ!",
+                    text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetForm();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "เกิดข้อผิดพลาด!",
+                    text: "ไม่พบรหัสนักศึกษา!",
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#263A50',
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                    }
+                });
+                console.log("User not found in alluserdata");
+            }
+        } catch (firebaseError) {
+            console.error('Firebase submit error:', firebaseError);
+
+            console.error('Firebase error response:', firebaseError);
+            Swal.fire({
+                icon: "error",
+                title: "เกิดข้อผิดพลาด!",
+                text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง",
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#263A50',
+                customClass: {
+                    confirmButton: 'custom-confirm-button',
+                }
+            });
+        }
+    };
 
     const resetForm = () => {
         window.location.reload();
