@@ -158,7 +158,7 @@ const AppointmentManagerComponentSpecial = (props) => {
         setSelectedCount(selectedCount + 1);
         console.log(selectedCount)
     };
-
+    const [selectedValue, setSelectedValue] = useState("");
     const submitForm = async (e) => {
         e.preventDefault();
         try {
@@ -184,52 +184,108 @@ const AppointmentManagerComponentSpecial = (props) => {
             } else {
                 console.log("No user found with the specified appointmentId");
             }
-
-            if (foundUser) {
-                const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
-                console.log('Succuessful adddoc', appointmentInfo)
-                console.log(appointmentId)
-                console.log(appointmentRef.id)
-                console.log("Newly created appointment ID:", appointmentRef.id);
-                console.log("Found user:", foundUser);
-
-                const userDocRef = doc(db, 'users', userId);
-
-                await updateDoc(userDocRef, {
-                    appointments: arrayUnion(appointmentRef.id),
-                });
-
-                console.log("User document updated with new appointment.");
-                Swal.fire({
-                    icon: "success",
-                    title: "การนัดหมายสำเร็จ!",
-                    text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#263A50',
-                    customClass: {
-                        confirmButton: 'custom-confirm-button',
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.reload();
-                    }
-                });
-
-            } else {
+            if (foundUser.role === "admin") {
                 Swal.fire({
                     icon: "error",
                     title: "เกิดข้อผิดพลาด!",
-                    text: "ไม่พบรหัสนักศึกษา!",
+                    text: "ไม่สามารถสร้างนัดหมายสําหรับ Admin ได้!",
                     confirmButtonText: 'ตกลง',
                     confirmButtonColor: '#263A50',
                     customClass: {
                         confirmButton: 'custom-confirm-button',
                     }
-                });
-                console.log("User not found in alluserdata");
+                })
+            } else {
+                if (foundUser) {
+                    const selectedTimeLabel = timeOptions.find((timeOption) => {
+                        const optionValue = JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex });
+                        return optionValue === selectedValue;
+                    })?.label;
+                    const userDocRef = doc(db, 'users', userId);
+                    Swal.fire({
+                        title: 'ยืนยันเพิ่มนัดหมาย',
+                        html: `ยืนยันที่จะนัดหมายวันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'ตกลง',
+                        cancelButtonText: 'ยกเลิก',
+                        confirmButtonColor: '#263A50',
+                        reverseButtons: true,
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                            cancelButton: 'custom-cancel-button',
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                Swal.fire(
+                                    {
+                                        title: 'สําเร็จ!',
+                                        text: `การเพิ่มนัดหมายสำเร็จ!`,
+                                        icon: 'success',
+                                        confirmButtonText: 'ตกลง',
+                                        confirmButtonColor: '#263A50',
+                                        customClass: {
+                                            confirmButton: 'custom-confirm-button',
+                                        }
+                                    }
+                                ).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+                                        await updateDoc(userDocRef, {
+                                            appointments: arrayUnion(appointmentRef.id),
+                                        });
+                                        window.location.reload();
+                                    }
+                                });
+                            } catch(firebaseError) {
+                                Swal.fire(
+                                    {
+                                        title: 'เกิดข้อผิดพลาด!',
+                                        text: firebaseError,
+                                        icon: 'success',
+                                        confirmButtonText: 'ตกลง',
+                                        confirmButtonColor: '#263A50',
+                                        customClass: {
+                                            confirmButton: 'custom-confirm-button',
+                                        }
+                                    }
+                                )
+                            }
+
+                        } else if (
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                            Swal.fire(
+                                {
+                                    title: 'เกิดข้อผิดพลาด!',
+                                    text: `การเพิ่มนัดหมายไม่สำเร็จ`,
+                                    icon: 'error',
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }
+                            )
+                        }
+                    })
+
+                }
+
+                else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "เกิดข้อผิดพลาด!",
+                        text: "ไม่พบรหัสนักศึกษา!",
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            confirmButton: 'custom-confirm-button',
+                        }
+                    });
+                }
             }
-
-
         } catch (firebaseError) {
             console.error('Firebase submit error:', firebaseError);
 
@@ -265,22 +321,74 @@ const AppointmentManagerComponentSpecial = (props) => {
                 status: "ลงทะเบียนแล้ว",
             };
     
-            await updateDoc(timetableRef, updatedTimetable);
-    
+            const selectedTimeLabel = timeOptions.find((timeOption) => {
+                const optionValue = JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex });
+                return optionValue === selectedValue;
+            })?.label;
             Swal.fire({
-                icon: "success",
-                title: "การอัปเดตการนัดหมายสำเร็จ!",
-                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                title: 'ยืนยันแก้นัดหมาย',
+                html: `ยืนยันที่จะแก้ไข้นัดหมายเป็นวันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                icon: 'warning',
+                showCancelButton: true,
                 confirmButtonText: 'ตกลง',
+                cancelButtonText: 'ยกเลิก',
                 confirmButtonColor: '#263A50',
+                reverseButtons: true,
                 customClass: {
                     confirmButton: 'custom-confirm-button',
+                    cancelButton: 'custom-cancel-button',
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.reload();
+                    try {
+                        Swal.fire({
+                            icon: "success",
+                            title: "การอัปเดตการนัดหมายสำเร็จ!",
+                            text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        }
+                        ).then(async (result) => {
+                            if (result.isConfirmed) {
+                                await updateDoc(timetableRef, updatedTimetable);
+                                window.location.reload();
+                            }
+                        });
+                    } catch(firebaseError) {
+                        Swal.fire(
+                            {
+                                title: 'เกิดข้อผิดพลาด!',
+                                text: firebaseError,
+                                icon: 'success',
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                        )
+                    }
+
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    Swal.fire(
+                        {
+                            title: 'เกิดข้อผิดพลาด!',
+                            text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        }
+                    )
                 }
-            });
+            })
         } catch (firebaseError) {
             console.error('Firebase update error:', firebaseError);
         }
@@ -487,26 +595,29 @@ const AppointmentManagerComponentSpecial = (props) => {
     const formatDateForDisplay = (isoDate) => {
         const dateParts = isoDate.split("-");
         if (dateParts.length === 3) {
-            setAllAppointmentUsersData([]);
             const [year, month, day] = dateParts;
-            const formattedMonth = parseInt(month, 10).toString();
-            const formattedDate = `${day}/${formattedMonth}/${year}`;
 
-            const dayName = getDayName(new Date(isoDate)).toLowerCase();;
+            const formattedMonth = parseInt(month, 10).toString();
+            const formattedDay = parseInt(day, 10).toString();
+
+            const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
+
+            const dayName = getDayName(new Date(isoDate)).toLowerCase();
             const formattedSelectedDate = {
-                day: day,
+                day: formattedDay,
                 month: formattedMonth,
                 year: year,
                 dayName: dayName,
             };
-          
+
             setAllAppointmentUsersData([]);
             setSelectedDate(formattedSelectedDate);
             setState({
                 ...state,
-                appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
+                appointmentDate: `${formattedDay}/${formattedMonth}/${year}`,
                 appointmentTime: "",
             });
+
             return formattedDate;
         }
         return isoDate;
@@ -755,7 +866,7 @@ if (statusElementDetail) {
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวักทั่วไป" />
+                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวัดทั่วไป" />
                             </div>
                             <div className="admin-timetable-btn">
                                 <button type="button" onClick={openAddAppointment} className="btn-secondary btn-systrm">กลับ</button>
@@ -785,6 +896,7 @@ if (statusElementDetail) {
                                     value={JSON.stringify(appointmentTime)}
                                     onChange={(e) => {
                                         handleSelectChange();
+                                        setSelectedValue(e.target.value);
                                         const selectedValue = JSON.parse(e.target.value);
 
                                         if (selectedValue && typeof selectedValue === 'object') {

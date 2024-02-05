@@ -26,7 +26,7 @@ const AppointmentManagerPhysicComponent = (props) => {
     const [timeOptions, setTimeOptions] = useState([]);
     const [timeOptionss, setTimeOptionss] = useState([]);
     const [timeOptionsss, setTimeOptionsss] = useState([]);
-
+    const [selectedValue, setSelectedValue] = useState("");
     const handleDateSelect = (selectedDate) => {
         console.log("Selected Date in AppointmentManager:", selectedDate);
         setAllAppointmentUsersData([]);
@@ -330,13 +330,13 @@ const AppointmentManagerPhysicComponent = (props) => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        await submitFormPhysic(selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation);
+        await submitFormPhysic(selectedDate,timeOptions,selectedValue, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation);
     };
 
 
     const handleFormEdit = async (e) => {
         e.preventDefault();
-        await editFormPhysic(selectedDate, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
+        await editFormPhysic(selectedDate, timeOptions,selectedValue,appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
     };
 
     const [saveDetailId, setsaveDetailId] = useState([])
@@ -834,45 +834,111 @@ const AppointmentManagerPhysicComponent = (props) => {
             } else {
                 console.log("No user found with the specified appointmentId");
             }
-
-            if (foundUser) {
-                for (let i = 1; i <= time; i++) {
-                    console.log(time, "timesubmitFormAddContinue2")
-                    const updatedTimetable = {
-                        appointmentDate: state[`appointmentDate${i}`],
-                        appointmentTime: state[`appointmentTime${i}`],
-                        appointmentId: appointmentId,
-                        appointmentCasue: appointmentCasue,
-                        appointmentSymptom: appointmentSymptom,
-                        appointmentNotation: appointmentNotation,
-                        clinic: "คลินิกกายภาพ",
-                        status: "ลงทะเบียนแล้ว",
-                        type: "main",
-                    };
-
-                    const appointmentRef = await addDoc(collection(db, 'appointment'), updatedTimetable);
-
-                    const userDocRef = doc(db, 'users', userId);
-
-                    await updateDoc(userDocRef, {
-                        appointments: arrayUnion(appointmentRef.id),
-                    });
-                }
-
+            if (foundUser.role === "admin") {
                 Swal.fire({
-                    icon: "success",
-                    title: "การนัดหมายสำเร็จ!",
-                    text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                    icon: "error",                    
+                    title: "เกิดข้อผิดพลาด!",
+                    text: "ไม่สามารถสร้างนัดหมายสําหรับ Admin ได้!",
                     confirmButtonText: 'ตกลง',
                     confirmButtonColor: '#263A50',
                     customClass: {
                         confirmButton: 'custom-confirm-button',
                     }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        resetForm();
+                })
+            } else {
+            
+            if (foundUser) {
+                Swal.fire({
+                    title: 'ยืนยันเพิ่มนัดหมาย',
+                    text: `ยืนยันที่จะนัดหมายต่อเนื่องของเลขรหัส ${appointmentId}`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#263A50',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                        cancelButton: 'custom-cancel-button',
                     }
-                });
+                }).then( async(result) => {
+                    if (result.isConfirmed) {
+                        try {
+
+                                    for (let i = 1; i <= time; i++) {
+                                        console.log(time, "timesubmitFormAddContinue2")
+                                        const updatedTimetable = {
+                                            appointmentDate: state[`appointmentDate${i}`],
+                                            appointmentTime: state[`appointmentTime${i}`],
+                                            appointmentId: appointmentId,
+                                            appointmentCasue: appointmentCasue,
+                                            appointmentSymptom: appointmentSymptom,
+                                            appointmentNotation: appointmentNotation,
+                                            clinic: "คลินิกฝั่งเข็ม",
+                                            status: "ลงทะเบียนแล้ว",
+                                            type: "main",
+                                        };
+                    
+                                        const appointmentRef = await addDoc(collection(db, 'appointment'), updatedTimetable);
+                    
+                                        const userDocRef = doc(db, 'users', userId);
+                    
+                                        await updateDoc(userDocRef, {
+                                            appointments: arrayUnion(appointmentRef.id),
+                                        });
+                                    
+                    
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "การนัดหมายสำเร็จ!",
+                                        text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                                        confirmButtonText: 'ตกลง',
+                                        confirmButtonColor: '#263A50',
+                                        customClass: {
+                                            confirmButton: 'custom-confirm-button',
+                                        }
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            resetForm();
+                                        }
+                                    });
+                                }
+                
+                        } catch(firebaseError) {
+                            Swal.fire(
+                                {
+                                    title: 'เกิดข้อผิดพลาด!',
+                                    text: firebaseError,
+                                    icon: 'success',
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }
+                            )
+                        }
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        Swal.fire(
+                            {
+                                title: 'เกิดข้อผิดพลาด!',
+                                text: `การเพิ่มนัดหมายไม่สำเร็จ`,
+                                icon: 'error',
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                        )
+                    }
+                })
+
+
+            
             } else {
                 Swal.fire({
                     icon: "error",
@@ -886,6 +952,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                 });
                 console.log("User not found in alluserdata");
             }
+        }
         } catch (firebaseError) {
             console.error('Firebase submit error:', firebaseError);
 
@@ -1097,6 +1164,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                                             name="time"
                                             value={JSON.stringify(appointmentTime)}
                                             onChange={(e) => {
+                                                setSelectedValue(e.target.value);
                                                 handleSelectChange();
                                                 const selectedValue = JSON.parse(e.target.value);
 
@@ -1148,7 +1216,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                        <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, }); }} placeholder="เป็นไข้หวักทั่วไป" />
+                                        <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={(e) => { setState({ ...state, appointmentNotation: e.target.value, }); }} placeholder="เป็นไข้หวัดทั่วไป" />
                                     </div>
                                     <div className="admin-timetable-btn">
                                         <button type="button" onClick={openAddAppointment} className="btn-secondary btn-systrm">กลับ</button>
@@ -1178,8 +1246,9 @@ const AppointmentManagerPhysicComponent = (props) => {
                                             name="time"
                                             value={JSON.stringify(appointmentTime)}
                                             onChange={(e) => {
-
+                                                setSelectedValue(e.target.value);
                                                 handleSelectChange();
+                                                 
                                                 const selectedValue = JSON.parse(e.target.value);
                                                 if (selectedValue && typeof selectedValue === 'object') {
                                                     const { timetableId, timeSlotIndex } = selectedValue;
@@ -1200,7 +1269,6 @@ const AppointmentManagerPhysicComponent = (props) => {
                                                             value: {},
                                                         },
                                                     });
-
                                                     handleSelectChange();
                                                 } else {
                                                     console.error("Invalid selected value:", selectedValue);

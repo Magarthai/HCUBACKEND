@@ -67,8 +67,12 @@ const LoginComponent = () => {
             console.log(err);
             Swal.fire({
                 icon: "error",
-                title: "เกิดข้อพลาด!",
+                title: "เกิดข้อผิดพลาด!",
                 text: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+                confirmButtonColor: '#263A50',
+            customClass: {
+                cancelButton: 'custom-cancel-button',
+            }        
               }).then((result) => {
                 if (result.isConfirmed) {
                     navigate('/');
