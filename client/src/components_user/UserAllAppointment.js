@@ -368,7 +368,7 @@ const handleDateSelect = (selectedDate) => {
                     />
                 </div>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:""}}>
-                <p style={{marginTop:10,marginBottom:-10}} className="user-appointment-warn">*คลิกเลือกวันที่ต้องการแก้ไข้หรือยกเลิกนัดหมาย*</p>
+                <p style={{marginTop:10,marginBottom:-10}} className="user-appointment-warn">*คลิกเลือกวันที่ต้องการแก้ไขหรือยกเลิกนัดหมาย*</p>
                 </div>
                 <div className="user-appointment-bar-btn">
                     <h3 className='User-appointmentmenu-headbar'>นัดหมายสัปดาห์นี้</h3>
