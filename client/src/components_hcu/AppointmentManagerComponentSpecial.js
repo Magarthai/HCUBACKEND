@@ -658,13 +658,16 @@ const AppointmentManagerComponentSpecial = (props) => {
     const adminCards = document.querySelectorAll('.admin-appointment-card');
 
     function handleCardClick(event) {
-        adminCards.forEach(card => card.classList.remove('focused'));    
-        event.currentTarget.classList.add('focused');
-    }
+        let currentCard = event.currentTarget
+        let isFocused = currentCard.classList.contains('focused')
+        if(isFocused){
+            currentCard.classList.remove('focused');
 
-    adminCards.forEach(card => {
-        card.addEventListener('click', handleCardClick);
-    });
+        }else{
+            adminCards.forEach(card => card.classList.remove('focused'));
+            currentCard.classList.add('focused');
+        }
+    }
 
     const statusClassMap = {
         'ยืนยันสิทธิ์แล้ว': 'confirmed-background',
@@ -760,7 +763,7 @@ const AppointmentManagerComponentSpecial = (props) => {
                         </div>
                         <div className="admin-appointment-box-card">
                         {AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
-                            <div className="admin-appointment-card colorPrimary-800" key={index}>
+                            <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
                                 <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
                                     {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
                                 </div>

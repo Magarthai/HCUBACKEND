@@ -974,14 +974,16 @@ const AppointmentManagerNeedleComponent = (props) => {
 
     const adminCards = document.querySelectorAll('.admin-appointment-card');
     function handleCardClick(event) {
-        adminCards.forEach(card => card.classList.remove('focused'));
-        event.currentTarget.classList.add('focused');
+        let currentCard = event.currentTarget
+        let isFocused = currentCard.classList.contains('focused')
+        if(isFocused){
+            currentCard.classList.remove('focused');
+
+        }else{
+            adminCards.forEach(card => card.classList.remove('focused'));
+            currentCard.classList.add('focused');
+        }
     }
-
-    adminCards.forEach(card => {
-        card.addEventListener('click', handleCardClick);
-    });
-
     const statusElements = document.querySelectorAll('.admin-appointment-status');
 
     function changeStatusTextColor(element) {
@@ -1085,7 +1087,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     .filter(appointmentUserData => appointmentUserData.appointment.type === "talk")
                                     .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
                                     .map((AppointmentUserData, index) => (
-                                        <div className="admin-appointment-card colorPrimary-800" key={index}>
+                                        <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
                                             <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
                                                 {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
                                             </div>
@@ -1110,7 +1112,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     .filter(appointmentUserData => appointmentUserData.appointment.type === "main")
                                     .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
                                     .map((AppointmentUserData, index) => (
-                                        <div className="admin-appointment-card colorPrimary-800" key={index}>
+                                        <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
                                             <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
                                                 {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
                                             </div>
