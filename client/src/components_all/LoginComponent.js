@@ -119,7 +119,9 @@ const LoginComponent = () => {
                                 placeholder="password"
                             />
                         </div>
-                        <a href="/resetPassword" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} ><p style={{textAlign:"right"}} className="admin-textBody-small2">ลืมรหัสผ่าน?</p></a>
+                        <div style={{textAlign:"right", marginBottom:"10px"}}>
+                            <a href="/resetPassword" role="button" className="colorPrimary-800 admin-textBody-small2" style={{textDecoration:"underline"}} >ลืมรหัสผ่าน?</a>
+                        </div>
                       
                         <input
                             type="submit"
@@ -133,11 +135,7 @@ const LoginComponent = () => {
                     </form>
                     
                     <div className="center">
-                        {/* <div style={{display:"flex",justifyContent:"space-between"}}> */}
-                        {/* <a href="/resetPassword" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ลืมรหัสผ่าน</a> */}
                         <a href="/signup" role="button" className="colorPrimary-800" style={{textDecoration:"underline"}} >ยังไม่มีบัญชี? Sign up</a>
-                        {/* </div> */}
-                        
                         <p className="textBody-small login-kmutt">King Mongkut's University of Technology Thonburi</p>
                     </div>
 
