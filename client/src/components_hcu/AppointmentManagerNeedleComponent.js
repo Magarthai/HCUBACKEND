@@ -715,8 +715,6 @@ const AppointmentManagerNeedleComponent = (props) => {
 
                                     const templateCommon = `
                             <div class="center-container">
-                                <label class="admin-textBody-large colorPrimary-800">วันที่</label>
-                                <span> ${formatdate}</span>
                             </div>
                             <div class="center-container">
                                 <select
@@ -735,7 +733,8 @@ const AppointmentManagerNeedleComponent = (props) => {
                         `;
 
                                     divElement.innerHTML = `
-                            <p class="admin-textBody-large">สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'}</p>
+                                    
+                            <p class="admin-textBody-large">วันที่ ${formatdate} สถานะ : ${existingAppointments.length > 0 ? 'มีช่วงเวลาไม่ว่าง กรุณาเปลี่ยน' : 'ว่าง'} </p>
                             ${templateCommon}
                         `;
                                     appointmentPopupItem.appendChild(divElement);
