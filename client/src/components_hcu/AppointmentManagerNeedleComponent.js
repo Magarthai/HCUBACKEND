@@ -863,45 +863,45 @@ const AppointmentManagerNeedleComponent = (props) => {
                 }).then( async(result) => {
                     if (result.isConfirmed) {
                         try {
-
-                                    for (let i = 1; i <= time; i++) {
-                                        console.log(time, "timesubmitFormAddContinue2")
-                                        const updatedTimetable = {
-                                            appointmentDate: state[`appointmentDate${i}`],
-                                            appointmentTime: state[`appointmentTime${i}`],
-                                            appointmentId: appointmentId,
-                                            appointmentCasue: appointmentCasue,
-                                            appointmentSymptom: appointmentSymptom,
-                                            appointmentNotation: appointmentNotation,
-                                            clinic: "คลินิกฝั่งเข็ม",
-                                            status: "ลงทะเบียนแล้ว",
-                                            type: "main",
-                                        };
-                    
-                                        const appointmentRef = await addDoc(collection(db, 'appointment'), updatedTimetable);
-                    
-                                        const userDocRef = doc(db, 'users', userId);
-                    
-                                        await updateDoc(userDocRef, {
-                                            appointments: arrayUnion(appointmentRef.id),
-                                        });
-                                    
-                    
-                                    Swal.fire({
-                                        icon: "success",
-                                        title: "การนัดหมายสำเร็จ!",
-                                        text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
-                                        confirmButtonText: 'ตกลง',
-                                        confirmButtonColor: '#263A50',
-                                        customClass: {
-                                            confirmButton: 'custom-confirm-button',
-                                        }
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            resetForm();
-                                        }
-                                    });
+                            for (let i = 1; i <= time; i++) {
+                                if (state[`appointmentDate${i}`] != "" ) {
+                                console.log(time, "timesubmitFormAddContinue2")
+                                const updatedTimetable = {
+                                    appointmentDate: state[`appointmentDate${i}`],
+                                    appointmentTime: state[`appointmentTime${i}`],
+                                    appointmentId: appointmentId,
+                                    appointmentCasue: appointmentCasue,
+                                    appointmentSymptom: appointmentSymptom,
+                                    appointmentNotation: appointmentNotation,
+                                    clinic: "คลินิกฝั่งเข็ม",
+                                    status: "ลงทะเบียนแล้ว",
+                                    type: "main",
+                                };
+            
+                                const appointmentRef = await addDoc(collection(db, 'appointment'), updatedTimetable);
+            
+                                const userDocRef = doc(db, 'users', userId);
+            
+                                await updateDoc(userDocRef, {
+                                    appointments: arrayUnion(appointmentRef.id),
+                                });
+                            
+            
+                            Swal.fire({
+                                icon: "success",
+                                title: "การนัดหมายสำเร็จ!",
+                                text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
                                 }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    resetForm();
+                                }
+                            });
+                        }}
                 
                         } catch(firebaseError) {
                             Swal.fire(

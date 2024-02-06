@@ -866,6 +866,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                         try {
 
                                     for (let i = 1; i <= time; i++) {
+                                        if (state[`appointmentDate${i}`] != "" ) {
                                         console.log(time, "timesubmitFormAddContinue2")
                                         const updatedTimetable = {
                                             appointmentDate: state[`appointmentDate${i}`],
@@ -874,7 +875,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                                             appointmentCasue: appointmentCasue,
                                             appointmentSymptom: appointmentSymptom,
                                             appointmentNotation: appointmentNotation,
-                                            clinic: "คลินิกฝั่งเข็ม",
+                                            clinic: "คลินิกกายภาพ",
                                             status: "ลงทะเบียนแล้ว",
                                             type: "main",
                                         };
@@ -902,7 +903,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                                             resetForm();
                                         }
                                     });
-                                }
+                                }}
                 
                         } catch(firebaseError) {
                             Swal.fire(
