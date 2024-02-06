@@ -110,12 +110,12 @@ const AppointmentManagerComponent = (props) => {
 
                     setTimeOptions(timeOptionsFromTimetable);
                 } else {
-                    const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                    const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการ กรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                     setTimeOptions([noTimeSlotsAvailableOption]);
                 }
 
             } else {
-                const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
+                const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการ กรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                 setTimeOptions([noTimeSlotsAvailableOption]);
             }
 
@@ -660,6 +660,9 @@ const AppointmentManagerComponent = (props) => {
         }
     }
 
+    const maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 3);
+    maxDate.setDate(0)
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -809,8 +812,8 @@ const AppointmentManagerComponent = (props) => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
-                                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                                        <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา/รหัสพนักงาน</label><br></br>
+                                        <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000 หรือ 00000" />
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
@@ -822,7 +825,7 @@ const AppointmentManagerComponent = (props) => {
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                        <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวักทั่วไป" />
+                                        <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวัดทั่วไป" />
                                     </div>
                                     <div className="admin-timetable-btn">
                                         <button type="button" onClick={openAddAppointment} className="btn-secondary btn-systrm">กลับ</button>
@@ -834,10 +837,13 @@ const AppointmentManagerComponent = (props) => {
                                 <form onSubmit={submitEditForm}>
                                     <h2 className="center">แก้ไขนัดหมาย</h2>
                                     <div className="center-container">
-                                        <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
+                                        <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                         <input
                                             type="date"
-                                            className="form-control"
+                                            className="form-control input-date"  
+                                            min={new Date().toISOString().split("T")[0]}
+                                            max={maxDate.toISOString().split("T")[0]} 
+                                            
                                             onChange={(e) => {
                                                 inputValue("appointmentDate")(e);
                                                 const formattedDate = formatDateForDisplay(e.target.value);
@@ -889,20 +895,20 @@ const AppointmentManagerComponent = (props) => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                        <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา/รหัสพนักงาน</label><br></br>
                                         <input type="text" className="form-control appointment-input" value={appointmentId} disabled onChange={inputValue("appointmentId")} placeholder="64000000000" />
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
-                                        <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                                        <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="เป็นไข้" />
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
-                                        <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                                        <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="ปวดหัว, ตัวร้อน" />
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                        <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                                        <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวัดทั่วไป" />
                                     </div>
                                     <div className="admin-timetable-btn">
                                         <button type="button" onClick={openEditAppointment} className="btn-secondary btn-systrm">กลับ</button>

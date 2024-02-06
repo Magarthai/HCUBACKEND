@@ -666,43 +666,46 @@ const AppointmentManagerComponentSpecial = (props) => {
         card.addEventListener('click', handleCardClick);
     });
 
-const statusClassMap = {
-    'ยืนยันสิทธิ์แล้ว': 'confirmed-background',
-    'เสร็จสิ้น': 'completed-background',
-    'ไม่สำเร็จ': 'failed-background',
-    'ลงทะเบียนแล้ว': 'pending-confirmation-background',
-    'รอยืนยันสิทธิ์': 'pending-confirmation-background'
-};
-
-function changeStatusTextColor(element) {
-    const trimmedStatusText = element.textContent.trim();
-    const colorMap = {
-        'เสร็จสิ้น': '#098B66',
-        'ไม่สำเร็จ': '#C11F1F',
-        'ยืนยันสิทธิ์แล้ว': '#D88C09',
-        'ลงทะเบียนแล้ว': '#A1A1A1',
-        'รอยืนยันสิทธิ์': '#A1A1A1'
+    const statusClassMap = {
+        'ยืนยันสิทธิ์แล้ว': 'confirmed-background',
+        'เสร็จสิ้น': 'completed-background',
+        'ไม่สำเร็จ': 'failed-background',
+        'ลงทะเบียนแล้ว': 'pending-confirmation-background',
+        'รอยืนยันสิทธิ์': 'pending-confirmation-background'
     };
 
-    if (colorMap.hasOwnProperty(trimmedStatusText)) {
-        element.style.color = colorMap[trimmedStatusText];
+    function changeStatusTextColor(element) {
+        const trimmedStatusText = element.textContent.trim();
+        const colorMap = {
+            'เสร็จสิ้น': '#098B66',
+            'ไม่สำเร็จ': '#C11F1F',
+            'ยืนยันสิทธิ์แล้ว': '#D88C09',
+            'ลงทะเบียนแล้ว': '#A1A1A1',
+            'รอยืนยันสิทธิ์': '#A1A1A1'
+        };
+
+        if (colorMap.hasOwnProperty(trimmedStatusText)) {
+            element.style.color = colorMap[trimmedStatusText];
+        }   
     }
-}
 
-const statusElements = document.querySelectorAll('.admin-appointment-status');
-statusElements.forEach(changeStatusTextColor);
+    const statusElements = document.querySelectorAll('.admin-appointment-status');
+    statusElements.forEach(changeStatusTextColor);
 
-const statusElementDetail = document.getElementById("detail-appointment-status");
+    const statusElementDetail = document.getElementById("detail-appointment-status");
 
-if (statusElementDetail) {
-    const trimmedStatusTextDetail = statusElementDetail.textContent.trim();
-    const statusClassDetail = statusClassMap[trimmedStatusTextDetail];
+    if (statusElementDetail) {
+        const trimmedStatusTextDetail = statusElementDetail.textContent.trim();
+        const statusClassDetail = statusClassMap[trimmedStatusTextDetail];
 
-    if (statusClassDetail) {
-        statusElementDetail.classList.remove(...statusElementDetail.classList);
-        statusElementDetail.classList.add(statusClassDetail);
+        if (statusClassDetail) {
+            statusElementDetail.classList.remove(...statusElementDetail.classList);
+            statusElementDetail.classList.add(statusClassDetail);
+        }
     }
-}
+    const maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 3);
+    maxDate.setDate(0)
 
     return (
         <div className="appointment" style={containerStyle}>
@@ -853,8 +856,8 @@ if (statusElementDetail) {
                                 </select>
                             </div>
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000" />
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา/รหัสพนักงาน</label><br></br>
+                                <input type="text" className="form-control appointment-input" value={appointmentId} onChange={inputValue("appointmentId")} placeholder="64000000000 หรือ 00000" />
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
@@ -882,6 +885,8 @@ if (statusElementDetail) {
                                 <input
                                     type="date"
                                     className="form-control"
+                                    min={new Date().toISOString().split("T")[0]}
+                                    max={maxDate.toISOString().split("T")[0]} 
                                     onChange={(e) => {
                                         inputValue("appointmentDate")(e); 
                                         const formattedDate = formatDateForDisplay(e.target.value);
@@ -934,20 +939,20 @@ if (statusElementDetail) {
                                 </select>
                             </div>
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา</label><br></br>
+                                <label className="admin-textBody-large colorPrimary-800">รหัสนักศึกษา/รหัสพนักงาน</label><br></br>
                                 <input type="text" className="form-control appointment-input" value={appointmentId}  disabled onChange={inputValue("appointmentId")} placeholder="64000000000" />
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={inputValue("appointmentCasue")} placeholder="เป็นไข้" />
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">อาการเบื้องต้น</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentSymptom} onChange={inputValue("appointmentSymptom")} placeholder="ปวดหัว, ตัวร้อน" />
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">หมายเหตุ</label><br></br>
-                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="64000000000" />
+                                <input type="text" className="form-control appointment-input" value={appointmentNotation} onChange={inputValue("appointmentNotation")} placeholder="เป็นไข้หวัดทั่วไป" />
                             </div>
                             <div className="admin-timetable-btn">
                                 <button type="button" onClick={openEditAppointment} className="btn-secondary btn-systrm">กลับ</button>
