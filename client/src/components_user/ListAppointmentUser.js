@@ -432,7 +432,7 @@ const ListAppointmentUser = () => {
 
         {AppointmentUsersData.length > 0 ?
 
-  AppointmentUsersData.sort((a, b) => {
+  AppointmentUsersData.filter(AppointmentUserData => AppointmentUserData.appointment.status === "ลงทะเบียนแล้ว").sort((a, b) => {
 
     const dateA = new Date(a.appointment.appointmentDate.split('/').reverse().join('-'));
     const dateB = new Date(b.appointment.appointmentDate.split('/').reverse().join('-'));

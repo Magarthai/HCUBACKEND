@@ -36,8 +36,22 @@ const AppointmentManagerNeedleComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
-        let x = document.getElementById("detail-appointment");
+        let x = document.getElementById("edit-appointment");
+        let z = document.getElementById("detail-appointment");
+
+        setState((prevState) => ({
+            ...prevState,
+            appointmentTime: "",
+            appointmentId: "",
+            appointmentCasue: "",
+            appointmentSymptom: "",
+            appointmentNotation: "",
+            clinic: "",
+            uid: "",
+            typecheck: ""
+        }));
         x.style.display = "none";
+        z.style.display = "none";
 
     };
 
@@ -336,7 +350,7 @@ const AppointmentManagerNeedleComponent = (props) => {
 
     const handleFormEdit = async (e) => {
         e.preventDefault();
-        await editFormNeedle(selectedDate, timeOptions,selectedValue,appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
+        await editFormNeedle(selectedDate, timeOptions,timeOptionsss,typecheck,selectedValue,appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
     };
 
     const [saveDetailId, setsaveDetailId] = useState([])
@@ -1060,7 +1074,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                         <a target="_parent" onClick={() => {
                             openContinueAddinAppointment();
                         }} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
-                        <a href="/" target="_parent" >รายการขอนัดหมาย</a>
+                         <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
                     </div>
                 </div>
                 <div className="admin-appointment-flex">

@@ -8,11 +8,11 @@ import Delete_icon from "../picture/icon_delete.jpg";
 import Edit_icon from "../picture/icon_edit.jpg";
 import { useUserAuth } from "../context/UserAuthContext";
 import NavbarUserComponent from '../components_user/NavbarComponent';
-import app, { db, getDocs, collection, doc, getDoc } from "../firebase/config";
+import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
 import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } from 'firebase/firestore';
-import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UserDateAppointment = (props) => {
     const location = useLocation();
@@ -53,16 +53,11 @@ const DeleteAppointment = async (AppointmentUserData, appointmentuid, uid) => {
                 await updateDoc(userRef, {
                     "appointments": arrayRemove("appointments", appointmentuid)
                 });
-
-
-
-
                 console.log(appointmentuid);
                 setAllAppointmentUsersData([])
                 fetchUserDataWithAppointments();
                 Swal.fire(
                     {
-
                         title: 'ยกเลิกสิทธิ์สำเร็จ',
                         icon: 'success',
                         confirmButtonText: 'ตกลง',
@@ -110,25 +105,7 @@ const [isChecked, setIsChecked] = useState({});
 const [selectedDate, setSelectedDate] = useState(null);
 const selectedDateFromLocation = location.state?.selectedDate || null;
 
-const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
-    const usersCollection = collection(db, 'users');
-    const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
 
-    if (userQuerySnapshot.empty) {
-        console.log("No user found with id:", userId);
-        return null;
-    }
-    const userUid = userQuerySnapshot.docs[0].id;
-    const userDatas = userQuerySnapshot.docs[0].data();
-    userDatas.timeslot = timeslot;
-    userDatas.appointment = appointment;
-    userDatas.appointmentuid = appointmentuid;
-    userDatas.userUid = userUid;
-    console.log("User Data for userId", userId, ":", userDatas);
-    console.log("userDatas", userDatas)
-    console.log("testxd", userDatas.timeslot.start)
-    return userDatas;
-};
 
 useEffect(() => {
     document.title = 'Health Care Unit';
@@ -161,100 +138,116 @@ useEffect(() => {
 
 useEffect(() => {
     console.log("Updated Appointment:", AppointmentUsersData);
-
     if (!selectedDateFromLocation) {
-        console.log("check");
+      console.log("check");
     } else if (!isInitialRender) {
-        console.log("hello world");
+      console.log("hello world");
     } else {
-        setSelectedDate(selectedDateFromLocation);
-        console.log("date check", selectedDateFromLocation);
-
-        // Fetch user data with appointments after setting the selected date
-        fetchUserDataWithAppointments();
-
-        setIsInitialRender(false);
+      setSelectedDate(selectedDateFromLocation);
+      console.log("date check", selectedDateFromLocation);
+      fetchUserDataWithAppointments();
+      setIsInitialRender(false);
     }
-}, [AppointmentUsersData]);
+  }, [AppointmentUsersData]);
 const [isInitialRender, setIsInitialRender] = useState(true);
 const fetchUserDataWithAppointments = async () => {
     try {
-        if (user && selectedDate && selectedDate.dayName) {
-            const appointmentsCollection = collection(db, 'appointment');
-            const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
-                `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
-                where('appointmentId', '==', userData.id)));
+      if (user && selectedDate && selectedDate.dayName) {
+        const appointmentsCollection = collection(db, 'appointment');
+        const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection, where('appointmentDate', '==',
+          `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
+          where('appointmentDate', '==', `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`),
+          where('appointmentId', '==', userData.id)));
 
-            const timeTableCollection = collection(db, 'timeTable');
-            const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
-                const appointmentData = doc.data();
-                return {
-                    appointmentId: doc.id,
-                    appointmentuid: doc.id,
-                    ...appointmentData,
-                };
-            });
+        const timeTableCollection = collection(db, 'timeTable');
+        const existingAppointments = appointmentQuerySnapshot.docs.map((doc) => {
+          const appointmentData = doc.data();
+          return {
+            appointmentId: doc.id,
+            appointmentuid: doc.id,
+            ...appointmentData,
+          };
+        });
 
-            if (existingAppointments.length > 0) {
-                console.log("existingAppointments", existingAppointments);
-                console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
+        if (existingAppointments.length > 0) {
+          console.log("existingAppointments", existingAppointments);
+          console.log(`Appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}:`, existingAppointments);
 
-                const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
-                    const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
-                    const timeTableId = appointment.appointmentTime.timetableId;
+          const AppointmentUsersDataArray = await Promise.all(existingAppointments.map(async (appointment) => {
+            const timeSlotIndex = appointment.appointmentTime.timeSlotIndex;
+            const timeTableId = appointment.appointmentTime.timetableId;
 
-                    try {
-                        const timetableDocRef = doc(timeTableCollection, timeTableId);
-                        const timetableDocSnapshot = await getDoc(timetableDocRef);
+            try {
+              const timetableDocRef = doc(timeTableCollection, timeTableId);
+              const timetableDocSnapshot = await getDoc(timetableDocRef);
 
-                        if (timetableDocSnapshot.exists()) {
-                            const timetableData = timetableDocSnapshot.data();
-                            console.log("Timetable Data:", timetableData);
-                            const timeslot = timetableData.timeablelist[timeSlotIndex];
-                            console.log("Timeslot info", timeslot);
+              if (timetableDocSnapshot.exists()) {
+                const timetableData = timetableDocSnapshot.data();
+                console.log("Timetable Data:", timetableData);
+                const timeslot = timetableData.timeablelist[timeSlotIndex];
+                console.log("Timeslot info", timeslot);
 
-                            const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
+                const userDetails = await getUserDataFromUserId(appointment, appointment.appointmentId, timeslot, appointment.appointmentuid);
 
-                            if (userDetails) {
-                                console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
-                                return userDetails;
-                            } else {
-                                console.log("No user details found for appointmentId", appointment.appointmentId);
-                                return null;
-                            }
-                        } else {
-                            console.log("No such document with ID:", timeTableId);
-                            return null;
-                        }
-                    } catch (error) {
-                        console.error('Error fetching timetable data:', error);
-                        return null;
-                    }
-                }));
-
-                const filteredAppointmentUsersDataArray = AppointmentUsersDataArray.filter(userDetails => userDetails !== null);
-
-                if (filteredAppointmentUsersDataArray.length > 0) {
-                    setAllAppointmentUsersData(filteredAppointmentUsersDataArray);
-                    console.log("AppointmentUsersData", filteredAppointmentUsersDataArray);
+                if (userDetails) {
+                  console.log("User Data for appointmentId", appointment.appointmentId, ":", userDetails);
+                  return userDetails;
                 } else {
-                    console.log("No user details found for any appointmentId");
+                  console.log("No user details found for appointmentId", appointment.appointmentId);
+                  return null;
                 }
-
-                console.log("AppointmentUsersDataArray", filteredAppointmentUsersDataArray);
-                setAllAppointmentUsersData(filteredAppointmentUsersDataArray);
-                console.log("AppointmentUsersData", filteredAppointmentUsersDataArray);
-            } else {
-                console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
+              } else {
+                console.log("No such document with ID:", timeTableId);
+                return null;
+              }
+            } catch (error) {
+              console.error('Error fetching timetable data:', error);
+              return null;
             }
+          }));
+
+          const filteredAppointmentUsersDataArray = AppointmentUsersDataArray.filter(userDetails => userDetails !== null);
+
+          if (filteredAppointmentUsersDataArray.length > 0) {
+            setAllAppointmentUsersData(filteredAppointmentUsersDataArray);
+            console.log("AppointmentUsersData", filteredAppointmentUsersDataArray);
+          } else {
+            console.log("No user details found for any appointmentId");
+          }
+
+          console.log("AppointmentUsersDataArray", filteredAppointmentUsersDataArray);
+          setAllAppointmentUsersData(filteredAppointmentUsersDataArray);
+          console.log("AppointmentUsersData", filteredAppointmentUsersDataArray);
+        } else {
+          console.log(`No appointments found for ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`);
         }
+      }
     } catch (error) {
-        console.error('Error fetching user data with appointments:', error);
+      console.error('Error fetching user data with appointments:', error);
     }
-};
+  };
 
+  const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
+    const usersCollection = collection(db, 'users');
+    const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', userId)));
 
+    if (userQuerySnapshot.empty) {
+      console.log("No user found with id:", userId);
+      return null;
+    }
+
+    <u></u>
+    const userUid = userQuerySnapshot.docs[0].id;
+    const userDatas = userQuerySnapshot.docs[0].data();
+    userDatas.timeslot = timeslot;
+    userDatas.appointment = appointment;
+    userDatas.appointmentuid = appointmentuid;
+    userDatas.userUid = userUid;
+    console.log("User Data for userId", userId, ":", userDatas);
+    console.log("userDatas", userDatas)
+    console.log("testxd", userDatas.timeslot.start)
+    return userDatas;
+  };
 
 const fetchMainTimeTableData = async () => {
     try {
@@ -388,7 +381,7 @@ const formatDateForDisplay = (isoDate) => {
     }
     return isoDate;
   };
-  
+
     const deleteAppointment = () => {
         Swal.fire({
             title: "ยกเลิกนัดหมาย",
@@ -487,8 +480,8 @@ const formatDateForDisplay = (isoDate) => {
                     {selectedDate &&<h4 className="colorPrimary-800 user-DateAppointment-card-h4">นัดหมายวันที่ {selectedDate.day}/{selectedDate.month}/{selectedDate.year}</h4>}
                     
                     <div className="user-DateAppointment-cardList_container">
-                    {AppointmentUsersData.length > 0 ?
-                        AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
+                    {AppointmentUsersData.filter(AppointmentUserData => AppointmentUserData.appointment.status === "ลงทะเบียนแล้ว").length > 0 ? 
+    AppointmentUsersData.filter(AppointmentUserData => AppointmentUserData.appointment.status === "ลงทะเบียนแล้ว").sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
                             <div className="user-DateAppointment-card gap-16" style={{ marginTop: 25 }}>
                                 <div className="user-DateAppointment-card_header">
                                     <h4 className="user-DateAppointment-clinic">{AppointmentUserData.appointment.clinic}</h4>

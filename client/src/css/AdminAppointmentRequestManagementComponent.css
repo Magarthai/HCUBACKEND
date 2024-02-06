@@ -17,6 +17,7 @@ table{
     width: 40px;
     height: 40px;
     margin: 0px 7%;
+    cursor: pointer;
 }
 .admin-back-arrow{
     position: absolute;

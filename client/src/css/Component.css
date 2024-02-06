@@ -221,9 +221,9 @@
         font-weight: 500;
         margin-bottom: 15px;
     }
-    .btn .btn-primary:hover{
+    /* .btn .btn-primary:hover{
         background-color: #263a50;
-    }
+    } */
     .btn-primary:active{
         background-color: #263A50;
     }

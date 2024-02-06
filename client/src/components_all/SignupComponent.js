@@ -46,11 +46,48 @@ const SignupComponent = (props) => {
   
     const validateInput = () => {
       if (!email.includes('@')) {
-        alert('กรุณากรอกอีเมลที่ถูกต้อง');
+        Swal.fire(
+          {
+            title: 'เกิดข้อผิดพลาด',
+            text : 'กรุณากรอกอีเมลที่ถูกต้อง',
+            icon: 'error',
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#263A50',
+            customClass: {
+              confirmButton: 'custom-confirm-button',
+            }
+          }
+        )
         return false;
       }
       if (password.length < 8) {
-        alert('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
+        Swal.fire(
+          {
+            title: 'เกิดข้อผิดพลาด',
+            text : 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร',
+            icon: 'error',
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#263A50',
+            customClass: {
+              confirmButton: 'custom-confirm-button',
+            }
+          }
+        )
+        return false;
+      }
+      if (id.length !== 11 && id.length !== 5) {
+        Swal.fire(
+          {
+            title: 'เกิดข้อผิดพลาด',
+            html : `เลขรหัสนักศึกษา ต้องมี 11 ตัวเลข </br> บุคลากร ต้องมี 5 ตัวเลข ${id.length}`,
+            icon: 'error',
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#263A50',
+            customClass: {
+              confirmButton: 'custom-confirm-button',
+            }
+          }
+        )
         return false;
       }
       return true;
@@ -135,12 +172,20 @@ const SignupComponent = (props) => {
               icon: "error",
               title: "เกิดข้อผิดพลาด!",
               text: "อีเมลไม่ถูกต้องหรืออีเมลนี้ถูกใช้งานแล้ว",
+              confirmButtonColor: '#263A50',
+            customClass: {
+                cancelButton: 'custom-cancel-button',
+            }        
             });
           } else if (firebaseError.message === "Student ID already in use") {
             Swal.fire({
               icon: "error",
               title: "เกิดข้อผิดพลาด!",
               text: "รหัสนักศึกษาถูกใช้งานแล้ว",
+              confirmButtonColor: '#263A50',
+            customClass: {
+                cancelButton: 'custom-cancel-button',
+            }        
             });
           } else {
             console.error('Firebase error response:', firebaseError);
@@ -148,6 +193,10 @@ const SignupComponent = (props) => {
               icon: "error",
               title: "เกิดข้อผิดพลาด!",
               text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง",
+              confirmButtonColor: '#263A50',
+            customClass: {
+                cancelButton: 'custom-cancel-button',
+            }        
             });
           }
         }

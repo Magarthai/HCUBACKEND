@@ -46,7 +46,6 @@ const AppointmentRequestManagementComponent = (props) => {
             if (user) {
                 const appointmentsCollection = collection(db, 'appointment');
                 const appointmentQuerySnapshot = await getDocs(query(appointmentsCollection,
-                where('clinic', '==', 'คลินิกกายภาพ'),
                 where('status', '==', 'ยื่นแก้ไข้')));
     
                 const timeTableCollection = collection(db, 'timeTable');
@@ -138,18 +137,6 @@ const AppointmentRequestManagementComponent = (props) => {
         console.log("testxd",userDatas.timeslot.start)
         return userDatas;
     };
-
-
-
-
-
-
-
-
-
-
-
-
   
     useEffect(() => {
         document.title = 'Health Care Unit';
@@ -215,11 +202,13 @@ const AppointmentRequestManagementComponent = (props) => {
                 appointmentSymptom: AppointmentUserData.appointment.appointmentSymptom2 || null,
                 status: "ลงทะเบียนแล้ว",
                 status2: "เสร็จสิ้น",
+                postPone: "yes",
+                appove : "อนุมัติ",
             };
     
             Swal.fire({
                 title: "ขอแก้ไขนัดหมาย",
-                html: `อัพเดตเป็นวันที่ ${appointmentDate}<br/> เวลา ${AppointmentUserData.appointment.appointmentTime2.label}`,
+                html: `อัพเดตเป็นวันที่ ${AppointmentUserData.appointment.appointmentDate2}<br/> เวลา ${AppointmentUserData.appointment.appointmentTime2.label}`,
                 showConfirmButton: true,
                 showCancelButton: true,
                 icon: 'warning',
@@ -267,10 +256,12 @@ const AppointmentRequestManagementComponent = (props) => {
             const updatedTimetable = {
                 appointmentDate: AppointmentUserData.appointment.appointmentDate,
                 appointmentTime: AppointmentUserData.appointment.appointmentTime,
-                appointmentSymptom: "โปรดทําการนัดหมายใหม่",
                 status: "ไม่สำเร็จ",
                 status2: "ไม่สำเร็จ",
                 subject: "ขอเลื่อนนัดหมาย",
+                postPone: "yes",
+                appove : "ไม่อนุมัติ",
+
             };
     
             Swal.fire({

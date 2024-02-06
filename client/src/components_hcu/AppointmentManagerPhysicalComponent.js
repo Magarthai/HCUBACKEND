@@ -43,7 +43,6 @@ const AppointmentManagerPhysicComponent = (props) => {
 
         setState((prevState) => ({
             ...prevState,
-            appointmentDate: "",
             appointmentTime: "",
             appointmentId: "",
             appointmentCasue: "",
@@ -1097,7 +1096,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                             <a target="_parent" onClick={() => {
                                 openContinueAddinAppointment();
                             }} className="colorPrimary-50">เพิ่มนัดหมายต่อเนื่อง +</a>
-                            <a href="/" target="_parent" >รายการขอนัดหมาย</a>
+                             <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
                         </div>
                     </div>
                     <div className="admin-appointment-flex">
