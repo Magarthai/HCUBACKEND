@@ -471,7 +471,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                 appointmentTime10: appointmentTime,
             }));
             cleanUpOldPopups();
-            const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
+            const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.two");
             if (selectedDates) {
                 const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
 
@@ -796,7 +796,7 @@ const AppointmentManagerNeedleComponent = (props) => {
     };
 
     function cleanUpOldPopups() {
-        const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.border-L");
+        const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.two");
 
         while (appointmentPopupItem.firstChild) {
             appointmentPopupItem.removeChild(appointmentPopupItem.firstChild);
@@ -1423,10 +1423,6 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     <input type="text" className="form-control appointment-input" value={appointmentId} onChange={(e) => { setState({ ...state, appointmentId: e.target.value, }); }} placeholder="64000000000" />
                                 </div>
                                 <div>
-                                    <label className="admin-textBody-large colorPrimary-800">จำนวนครั้ง</label><br></br>
-                                    <input type="text" className="form-control appointment-input" value={time} onChange={(e) => { setState({ ...state, time: e.target.value, }); }} placeholder="5" />
-                                </div>
-                                <div>
                                     <label className="admin-textBody-large colorPrimary-800">สาเหตุการนัดหมาย</label><br></br>
                                     <input type="text" className="form-control appointment-input" value={appointmentCasue} onChange={(e) => { setState({ ...state, appointmentCasue: e.target.value, }); }} placeholder="" />
                                 </div>
@@ -1440,7 +1436,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                                 </div>
 
                             </div>
-                            <div className="admin-appointmemt-popup-item border-L">
+                            <div className="admin-appointmemt-popup-item two">
 
                             </div>
                         </div>
