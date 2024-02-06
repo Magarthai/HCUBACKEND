@@ -8,7 +8,9 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import 'react-datepicker/dist/react-datepicker.css';
 import "../css/AdminAppointmentComponent.css";
+import DatePicker from "react-datepicker";
 import { PulseLoader } from "react-spinners";
+import "react-datepicker/dist/react-datepicker.css";
 import ClockComponent from "../utils/ClockComponent";
 import { GetTimeOptionsFilterdFromTimetable, GetTimeOptionsFromTimetable } from "../backend/timeOptions";
 import { availableTimeSlotsPhysic, editFormPhysic, fetchAppointmentUsersDataPhysic, fetchTimeTableDataPhysic, fetchTimeTableMainDataPhysic, fetchUserDataWithAppointmentsPhysic, submitForm, submitFormAddContinue2Physic, submitFormPhysic } from "../backend/backendPhysic";
@@ -36,8 +38,23 @@ const AppointmentManagerPhysicComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
-        let x = document.getElementById("detail-appointment");
+        let x = document.getElementById("edit-appointment");
+        let z = document.getElementById("detail-appointment");
+
+        setState((prevState) => ({
+            ...prevState,
+            appointmentDate: "",
+            appointmentTime: "",
+            appointmentId: "",
+            appointmentCasue: "",
+            appointmentSymptom: "",
+            appointmentNotation: "",
+            clinic: "",
+            uid: "",
+            typecheck: ""
+        }));
         x.style.display = "none";
+        z.style.display = "none";
 
     };
 
@@ -204,12 +221,12 @@ const AppointmentManagerPhysicComponent = (props) => {
                         const timeOptionsFromTimetable = GetTimeOptionsFilterdFromTimetable(availableTimeSlots);
                         console.log("GetTimeOptionsFilterdFromTimetable", selectedDate, timeOptionsFromTimetable)
                         setTimeOptionsss(timeOptionsFromTimetable);
-                        console.log(timeOptionss)
+                        console.log(timeOptionsss)
                     } else {
                         console.log("Time table not found for selected day and clinic");
                         const noTimeSlotsAvailableOption = { label: "ไม่มีช่วงเวลาทําการกรุณาเปลี่ยนวัน", value: "", disabled: true, hidden: true };
                         setTimeOptionsss([noTimeSlotsAvailableOption]);
-                        console.log(timeOptionss)
+                        console.log(timeOptionsss)
                     }
 
                 } else {
@@ -336,7 +353,7 @@ const AppointmentManagerPhysicComponent = (props) => {
 
     const handleFormEdit = async (e) => {
         e.preventDefault();
-        await editFormPhysic(selectedDate, timeOptions,selectedValue,appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
+        await editFormPhysic(selectedDate, timeOptions,timeOptionsss,typecheck,selectedValue,appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid);
     };
 
     const [saveDetailId, setsaveDetailId] = useState([])
@@ -390,6 +407,18 @@ const AppointmentManagerPhysicComponent = (props) => {
             z.style.display = "none";
             setsaveDetailId("")
             setsaveEditId("")
+            setState((prevState) => ({
+                ...prevState,
+                appointmentDate: "",
+                appointmentTime: "",
+                appointmentId: "",
+                appointmentCasue: "",
+                appointmentSymptom: "",
+                appointmentNotation: "",
+                clinic: "",
+                uid: "",
+                typecheck: ""
+            }));
         } else {
             x.style.display = "none";
         }
@@ -888,22 +917,22 @@ const AppointmentManagerPhysicComponent = (props) => {
                                         });
                                     
                     
-                                    Swal.fire({
-                                        icon: "success",
-                                        title: "การนัดหมายสำเร็จ!",
-                                        text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
-                                        confirmButtonText: 'ตกลง',
-                                        confirmButtonColor: '#263A50',
-                                        customClass: {
-                                            confirmButton: 'custom-confirm-button',
-                                        }
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            resetForm();
-                                        }
-                                    });
+                                    
                                 }}
-                
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "การนัดหมายสำเร็จ!",
+                                    text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        resetForm();
+                                    }
+                                });
                         } catch(firebaseError) {
                             Swal.fire(
                                 {
@@ -1028,7 +1057,12 @@ const AppointmentManagerPhysicComponent = (props) => {
     const maxDate = new Date();
     maxDate.setMonth(maxDate.getMonth() + 3);
     maxDate.setDate(0)
-
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+        const formattedDate = formatDateForDisplay(date.toISOString().split("T")[0]);
+        console.log("Formatted Date:", formattedDate);
+        // ทำอย่างอื่นตามต้องการ
+      };
     return (
         <div className="appointment" style={containerStyle}>
             <NavbarComponent />
@@ -1252,6 +1286,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                                             value={JSON.stringify(appointmentTime)}
                                             onChange={(e) => {
                                                 setSelectedValue(e.target.value);
+                                                console.log(e.target.value,"XD")
                                                 handleSelectChange();
                                                  
                                                 const selectedValue = JSON.parse(e.target.value);

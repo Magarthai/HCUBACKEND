@@ -27,15 +27,15 @@ export const fetchTimeTableMainDataPhysic = async (user, selectedDates) => {
     try {
         if (user && selectedDates && selectedDates.dayName) {
             const timeTableCollection = collection(db, 'timeTable');
-                const querySnapshot = await getDocs(query(
-                    timeTableCollection,
-                    where('addDay', '==', selectedDates.dayName),
-                    where('clinic', '==', 'คลินิกกายภาพ')
-                ));
-                const timeTableData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+            const querySnapshot = await getDocs(query(
+                timeTableCollection,
+                where('addDay', '==', selectedDates.dayName),
+                where('clinic', '==', 'คลินิกกายภาพ')
+            ));
+            const timeTableData = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
             return timeTableData;
         }
     } catch (error) {
@@ -43,7 +43,7 @@ export const fetchTimeTableMainDataPhysic = async (user, selectedDates) => {
     }
 }
 
-export const submitFormPhysic = async (selectedDate,timeOptions, selectedValue, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation) => {
+export const submitFormPhysic = async (selectedDate, timeOptions, selectedValue, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation) => {
     try {
         const appointmentInfo = {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
@@ -81,7 +81,7 @@ export const submitFormPhysic = async (selectedDate,timeOptions, selectedValue, 
                 const userDocRef = doc(db, 'users', userId);
                 Swal.fire({
                     title: 'ยืนยันเพิ่มนัดหมาย',
-                    html: `ยืนยันที่จะนัดหมายวันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
@@ -179,11 +179,14 @@ export const submitFormPhysic = async (selectedDate,timeOptions, selectedValue, 
     }
 }
 
-export const editFormPhysic = async (selectedDate,timeOptions, selectedValue, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation,uid) => {
+export const editFormPhysic = async (selectedDate, timeOptions, timeOptionsss, typecheck, selectedValue, appointmentTime, appointmentId, appointmentCasue, appointmentSymptom, appointmentNotation, uid) => {
     try {
         const timetableRef = doc(db, 'appointment', uid);
         console.log(uid);
-
+        const usersCollection = collection(db, 'users');
+        const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
+        const userDocuments = userQuerySnapshot.docs;
+        const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
         const updatedTimetable = {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: appointmentTime,
@@ -194,50 +197,68 @@ export const editFormPhysic = async (selectedDate,timeOptions, selectedValue, ap
             clinic: "คลินิกกายภาพ",
             status: "ลงทะเบียนแล้ว",
         };
+        if (typecheck === "talk") {
+        if (foundUser) {
+            const selectedTimeLabel = timeOptions.find((timeOption) => {
+                const optionValue = JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex });
+                return optionValue === selectedValue;
+            })?.label;
+            if (selectedTimeLabel != undefined) {
+                Swal.fire({
+                    title: 'ยืนยันแก้นัดหมาย',
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#263A50',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                        cancelButton: 'custom-cancel-button',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            Swal.fire({
+                                icon: "success",
+                                title: "การอัปเดตการนัดหมายสำเร็จ!",
+                                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                            ).then(async (result) => {
+                                if (result.isConfirmed) {
+                                    await updateDoc(timetableRef, updatedTimetable);
+                                    window.location.reload();
+                                }
+                            });
+                        } catch (firebaseError) {
+                            Swal.fire(
+                                {
+                                    title: 'เกิดข้อผิดพลาด!',
+                                    text: firebaseError,
+                                    icon: 'success',
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }
+                            )
+                        }
 
-        const selectedTimeLabel = timeOptions.find((timeOption) => {
-            const optionValue = JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex });
-            return optionValue === selectedValue;
-        })?.label;
-        if (selectedTimeLabel != undefined) {
-            Swal.fire({
-                title: 'ยืนยันแก้นัดหมาย',
-                html: `ยืนยันที่จะแก้ไข้นัดหมายเป็นวันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ตกลง',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#263A50',
-                reverseButtons: true,
-                customClass: {
-                    confirmButton: 'custom-confirm-button',
-                    cancelButton: 'custom-cancel-button',
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    try {
-                        Swal.fire({
-                            icon: "success",
-                            title: "การอัปเดตการนัดหมายสำเร็จ!",
-                            text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
-                            confirmButtonText: 'ตกลง',
-                            confirmButtonColor: '#263A50',
-                            customClass: {
-                                confirmButton: 'custom-confirm-button',
-                            }
-                        }
-                        ).then(async (result) => {
-                            if (result.isConfirmed) {
-                                await updateDoc(timetableRef, updatedTimetable);
-                                window.location.reload();
-                            }
-                        });
-                    } catch (firebaseError) {
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
                         Swal.fire(
                             {
                                 title: 'เกิดข้อผิดพลาด!',
-                                text: firebaseError,
-                                icon: 'success',
+                                text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
+                                icon: 'error',
                                 confirmButtonText: 'ตกลง',
                                 confirmButtonColor: '#263A50',
                                 customClass: {
@@ -246,63 +267,63 @@ export const editFormPhysic = async (selectedDate,timeOptions, selectedValue, ap
                             }
                         )
                     }
-    
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    Swal.fire(
-                        {
-                            title: 'เกิดข้อผิดพลาด!',
-                            text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
-                            icon: 'error',
-                            confirmButtonText: 'ตกลง',
-                            confirmButtonColor: '#263A50',
-                            customClass: {
-                                confirmButton: 'custom-confirm-button',
+                })
+            } else {
+                Swal.fire({
+                    title: 'ยืนยันแก้นัดหมาย',
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#263A50',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                        cancelButton: 'custom-cancel-button',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            Swal.fire({
+                                icon: "success",
+                                title: "การอัปเดตการนัดหมายสำเร็จ!",
+                                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
                             }
+                            ).then(async (result) => {
+                                if (result.isConfirmed) {
+                                    await updateDoc(timetableRef, updatedTimetable);
+                                    window.location.reload();
+                                }
+                            });
+                        } catch (firebaseError) {
+                            Swal.fire(
+                                {
+                                    title: 'เกิดข้อผิดพลาด!',
+                                    text: firebaseError,
+                                    icon: 'success',
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }
+                            )
                         }
-                    )
-                }
-            })
-        } else {
-            Swal.fire({
-                title: 'ยืนยันแก้นัดหมาย',
-                html: `ยืนยันที่จะแก้ไข้นัดหมายเป็นวันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ตกลง',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#263A50',
-                reverseButtons: true,
-                customClass: {
-                    confirmButton: 'custom-confirm-button',
-                    cancelButton: 'custom-cancel-button',
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    try {
-                        Swal.fire({
-                            icon: "success",
-                            title: "การอัปเดตการนัดหมายสำเร็จ!",
-                            text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
-                            confirmButtonText: 'ตกลง',
-                            confirmButtonColor: '#263A50',
-                            customClass: {
-                                confirmButton: 'custom-confirm-button',
-                            }
-                        }
-                        ).then(async (result) => {
-                            if (result.isConfirmed) {
-                                await updateDoc(timetableRef, updatedTimetable);
-                                window.location.reload();
-                            }
-                        });
-                    } catch (firebaseError) {
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
                         Swal.fire(
                             {
                                 title: 'เกิดข้อผิดพลาด!',
-                                text: firebaseError,
-                                icon: 'success',
+                                text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
+                                icon: 'error',
                                 confirmButtonText: 'ตกลง',
                                 confirmButtonColor: '#263A50',
                                 customClass: {
@@ -311,28 +332,152 @@ export const editFormPhysic = async (selectedDate,timeOptions, selectedValue, ap
                             }
                         )
                     }
-    
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    Swal.fire(
-                        {
-                            title: 'เกิดข้อผิดพลาด!',
-                            text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
-                            icon: 'error',
-                            confirmButtonText: 'ตกลง',
-                            confirmButtonColor: '#263A50',
-                            customClass: {
-                                confirmButton: 'custom-confirm-button',
-                            }
-                        }
-                    )
-                }
-            })
+                })
+            }
+
         }
-        
+    } else {
+        if (foundUser) {
+            const selectedTimeLabel = timeOptionsss.find((timeOption) => {
+                const optionValue = JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex });
+                return optionValue === selectedValue;
+            })?.label;
+            if (selectedTimeLabel != undefined) {
+                Swal.fire({
+                    title: 'ยืนยันแก้นัดหมาย',
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#263A50',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                        cancelButton: 'custom-cancel-button',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            Swal.fire({
+                                icon: "success",
+                                title: "การอัปเดตการนัดหมายสำเร็จ!",
+                                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                            ).then(async (result) => {
+                                if (result.isConfirmed) {
+                                    await updateDoc(timetableRef, updatedTimetable);
+                                    window.location.reload();
+                                }
+                            });
+                        } catch (firebaseError) {
+                            Swal.fire(
+                                {
+                                    title: 'เกิดข้อผิดพลาด!',
+                                    text: firebaseError,
+                                    icon: 'success',
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }
+                            )
+                        }
 
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        Swal.fire(
+                            {
+                                title: 'เกิดข้อผิดพลาด!',
+                                text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
+                                icon: 'error',
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                        )
+                    }
+                })
+            } else {
+                Swal.fire({
+                    title: 'ยืนยันแก้นัดหมาย',
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#263A50',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'custom-confirm-button',
+                        cancelButton: 'custom-cancel-button',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            Swal.fire({
+                                icon: "success",
+                                title: "การอัปเดตการนัดหมายสำเร็จ!",
+                                text: "การนัดหมายถูกอัปเดตเรียบร้อยแล้ว!",
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                            ).then(async (result) => {
+                                if (result.isConfirmed) {
+                                    await updateDoc(timetableRef, updatedTimetable);
+                                    window.location.reload();
+                                }
+                            });
+                        } catch (firebaseError) {
+                            Swal.fire(
+                                {
+                                    title: 'เกิดข้อผิดพลาด!',
+                                    text: firebaseError,
+                                    icon: 'success',
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#263A50',
+                                    customClass: {
+                                        confirmButton: 'custom-confirm-button',
+                                    }
+                                }
+                            )
+                        }
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        Swal.fire(
+                            {
+                                title: 'เกิดข้อผิดพลาด!',
+                                text: `การแก้ไข้นัดหมายไม่สำเร็จ`,
+                                icon: 'error',
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#263A50',
+                                customClass: {
+                                    confirmButton: 'custom-confirm-button',
+                                }
+                            }
+                        )
+                    }
+                })
+            }
+
+        }
     }
+    }
+
     catch (firebaseError) {
         console.error('Firebase submit error:', firebaseError);
 
@@ -495,20 +640,6 @@ export const submitFormAddContinue2Physic = async (appointmentId, time, state, a
                 });
             }
 
-            Swal.fire({
-                icon: "success",
-                title: "การนัดหมายสำเร็จ!",
-                text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
-                confirmButtonText: 'ตกลง',
-                confirmButtonColor: '#263A50',
-                customClass: {
-                    confirmButton: 'custom-confirm-button',
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    resetForm();
-                }
-            });
         } else {
             Swal.fire({
                 icon: "error",
@@ -522,6 +653,20 @@ export const submitFormAddContinue2Physic = async (appointmentId, time, state, a
             });
             console.log("User not found in alluserdata");
         }
+        Swal.fire({
+            icon: "success",
+            title: "การนัดหมายสำเร็จ!",
+            text: "การนัดหมายถูกสร้างเรียบร้อยแล้วว!",
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#263A50',
+            customClass: {
+                confirmButton: 'custom-confirm-button',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                resetForm();
+            }
+        });
     } catch (firebaseError) {
         console.error('Firebase submit error:', firebaseError);
 

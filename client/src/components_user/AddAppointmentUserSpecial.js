@@ -223,8 +223,13 @@ const AddSpecialAppointmentUser = () => {
         
                     Swal.fire({
                         icon: "success",
-                        title: "Appointment Successful!",
-                        text: "Your appointment has been successfully created!",
+                        title: "การนัดหมายสําเร็จ!",
+                        text: "การนัดหมายของคุณถูกสร้างเรียบร้อยแล้ว!",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            cancelButton: 'custom-cancel-button',
+                        }
                     });
                     await fetchTimeTableData();
         

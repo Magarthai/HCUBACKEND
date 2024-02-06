@@ -1214,7 +1214,6 @@ const TimetableGeneralComponent = (props) => {
                     console.log(timetable.timeablelist[i])
                 }
                 document.getElementById("Detail").innerHTML = `<b>ช่วงเวลาคิวนัดหมาย</b> : ${listtimetable}`
-                // window.history.replaceState({}, null, `/timeTableGeneralAdmin/${timetable.id}`);
 
             }
 
