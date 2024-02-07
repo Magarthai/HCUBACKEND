@@ -484,7 +484,7 @@ const formatDateForDisplay = (isoDate) => {
     AppointmentUsersData.filter(AppointmentUserData => AppointmentUserData.appointment.status === "ลงทะเบียนแล้ว").sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
                             <div className="user-DateAppointment-card gap-16" style={{ marginTop: 25 }}>
                                 <div className="user-DateAppointment-card_header">
-                                    <h4 className="user-DateAppointment-clinic">{AppointmentUserData.appointment.clinic}</h4>
+                                    <h4 className="textButton-Normal2">{AppointmentUserData.appointment.clinic}</h4>
                                     <div className="user-DateAppointment-icon">
                                         <a onClick={() => EditAppointment(AppointmentUserData)}><img className="user-DateAppointment-icon_edit" src={Edit_icon} alt="" /></a>
                                         <a onClick={() => DeleteAppointment(AppointmentUserData, AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)}><img className="user-DateAppointment-icon_delete" src={Delete_icon} alt="" /></a>
@@ -504,7 +504,7 @@ const formatDateForDisplay = (isoDate) => {
                             </div>
                         )) :
                         <div className="user-DateAppointment-card_noAppointment gap-16">
-                            <h2 className="user-DateAppointment-noAppointment center">No appointments available</h2>
+                            <h3 className="user-DateAppointment-noAppointment center">ไม่มีการนัดหมาย</h3>
                         </div>
                     }
 

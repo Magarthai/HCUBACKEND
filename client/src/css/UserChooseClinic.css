@@ -6,6 +6,7 @@
         gap: 16px;
         align-self: stretch;
         width: 100% !important;
+        margin-bottom: 20px;
 }
 .user-body{
   flex-direction: column;
