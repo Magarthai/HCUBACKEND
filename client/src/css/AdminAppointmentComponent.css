@@ -113,15 +113,24 @@ body{
         border: 2px solid #D1D1D1;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
+    .admin-appointment-card-detail{
+        display: flex;
+        width: 80%;
+        height: 100%;
+    }
     .admin-appointment-card-time{
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 25%;
+        width: 30%;
         border-right: #D1D1D1 2px solid;
         height:100%;
     
         
+    }
+    .admin-appointment-functon{
+        font-weight: 300;
+        width: 20%;
     }
     #student-name{
         margin: 0;
@@ -131,10 +140,10 @@ body{
     .admin-appointment-info{
         display: flex;
         text-align: left;
-        justify-content: left;
+        justify-content: center;
         align-items: left;
         margin-left: 10px;
-        width: 60%;
+        width: 70%;
     }
     /* .appoint-info{
         
@@ -165,10 +174,6 @@ body{
     .admin-appointment-status{
         /* font-weight: 300;
         width: 20%; */
-    }
-    .admin-appointment-functon{
-        font-weight: 300;
-        width: 25%;
     }
     .success{
         color: #098B66;

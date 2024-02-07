@@ -403,16 +403,20 @@ const AppointmentManagerComponentSpecial = (props) => {
     const [saveDetailId, setsaveDetailId] = useState([])
     const [saveEditId, setsaveEditId] = useState([])
 
-    const openDetailAppointment = (AppointmentUsersData) => {
+    const openDetailAppointment = (element,AppointmentUsersData) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("edit-appointment");
-        setsaveEditId("")
-        setsaveDetailId(AppointmentUsersData.appointmentuid)
+        
         if (window.getComputedStyle(x).display === "none") {
+            if(window.getComputedStyle(z).display === "block" && saveEditId === AppointmentUsersData.appointmentuid ){
+                element.stopPropagation();
+            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+            setsaveEditId("")
+            setsaveDetailId(AppointmentUsersData.appointmentuid)
             console.log(AppointmentUsersData.timeslot.start)
             const statusElement = document.getElementById("detail-appointment-status");
             if (statusElement) {
@@ -429,9 +433,9 @@ const AppointmentManagerComponentSpecial = (props) => {
         } else {
             if(saveDetailId === AppointmentUsersData.appointmentuid){
                 x.style.display = "none";
-                setsaveEditId("")
+                setsaveDetailId("")
             }else{
-                setsaveEditId(AppointmentUsersData.appointmentuid)
+                setsaveDetailId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
                 const statusElement = document.getElementById("detail-appointment-status");
                 if (statusElement) {
@@ -450,6 +454,7 @@ const AppointmentManagerComponentSpecial = (props) => {
     }
 
     const openAddAppointment = () => {
+        adminCards.forEach(card => card.classList.remove('focused'));
         let x = document.getElementById("add-appointment");
         let y = document.getElementById("detail-appointment");
         let z = document.getElementById("edit-appointment");
@@ -468,7 +473,7 @@ const AppointmentManagerComponentSpecial = (props) => {
 
     }
 
-    const openEditAppointment = (appointmentUserData) => {
+    const openEditAppointment = (element,appointmentUserData) => {
         console.log("Edit appointment data:", appointmentUserData.appointmentuid);
         console.log(appointmentUserData.appointmentuid)
         let x = document.getElementById("edit-appointment");
@@ -486,6 +491,9 @@ const AppointmentManagerComponentSpecial = (props) => {
             uid:appointmentUserData.appointmentuid
         }));
         if (window.getComputedStyle(x).display === "none") {
+            if(window.getComputedStyle(z).display === "block" && saveDetailId === appointmentUserData.appointmentuid){
+                element.stopPropagation();
+            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
@@ -764,19 +772,21 @@ const AppointmentManagerComponentSpecial = (props) => {
                         <div className="admin-appointment-box-card">
                         {AppointmentUsersData.sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start)).map((AppointmentUserData, index) => (
                             <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
-                                <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
-                                    {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
-                                </div>
-                                <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
-                                    <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
-                                    <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
+                                <div className="admin-appointment-card-detail" onClick={(event) => openDetailAppointment(event,AppointmentUserData)}>
+                                    <div className="admin-appointment-card-time admin-textBody-small">
+                                        {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
+                                    </div>
+                                    <div className="admin-appointment-info flex-column">
+                                        <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
+                                        <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
+                                    </div>
                                 </div>
                                 <div className="admin-appointment-functon">
                                     {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
                                         <p style={{justifyContent:"center",display:"flex",alignItems:"center",margin:0,marginRight:10}} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
                                     ) : (
                                         <>
-                                            <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
+                                            <img src={edit} className="icon" onClick={(event) => openEditAppointment(event,AppointmentUserData.appointment)} />
                                             <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
                                         </>
                                     )}
