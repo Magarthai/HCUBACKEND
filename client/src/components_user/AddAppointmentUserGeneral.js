@@ -7,8 +7,6 @@ import { addDoc, query, where, updateDoc, arrayUnion, deleteDoc, arrayRemove } f
 import Swal from "sweetalert2";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from 'react-router-dom';
-import { runTransaction } from 'firebase/firestore';
-
 const AddAppointmentUser = () => {
     const [selectedDate, setSelectedDate] = useState();
     const handleDateSelect = (selectedDate) => {
@@ -180,7 +178,6 @@ const AddAppointmentUser = () => {
                 });
                 return;
             }
-            
             const appointmentInfo = {
                 appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
                 appointmentTime,
@@ -192,17 +189,22 @@ const AddAppointmentUser = () => {
                 status2: "เสร็จสิ้น",
                 subject: "เพิ่มนัดหมาย",
             };
-    
-            const userDocRef = doc(db, 'users', appointmentId);
-    
-            await runTransaction(db, async (transaction) => {
-                const existingAppointmentsQuerySnapshot = await transaction.get(query(
-                    collection(db, 'appointment'),
-                    where('appointmentDate', '==', appointmentInfo.appointmentDate),
-                    where('appointmentTime.timetableId', '==', appointmentInfo.appointmentTime.timetableId),
-                    where('appointmentTime.timeSlotIndex', '==', appointmentInfo.appointmentTime.timeSlotIndex)
-                ));
-    
+
+            const usersCollection = collection(db, 'users');
+            const appointmentsCollection = collection(db, 'appointment');
+            const existingAppointmentsQuerySnapshot = await getDocs(query(
+                appointmentsCollection,
+                where('appointmentDate', '==', appointmentInfo.appointmentDate),
+                where('appointmentTime.timetableId', '==', appointmentInfo.appointmentTime.timetableId),
+                where('appointmentTime.timeSlotIndex', '==', appointmentInfo.appointmentTime.timeSlotIndex)
+            ));
+            const userQuerySnapshot = await getDocs(query(usersCollection, where('id', '==', appointmentId)));
+            const userDocuments = userQuerySnapshot.docs;
+            console.log("userDocuments",userDocuments,appointmentId)
+            const foundUser = userDocuments.length > 0 ? userDocuments[0].data() : null;
+            const userId = userDocuments.length > 0 ? userDocuments[0].id : null;
+
+            if (foundUser) {
                 if (!existingAppointmentsQuerySnapshot.empty) {
                     Swal.fire({
                         icon: "error",
@@ -214,37 +216,40 @@ const AddAppointmentUser = () => {
                             cancelButton: 'custom-cancel-button',
                         }
                     });
-                    return;
+                } else {
+                    const appointmentRef = await addDoc(collection(db, 'appointment'), appointmentInfo);
+        
+                    const userDocRef = doc(db, 'users', userId);
+        
+                    await updateDoc(userDocRef, {
+                        appointments: arrayUnion(appointmentRef.id),
+                    });
+        
+                    Swal.fire({
+                        icon: "success",
+                        title: "การนัดหมายสําเร็จ!",
+                        text: "การนัดหมายของคุณถูกสร้างเรียบร้อยแล้ว!",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
+                        customClass: {
+                            cancelButton: 'custom-cancel-button',
+                        }
+                    });
+                    await fetchTimeTableData();
+        
+                    const encodedInfo = encodeURIComponent(JSON.stringify(appointmentInfo));
+                    navigate(`/appointment/detail/${appointmentRef.id}?info=${encodedInfo}`);
                 }
-    
-                const appointmentRef = await transaction.add(collection(db, 'appointment'), appointmentInfo);
-                await transaction.update(userDocRef, {
-                    appointments: arrayUnion(appointmentRef.id),
-                });
-    
-                Swal.fire({
-                    icon: "success",
-                    title: "การนัดหมายสําเร็จ!",
-                    text: "การนัดหมายของคุณถูกสร้างเรียบร้อยแล้ว!",
-                    confirmButtonText: "ตกลง",
-                    confirmButtonColor: '#263A50',
-                    customClass: {
-                        cancelButton: 'custom-cancel-button',
-                    }
-                });
-    
-                await fetchTimeTableData();
-    
-                const encodedInfo = encodeURIComponent(JSON.stringify(appointmentInfo));
-                navigate(`/appointment/detail/${appointmentRef.id}?info=${encodedInfo}`);
-            });
-    
+            }
+
+
         } catch (firebaseError) {
             console.error('Firebase submit error:', firebaseError);
+
             console.error('Firebase error response:', firebaseError);
         }
     };
-    
+
     const checkTimeSlotAvailability = () => {
         try {
             if (timeOptions.length === 0) {

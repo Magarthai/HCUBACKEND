@@ -81,47 +81,47 @@ const TimetableComponet = (props) => {
                     <div className="colorPrimary-800">
                         <p>วันจันทร์</p>
                         <div className="user-timetable-detail">
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic == clinic).map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic == clinic).sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <p> เวลา : {timetable.timeStart} - {timetable.timeEnd}</p> 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic == clinic).length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic == clinic).length == 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         </div>
 
                         <p>วันอังคาร</p>
                         <div className="user-timetable-detail">
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic == clinic).map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic == clinic).sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                                 <p> เวลา : {timetable.timeStart} - {timetable.timeEnd}</p> 
                         ))}
-                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic == clinic).length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic == clinic).length == 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         </div>
                         <p>วันพุธ</p>
                         <div className="user-timetable-detail">
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic == clinic).map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic == clinic).sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                                 <p> เวลา : {timetable.timeStart} - {timetable.timeEnd}</p> 
                             ))}
-                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic == clinic).length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic == clinic).length == 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         </div>
                         <p>วันพฤหัสบดี</p>
                         <div className="user-timetable-detail">
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic == clinic).map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic == clinic).sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                                 <p> เวลา : {timetable.timeStart} - {timetable.timeEnd}</p> 
                             ))}
-                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic == clinic).length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic == clinic).length == 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         </div>
                         <p>วันศุกร์</p>
                         <div className="user-timetable-detail">
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic == clinic).map((timetable, index) => (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic == clinic).sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                                 <p> เวลา : {timetable.timeStart} - {timetable.timeEnd}</p> 
                             ))}
-                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic == clinic).length === 0 && (
+                        {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic == clinic).length == 0 && (
                             <p>ไม่มีช่วงเวลาทําการ</p>
                         )}
                         </div>

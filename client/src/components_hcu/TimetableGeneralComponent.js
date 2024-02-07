@@ -6,7 +6,6 @@ import icon_delete from "../picture/icon_delete.jpg";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, getDocs, collection } from "../firebase/config";
 import Swal from "sweetalert2";
-import { auth } from '../firebase/config';
 import { doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';

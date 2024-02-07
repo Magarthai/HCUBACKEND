@@ -1371,12 +1371,10 @@ const AppointmentManagerPhysicComponent = (props) => {
                             <div className="center-container">
                                 <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                 <br></br>
-                                {selectedDate && (
                                             <input
                                                 type="date"
                                                 className="form-control"
                                                 min={new Date().toISOString().split("T")[0]}
-                                                value={`${selectedDate.year}-${('' + selectedDate.month).padStart(2, '0')}-${('' + selectedDate.day).padStart(2, '0')}`}
                                                 max={maxDate.toISOString().split("T")[0]} 
                                                 onChange={async (e) => {
                                                     inputValue("appointmentDate")(e);
@@ -1386,7 +1384,6 @@ const AppointmentManagerPhysicComponent = (props) => {
                                                 }}
                                                 
                                             />
-                                        )}
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
