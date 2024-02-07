@@ -1,6 +1,5 @@
 import { db, getDocs, collection, doc, getDoc } from "../firebase/config";
-import { addDoc, query, where, updateDoc, arrayUnion ,deleteDoc,arrayRemove } from 'firebase/firestore';
-import Swal from 'sweetalert2';
+import { query, where } from 'firebase/firestore';
 
 export const getUserDataFromUserId = async (appointment, userId, timeslot, appointmentuid) => {
     const usersCollection = collection(db, 'users');

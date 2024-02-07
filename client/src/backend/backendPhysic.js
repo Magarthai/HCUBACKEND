@@ -81,7 +81,7 @@ export const submitFormPhysic = async (selectedDate, timeOptions, selectedValue,
                 const userDocRef = doc(db, 'users', userId);
                 Swal.fire({
                     title: 'ยืนยันเพิ่มนัดหมาย',
-                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/พนักงาน : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
@@ -206,7 +206,7 @@ export const editFormPhysic = async (selectedDate, timeOptions, timeOptionsss, t
             if (selectedTimeLabel != undefined) {
                 Swal.fire({
                     title: 'ยืนยันแก้นัดหมาย',
-                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/พนักงาน : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
@@ -271,7 +271,7 @@ export const editFormPhysic = async (selectedDate, timeOptions, timeOptionsss, t
             } else {
                 Swal.fire({
                     title: 'ยืนยันแก้นัดหมาย',
-                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/พนักงาน : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
@@ -345,7 +345,7 @@ export const editFormPhysic = async (selectedDate, timeOptions, timeOptionsss, t
             if (selectedTimeLabel != undefined) {
                 Swal.fire({
                     title: 'ยืนยันแก้นัดหมาย',
-                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/พนักงาน : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
@@ -410,7 +410,7 @@ export const editFormPhysic = async (selectedDate, timeOptions, timeOptionsss, t
             } else {
                 Swal.fire({
                     title: 'ยืนยันแก้นัดหมาย',
-                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/บุคลากร : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
+                    html: `ชื่อ-นามสกุล : ${foundUser.firstName} ${foundUser.lastName} </br> รหัสนักศึกษา/พนักงาน : ${appointmentId} </br> วันที่ ${selectedDate.day}/${selectedDate.month}/${selectedDate.year} </br> เวลา ${selectedTimeLabel}`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',

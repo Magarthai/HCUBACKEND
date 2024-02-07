@@ -220,7 +220,7 @@ const AppointmentRequestManagementHistoryComponent = (props) => {
                 <table class="table table-striped">
                     <thead>
                         <tr className="center colorPrimary-800">
-                            <th className="admin-textBody-large colorPrimary-800" id="th_id">รหัสนักศึกษา/รหัสบุคลากร</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_id">รหัสนักศึกษา/รหัสพนักงาน</th>
                             <th className="admin-textBody-large colorPrimary-800" id="th_name">ชื่อ</th>
                             <th className="admin-textBody-large colorPrimary-800" id="th_tel">เบอร์โทร</th>
                             <th className="admin-textBody-large colorPrimary-800" id="th_clinic">คลินิก</th>

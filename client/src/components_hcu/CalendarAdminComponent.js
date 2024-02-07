@@ -16,7 +16,7 @@ const CalendarAdminComponent = (props) => {
   const [selectedDateIndex, setSelectedDateIndex] = useState(null);
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(null);
   const [selectedYearIndex, setSelectedYearIndex] = useState(null);
-
+  
   const handleDateClick = (day) => {
     const selectedDate = new Date(currentYear, currentMonth - 1, day);
     const dayName = selectedDate.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();

@@ -79,7 +79,7 @@ const SignupComponent = (props) => {
         Swal.fire(
           {
             title: 'เกิดข้อผิดพลาด',
-            html : `เลขรหัสนักศึกษา ต้องมี 11 ตัวเลข </br> บุคลากร ต้องมี 5 ตัวเลข ${id.length}`,
+            html : `เลขรหัสนักศึกษา ต้องมี 11 ตัวเลข </br> พนักงาน ต้องมี 5 ตัวเลข`,
             icon: 'error',
             confirmButtonText: 'ตกลง',
             confirmButtonColor: '#263A50',

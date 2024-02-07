@@ -93,7 +93,7 @@ const ActivityListOfPeopleComponent = (props) => {
                 <table class="table table-striped">
                     <thead>
                         <tr className="center colorPrimary-800">
-                            <th className="admin-textBody-large colorPrimary-800" id="th_id_acticity">รหัสนักศึกษา/รหัสบุคลากร</th>
+                            <th className="admin-textBody-large colorPrimary-800" id="th_id_acticity">รหัสนักศึกษา/รหัสพนักงาน</th>
                             <th className="admin-textBody-large colorPrimary-800" id="th_name_acticity">ชื่อ</th>
                             <th className="admin-textBody-large colorPrimary-800" id="th_tel_acticity">เบอร์โทร</th>
                             <th className="admin-textBody-large colorPrimary-800" id="th_email_acticity">Email</th>
