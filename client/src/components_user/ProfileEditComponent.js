@@ -46,7 +46,21 @@ const ProfileEditComponent = (props) => {
                 tel: tel,
                 gender: gender,
             };
-
+            if (tel.length != 10) {
+                Swal.fire(
+                    {
+                      title: 'เกิดข้อผิดพลาด',
+                      text : 'กรุณากรอกเบอร์โทร 10 หลัก!',
+                      icon: 'error',
+                      confirmButtonText: 'ตกลง',
+                      confirmButtonColor: '#263A50',
+                      customClass: {
+                        confirmButton: 'custom-confirm-button',
+                      }
+                    }
+                  )
+                  return;
+            }
             
 
             Swal.fire({
@@ -67,23 +81,26 @@ const ProfileEditComponent = (props) => {
                 if (result.isConfirmed) {
                     await updateDoc(timetableRef, updatedTimetable);
                 Swal.fire({
-                    title: "แก้ไข้โปรไฟล์",
+                    title: "ดําเนินการสําเร็จ!",
+                    text: "แก้ไข้โปรไฟล์เสร็จสิ้น",
                     icon: "success",
                     confirmButtonText: "ตกลง",
+                    confirmButtonColor: '#263A50',
                     customClass: {
-                        confirmButton: 'custom-confirm-button',
+                    confirmButton: 'custom-confirm-button',
                     }
-
                 });  
-                window.location.href = '/profile';
+                navigate('/profile');
                 }
                 if (result.isDenied){
                     Swal.fire({
-                        title: "แก้ไข้ไม่สําเร็จ",
+                        title: "เกิดข้อผิดพลาด!",
+                        text: "แก้ไข้โปรไฟล์ล้มเลว",
                         icon: "error",
                         confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#263A50',
                         customClass: {
-                            confirmButton: 'custom-confirm-button',
+                        confirmButton: 'custom-confirm-button',
                         }
                     });
                 }
