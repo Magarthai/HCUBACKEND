@@ -300,7 +300,7 @@ const AppointmentManagerComponent = (props) => {
             Swal.fire({
                 icon: "error",
                 title: "เกิดข้อผิดพลาด!",
-                text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง.",
+                text: "ไม่สามารถสร้างนัดหมายได้ กรุณาลองอีกครั้งในภายหลัง.",
                 confirmButtonText: 'ตกลง',
                 confirmButtonColor: '#263A50',
                 customClass: {
@@ -402,7 +402,7 @@ const AppointmentManagerComponent = (props) => {
                 Swal.fire({
                     icon: "error",
                     title: "เกิดข้อผิดพลาด!",
-                    text: "ไม่สามารถสร้างบัญชีผู้ใช้ได้ กรุณาลองอีกครั้งในภายหลัง.",
+                    text: "ไม่สามารถสร้างนัดหมายได้ กรุณาลองอีกครั้งในภายหลัง.",
                     confirmButtonText: 'ตกลง',
                     confirmButtonColor: '#263A50',
                     customClass: {
@@ -491,10 +491,13 @@ const AppointmentManagerComponent = (props) => {
 
     }
 
-    const openEditAppointment = (element,appointmentUserData) => {
+    const openEditAppointment = async (appointmentUserData) => {
+        console.log("Edit appointment data:", appointmentUserData.appointmentuid);
+        console.log(appointmentUserData.appointmentuid)
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
+
         setState((prevState) => ({
             ...prevState,
             appointmentDate: appointmentUserData.appointmentDate,
@@ -504,20 +507,15 @@ const AppointmentManagerComponent = (props) => {
             appointmentSymptom: appointmentUserData.appointmentSymptom,
             appointmentNotation: appointmentUserData.appointmentNotation,
             clinic: appointmentUserData.clinic,
-            uid: appointmentUserData.appointmentuid
+            uid: appointmentUserData.appointmentuid,
+            typecheck: appointmentUserData.type
         }));
         if (window.getComputedStyle(x).display === "none") {
-            if(window.getComputedStyle(z).display === "block" && saveDetailId === appointmentUserData.appointmentuid){
-                element.stopPropagation();
-            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
             setsaveDetailId("")
             setsaveEditId(appointmentUserData.appointmentuid)
-
-
-
         } else {
             if (saveEditId === appointmentUserData.appointmentuid) {
                 x.style.display = "none";
@@ -745,7 +743,7 @@ const AppointmentManagerComponent = (props) => {
                                                     <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small" >{`${AppointmentUserData.appointment.status}`}</p>
                                                 ) : (
                                                     <>
-                                                        <img src={edit} className="icon" onClick={(event) => openEditAppointment(event,AppointmentUserData.appointment)} />
+                                                        <img src={edit} className="icon" onClick={(event) =>  openEditAppointment(AppointmentUserData.appointment)} />
                                                         <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid, setAllAppointmentUsersData, fetchUserDataWithAppointmentsWrapper)} />
                                                     </>
                                                 )}

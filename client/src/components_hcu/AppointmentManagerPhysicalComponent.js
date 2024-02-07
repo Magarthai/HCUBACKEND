@@ -95,7 +95,7 @@ const AppointmentManagerPhysicComponent = (props) => {
         !appointmentDate || !appointmentTime || !appointmentId;
 
     const isAutoSubmitEnabled =
-        !appointmentDate || !appointmentTime || !appointmentId || !time || !timelength;
+        !appointmentDate || !appointmentId || !time || !timelength;
 
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
@@ -103,7 +103,6 @@ const AppointmentManagerPhysicComponent = (props) => {
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
         console.log(selectedCount)
-
     };
 
     const formatDateForDisplay = (isoDate) => {
@@ -357,7 +356,7 @@ const AppointmentManagerPhysicComponent = (props) => {
 
     const [saveDetailId, setsaveDetailId] = useState([])
     const [saveEditId, setsaveEditId] = useState([])
-    const openDetailAppointment = (AppointmentUsersData) => {
+    const openDetailAppointment = (element,AppointmentUsersData) => {
         let x = document.getElementById("detail-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("edit-appointment");
@@ -368,12 +367,16 @@ const AppointmentManagerPhysicComponent = (props) => {
         document.getElementById("detail-appointment-casue").innerHTML = `<b>สาเหตุการนัดหมาย</b> : ${AppointmentUsersData.appointment.appointmentCasue}`
         document.getElementById("detail-appointment-symptom").innerHTML = `<b>อาการเบื้องต้น</b> : ${AppointmentUsersData.appointment.appointmentSymptom}`
         document.getElementById("detail-appointment-notation").innerHTML = `<b>หมายเหตุ</b> : ${AppointmentUsersData.appointment.appointmentNotation}`
-        setsaveEditId("")
-        setsaveDetailId(AppointmentUsersData.appointmentuid)
+
         if (window.getComputedStyle(x).display === "none") {
+            if(window.getComputedStyle(z).display === "block" && saveEditId === AppointmentUsersData.appointmentuid ){
+                element.stopPropagation();
+            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
+            setsaveEditId("")
+            setsaveDetailId(AppointmentUsersData.appointmentuid)
             console.log(AppointmentUsersData.timeslot.start)
             const statusElement = document.getElementById("detail-appointment-status");
             if (statusElement) {
@@ -384,9 +387,9 @@ const AppointmentManagerPhysicComponent = (props) => {
         } else {
             if (saveDetailId === AppointmentUsersData.appointmentuid) {
                 x.style.display = "none";
-                setsaveEditId("")
+                setsaveDetailId("")
             } else {
-                setsaveEditId(AppointmentUsersData.appointmentuid)
+                setsaveDetailId(AppointmentUsersData.appointmentuid)
                 console.log(AppointmentUsersData.timeslot.start)
                 const statusElement = document.getElementById("detail-appointment-status");
                 if (statusElement) {
@@ -408,7 +411,6 @@ const AppointmentManagerPhysicComponent = (props) => {
             setsaveEditId("")
             setState((prevState) => ({
                 ...prevState,
-                appointmentDate: "",
                 appointmentTime: "",
                 appointmentId: "",
                 appointmentCasue: "",
@@ -422,7 +424,7 @@ const AppointmentManagerPhysicComponent = (props) => {
             x.style.display = "none";
         }
     }
-    const openEditAppointment = async (appointmentUserData) => {
+    const openEditAppointment = async (element,appointmentUserData) => {
         console.log("Edit appointment data:", appointmentUserData.appointmentuid);
         console.log(appointmentUserData.appointmentuid)
         let x = document.getElementById("edit-appointment");
@@ -442,6 +444,9 @@ const AppointmentManagerPhysicComponent = (props) => {
             typecheck: appointmentUserData.type
         }));
         if (window.getComputedStyle(x).display === "none") {
+            if(window.getComputedStyle(z).display === "block" && saveDetailId === appointmentUserData.appointmentuid){
+                element.stopPropagation();
+            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
@@ -457,6 +462,7 @@ const AppointmentManagerPhysicComponent = (props) => {
         }
     }
     const openContinueAddinAppointment = () => {
+        handleSelectChange();
         let x = document.getElementById("admin-add-appointment-connected");
         fetchMainTimeTableData();
         if (window.getComputedStyle(x).display === "none") {
@@ -501,6 +507,7 @@ const AppointmentManagerPhysicComponent = (props) => {
             cleanUpOldPopups();
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.two");
             if (selectedDates) {
+                handleSelectChange();
                 const formattedAppointmentDate = formatToDDMMYYYY(`${selectedDates.day}/${selectedDates.month}/${selectedDates.year}`);
 
                 const handleSelectChanges = () => {
@@ -564,21 +571,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                         },
                     })
                     x.style.display = "none";
-                } else if (appointmentTime == ""){
-                    Swal.fire({
-                        title: 'เกิดข้อผิดพลาด',
-                        text: `กรุณาเลือกช่วงเวลา!`,
-                        icon: 'error',
-                        confirmButtonText: 'ย้อนกลับ',
-                        confirmButtonColor: '#263A50',
-                        reverseButtons: true,
-                        customClass: {
-                            confirmButton: 'custom-confirm-button',
-                            cancelButton: 'custom-cancel-button',
-                        },
-                    })
-                    x.style.display = "none";
-                }
+                } 
                 else if (appointmentId == ""){
                     Swal.fire({
                         title: 'เกิดข้อผิดพลาด',
@@ -622,6 +615,7 @@ const AppointmentManagerPhysicComponent = (props) => {
 
                             return formattedSelectedDate;
                         };
+                        handleSelectChange();
                         const xd = formatDmy(formatdate)
                         console.log("xdformat", xd)
                         const divElement = document.createElement('div');
@@ -670,7 +664,6 @@ const AppointmentManagerPhysicComponent = (props) => {
                                 );
 
 
-
                                 console.log("availableTimeSlots", availableTimeSlots)
                                 const initialIsChecked = availableTimeSlots.reduce((acc, timetableItem) => {
                                     acc[timetableItem.id] = timetableItem.status === "Enabled";
@@ -680,7 +673,12 @@ const AppointmentManagerPhysicComponent = (props) => {
                                 setIsChecked(initialIsChecked);
 
                                 const timeOptionsFromTimetable = [
-                                    { label: "กรุณาเลือกช่วงเวลา", value: "", disabled: true, hidden: true },
+                                    { 
+                                        label: "กรุณาเลือกช่วงเวลา", 
+                                        value: "", 
+                                        disabled: true, 
+                                        hidden: true 
+                                    },
                                     ...availableTimeSlots
                                         .filter(timeSlot => timeSlot.type === 'main')
                                         .sort((a, b) => {
@@ -693,6 +691,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                                             value: { timetableId: timeSlot.timeTableId, timeSlotIndex: timeSlot.timeSlotIndex },
                                         })),
                                 ];
+                                
 
                                 console.log("Before setTimeOptions", timeOptionsFromTimetable);
                                 if (timeOptionsFromTimetable.length > 1) {
@@ -848,6 +847,7 @@ const AppointmentManagerPhysicComponent = (props) => {
     };
 
     const submitFormAddContinue2 = async (e) => {
+        handleSelectChange();
         e.preventDefault();
         try {
             const usersCollection = collection(db, 'users');
@@ -1119,55 +1119,59 @@ const AppointmentManagerPhysicComponent = (props) => {
                                     <button type="button" className="appointment-hearder-item" onClick={openAddAppointment}>เพิ่มนัดหมาย +</button>
                                 </div>
                                 <div className="admin-appointment-box-card colorPrimary-800">
-                                    {AppointmentUsersData
-                                        .filter(appointmentUserData => appointmentUserData.appointment.type === "talk")
-                                        .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
-                                        .map((AppointmentUserData, index) => (
-                                            <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
-                                                <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                {AppointmentUsersData
+                                    .filter(appointmentUserData => appointmentUserData.appointment.type === "talk")
+                                    .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                                    .map((AppointmentUserData, index) => (
+                                        <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
+                                            <div className="admin-appointment-card-detail" onClick={(event) => openDetailAppointment(event,AppointmentUserData)}>
+                                                <div className="admin-appointment-card-time admin-textBody-small">
                                                     {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
                                                 </div>
-                                                <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                                <div className="admin-appointment-info flex-column" >
                                                     <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
                                                     <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
                                                 </div>
-                                                <div className="admin-appointment-functon">
-                                                    {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                                        <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
-                                                    ) : (
-                                                        <>
-                                                            <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
-                                                            <img src={icon_delete} className="icon" onClick={() => DeleteAppointmentPhysic(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
-                                                        </>
-                                                    )}
-                                                </div>
                                             </div>
-                                        ))}
+                                            <div className="admin-appointment-functon">
+                                                {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
+                                                    <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
+                                                ) : (
+                                                    <>
+                                                        <img src={edit} className="icon" onClick={(event) => openEditAppointment(event,AppointmentUserData.appointment)} />
+                                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointmentPhysic(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
+                                                    </>
+                                                )}  
+                                            </div>
+                                        </div>
+                                    ))}
                                     <div style={{ marginTop: 20, marginBottom: 10, display: "flex", textAlign: "center", alignItems: "center", justifyContent: "center" }}><p className="colorNeutralBlack-400">---------------- นัดหมายกายภาพ ----------------</p></div>
                                     {AppointmentUsersData
-                                        .filter(appointmentUserData => appointmentUserData.appointment.type === "main")
-                                        .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
-                                        .map((AppointmentUserData, index) => (
-                                            <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
-                                                <div className="admin-appointment-card-time admin-textBody-small" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                    .filter(appointmentUserData => appointmentUserData.appointment.type === "main")
+                                    .sort((a, b) => a.timeslot.start.localeCompare(b.timeslot.start))
+                                    .map((AppointmentUserData, index) => (
+                                        <div className="admin-appointment-card colorPrimary-800" key={index} onClick={handleCardClick}>
+                                            <div className="admin-appointment-card-detail" onClick={(event) => openDetailAppointment(event,AppointmentUserData)}>
+                                                <div className="admin-appointment-card-time admin-textBody-small">
                                                     {AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}
                                                 </div>
-                                                <div className="admin-appointment-info flex-column" onClick={() => openDetailAppointment(AppointmentUserData)}>
+                                                <div className="admin-appointment-info flex-column">
                                                     <p id="student-id" className="admin-textBody-huge">{AppointmentUserData.id}</p>
                                                     <p id="student-name" className="admin-textBody-small">{`${AppointmentUserData.firstName} ${AppointmentUserData.lastName}`}</p>
                                                 </div>
-                                                <div className="admin-appointment-functon">
-                                                    {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
-                                                        <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
-                                                    ) : (
-                                                        <>
-                                                            <img src={edit} className="icon" onClick={() => openEditAppointment(AppointmentUserData.appointment)} />
-                                                            <img src={icon_delete} className="icon" onClick={() => DeleteAppointmentPhysic(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
-                                                        </>
-                                                    )}
-                                                </div>
                                             </div>
-                                        ))}
+                                            <div className="admin-appointment-functon">
+                                                {`${selectedDate.day}/${selectedDate.month}/${selectedDate.year}` === DateToCheck ? (
+                                                    <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small">{`${AppointmentUserData.appointment.status}`}</p>
+                                                ) : (
+                                                    <>
+                                                        <img src={edit} className="icon" onClick={(event) => openEditAppointment(event,AppointmentUserData.appointment)} />
+                                                        <img src={icon_delete} className="icon" onClick={() => DeleteAppointmentPhysic(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid)} />
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -1382,47 +1386,6 @@ const AppointmentManagerPhysicComponent = (props) => {
                                 />
                             </div>
                             <div>
-                                <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
-                                <select
-                                    name="time"
-                                    value={JSON.stringify(appointmentTime)}
-                                    onChange={(e) => {
-                                        console.log("XXD", appointmentTime1)
-                                        handleSelectChange();
-                                        const selectedValue = JSON.parse(e.target.value);
-                                        if (selectedValue && typeof selectedValue === 'object') {
-                                            const { timetableId, timeSlotIndex } = selectedValue;
-                                            console.log("timetableId:", timetableId);
-                                            console.log("timeSlotIndex:", timeSlotIndex);
-
-
-                                            inputValue("appointmentTime")({
-                                                target: {
-                                                    value: { timetableId, timeSlotIndex },
-                                                },
-                                            });
-
-                                            handleSelectChange();
-                                        } else if (e.target.value === "") {
-                                            inputValue("appointmentTime")({
-                                                target: {
-                                                    value: {},
-                                                },
-                                            });
-
-                                            handleSelectChange();
-                                        } else {
-                                            console.error("Invalid selected value:", selectedValue);
-                                        }
-                                    }}
-                                    className={selectedCount >= 2 ? 'selected' : ''}
-                                >
-                                    {timeOptionss.map((timeOption, index) => (
-                                        <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                                            {timeOption.label}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">จำนวนครั้งนัดหมาย</label><br></br>

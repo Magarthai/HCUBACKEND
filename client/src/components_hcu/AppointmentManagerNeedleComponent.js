@@ -93,7 +93,7 @@ const AppointmentManagerNeedleComponent = (props) => {
         !appointmentDate || !appointmentTime || !appointmentId;
 
     const isAutoSubmitEnabled =
-        !appointmentDate || !appointmentTime || !appointmentId || !time || !timelength;
+        !appointmentDate || !appointmentId || !time || !timelength;
 
     const inputValue = (name) => (event) => {
         setState({ ...state, [name]: event.target.value });
@@ -451,6 +451,7 @@ const AppointmentManagerNeedleComponent = (props) => {
         }
     }
     const openContinueAddinAppointment = () => {
+        handleSelectChange();
         let x = document.getElementById("admin-add-appointment-connected");
         fetchMainTimeTableData();
         if (window.getComputedStyle(x).display === "none") {
@@ -492,6 +493,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                 appointmentTime9: appointmentTime,
                 appointmentTime10: appointmentTime,
             }));
+            handleSelectChange();
             cleanUpOldPopups();
             const appointmentPopupItem = document.querySelector(".admin-appointmemt-popup-item.two");
             if (selectedDates) {
@@ -558,21 +560,7 @@ const AppointmentManagerNeedleComponent = (props) => {
                         },
                     })
                     x.style.display = "none";
-                } else if (appointmentTime == ""){
-                    Swal.fire({
-                        title: 'เกิดข้อผิดพลาด',
-                        text: `กรุณาเลือกช่วงเวลา!`,
-                        icon: 'error',
-                        confirmButtonText: 'ย้อนกลับ',
-                        confirmButtonColor: '#263A50',
-                        reverseButtons: true,
-                        customClass: {
-                            confirmButton: 'custom-confirm-button',
-                            cancelButton: 'custom-cancel-button',
-                        },
-                    })
-                    x.style.display = "none";
-                }
+                } 
                 else if (appointmentId == ""){
                     Swal.fire({
                         title: 'เกิดข้อผิดพลาด',
@@ -907,23 +895,21 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     appointments: arrayUnion(appointmentRef.id),
                                 });
                             
-            
-                            Swal.fire({
-                                icon: "success",
-                                title: "การนัดหมายสำเร็จ!",
-                                text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
-                                confirmButtonText: 'ตกลง',
-                                confirmButtonColor: '#263A50',
-                                customClass: {
-                                    confirmButton: 'custom-confirm-button',
-                                }
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    resetForm();
-                                }
-                            });
                         }}
-                
+                        Swal.fire({
+                            icon: "success",
+                            title: "การนัดหมายสำเร็จ!",
+                            text: "การนัดหมายถูกสร้างเรียบร้อยแล้ว!",
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#263A50',
+                            customClass: {
+                                confirmButton: 'custom-confirm-button',
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                resetForm();
+                            }
+                        });
                         } catch(firebaseError) {
                             Swal.fire(
                                 {
@@ -1258,18 +1244,20 @@ const AppointmentManagerNeedleComponent = (props) => {
                                     <h2 className="center">แก้ไขนัดหมาย</h2>
                                     <div className="center-container">
                                         <label className="admin-textBody-large colorPrimary-800">วันที่</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            min={new Date().toISOString().split("T")[0]}
-                                            max={maxDate.toISOString().split("T")[0]} 
-                                            onChange={async (e) => {
-                                                inputValue("appointmentDate")(e);
-                                                const formattedDate = formatDateForDisplay(e.target.value);
-                                                console.log("Formatted Date:", formattedDate);
-
-                                            }}
-                                        />
+                                        {selectedDate && (
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                min={new Date().toISOString().split("T")[0]}
+                                                value={`${selectedDate.year}-${('' + selectedDate.month).padStart(2, '0')}-${('' + selectedDate.day).padStart(2, '0')}`}
+                                                max={maxDate.toISOString().split("T")[0]} 
+                                                onChange={async (e) => {
+                                                    inputValue("appointmentDate")(e);
+                                                    const formattedDate = formatDateForDisplay(e.target.value);
+                                                    console.log("Formatted Date:", formattedDate);
+                                                }}
+                                            />
+                                        )}
                                     </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
@@ -1368,47 +1356,6 @@ const AppointmentManagerNeedleComponent = (props) => {
                             />
                         </div>
                         <div>
-                            <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
-                            <select
-                                name="time"
-                                value={JSON.stringify(appointmentTime)}
-                                onChange={(e) => {
-                                    console.log("XXD", appointmentTime1)
-                                    handleSelectChange();
-                                    const selectedValue = JSON.parse(e.target.value);
-                                    if (selectedValue && typeof selectedValue === 'object') {
-                                        const { timetableId, timeSlotIndex } = selectedValue;
-                                        console.log("timetableId:", timetableId);
-                                        console.log("timeSlotIndex:", timeSlotIndex);
-
-
-                                        inputValue("appointmentTime")({
-                                            target: {
-                                                value: { timetableId, timeSlotIndex },
-                                            },
-                                        });
-
-                                        handleSelectChange();
-                                    } else if (e.target.value === "") {
-                                        inputValue("appointmentTime")({
-                                            target: {
-                                                value: {},
-                                            },
-                                        });
-
-                                        handleSelectChange();
-                                    } else {
-                                        console.error("Invalid selected value:", selectedValue);
-                                    }
-                                }}
-                                className={selectedCount >= 2 ? 'selected' : ''}
-                            >
-                                {timeOptionss.map((timeOption, index) => (
-                                    <option key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`} value={JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}>
-                                        {timeOption.label}
-                                    </option>
-                                ))}
-                            </select>
                         </div>
                         <div>
                             <label className="admin-textBody-large colorPrimary-800">จำนวนครั้งนัดหมาย</label><br></br>
