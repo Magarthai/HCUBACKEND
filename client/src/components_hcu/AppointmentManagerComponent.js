@@ -163,7 +163,6 @@ const AppointmentManagerComponent = (props) => {
     const DateToCheck = `${date}/${month}/${year}`
     const [selectedCount, setSelectedCount] = useState(1);
 
-    
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
     };

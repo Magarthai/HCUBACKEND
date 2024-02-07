@@ -388,7 +388,7 @@ AppointmentUsersData.sort((a, b) => {
           )) : (
             <div style={{width:"100%",display:"flex",justifyContent:"center"}}>
                 <div className="user-DateAppointment-card_noAppointment gap-16" style={{width:"90%"}}>
-                            <h3 className="user-DateAppointment-noAppointment center">ไม่มีการนัดหมาย</h3>
+                            <h3 className="user-DateAppointment-noAppointment center">No appointments available</h3>
                         </div>
             </div>
           )}         
@@ -400,7 +400,7 @@ AppointmentUsersData.sort((a, b) => {
       </div>
 
       <div className="HistoryAppointment-body-returnButton">
-        <Link className="return-btn" to={"/appointment"}>ย้อนกลับ</Link>
+        <Link className="return-btn" to={"/appointment"}><button className="return-btn">ย้อนกลับ</button></Link>
       </div>
     </div>
 

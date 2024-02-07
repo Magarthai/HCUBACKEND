@@ -158,23 +158,6 @@ header .icons span:last-child{
     font-size: 16px;
 
 }
-/* #userCalendar .days li:hover::before{
-    background-color: #36537200;
-}
-#userCalendar .days li:hover{
-    color: #263A50;
-} */
-#userCalendar .calendar .days li::before{
-    position: absolute;
-    content: "";
-    height: 40px;
-    width: 40px;
-    left: 50%;
-    top: 50%;
-    z-index: -1;
-    border-radius: 50%;
-    transform:translate(-50%,-50%);
-}
 #userCalendar.wrapper header{
     display: flex;
     align-items: center;

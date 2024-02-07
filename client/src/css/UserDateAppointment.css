@@ -37,13 +37,17 @@
 }
 .user-DateAppointment-Date_container{
     width: 100%;
-    padding: 0px 5%;
+    padding-left: 32px;
+    padding-right: 32px;
 }
 .user-DateAppointment-AppointmentList_container{
     width: 100%;
+    padding-left: 32px;
+    padding-right: 32px;
     font-weight: 300;
 }
 .user-DateAppointment-card{
+    
     background-color: #FBFFFF;
     color: #263A50;
     text-decoration: none;
@@ -57,11 +61,6 @@
     align-items: stretch;
     box-sizing: border-box;
     border-radius: 20px;
-    margin: 0px 5%;
-    
-}
-.user-DateAppointment-card-h4{
-    margin: 0px 5% 10px 5%;
 }
 .user-DateAppointment-clinic {
     margin-top: 0;

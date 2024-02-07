@@ -522,7 +522,7 @@ const ListAppointmentUser = () => {
     </div>
   )) : (
               <div className="user-DateAppointment-card_noAppointment gap-16">
-                <h3 className="user-DateAppointment-noAppointment center">ไม่มีการนัดหมาย</h3>
+                <h3 className="user-DateAppointment-noAppointment center">No appointments available</h3>
               </div>
             )}
 
@@ -574,17 +574,16 @@ const ListAppointmentUser = () => {
     ) ): (
 
       <div className="user-DateAppointment-card_noAppointment gap-16">
-        <h3 className="user-DateAppointment-noAppointment center">ไม่มีการนัดหมาย</h3>
+        <h3 className="user-DateAppointment-noAppointment center">No appointments available</h3>
       </div>
     )
   }
 </div>
 
 
-      <div className="HistoryAppointment-body-returnButton">
-          <Link  className="return-btn" to={"/appointment"}>ย้อนกลับ</Link>
+        <div className="AppointList-body-returnButton">
+          <Link className="return-btn" to={"/appointment"}><button className="return-btn">ย้อนกลับ</button></Link>
         </div>
-       
       </div>
 
     </div>
