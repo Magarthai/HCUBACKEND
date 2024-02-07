@@ -1417,6 +1417,7 @@ const TimetablePhysicalComponent = (props) => {
     const [saveEditId, setsaveEditId] = useState([])
 
     const openAddtimetable = () => {
+        adminCards.forEach(card => card.classList.remove('focused'));
         let x = document.getElementById("Addtimetable");
         let y = document.getElementById("Edittimetable");
         let z = document.getElementById("Detailtimetable");
@@ -1442,25 +1443,26 @@ const TimetablePhysicalComponent = (props) => {
         let z = document.getElementById("Detailtimetable");
         console.log(timetable)
         if (window.getComputedStyle(x).display === "none") {
-          x.style.display = "block";
-          y.style.display = "none";
-          z.style.display = "none";
-          setsaveDetailId("")
-          setsaveEditId(timetable.id)
-      
-      
-          setState((prevState) => ({
-            ...prevState,
-            addDay: timetable.addDay,
-            timeStart: timetable.timeStart,
-            timeEnd: timetable.timeEnd,
-            timeAppointmentStart: timetable.timeAppointmentStart,
-            timeAppointmentEnd: timetable.timeAppointmentEnd,
-            numberAppointment: timetable.numberAppointment,
-            clinic: "คลินิกกายภาพ",
-            timeablelist: timetable.timeablelist,
-            status: "Enabled",
-            timetableId: timetable.id,  // Update the id in the state
+            if(window.getComputedStyle(z).display === "block" && saveDetailId === timetable.id ){
+                element.stopPropagation();
+            }
+            x.style.display = "block";
+            y.style.display = "none";
+            z.style.display = "none";
+            setsaveDetailId("")
+            setsaveEditId(timetable.id)
+            setState((prevState) => ({
+                ...prevState,
+                addDay: timetable.addDay,
+                timeStart: timetable.timeStart,
+                timeEnd: timetable.timeEnd,
+                timeAppointmentStart: timetable.timeAppointmentStart,
+                timeAppointmentEnd: timetable.timeAppointmentEnd,
+                numberAppointment: timetable.numberAppointment,
+                clinic: "คลินิกกายภาพ",
+                timeablelist: timetable.timeablelist,
+                status: "Enabled",
+                timetableId: timetable.id,  // Update the id in the state
           }));
 
           // console.log(timetable.id)
@@ -1499,6 +1501,9 @@ const TimetablePhysicalComponent = (props) => {
         let z = document.getElementById("Addtimetable");
 
         if (window.getComputedStyle(x).display === "none") {
+            if(window.getComputedStyle(y).display === "block" && saveEditId === timetable.id ){
+                element.stopPropagation();
+            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
@@ -1727,7 +1732,7 @@ const TimetablePhysicalComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกกายภาพ").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
                                 <div className="card" onClick={handleCardClick}>
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
+                                    <a className="card-detail colorPrimary-800" onClick={(event) => openDetailtimetable(event, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
@@ -1742,7 +1747,7 @@ const TimetablePhysicalComponent = (props) => {
                                             <div className="slider"></div>
                                         </label>
 
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
+                                        <img src={edit} className="icon" onClick={(event) => openEdittimetable(event, timetable)} />
                                         <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
                                     </div>
                                 </div>
@@ -1760,7 +1765,7 @@ const TimetablePhysicalComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกกายภาพ").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
                                 <div className="card" onClick={handleCardClick}>
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
+                                    <a className="card-detail colorPrimary-800" onClick={(event) => openDetailtimetable(event, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
@@ -1770,7 +1775,7 @@ const TimetablePhysicalComponent = (props) => {
                                             <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                             <div className="slider"></div>
                                         </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
+                                        <img src={edit} className="icon" onClick={(event) => openEdittimetable(event, timetable)} />
                                         <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
                                     </div>
                                 </div>
@@ -1788,7 +1793,7 @@ const TimetablePhysicalComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกกายภาพ").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
                                 <div className="card" onClick={handleCardClick}>
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
+                                    <a className="card-detail colorPrimary-800" onClick={(event) => openDetailtimetable(event, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
@@ -1798,7 +1803,7 @@ const TimetablePhysicalComponent = (props) => {
                                             <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                             <div className="slider"></div>
                                         </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
+                                        <img src={edit} className="icon" onClick={(event) => openEdittimetable(event, timetable)} />
                                         <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
                                     </div>
                                 </div>
@@ -1816,7 +1821,7 @@ const TimetablePhysicalComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกกายภาพ").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
                                 <div className="card" onClick={handleCardClick}>
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
+                                    <a className="card-detail colorPrimary-800" onClick={(event) => openDetailtimetable(event, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
@@ -1826,7 +1831,7 @@ const TimetablePhysicalComponent = (props) => {
                                             <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                             <div className="slider"></div>
                                         </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
+                                        <img src={edit} className="icon" onClick={(event) => openEdittimetable(event, timetable)} />
                                         <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
                                     </div>
                                 </div>
@@ -1844,7 +1849,7 @@ const TimetablePhysicalComponent = (props) => {
                         {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกกายภาพ").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
                                 <div className="card" onClick={handleCardClick}>
-                                    <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
+                                    <a className="card-detail colorPrimary-800" onClick={(event) => openDetailtimetable(event, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
                                         <p className="admin-textBody-big">จำนวนนัดพูดคุย {timetable.numberAppointment} คิว / จำนวนนัดกายภาพ {timetable.numberMainAppointment} คิว</p>
@@ -1854,7 +1859,7 @@ const TimetablePhysicalComponent = (props) => {
                                             <input type="checkbox" checked={isChecked[timetable.id]} onChange={() => handleToggle(timetable.id)} />
                                             <div className="slider"></div>
                                         </label>
-                                        <img src={edit} className="icon" onClick={() => openEdittimetable(this, timetable)} />
+                                        <img src={edit} className="icon" onClick={(event) => openEdittimetable(event, timetable)} />
                                         <img src={icon_delete} className="icon" onClick={() => Deletetimetable(this, timetable)} />
                                     </div>
                                 </div>
