@@ -332,11 +332,12 @@ const AddSpecialAppointmentUser = () => {
                                 }
                             }}
                             className={selectedCount >= 2 ? 'selected' : ''}
-                        >
+                        >   
                             {timeOptions.map((timeOption, index) => (
                                 <option
                                     key={`${timeOption.value.timetableId}-${timeOption.value.timeSlotIndex}`}
                                     value={index === 0 ? 0 : JSON.stringify({ timetableId: timeOption.value.timetableId, timeSlotIndex: timeOption.value.timeSlotIndex })}
+                                    hidden={index===0}
                                 >
                                     {timeOption.label}
                                 </option>
