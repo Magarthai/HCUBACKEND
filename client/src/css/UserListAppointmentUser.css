@@ -10,7 +10,7 @@
     flex-direction: row;
     justify-content: flex-end;
     gap: 0.5%; */
-    margin: 0px 20px 20px 20px;
+    margin: 0px 5% 20px 5%;
 }
 
 .AppointList-body-searchItem-txt{
@@ -31,13 +31,12 @@
     font-weight: 400;
     line-height: normal;
     margin: 0%;
-    margin-left: 20px;
+    margin-left: 5%;
 }
 
 .AppointList-body-card-item-innerCard{
     color: #263A50;
-    margin: 20px;
-    margin-top: 5px;
+    margin: 5px 5% 20px 5%;
     padding: 16px;
     border-radius: var(--Radius-Card, 20px);
     background: var(--Neutral-blue-50, #FBFFFF);
@@ -211,11 +210,12 @@
     justify-content: center;
     align-items: center;
     border: none;
-    border-radius: var(--Radius-Tag, 12px);
-    background: var(--Primary-800, #263A50);
-    width: 90%;
+    border-radius: 12px;
+    background:  #263A50;
+    width: 100%;
     height: 58px;
     margin-top: 15px;
+    margin-bottom: 15px;
     color: #ffffff;
     text-decoration: none;
 

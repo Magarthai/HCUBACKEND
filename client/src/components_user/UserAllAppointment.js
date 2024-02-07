@@ -401,16 +401,16 @@ const handleDateSelect = (selectedDate) => {
                                 .map((AppointmentUserData, index) => (
                                     <div key={index}>
                                         <div className="user-appointment-card">
-                                            <label><b className='user-appointment-Bold-letter'>{AppointmentUserData.appointment.clinic}</b></label>
+                                            <label><b className='textButton-Normal2'>{AppointmentUserData.appointment.clinic}</b></label>
 
                                             <div className="user-appointment-description1">
                                                 <img className="user-appointment-icon-card" src={icon1} alt="icon-calendar" />
-                                                <label>{AppointmentUserData.appointment.appointmentDate}</label>
+                                                <label className="textBody-big">{AppointmentUserData.appointment.appointmentDate}</label>
                                             </div>
 
                                             <div className="user-appointment-description1">
                                                 <img className="user-appointment-icon-card" src={icon2} alt="icon-clock" />
-                                                <label>{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</label>
+                                                <label className="textBody-big">{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</label>
                                             </div>
 
                                             <div className="user-appointment-description2">
@@ -453,7 +453,7 @@ const handleDateSelect = (selectedDate) => {
                                         <div className="user-appointment-card">
 
                                             <div className="user-header-appointment-card">
-                                                <label><b className='user-appointment-Bold-letter'>{AppointmentUserData.appointment.clinic}</b></label>
+                                                <label><b className='textButton-Normal2'>{AppointmentUserData.appointment.clinic}</b></label>
                                                 <div className={`${renderStatusClass(AppointmentUserData.appointment.status)}`}>
                                                     {AppointmentUserData.appointment.status}
                                                 </div>
@@ -462,12 +462,12 @@ const handleDateSelect = (selectedDate) => {
                                             {/* ข้อมูลการนัดหมาย */}
                                             <div className="user-appointment-description1">
                                                 <img className="user-appointment-icon-card" src={icon1} alt="icon-calendar" />
-                                                <label>{AppointmentUserData.appointment.appointmentDate}</label>
+                                                <label className="textBody-big">{AppointmentUserData.appointment.appointmentDate}</label>
                                             </div>
 
                                             <div className="user-appointment-description1">
                                                 <img className="user-appointment-icon-card" src={icon2} alt="icon-clock" />
-                                                <label>{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</label>
+                                                <label className="textBody-big">{AppointmentUserData.timeslot.start}-{AppointmentUserData.timeslot.end}</label>
                                             </div>
 
                                             <div className="user-appointment-description2">
@@ -487,7 +487,7 @@ const handleDateSelect = (selectedDate) => {
                                 </>
                             ) : (
                                 <div className="user-non-appointment-card">
-                                    <p className="user-non-appointmaent">ไม่มีการนัดหมายในสัปดาห์นี้</p>
+                                    <h3 className="user-non-appointmaent">ไม่มีการนัดหมายในสัปดาห์นี้</h3>
                                 </div>
                             )}
       

@@ -24,7 +24,7 @@
     flex-direction: row;
     justify-content: flex-end;
     gap: 0.5%; */
-    margin: 0px 20px 20px 20px;
+    margin: 0px 5% 20px 5%;
 }
 
 .HistoryAppointment-body-searchItem-txt{
@@ -47,8 +47,7 @@
 
 .HistoryAppointment-body-card-item-innerCard{
     color: #263A50;
-    margin: 20px;
-    margin-top: 0px;
+    margin:  10px 5% 20px 5%;
     padding: 16px;
     border-radius: var(--Radius-Card, 20px);
     background: var(--Neutral-blue-50, #FBFFFF);

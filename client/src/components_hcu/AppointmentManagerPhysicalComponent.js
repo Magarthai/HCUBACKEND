@@ -17,6 +17,7 @@ import { availableTimeSlotsPhysic, editFormPhysic, fetchAppointmentUsersDataPhys
 import DeleteAppointmentPhysic from "../backend/backendPhysic";
 import Swal from "sweetalert2";
 const AppointmentManagerPhysicComponent = (props) => {
+
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedDates, setSelectedDates] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -407,6 +408,7 @@ const AppointmentManagerPhysicComponent = (props) => {
             setsaveEditId("")
             setState((prevState) => ({
                 ...prevState,
+                appointmentDate: "",
                 appointmentTime: "",
                 appointmentId: "",
                 appointmentCasue: "",
@@ -1061,6 +1063,7 @@ const AppointmentManagerPhysicComponent = (props) => {
         setSelectedDate(date);
         const formattedDate = formatDateForDisplay(date.toISOString().split("T")[0]);
         console.log("Formatted Date:", formattedDate);
+        // ทำอย่างอื่นตามต้องการ
       };
     return (
         <div className="appointment" style={containerStyle}>
@@ -1087,7 +1090,7 @@ const AppointmentManagerPhysicComponent = (props) => {
                             <a href="/AppointmentManagerComponent" target="_parent" >คลินิกทั่วไป</a>
                             <a href="/AppointmentManagerComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
                             <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent" id="select">คลินิกกายภาพ</a>
-                            <a href="/adminAppointmentManagerNeedleComponent" target="_parent">คลินิกฝังเข็ม</a>
+                            <a href="/adminAppointmentManagerNeedleComponent" target="_parent">คลินิกฝั่งเข็ม</a>
                         </div>
                         <div className="admin-hearder-item admin-right">
                             <a target="_parent" onClick={() => {

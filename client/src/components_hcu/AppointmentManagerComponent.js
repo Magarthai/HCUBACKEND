@@ -163,6 +163,7 @@ const AppointmentManagerComponent = (props) => {
     const DateToCheck = `${date}/${month}/${year}`
     const [selectedCount, setSelectedCount] = useState(1);
 
+    
     const handleSelectChange = () => {
         setSelectedCount(selectedCount + 1);
     };
@@ -471,6 +472,7 @@ const AppointmentManagerComponent = (props) => {
     }
 
     const openAddAppointment = () => {
+        adminCards.forEach(card => card.classList.remove('focused'));
         let x = document.getElementById("add-appointment");
         let y = document.getElementById("detail-appointment");
         let z = document.getElementById("edit-appointment");
@@ -480,29 +482,19 @@ const AppointmentManagerComponent = (props) => {
             z.style.display = "none";
             setsaveDetailId("")
             setsaveEditId("")
-            setState((prevState) => ({
-                ...prevState,
-                appointmentTime: "",
-                appointmentId: "",
-                appointmentCasue: "",
-                appointmentSymptom: "",
-                appointmentNotation: "",
-                clinic: "",
-                uid: "",
-                typecheck: ""
-            }));
+
         } else {
             x.style.display = "none";
+
+
         }
+
     }
 
-    const openEditAppointment = async (appointmentUserData) => {
-        console.log("Edit appointment data:", appointmentUserData.appointmentuid);
-        console.log(appointmentUserData.appointmentuid)
+    const openEditAppointment = (element,appointmentUserData) => {
         let x = document.getElementById("edit-appointment");
         let y = document.getElementById("add-appointment");
         let z = document.getElementById("detail-appointment");
-
         setState((prevState) => ({
             ...prevState,
             appointmentDate: appointmentUserData.appointmentDate,
@@ -512,15 +504,20 @@ const AppointmentManagerComponent = (props) => {
             appointmentSymptom: appointmentUserData.appointmentSymptom,
             appointmentNotation: appointmentUserData.appointmentNotation,
             clinic: appointmentUserData.clinic,
-            uid: appointmentUserData.appointmentuid,
-            typecheck: appointmentUserData.type
+            uid: appointmentUserData.appointmentuid
         }));
         if (window.getComputedStyle(x).display === "none") {
+            if(window.getComputedStyle(z).display === "block" && saveDetailId === appointmentUserData.appointmentuid){
+                element.stopPropagation();
+            }
             x.style.display = "block";
             y.style.display = "none";
             z.style.display = "none";
             setsaveDetailId("")
             setsaveEditId(appointmentUserData.appointmentuid)
+
+
+
         } else {
             if (saveEditId === appointmentUserData.appointmentuid) {
                 x.style.display = "none";
@@ -532,8 +529,8 @@ const AppointmentManagerComponent = (props) => {
     }
 
 
+
     const handleDateSelect = (selectedDate) => {
-        console.log("Selected Date in AppointmentManager:", selectedDate);
         setAllAppointmentUsersData([]);
         setSelectedDate(selectedDate);
         setState({
@@ -541,23 +538,8 @@ const AppointmentManagerComponent = (props) => {
             appointmentDate: `${selectedDate.day}/${selectedDate.month}/${selectedDate.year}`,
             appointmentTime: "",
         });
-        let x = document.getElementById("edit-appointment");
-        let z = document.getElementById("detail-appointment");
-
-        setState((prevState) => ({
-            ...prevState,
-            appointmentTime: "",
-            appointmentId: "",
-            appointmentCasue: "",
-            appointmentSymptom: "",
-            appointmentNotation: "",
-            clinic: "",
-            uid: "",
-            typecheck: ""
-        }));
+        let x = document.getElementById("detail-appointment");
         x.style.display = "none";
-        z.style.display = "none";
-
     };
 
     const formatDateForDisplay = (isoDate) => {
@@ -720,7 +702,7 @@ const AppointmentManagerComponent = (props) => {
                             <a href="/AppointmentManagerComponent" target="_parent" id="select">คลินิกทั่วไป</a>
                             <a href="/AppointmentManagerComponentSpecial" target="_parent" >คลินิกเฉพาะทาง</a>
                             <a href="/AdminAppointmentManagerPhysicalComponent" target="_parent">คลินิกกายภาพ</a>
-                            <a href="/adminAppointmentManagerNeedleComponent" target="_parent" >คลินิกฝังเข็ม</a>
+                            <a href="/adminAppointmentManagerNeedleComponent" target="_parent" >คลินิกฝั่งเข็ม</a>
                         </div>
                         <div className="admin-hearder-item admin-right">
                             <a href="/adminAppointmentRequestManagementComponent" target="_parent">รายการขอนัดหมาย</a>
@@ -763,7 +745,7 @@ const AppointmentManagerComponent = (props) => {
                                                     <p style={{ justifyContent: "center", display: "flex", alignItems: "center", margin: 0, marginRight: 10 }} className="admin-appointment-status admin-textBody-small" >{`${AppointmentUserData.appointment.status}`}</p>
                                                 ) : (
                                                     <>
-                                                        <img src={edit} className="icon" onClick={(event) => openEditAppointment(AppointmentUserData.appointment)} />
+                                                        <img src={edit} className="icon" onClick={(event) => openEditAppointment(event,AppointmentUserData.appointment)} />
                                                         <img src={icon_delete} className="icon" onClick={() => DeleteAppointment(AppointmentUserData.appointment.appointmentuid, AppointmentUserData.userUid, setAllAppointmentUsersData, fetchUserDataWithAppointmentsWrapper)} />
                                                     </>
                                                 )}

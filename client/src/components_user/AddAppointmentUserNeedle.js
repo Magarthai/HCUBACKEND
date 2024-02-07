@@ -50,7 +50,7 @@ const AddNeedleAppointmentUser = () => {
                 const querySnapshot = await getDocs(query(
                     timeTableCollection,
                     where('addDay', '==', selectedDate.dayName),
-                    where('clinic', '==', 'คลินิกฝังเข็ม')
+                    where('clinic', '==', 'คลินิกฝั่งเข็ม')
                 ));
 
                 const timeTableData = querySnapshot.docs.map((doc) => ({
@@ -165,7 +165,7 @@ const AddNeedleAppointmentUser = () => {
                 appointmentId: appointmentId || null,
                 appointmentCasue:"ตรวจรักษาโรค",
                 appointmentSymptom: appointmentSymptom,
-                clinic: "คลินิกฝังเข็ม",
+                clinic: "คลินิกฝั่งเข็ม",
                 status: "ลงทะเบียนแล้ว",
                 status2: "เสร็จสิ้น",
                 subject: "เพิ่มนัดหมาย",
@@ -248,7 +248,7 @@ const AddNeedleAppointmentUser = () => {
 
             <body className="user-body">
                 <h3 className="user-head-context">ปฏิทิน</h3>
-                <label className="user-head-clinicname">คลินิกฝังเข็ม</label>
+                <label className="user-head-clinicname">คลินิกฝั่งเข็ม</label>
 
                 <div className="CalendarUser">
                     <CalendarAddUserComponent
