@@ -852,18 +852,20 @@ const AppointmentManagerComponent = (props) => {
                                     <h2 className="center">แก้ไขนัดหมาย</h2>
                                     <div className="center-container">
                                         <label className="admin-textBody-large colorPrimary-800">วันที่</label>
-                                        <input
-                                            type="date"
-                                            className="form-control input-date"  
-                                            min={new Date().toISOString().split("T")[0]}
-                                            max={maxDate.toISOString().split("T")[0]} 
-                                            
-                                            onChange={(e) => {
-                                                inputValue("appointmentDate")(e);
-                                                const formattedDate = formatDateForDisplay(e.target.value);
-                                                console.log("formattedDate", formattedDate)
-                                            }}
-                                        />
+                                        {selectedDate && (
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                min={new Date().toISOString().split("T")[0]}
+                                                value={`${selectedDate.year}-${('' + selectedDate.month).padStart(2, '0')}-${('' + selectedDate.day).padStart(2, '0')}`}
+                                                max={maxDate.toISOString().split("T")[0]} 
+                                                onChange={async (e) => {
+                                                    inputValue("appointmentDate")(e);
+                                                    const formattedDate = formatDateForDisplay(e.target.value);
+                                                    console.log("Formatted Date:", formattedDate);
+                                                }}
+                                            />
+                                        )}
 
                                     </div>
                                     <div>
