@@ -106,7 +106,6 @@ const AppointmentManagerPhysicComponent = (props) => {
 
     };
 
-
     const formatDateForDisplay = (isoDate) => {
         const dateParts = isoDate.split("-");
         if (dateParts.length === 3) {
@@ -126,13 +125,13 @@ const AppointmentManagerPhysicComponent = (props) => {
             };
 
             setAllAppointmentUsersData([]);
-            
+            setSelectedDate(formattedSelectedDate);
             setState({
                 ...state,
                 appointmentDate: `${formattedDay}/${formattedMonth}/${year}`,
                 appointmentTime: "",
             });
-            setSelectedDate(formattedSelectedDate);
+
             return formattedDate;
         }
         return isoDate;
@@ -1280,11 +1279,10 @@ const AppointmentManagerPhysicComponent = (props) => {
                                                     inputValue("appointmentDate")(e);
                                                     const formattedDate = formatDateForDisplay(e.target.value);
                                                     console.log("Formatted Date:", formattedDate);
-                                                    
                                                 }}
                                             />
                                         )}
-                                    </div>  
+                                    </div>
                                     <div>
                                         <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
                                         <select
@@ -1371,19 +1369,17 @@ const AppointmentManagerPhysicComponent = (props) => {
                             <div className="center-container">
                                 <label className="admin-textBody-large colorPrimary-800">วันที่</label>
                                 <br></br>
-                                            <input
-                                                type="date"
-                                                className="form-control"
-                                                min={new Date().toISOString().split("T")[0]}
-                                                max={maxDate.toISOString().split("T")[0]} 
-                                                onChange={async (e) => {
-                                                    inputValue("appointmentDate")(e);
-                                                    const formattedDate = formatDateForDisplay(e.target.value);
-                                                    console.log("Formatted Date:", formattedDate);
-                                                    
-                                                }}
-                                                
-                                            />
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    min={new Date().toISOString().split("T")[0]}
+                                    max={maxDate.toISOString().split("T")[0]} 
+                                    onChange={(e) => {
+                                        inputValue("appointmentDates")(e);
+                                        const formattedDate = formatDatesForDisplay(e.target.value);
+                                        console.log("Formatted Date:", formattedDate);
+                                    }}
+                                />
                             </div>
                             <div>
                                 <label className="admin-textBody-large colorPrimary-800">ช่วงเวลา</label>
