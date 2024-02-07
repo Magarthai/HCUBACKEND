@@ -907,6 +907,20 @@ const TimetableSpecialComponent = (props) => {
 
     }
 
+    
+    const adminCards = document.querySelectorAll('.card');
+
+    function handleCardClick(event) {
+        let currentCard = event.currentTarget
+        let isFocused = currentCard.classList.contains('focused')
+        if(isFocused){
+            currentCard.classList.remove('focused');
+
+        }else{
+            adminCards.forEach(card => card.classList.remove('focused'));
+            currentCard.classList.add('focused');
+        }
+    }
 
 
 
@@ -945,7 +959,7 @@ const TimetableSpecialComponent = (props) => {
                     <h3 className="colorPrimary-800">วันจันทร์</h3>
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกเฉพาะทาง").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
@@ -970,7 +984,7 @@ const TimetableSpecialComponent = (props) => {
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
@@ -978,7 +992,7 @@ const TimetableSpecialComponent = (props) => {
                         <h3 className="colorPrimary-800">วันอังคาร</h3>
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกเฉพาะทาง").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
@@ -998,7 +1012,7 @@ const TimetableSpecialComponent = (props) => {
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "tuesday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
@@ -1006,7 +1020,7 @@ const TimetableSpecialComponent = (props) => {
                         <h3 className="colorPrimary-800">วันพุธ</h3>
                         {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกเฉพาะทาง").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
@@ -1026,7 +1040,7 @@ const TimetableSpecialComponent = (props) => {
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "wednesday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
@@ -1034,7 +1048,7 @@ const TimetableSpecialComponent = (props) => {
                          <h3 className="colorPrimary-800">วันพฤหัสบดี</h3>
                         {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกเฉพาะทาง").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
@@ -1054,7 +1068,7 @@ const TimetableSpecialComponent = (props) => {
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "thursday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
@@ -1062,7 +1076,7 @@ const TimetableSpecialComponent = (props) => {
                         <h3 className="colorPrimary-800">วันศุกร์</h3>
                         {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกเฉพาะทาง").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
@@ -1082,7 +1096,7 @@ const TimetableSpecialComponent = (props) => {
                         ))}
                         {timetable.filter((timetable) => timetable.addDay === "friday" && timetable.clinic === "คลินิกเฉพาะทาง").length === 0 && (
                             <div className="row" >
-                                <div className="card">
+                                <div className="card" onClick={handleCardClick}>
                                     <p className="admin-textBody-big">ไม่มีช่วงเวลาทําการ</p>
                                 </div>
                             </div>
@@ -1106,7 +1120,7 @@ const TimetableSpecialComponent = (props) => {
                                     onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
                                 >
-                                    <option value="" disabled> กรุณาเลือกวัน </option>
+                                    <option value="" disabled hidden> กรุณาเลือกวัน </option>
                                     <option value="monday">วันจันทร์</option>
                                     <option value="tuesday">วันอังคาร</option>
                                     <option value="wednesday">วันพุธ</option>
@@ -1177,7 +1191,7 @@ const TimetableSpecialComponent = (props) => {
                                     onChange={(e) => { inputValue("addDay")(e); handleSelectChange(); }}
                                     className={selectedCount >= 2 ? 'selected' : ''}
                                 >
-                                    <option value="" disabled> กรุณาเลือกวัน </option>
+                                    <option value="" disabled hidden> กรุณาเลือกวัน </option>
                                     <option value="monday">วันจันทร์</option>
                                     <option value="tuesday">วันอังคาร</option>
                                     <option value="wednesday">วันพุธ</option>
