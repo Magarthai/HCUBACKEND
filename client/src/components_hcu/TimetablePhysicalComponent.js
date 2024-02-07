@@ -1402,6 +1402,7 @@ const TimetablePhysicalComponent = (props) => {
     const [saveEditId, setsaveEditId] = useState([])
 
     const openAddtimetable = () => {
+        adminCards.forEach(card => card.classList.remove('focused'));
         let x = document.getElementById("Addtimetable");
         let y = document.getElementById("Edittimetable");
         let z = document.getElementById("Detailtimetable");
@@ -1708,7 +1709,7 @@ const TimetablePhysicalComponent = (props) => {
                         <h3 className="colorPrimary-800">วันจันทร์</h3>
                         {timetable.filter((timetable) => timetable.addDay === "monday" && timetable.clinic === "คลินิกกายภาพ").sort((a, b) => (a.timeStart > b.timeStart) ? 1 : ((b.timeStart > a.timeStart) ? -1 : 0)).map((timetable, index) => (
                             <div className="row" >
-                                <div className="card focused">
+                                <div className="card">
                                     <a className="card-detail colorPrimary-800" onClick={() => openDetailtimetable(this, timetable)}>
                                         <p className="admin-textBody-large">{timetable.timeStart} - {timetable.timeEnd}</p>
                                         <p className="admin-textBody-big">เปิดให้นัดหมาย {timetable.timeAppointmentStart} - {timetable.timeAppointmentEnd} </p>
